@@ -25,7 +25,7 @@ public class EcmArtWorkController {
     /**
      *
      * @param ecmArtWorkQuery 传入的 查询参数
-     * @return ReturnVo 包含 ArtWork的 条件查询 结果集
+     * @return ResponseDTO中的data 包含 ArtWork的 条件查询 结果集
      */
 
     @RequestMapping("/getArtWorks")

@@ -138,20 +138,20 @@
     from ecm_artwork
     <where>
 
-      <if test="fkUserid != null and fkUserid!=''">
-        and phone like #{fkUserid}
+      <if test="fkUserid != null">
+        and fkUserid = #{fkUserid}
       </if>
 
       <if test="artworkStatus != null and artworkStatus!=''">
-        and phone like #{artworkStatus}
+        and artworkStatus like #{artworkStatus}
       </if>
 
       <if test="artworkName != null and artworkName!=''">
-        and phone like CONCAT('%',#{artworkName},'%')
+        and artworkName like CONCAT('%',#{artworkName},'%')
       </if>
 
       <if test="fourLetterTips != null and fourLetterTips!=''">
-        and phone like CONCAT('%',#{fourLetterTips},'%')
+        and fourLetterTips like CONCAT('%',#{fourLetterTips},'%')
       </if>
 
     </where>
