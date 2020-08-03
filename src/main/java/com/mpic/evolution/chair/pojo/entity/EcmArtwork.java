@@ -17,10 +17,13 @@ public class EcmArtwork implements Serializable {
     private Integer pkArtworkId;
 
     /**
-     * 作者
+     * 作者id
      */
     private Integer fkUserid;
 
+    /**
+     * 作者名字
+     */
     private String artworkName;
 
     /**

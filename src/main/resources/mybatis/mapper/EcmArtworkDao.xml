@@ -22,7 +22,7 @@
     from ecm_artwork
     where pk_artwork_id = #{pkArtworkId,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from ecm_artwork
     where pk_artwork_id = #{pkArtworkId,jdbcType=INTEGER}
   </delete>
@@ -131,4 +131,34 @@
       four_letter_tips = #{fourLetterTips,jdbcType=VARCHAR}
     where pk_artwork_id = #{pkArtworkId,jdbcType=INTEGER}
   </update>
+
+<!--sql-->
+  <select id="selectArtWorks" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkVo">
+    select <include refid="Base_Column_List" />
+    from ecm_artwork
+    <where>
+
+      <if test="fkUserid != null and fkUserid!=''">
+        and phone like #{fkUserid}
+      </if>
+
+      <if test="artworkStatus != null and artworkStatus!=''">
+        and phone like #{artworkStatus}
+      </if>
+
+      <if test="artworkName != null and artworkName!=''">
+        and phone like CONCAT('%',#{artworkName},'%')
+      </if>
+
+      <if test="fourLetterTips != null and fourLetterTips!=''">
+        and phone like CONCAT('%',#{fourLetterTips},'%')
+      </if>
+
+    </where>
+    limit #{start},#{limit}
+
+
+  </select>
+
+
 </mapper>
