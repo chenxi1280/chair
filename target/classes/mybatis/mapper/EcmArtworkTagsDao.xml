@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mpic.evolution.chair.dao.EcmArtworkTagsDao">
+  <resultMap id="BaseResultMap" type="com.mpic.evolution.chair.pojo.entity.EcmArtworkTags">
+    <id column="pk_tag_id" jdbcType="INTEGER" property="pkTagId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pk_tag_id, `name`, `status`
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from ecm_artwork_tags
+    where pk_tag_id = #{pkTagId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ecm_artwork_tags
+    where pk_tag_id = #{pkTagId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="pk_tag_id" keyProperty="pkTagId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkTags" useGeneratedKeys="true">
+    insert into ecm_artwork_tags (`name`, `status`)
+    values (#{name,jdbcType=VARCHAR}, #{status,jdbcType=SMALLINT})
+  </insert>
+  <insert id="insertSelective" keyColumn="pk_tag_id" keyProperty="pkTagId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkTags" useGeneratedKeys="true">
+    insert into ecm_artwork_tags
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=SMALLINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkTags">
+    update ecm_artwork_tags
+    <set>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=SMALLINT},
+      </if>
+    </set>
+    where pk_tag_id = #{pkTagId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkTags">
+    update ecm_artwork_tags
+    set `name` = #{name,jdbcType=VARCHAR},
+      `status` = #{status,jdbcType=SMALLINT}
+    where pk_tag_id = #{pkTagId,jdbcType=INTEGER}
+  </update>
+</mapper>

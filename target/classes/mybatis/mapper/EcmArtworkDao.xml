@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mpic.evolution.chair.dao.EcmArtworkDao">
+  <resultMap id="BaseResultMap" type="com.mpic.evolution.chair.pojo.entity.EcmArtwork">
+    <id column="pk_artwork_id" jdbcType="INTEGER" property="pkArtworkId" />
+    <result column="fk_userId" jdbcType="INTEGER" property="fkUserid" />
+    <result column="artwork_name" jdbcType="VARCHAR" property="artworkName" />
+    <result column="artwork_describe" jdbcType="VARCHAR" property="artworkDescribe" />
+    <result column="artwork_status" jdbcType="SMALLINT" property="artworkStatus" />
+    <result column="logo_path" jdbcType="VARCHAR" property="logoPath" />
+    <result column="last_create_date" jdbcType="TIMESTAMP" property="lastCreateDate" />
+    <result column="last_modify_date" jdbcType="TIMESTAMP" property="lastModifyDate" />
+    <result column="four_letter_tips" jdbcType="VARCHAR" property="fourLetterTips" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pk_artwork_id, fk_userId, artwork_name, artwork_describe, artwork_status, logo_path, 
+    last_create_date, last_modify_date, four_letter_tips
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from ecm_artwork
+    where pk_artwork_id = #{pkArtworkId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ecm_artwork
+    where pk_artwork_id = #{pkArtworkId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="pk_artwork_id" keyProperty="pkArtworkId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtwork" useGeneratedKeys="true">
+    insert into ecm_artwork (fk_userId, artwork_name, artwork_describe, 
+      artwork_status, logo_path, last_create_date, 
+      last_modify_date, four_letter_tips)
+    values (#{fkUserid,jdbcType=INTEGER}, #{artworkName,jdbcType=VARCHAR}, #{artworkDescribe,jdbcType=VARCHAR}, 
+      #{artworkStatus,jdbcType=SMALLINT}, #{logoPath,jdbcType=VARCHAR}, #{lastCreateDate,jdbcType=TIMESTAMP}, 
+      #{lastModifyDate,jdbcType=TIMESTAMP}, #{fourLetterTips,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="pk_artwork_id" keyProperty="pkArtworkId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtwork" useGeneratedKeys="true">
+    insert into ecm_artwork
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="fkUserid != null">
+        fk_userId,
+      </if>
+      <if test="artworkName != null">
+        artwork_name,
+      </if>
+      <if test="artworkDescribe != null">
+        artwork_describe,
+      </if>
+      <if test="artworkStatus != null">
+        artwork_status,
+      </if>
+      <if test="logoPath != null">
+        logo_path,
+      </if>
+      <if test="lastCreateDate != null">
+        last_create_date,
+      </if>
+      <if test="lastModifyDate != null">
+        last_modify_date,
+      </if>
+      <if test="fourLetterTips != null">
+        four_letter_tips,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="fkUserid != null">
+        #{fkUserid,jdbcType=INTEGER},
+      </if>
+      <if test="artworkName != null">
+        #{artworkName,jdbcType=VARCHAR},
+      </if>
+      <if test="artworkDescribe != null">
+        #{artworkDescribe,jdbcType=VARCHAR},
+      </if>
+      <if test="artworkStatus != null">
+        #{artworkStatus,jdbcType=SMALLINT},
+      </if>
+      <if test="logoPath != null">
+        #{logoPath,jdbcType=VARCHAR},
+      </if>
+      <if test="lastCreateDate != null">
+        #{lastCreateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifyDate != null">
+        #{lastModifyDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fourLetterTips != null">
+        #{fourLetterTips,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtwork">
+    update ecm_artwork
+    <set>
+      <if test="fkUserid != null">
+        fk_userId = #{fkUserid,jdbcType=INTEGER},
+      </if>
+      <if test="artworkName != null">
+        artwork_name = #{artworkName,jdbcType=VARCHAR},
+      </if>
+      <if test="artworkDescribe != null">
+        artwork_describe = #{artworkDescribe,jdbcType=VARCHAR},
+      </if>
+      <if test="artworkStatus != null">
+        artwork_status = #{artworkStatus,jdbcType=SMALLINT},
+      </if>
+      <if test="logoPath != null">
+        logo_path = #{logoPath,jdbcType=VARCHAR},
+      </if>
+      <if test="lastCreateDate != null">
+        last_create_date = #{lastCreateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifyDate != null">
+        last_modify_date = #{lastModifyDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fourLetterTips != null">
+        four_letter_tips = #{fourLetterTips,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where pk_artwork_id = #{pkArtworkId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtwork">
+    update ecm_artwork
+    set fk_userId = #{fkUserid,jdbcType=INTEGER},
+      artwork_name = #{artworkName,jdbcType=VARCHAR},
+      artwork_describe = #{artworkDescribe,jdbcType=VARCHAR},
+      artwork_status = #{artworkStatus,jdbcType=SMALLINT},
+      logo_path = #{logoPath,jdbcType=VARCHAR},
+      last_create_date = #{lastCreateDate,jdbcType=TIMESTAMP},
+      last_modify_date = #{lastModifyDate,jdbcType=TIMESTAMP},
+      four_letter_tips = #{fourLetterTips,jdbcType=VARCHAR}
+    where pk_artwork_id = #{pkArtworkId,jdbcType=INTEGER}
+  </update>
+</mapper>

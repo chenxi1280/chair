@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mpic.evolution.chair.dao.EcmUserFollowedDao">
+  <resultMap id="BaseResultMap" type="com.mpic.evolution.chair.pojo.entity.EcmUserFollowed">
+    <id column="pk_user_followed_id" jdbcType="INTEGER" property="pkUserFollowedId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="followed_user_id" jdbcType="INTEGER" property="followedUserId" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pk_user_followed_id, user_id, followed_user_id, `status`, created_at, updated_at
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from ecm_user_followed
+    where pk_user_followed_id = #{pkUserFollowedId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ecm_user_followed
+    where pk_user_followed_id = #{pkUserFollowedId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="pk_user_followed_id" keyProperty="pkUserFollowedId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUserFollowed" useGeneratedKeys="true">
+    insert into ecm_user_followed (user_id, followed_user_id, `status`, 
+      created_at, updated_at)
+    values (#{userId,jdbcType=INTEGER}, #{followedUserId,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, 
+      #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" keyColumn="pk_user_followed_id" keyProperty="pkUserFollowedId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUserFollowed" useGeneratedKeys="true">
+    insert into ecm_user_followed
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="followedUserId != null">
+        followed_user_id,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="createdAt != null">
+        created_at,
+      </if>
+      <if test="updatedAt != null">
+        updated_at,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="followedUserId != null">
+        #{followedUserId,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null">
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUserFollowed">
+    update ecm_user_followed
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="followedUserId != null">
+        followed_user_id = #{followedUserId,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null">
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where pk_user_followed_id = #{pkUserFollowedId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUserFollowed">
+    update ecm_user_followed
+    set user_id = #{userId,jdbcType=INTEGER},
+      followed_user_id = #{followedUserId,jdbcType=INTEGER},
+      `status` = #{status,jdbcType=VARCHAR},
+      created_at = #{createdAt,jdbcType=TIMESTAMP},
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP}
+    where pk_user_followed_id = #{pkUserFollowedId,jdbcType=INTEGER}
+  </update>
+</mapper>

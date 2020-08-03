@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mpic.evolution.chair.dao.EcmArtworkNodesDao">
+  <resultMap id="BaseResultMap" type="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes">
+    <id column="pk_detail_id" jdbcType="INTEGER" property="pkDetailId" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+    <result column="video_code" jdbcType="VARCHAR" property="videoCode" />
+    <result column="parent_code" jdbcType="VARCHAR" property="parentCode" />
+    <result column="video_url" jdbcType="VARCHAR" property="videoUrl" />
+    <result column="branch_pre" jdbcType="BOOLEAN" property="branchPre" />
+    <result column="revolution_id" jdbcType="VARCHAR" property="revolutionId" />
+    <result column="video_text" jdbcType="VARCHAR" property="videoText" />
+    <result column="fk_artwork_id" jdbcType="INTEGER" property="fkArtworkId" />
+    <result column="items" jdbcType="VARCHAR" property="items" />
+    <result column="items_text" jdbcType="VARCHAR" property="itemsText" />
+    <result column="items_bak_text" jdbcType="VARCHAR" property="itemsBakText" />
+    <result column="css_vo" jdbcType="VARCHAR" property="cssVo" />
+    <result column="fk_achievement_id" jdbcType="INTEGER" property="fkAchievementId" />
+    <result column="fk_ending_id" jdbcType="INTEGER" property="fkEndingId" />
+    <result column="isleaf" jdbcType="VARCHAR" property="isleaf" />
+    <result column="a_level" jdbcType="INTEGER" property="aLevel" />
+    <result column="is_deleted" jdbcType="VARCHAR" property="isDeleted" />
+    <result column="parent_list" jdbcType="VARCHAR" property="parentList" />
+    <result column="chosen_text" jdbcType="VARCHAR" property="chosenText" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pk_detail_id, parent_id, video_code, parent_code, video_url, branch_pre, revolution_id, 
+    video_text, fk_artwork_id, items, items_text, items_bak_text, css_vo, fk_achievement_id, 
+    fk_ending_id, isleaf, a_level, is_deleted, parent_list, chosen_text
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from ecm_artwork_nodes
+    where pk_detail_id = #{pkDetailId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ecm_artwork_nodes
+    where pk_detail_id = #{pkDetailId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="pk_detail_id" keyProperty="pkDetailId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes" useGeneratedKeys="true">
+    insert into ecm_artwork_nodes (parent_id, video_code, parent_code, 
+      video_url, branch_pre, revolution_id, 
+      video_text, fk_artwork_id, items, 
+      items_text, items_bak_text, css_vo, 
+      fk_achievement_id, fk_ending_id, isleaf, 
+      a_level, is_deleted, parent_list, 
+      chosen_text)
+    values (#{parentId,jdbcType=INTEGER}, #{videoCode,jdbcType=VARCHAR}, #{parentCode,jdbcType=VARCHAR}, 
+      #{videoUrl,jdbcType=VARCHAR}, #{branchPre,jdbcType=BOOLEAN}, #{revolutionId,jdbcType=VARCHAR}, 
+      #{videoText,jdbcType=VARCHAR}, #{fkArtworkId,jdbcType=INTEGER}, #{items,jdbcType=VARCHAR}, 
+      #{itemsText,jdbcType=VARCHAR}, #{itemsBakText,jdbcType=VARCHAR}, #{cssVo,jdbcType=VARCHAR}, 
+      #{fkAchievementId,jdbcType=INTEGER}, #{fkEndingId,jdbcType=INTEGER}, #{isleaf,jdbcType=VARCHAR}, 
+      #{aLevel,jdbcType=INTEGER}, #{isDeleted,jdbcType=VARCHAR}, #{parentList,jdbcType=VARCHAR}, 
+      #{chosenText,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="pk_detail_id" keyProperty="pkDetailId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes" useGeneratedKeys="true">
+    insert into ecm_artwork_nodes
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="videoCode != null">
+        video_code,
+      </if>
+      <if test="parentCode != null">
+        parent_code,
+      </if>
+      <if test="videoUrl != null">
+        video_url,
+      </if>
+      <if test="branchPre != null">
+        branch_pre,
+      </if>
+      <if test="revolutionId != null">
+        revolution_id,
+      </if>
+      <if test="videoText != null">
+        video_text,
+      </if>
+      <if test="fkArtworkId != null">
+        fk_artwork_id,
+      </if>
+      <if test="items != null">
+        items,
+      </if>
+      <if test="itemsText != null">
+        items_text,
+      </if>
+      <if test="itemsBakText != null">
+        items_bak_text,
+      </if>
+      <if test="cssVo != null">
+        css_vo,
+      </if>
+      <if test="fkAchievementId != null">
+        fk_achievement_id,
+      </if>
+      <if test="fkEndingId != null">
+        fk_ending_id,
+      </if>
+      <if test="isleaf != null">
+        isleaf,
+      </if>
+      <if test="aLevel != null">
+        a_level,
+      </if>
+      <if test="isDeleted != null">
+        is_deleted,
+      </if>
+      <if test="parentList != null">
+        parent_list,
+      </if>
+      <if test="chosenText != null">
+        chosen_text,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="parentId != null">
+        #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="videoCode != null">
+        #{videoCode,jdbcType=VARCHAR},
+      </if>
+      <if test="parentCode != null">
+        #{parentCode,jdbcType=VARCHAR},
+      </if>
+      <if test="videoUrl != null">
+        #{videoUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="branchPre != null">
+        #{branchPre,jdbcType=BOOLEAN},
+      </if>
+      <if test="revolutionId != null">
+        #{revolutionId,jdbcType=VARCHAR},
+      </if>
+      <if test="videoText != null">
+        #{videoText,jdbcType=VARCHAR},
+      </if>
+      <if test="fkArtworkId != null">
+        #{fkArtworkId,jdbcType=INTEGER},
+      </if>
+      <if test="items != null">
+        #{items,jdbcType=VARCHAR},
+      </if>
+      <if test="itemsText != null">
+        #{itemsText,jdbcType=VARCHAR},
+      </if>
+      <if test="itemsBakText != null">
+        #{itemsBakText,jdbcType=VARCHAR},
+      </if>
+      <if test="cssVo != null">
+        #{cssVo,jdbcType=VARCHAR},
+      </if>
+      <if test="fkAchievementId != null">
+        #{fkAchievementId,jdbcType=INTEGER},
+      </if>
+      <if test="fkEndingId != null">
+        #{fkEndingId,jdbcType=INTEGER},
+      </if>
+      <if test="isleaf != null">
+        #{isleaf,jdbcType=VARCHAR},
+      </if>
+      <if test="aLevel != null">
+        #{aLevel,jdbcType=INTEGER},
+      </if>
+      <if test="isDeleted != null">
+        #{isDeleted,jdbcType=VARCHAR},
+      </if>
+      <if test="parentList != null">
+        #{parentList,jdbcType=VARCHAR},
+      </if>
+      <if test="chosenText != null">
+        #{chosenText,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes">
+    update ecm_artwork_nodes
+    <set>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="videoCode != null">
+        video_code = #{videoCode,jdbcType=VARCHAR},
+      </if>
+      <if test="parentCode != null">
+        parent_code = #{parentCode,jdbcType=VARCHAR},
+      </if>
+      <if test="videoUrl != null">
+        video_url = #{videoUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="branchPre != null">
+        branch_pre = #{branchPre,jdbcType=BOOLEAN},
+      </if>
+      <if test="revolutionId != null">
+        revolution_id = #{revolutionId,jdbcType=VARCHAR},
+      </if>
+      <if test="videoText != null">
+        video_text = #{videoText,jdbcType=VARCHAR},
+      </if>
+      <if test="fkArtworkId != null">
+        fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER},
+      </if>
+      <if test="items != null">
+        items = #{items,jdbcType=VARCHAR},
+      </if>
+      <if test="itemsText != null">
+        items_text = #{itemsText,jdbcType=VARCHAR},
+      </if>
+      <if test="itemsBakText != null">
+        items_bak_text = #{itemsBakText,jdbcType=VARCHAR},
+      </if>
+      <if test="cssVo != null">
+        css_vo = #{cssVo,jdbcType=VARCHAR},
+      </if>
+      <if test="fkAchievementId != null">
+        fk_achievement_id = #{fkAchievementId,jdbcType=INTEGER},
+      </if>
+      <if test="fkEndingId != null">
+        fk_ending_id = #{fkEndingId,jdbcType=INTEGER},
+      </if>
+      <if test="isleaf != null">
+        isleaf = #{isleaf,jdbcType=VARCHAR},
+      </if>
+      <if test="aLevel != null">
+        a_level = #{aLevel,jdbcType=INTEGER},
+      </if>
+      <if test="isDeleted != null">
+        is_deleted = #{isDeleted,jdbcType=VARCHAR},
+      </if>
+      <if test="parentList != null">
+        parent_list = #{parentList,jdbcType=VARCHAR},
+      </if>
+      <if test="chosenText != null">
+        chosen_text = #{chosenText,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where pk_detail_id = #{pkDetailId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes">
+    update ecm_artwork_nodes
+    set parent_id = #{parentId,jdbcType=INTEGER},
+      video_code = #{videoCode,jdbcType=VARCHAR},
+      parent_code = #{parentCode,jdbcType=VARCHAR},
+      video_url = #{videoUrl,jdbcType=VARCHAR},
+      branch_pre = #{branchPre,jdbcType=BOOLEAN},
+      revolution_id = #{revolutionId,jdbcType=VARCHAR},
+      video_text = #{videoText,jdbcType=VARCHAR},
+      fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER},
+      items = #{items,jdbcType=VARCHAR},
+      items_text = #{itemsText,jdbcType=VARCHAR},
+      items_bak_text = #{itemsBakText,jdbcType=VARCHAR},
+      css_vo = #{cssVo,jdbcType=VARCHAR},
+      fk_achievement_id = #{fkAchievementId,jdbcType=INTEGER},
+      fk_ending_id = #{fkEndingId,jdbcType=INTEGER},
+      isleaf = #{isleaf,jdbcType=VARCHAR},
+      a_level = #{aLevel,jdbcType=INTEGER},
+      is_deleted = #{isDeleted,jdbcType=VARCHAR},
+      parent_list = #{parentList,jdbcType=VARCHAR},
+      chosen_text = #{chosenText,jdbcType=VARCHAR}
+    where pk_detail_id = #{pkDetailId,jdbcType=INTEGER}
+  </update>
+</mapper>
