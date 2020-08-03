@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mpic.evolution.chair.dao.EcmArtworkTagMapDao">
+  <resultMap id="BaseResultMap" type="com.mpic.evolution.chair.pojo.entity.EcmArtworkTagMap">
+    <id column="pk_map_id" jdbcType="INTEGER" property="pkMapId" />
+    <result column="fk_artwork_id" jdbcType="INTEGER" property="fkArtworkId" />
+    <result column="fk_tag_id" jdbcType="INTEGER" property="fkTagId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pk_map_id, fk_artwork_id, fk_tag_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from ecm_artwork_tag_map
+    where pk_map_id = #{pkMapId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ecm_artwork_tag_map
+    where pk_map_id = #{pkMapId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="pk_map_id" keyProperty="pkMapId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkTagMap" useGeneratedKeys="true">
+    insert into ecm_artwork_tag_map (fk_artwork_id, fk_tag_id)
+    values (#{fkArtworkId,jdbcType=INTEGER}, #{fkTagId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" keyColumn="pk_map_id" keyProperty="pkMapId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkTagMap" useGeneratedKeys="true">
+    insert into ecm_artwork_tag_map
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="fkArtworkId != null">
+        fk_artwork_id,
+      </if>
+      <if test="fkTagId != null">
+        fk_tag_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="fkArtworkId != null">
+        #{fkArtworkId,jdbcType=INTEGER},
+      </if>
+      <if test="fkTagId != null">
+        #{fkTagId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkTagMap">
+    update ecm_artwork_tag_map
+    <set>
+      <if test="fkArtworkId != null">
+        fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER},
+      </if>
+      <if test="fkTagId != null">
+        fk_tag_id = #{fkTagId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where pk_map_id = #{pkMapId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkTagMap">
+    update ecm_artwork_tag_map
+    set fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER},
+      fk_tag_id = #{fkTagId,jdbcType=INTEGER}
+    where pk_map_id = #{pkMapId,jdbcType=INTEGER}
+  </update>
+</mapper>

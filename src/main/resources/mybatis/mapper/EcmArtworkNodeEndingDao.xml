@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mpic.evolution.chair.dao.EcmArtworkNodeEndingDao">
+  <resultMap id="BaseResultMap" type="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeEnding">
+    <id column="pk_ending_id" jdbcType="INTEGER" property="pkEndingId" />
+    <result column="is_ending" jdbcType="BOOLEAN" property="isEnding" />
+    <result column="ending_text" jdbcType="VARCHAR" property="endingText" />
+    <result column="ending_image_url" jdbcType="VARCHAR" property="endingImageUrl" />
+    <result column="ending_type" jdbcType="VARCHAR" property="endingType" />
+    <result column="ending_show" jdbcType="BOOLEAN" property="endingShow" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pk_ending_id, is_ending, ending_text, ending_image_url, ending_type, ending_show
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from ecm_artwork_node_ending
+    where pk_ending_id = #{pkEndingId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ecm_artwork_node_ending
+    where pk_ending_id = #{pkEndingId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="pk_ending_id" keyProperty="pkEndingId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeEnding" useGeneratedKeys="true">
+    insert into ecm_artwork_node_ending (is_ending, ending_text, ending_image_url, 
+      ending_type, ending_show)
+    values (#{isEnding,jdbcType=BOOLEAN}, #{endingText,jdbcType=VARCHAR}, #{endingImageUrl,jdbcType=VARCHAR}, 
+      #{endingType,jdbcType=VARCHAR}, #{endingShow,jdbcType=BOOLEAN})
+  </insert>
+  <insert id="insertSelective" keyColumn="pk_ending_id" keyProperty="pkEndingId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeEnding" useGeneratedKeys="true">
+    insert into ecm_artwork_node_ending
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="isEnding != null">
+        is_ending,
+      </if>
+      <if test="endingText != null">
+        ending_text,
+      </if>
+      <if test="endingImageUrl != null">
+        ending_image_url,
+      </if>
+      <if test="endingType != null">
+        ending_type,
+      </if>
+      <if test="endingShow != null">
+        ending_show,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="isEnding != null">
+        #{isEnding,jdbcType=BOOLEAN},
+      </if>
+      <if test="endingText != null">
+        #{endingText,jdbcType=VARCHAR},
+      </if>
+      <if test="endingImageUrl != null">
+        #{endingImageUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="endingType != null">
+        #{endingType,jdbcType=VARCHAR},
+      </if>
+      <if test="endingShow != null">
+        #{endingShow,jdbcType=BOOLEAN},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeEnding">
+    update ecm_artwork_node_ending
+    <set>
+      <if test="isEnding != null">
+        is_ending = #{isEnding,jdbcType=BOOLEAN},
+      </if>
+      <if test="endingText != null">
+        ending_text = #{endingText,jdbcType=VARCHAR},
+      </if>
+      <if test="endingImageUrl != null">
+        ending_image_url = #{endingImageUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="endingType != null">
+        ending_type = #{endingType,jdbcType=VARCHAR},
+      </if>
+      <if test="endingShow != null">
+        ending_show = #{endingShow,jdbcType=BOOLEAN},
+      </if>
+    </set>
+    where pk_ending_id = #{pkEndingId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeEnding">
+    update ecm_artwork_node_ending
+    set is_ending = #{isEnding,jdbcType=BOOLEAN},
+      ending_text = #{endingText,jdbcType=VARCHAR},
+      ending_image_url = #{endingImageUrl,jdbcType=VARCHAR},
+      ending_type = #{endingType,jdbcType=VARCHAR},
+      ending_show = #{endingShow,jdbcType=BOOLEAN}
+    where pk_ending_id = #{pkEndingId,jdbcType=INTEGER}
+  </update>
+</mapper>

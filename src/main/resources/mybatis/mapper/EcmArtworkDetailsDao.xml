@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mpic.evolution.chair.dao.EcmArtworkDetailsDao">
+  <resultMap id="BaseResultMap" type="com.mpic.evolution.chair.pojo.entity.EcmArtworkDetails">
+    <id column="pk_detail_id" jdbcType="INTEGER" property="pkDetailId" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+    <result column="node_code" jdbcType="VARCHAR" property="nodeCode" />
+    <result column="fk_artwork_id" jdbcType="INTEGER" property="fkArtworkId" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
+    <result column="file_size" jdbcType="BIGINT" property="fileSize" />
+    <result column="artwork_last_long" jdbcType="INTEGER" property="artworkLastLong" />
+    <result column="artwork_type" jdbcType="SMALLINT" property="artworkType" />
+    <result column="text" jdbcType="VARCHAR" property="text" />
+    <result column="final_result" jdbcType="SMALLINT" property="finalResult" />
+    <result column="tips" jdbcType="VARCHAR" property="tips" />
+    <result column="is_valid" jdbcType="VARCHAR" property="isValid" />
+    <result column="file_hash" jdbcType="VARCHAR" property="fileHash" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pk_detail_id, parent_id, node_code, fk_artwork_id, `path`, file_size, artwork_last_long, 
+    artwork_type, `text`, final_result, tips, is_valid, file_hash
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from ecm_artwork_details
+    where pk_detail_id = #{pkDetailId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ecm_artwork_details
+    where pk_detail_id = #{pkDetailId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="pk_detail_id" keyProperty="pkDetailId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkDetails" useGeneratedKeys="true">
+    insert into ecm_artwork_details (parent_id, node_code, fk_artwork_id, 
+      `path`, file_size, artwork_last_long, 
+      artwork_type, `text`, final_result, 
+      tips, is_valid, file_hash
+      )
+    values (#{parentId,jdbcType=INTEGER}, #{nodeCode,jdbcType=VARCHAR}, #{fkArtworkId,jdbcType=INTEGER}, 
+      #{path,jdbcType=VARCHAR}, #{fileSize,jdbcType=BIGINT}, #{artworkLastLong,jdbcType=INTEGER}, 
+      #{artworkType,jdbcType=SMALLINT}, #{text,jdbcType=VARCHAR}, #{finalResult,jdbcType=SMALLINT}, 
+      #{tips,jdbcType=VARCHAR}, #{isValid,jdbcType=VARCHAR}, #{fileHash,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="pk_detail_id" keyProperty="pkDetailId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkDetails" useGeneratedKeys="true">
+    insert into ecm_artwork_details
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="nodeCode != null">
+        node_code,
+      </if>
+      <if test="fkArtworkId != null">
+        fk_artwork_id,
+      </if>
+      <if test="path != null">
+        `path`,
+      </if>
+      <if test="fileSize != null">
+        file_size,
+      </if>
+      <if test="artworkLastLong != null">
+        artwork_last_long,
+      </if>
+      <if test="artworkType != null">
+        artwork_type,
+      </if>
+      <if test="text != null">
+        `text`,
+      </if>
+      <if test="finalResult != null">
+        final_result,
+      </if>
+      <if test="tips != null">
+        tips,
+      </if>
+      <if test="isValid != null">
+        is_valid,
+      </if>
+      <if test="fileHash != null">
+        file_hash,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="parentId != null">
+        #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="nodeCode != null">
+        #{nodeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="fkArtworkId != null">
+        #{fkArtworkId,jdbcType=INTEGER},
+      </if>
+      <if test="path != null">
+        #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="fileSize != null">
+        #{fileSize,jdbcType=BIGINT},
+      </if>
+      <if test="artworkLastLong != null">
+        #{artworkLastLong,jdbcType=INTEGER},
+      </if>
+      <if test="artworkType != null">
+        #{artworkType,jdbcType=SMALLINT},
+      </if>
+      <if test="text != null">
+        #{text,jdbcType=VARCHAR},
+      </if>
+      <if test="finalResult != null">
+        #{finalResult,jdbcType=SMALLINT},
+      </if>
+      <if test="tips != null">
+        #{tips,jdbcType=VARCHAR},
+      </if>
+      <if test="isValid != null">
+        #{isValid,jdbcType=VARCHAR},
+      </if>
+      <if test="fileHash != null">
+        #{fileHash,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkDetails">
+    update ecm_artwork_details
+    <set>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="nodeCode != null">
+        node_code = #{nodeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="fkArtworkId != null">
+        fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER},
+      </if>
+      <if test="path != null">
+        `path` = #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="fileSize != null">
+        file_size = #{fileSize,jdbcType=BIGINT},
+      </if>
+      <if test="artworkLastLong != null">
+        artwork_last_long = #{artworkLastLong,jdbcType=INTEGER},
+      </if>
+      <if test="artworkType != null">
+        artwork_type = #{artworkType,jdbcType=SMALLINT},
+      </if>
+      <if test="text != null">
+        `text` = #{text,jdbcType=VARCHAR},
+      </if>
+      <if test="finalResult != null">
+        final_result = #{finalResult,jdbcType=SMALLINT},
+      </if>
+      <if test="tips != null">
+        tips = #{tips,jdbcType=VARCHAR},
+      </if>
+      <if test="isValid != null">
+        is_valid = #{isValid,jdbcType=VARCHAR},
+      </if>
+      <if test="fileHash != null">
+        file_hash = #{fileHash,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where pk_detail_id = #{pkDetailId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkDetails">
+    update ecm_artwork_details
+    set parent_id = #{parentId,jdbcType=INTEGER},
+      node_code = #{nodeCode,jdbcType=VARCHAR},
+      fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER},
+      `path` = #{path,jdbcType=VARCHAR},
+      file_size = #{fileSize,jdbcType=BIGINT},
+      artwork_last_long = #{artworkLastLong,jdbcType=INTEGER},
+      artwork_type = #{artworkType,jdbcType=SMALLINT},
+      `text` = #{text,jdbcType=VARCHAR},
+      final_result = #{finalResult,jdbcType=SMALLINT},
+      tips = #{tips,jdbcType=VARCHAR},
+      is_valid = #{isValid,jdbcType=VARCHAR},
+      file_hash = #{fileHash,jdbcType=VARCHAR}
+    where pk_detail_id = #{pkDetailId,jdbcType=INTEGER}
+  </update>
+</mapper>

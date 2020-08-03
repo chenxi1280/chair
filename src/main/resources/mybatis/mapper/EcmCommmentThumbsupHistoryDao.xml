@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mpic.evolution.chair.dao.EcmCommmentThumbsupHistoryDao">
+  <resultMap id="BaseResultMap" type="com.mpic.evolution.chair.pojo.entity.EcmCommmentThumbsupHistory">
+    <id column="pk_thumbsup_id" jdbcType="INTEGER" property="pkThumbsupId" />
+    <result column="fk_comment_id" jdbcType="INTEGER" property="fkCommentId" />
+    <result column="fk_user_Id" jdbcType="INTEGER" property="fkUserId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pk_thumbsup_id, fk_comment_id, fk_user_Id, `status`
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from ecm_commment_thumbsup_history
+    where pk_thumbsup_id = #{pkThumbsupId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ecm_commment_thumbsup_history
+    where pk_thumbsup_id = #{pkThumbsupId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="pk_thumbsup_id" keyProperty="pkThumbsupId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmCommmentThumbsupHistory" useGeneratedKeys="true">
+    insert into ecm_commment_thumbsup_history (fk_comment_id, fk_user_Id, `status`
+      )
+    values (#{fkCommentId,jdbcType=INTEGER}, #{fkUserId,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="pk_thumbsup_id" keyProperty="pkThumbsupId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmCommmentThumbsupHistory" useGeneratedKeys="true">
+    insert into ecm_commment_thumbsup_history
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="fkCommentId != null">
+        fk_comment_id,
+      </if>
+      <if test="fkUserId != null">
+        fk_user_Id,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="fkCommentId != null">
+        #{fkCommentId,jdbcType=INTEGER},
+      </if>
+      <if test="fkUserId != null">
+        #{fkUserId,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmCommmentThumbsupHistory">
+    update ecm_commment_thumbsup_history
+    <set>
+      <if test="fkCommentId != null">
+        fk_comment_id = #{fkCommentId,jdbcType=INTEGER},
+      </if>
+      <if test="fkUserId != null">
+        fk_user_Id = #{fkUserId,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where pk_thumbsup_id = #{pkThumbsupId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmCommmentThumbsupHistory">
+    update ecm_commment_thumbsup_history
+    set fk_comment_id = #{fkCommentId,jdbcType=INTEGER},
+      fk_user_Id = #{fkUserId,jdbcType=INTEGER},
+      `status` = #{status,jdbcType=INTEGER}
+    where pk_thumbsup_id = #{pkThumbsupId,jdbcType=INTEGER}
+  </update>
+</mapper>

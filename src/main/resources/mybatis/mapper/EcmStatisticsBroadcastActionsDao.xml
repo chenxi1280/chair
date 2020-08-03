@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mpic.evolution.chair.dao.EcmStatisticsBroadcastActionsDao">
+  <resultMap id="BaseResultMap" type="com.mpic.evolution.chair.pojo.entity.EcmStatisticsBroadcastActions">
+    <id column="pk_id" jdbcType="INTEGER" property="pkId" />
+    <result column="act_type" jdbcType="VARCHAR" property="actType" />
+    <result column="act_value" jdbcType="VARCHAR" property="actValue" />
+    <result column="fk_artwork_id" jdbcType="INTEGER" property="fkArtworkId" />
+    <result column="fk_artwork_detail_id" jdbcType="INTEGER" property="fkArtworkDetailId" />
+    <result column="fk_user_id" jdbcType="INTEGER" property="fkUserId" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="current_play_time" jdbcType="INTEGER" property="currentPlayTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pk_id, act_type, act_value, fk_artwork_id, fk_artwork_detail_id, fk_user_id, start_time, 
+    current_play_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from ecm_statistics_broadcast_actions
+    where pk_id = #{pkId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ecm_statistics_broadcast_actions
+    where pk_id = #{pkId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="pk_id" keyProperty="pkId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmStatisticsBroadcastActions" useGeneratedKeys="true">
+    insert into ecm_statistics_broadcast_actions (act_type, act_value, fk_artwork_id, 
+      fk_artwork_detail_id, fk_user_id, start_time, 
+      current_play_time)
+    values (#{actType,jdbcType=VARCHAR}, #{actValue,jdbcType=VARCHAR}, #{fkArtworkId,jdbcType=INTEGER}, 
+      #{fkArtworkDetailId,jdbcType=INTEGER}, #{fkUserId,jdbcType=INTEGER}, #{startTime,jdbcType=TIMESTAMP}, 
+      #{currentPlayTime,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" keyColumn="pk_id" keyProperty="pkId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmStatisticsBroadcastActions" useGeneratedKeys="true">
+    insert into ecm_statistics_broadcast_actions
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="actType != null">
+        act_type,
+      </if>
+      <if test="actValue != null">
+        act_value,
+      </if>
+      <if test="fkArtworkId != null">
+        fk_artwork_id,
+      </if>
+      <if test="fkArtworkDetailId != null">
+        fk_artwork_detail_id,
+      </if>
+      <if test="fkUserId != null">
+        fk_user_id,
+      </if>
+      <if test="startTime != null">
+        start_time,
+      </if>
+      <if test="currentPlayTime != null">
+        current_play_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="actType != null">
+        #{actType,jdbcType=VARCHAR},
+      </if>
+      <if test="actValue != null">
+        #{actValue,jdbcType=VARCHAR},
+      </if>
+      <if test="fkArtworkId != null">
+        #{fkArtworkId,jdbcType=INTEGER},
+      </if>
+      <if test="fkArtworkDetailId != null">
+        #{fkArtworkDetailId,jdbcType=INTEGER},
+      </if>
+      <if test="fkUserId != null">
+        #{fkUserId,jdbcType=INTEGER},
+      </if>
+      <if test="startTime != null">
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="currentPlayTime != null">
+        #{currentPlayTime,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmStatisticsBroadcastActions">
+    update ecm_statistics_broadcast_actions
+    <set>
+      <if test="actType != null">
+        act_type = #{actType,jdbcType=VARCHAR},
+      </if>
+      <if test="actValue != null">
+        act_value = #{actValue,jdbcType=VARCHAR},
+      </if>
+      <if test="fkArtworkId != null">
+        fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER},
+      </if>
+      <if test="fkArtworkDetailId != null">
+        fk_artwork_detail_id = #{fkArtworkDetailId,jdbcType=INTEGER},
+      </if>
+      <if test="fkUserId != null">
+        fk_user_id = #{fkUserId,jdbcType=INTEGER},
+      </if>
+      <if test="startTime != null">
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="currentPlayTime != null">
+        current_play_time = #{currentPlayTime,jdbcType=INTEGER},
+      </if>
+    </set>
+    where pk_id = #{pkId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmStatisticsBroadcastActions">
+    update ecm_statistics_broadcast_actions
+    set act_type = #{actType,jdbcType=VARCHAR},
+      act_value = #{actValue,jdbcType=VARCHAR},
+      fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER},
+      fk_artwork_detail_id = #{fkArtworkDetailId,jdbcType=INTEGER},
+      fk_user_id = #{fkUserId,jdbcType=INTEGER},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      current_play_time = #{currentPlayTime,jdbcType=INTEGER}
+    where pk_id = #{pkId,jdbcType=INTEGER}
+  </update>
+</mapper>
