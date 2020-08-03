@@ -5,7 +5,8 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@MapperScan("com.mpic.evolution.dao")
+@MapperScan(basePackages =  {"com.mpic.evolution.chair.dao"})
+
 @SpringBootApplication
 public class ChairApplication {
 
