@@ -3,6 +3,7 @@ package com.mpic.evolution.chair.controller;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -31,6 +32,8 @@ public class EcmArtWorkController {
     @RequestMapping("/getArtWorks")
     @ResponseBody
     public ResponseDTO getArtWorks(EcmArtWorkQuery ecmArtWorkQuery){
+    	if(StringUtils.isBlank(ecmArtWorkQuery.getFkUserid().toString()))
+    		return ResponseDTO.fail("请输入用户唯一标识符");
         return ecmArtWorkService.getArtWorks(ecmArtWorkQuery);
     }
 
