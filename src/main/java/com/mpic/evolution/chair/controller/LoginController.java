@@ -1,12 +1,14 @@
 package com.mpic.evolution.chair.controller;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.HttpKit;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
+import com.mpic.evolution.chair.service.LoginService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +16,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("/login")
 public class LoginController {
+	
+	@Autowired
+	LoginService loginService;
 
     @Value("${wx.pc.fw.accessTokenUrl}")
     private String pcAccessTokenUrl;
@@ -27,10 +32,13 @@ public class LoginController {
     @Value("${wx.appsecret}")
     private String pcAppsecret;
 
-
+    /**
+     * 
+     * @author SJ
+     */
     @RequestMapping(value = "/loginByWeiXin", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public ResponseDTO loginByWeiXin(@RequestParam String state, @RequestParam String code) {
+    public ResponseDTO loginByWeiXin(@RequestParam String code) {
         Map<String, String> res = new HashMap<>();
         
         if ( StringUtils.isBlank(code)) {
@@ -38,7 +46,8 @@ public class LoginController {
         }
         if (code != null) {
             // 第一次进入界面，code不空，openid为空，根据code获取openid，然后查询是否存在用户信息。
-            Map<String, String> accessTokenMap = getPcWXAccessToken(code); // 获取getWXAccessToken（微信网站PC扫码登录）
+            Map<String, String> accessTokenMap = getPcWXAccessToken(code); 
+            // 获取getWXAccessToken（微信网站PC扫码登录）
             /** 请求微信服务器错误 **/
             if (accessTokenMap.get("errcode") != null) {
             	String str = accessTokenMap.get("errcode");
@@ -58,7 +67,7 @@ public class LoginController {
                 int errcode = Integer.parseInt(str);
                 return ResponseDTO.fail(wxUserMap.get("errmsg"), null, errcode, null);
             }
-
+            loginService.isExsitWxUser(wxUserMap.get("openid"),wxUserMap.get("unionid"));
 
         }
         return ResponseDTO.ok("登陆成功", res);
@@ -66,7 +75,7 @@ public class LoginController {
 
     /**
      * 	获取getPcWXAccessToken（微信网站PC扫码）
-     *
+     *	@author SJ
      */
     private Map<String, String> getPcWXAccessToken(String code) {
         Map<String, String> resMap = new HashMap<String, String>();
@@ -97,8 +106,8 @@ public class LoginController {
     }
 
     /**
-     * 获得微信用户信息（微信网站PC扫码）
-     *
+     * 	获得微信用户信息（微信网站PC扫码）
+     *	@author SJ
      * @param openId
      * @param accessToken
      * @return
