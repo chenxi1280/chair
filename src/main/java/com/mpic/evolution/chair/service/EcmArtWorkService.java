@@ -17,6 +17,12 @@ public interface EcmArtWorkService {
      */
     ResponseDTO getArtWorks(EcmArtWorkQuery ecmArtWorkQuery);
 
-
+    /**
+     * 描述 :
+     * @author: cxd
+     * @Date: 2020/8/4
+     * @param:
+     * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+     */
     ResponseDTO getArtWork(EcmArtWorkQuery ecmArtWorkQuery);
 }
