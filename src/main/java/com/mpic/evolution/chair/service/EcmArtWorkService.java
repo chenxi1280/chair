@@ -1,6 +1,5 @@
 package com.mpic.evolution.chair.service;
 
-import com.mpic.evolution.chair.common.returnvo.ReturnVo;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
 
@@ -25,4 +24,20 @@ public interface EcmArtWorkService {
      * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
      */
     ResponseDTO getArtWork(EcmArtWorkQuery ecmArtWorkQuery);
+    
+    /**
+     * @author: SJ
+     * @param ecmArtWorkQuery
+     * @param code
+     * @return
+     */
+	ResponseDTO modifyArtWorkStatus(EcmArtWorkQuery ecmArtWorkQuery,String code);
+	
+	/**
+     * @author: SJ
+     * @param ecmArtWorkQuery
+     * @param code
+     * @return
+     */
+	ResponseDTO modifyArtWork(EcmArtWorkQuery ecmArtWorkQuery, String code);
 }

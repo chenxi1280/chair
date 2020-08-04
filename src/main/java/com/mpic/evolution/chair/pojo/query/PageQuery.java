@@ -17,7 +17,7 @@ public class PageQuery {
      * 查询的条数
      */
 
-    private Integer limit = 10000;
+    private Integer limit = 10;
 
 
     /**

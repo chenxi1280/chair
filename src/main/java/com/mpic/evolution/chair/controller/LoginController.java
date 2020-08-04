@@ -1,23 +1,29 @@
 package com.mpic.evolution.chair.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.HttpKit;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.service.LoginService;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @RestController
 @RequestMapping("/login")
 public class LoginController {
 	
-	@Autowired
+	@Resource
 	LoginService loginService;
 
     @Value("${wx.pc.fw.accessTokenUrl}")
@@ -67,6 +73,7 @@ public class LoginController {
                 int errcode = Integer.parseInt(str);
                 return ResponseDTO.fail(wxUserMap.get("errmsg"), null, errcode, null);
             }
+            //TODO 验证用户信息未完成
             loginService.isExsitWxUser(wxUserMap.get("openid"),wxUserMap.get("unionid"));
 
         }

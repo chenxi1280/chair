@@ -29,7 +29,8 @@ public class TreeUtil {
         //过滤掉根节点的 以 parentid 分组
         Map<Integer, List<EcmArtworkNodesVo>> sub = nodes.stream().filter(node -> node.getParentId() != 0).collect(Collectors.groupingBy(EcmArtworkNodesVo::getParentId));
         //把 每一个的node节点都 list设置到 父节点中
-        nodes.forEach(node -> node.setNodesVos(sub.get(node.getPkDetailId())));
+        nodes.forEach(node -> 
+        node.setNodesVos(sub.get(node.getPkDetailId())));
         //返回 parentid=0的为更根点的树的EcmArtworkNodesVo的list集合
         return nodes.stream().filter(node -> node.getParentId() == 0).collect(Collectors.toList());
     }

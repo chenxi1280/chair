@@ -37,5 +37,10 @@ public class EcmArtWorkQuery extends PageQuery {
      * 四字标签
      */
     private String fourLetterTips;
+    
+    /**
+     * 	作品封面存储位置，绝对路径
+     */
+    private String logoPath;
 
 }
