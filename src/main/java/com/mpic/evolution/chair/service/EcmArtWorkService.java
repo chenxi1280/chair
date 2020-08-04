@@ -2,6 +2,7 @@ package com.mpic.evolution.chair.service;
 
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
+import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
 
 /**
  * @author Administrator
@@ -40,4 +41,12 @@ public interface EcmArtWorkService {
      * @return
      */
 	ResponseDTO modifyArtWork(EcmArtWorkQuery ecmArtWorkQuery, String code);
+	
+	/**
+     * @author: SJ
+     * @param ecmArtworkVo
+     * @param code
+     * @return
+     */
+	ResponseDTO addArtWorks(EcmArtworkVo ecmArtworkVo);
 }

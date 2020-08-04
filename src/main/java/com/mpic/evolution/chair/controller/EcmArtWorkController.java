@@ -34,13 +34,9 @@ public class EcmArtWorkController {
         return ecmArtWorkService.getArtWorks(ecmArtWorkQuery);
     }
 
-
-
-
     @RequestMapping("/getArtWork")
     @ResponseBody
     public ResponseDTO getArtWork(EcmArtWorkQuery ecmArtWorkQuery){
-
         return ecmArtWorkService.getArtWork(ecmArtWorkQuery);
     }
 

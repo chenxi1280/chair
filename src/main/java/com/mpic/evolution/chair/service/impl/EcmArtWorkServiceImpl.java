@@ -13,6 +13,7 @@ import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmArtwork;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
+import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
 import com.mpic.evolution.chair.service.EcmArtWorkService;
 import com.mpic.evolution.chair.util.TreeUtil;
 
@@ -87,6 +88,26 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 		message.put("publish", "发布");
 		message.put("cancel", "撤销审核");
 		return message;
+	}
+
+	@Override
+	public ResponseDTO addArtWorks(EcmArtworkVo ecmArtworkVo) {
+		try {
+			EcmArtwork ecmArtwork = new EcmArtwork();
+			ecmArtwork.setPkArtworkId(ecmArtworkVo.getPkArtworkId());
+			ecmArtwork.setFkUserid(ecmArtworkVo.getFkUserid());
+			ecmArtwork.setArtworkName(ecmArtworkVo.getArtworkName());
+			ecmArtwork.setArtworkStatus(ecmArtworkVo.getArtworkStatus());
+			ecmArtwork.setArtworkDescribe(ecmArtworkVo.getArtworkDescribe());
+			ecmArtwork.setFourLetterTips(ecmArtworkVo.getFourLetterTips());
+			ecmArtwork.setLastCreateDate(ecmArtworkVo.getLastCreateDate());
+			ecmArtwork.setLastModifyDate(ecmArtworkVo.getLastModifyDate());
+			ecmArtwork.setLogoPath(ecmArtworkVo.getLogoPath());
+			ecmArtworkDao.insert(ecmArtwork);
+			return ResponseDTO.ok("新建成功");
+		} catch (Exception e) {
+			return ResponseDTO.fail("新建失败", null, null, 500);
+		}
 	}
 }
 
