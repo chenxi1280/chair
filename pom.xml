@@ -133,12 +133,7 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.20</version>
         </dependency>
-        <!-- druid数据源 -->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid</artifactId>
-            <version>1.1.22</version>
-        </dependency>
+
         <!-- mybatis整合springboot -->
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>

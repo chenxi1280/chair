@@ -11,13 +11,19 @@ import lombok.Data;
 @Data
 public class EcmArtWorkQuery extends PageQuery {
 
+
+    /**
+     * 作品id
+     */
+    private Integer pkArtworkId;
+
     /**
      * 作者id
      */
     private Integer fkUserid;
 
     /**
-     * 作者名字
+     * 作品名字
      */
     private String artworkName;
 
