@@ -148,8 +148,14 @@
             <type>pom</type>
             <scope>import</scope>
         </dependency>
-
-
+		<!-- https://mvnrepository.com/artifact/com.jfinal/jfinal httpkit所需依赖 -->
+		<dependency>
+		    <groupId>com.jfinal</groupId>
+		    <artifactId>jfinal</artifactId>
+		    <version>4.3</version>
+		</dependency>
+		
+	
     </dependencies>
 
     <build>

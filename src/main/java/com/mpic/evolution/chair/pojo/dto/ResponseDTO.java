@@ -116,7 +116,7 @@ public class ResponseDTO implements Serializable {
     }
 
     /**
-     * 调用失败的时候，返回失败的状态
+     * 	调用失败的时候，返回失败的状态
      *
      * @param msg
      * @param data
