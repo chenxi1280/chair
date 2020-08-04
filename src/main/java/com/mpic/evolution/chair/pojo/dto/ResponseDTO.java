@@ -130,6 +130,6 @@ public class ResponseDTO implements Serializable {
      * 调用失败的时候，返回失败的状态
      */
     public static ResponseDTO fail(String msg) {
-        return new ResponseDTO(msg, null, null, null);
+        return new ResponseDTO(msg, null, null, 500);
     }
 }

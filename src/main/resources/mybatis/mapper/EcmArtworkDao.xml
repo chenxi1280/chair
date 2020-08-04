@@ -138,23 +138,28 @@
     from ecm_artwork
     <where>
 
+      <if test="pkArtworkId != null">
+        and pk_artwork_id = #{pkArtworkId}
+      </if>
+
       <if test="fkUserid != null">
-        and fkUserid = #{fkUserid}
+        and fk_userId = #{fkUserid}
       </if>
 
       <if test="artworkStatus != null and artworkStatus!=''">
-        and artworkStatus like #{artworkStatus}
+        and artwork_status = #{artworkStatus}
       </if>
 
       <if test="artworkName != null and artworkName!=''">
-        and artworkName like CONCAT('%',#{artworkName},'%')
+        and artwork_name like CONCAT('%',#{artworkName},'%')
       </if>
 
       <if test="fourLetterTips != null and fourLetterTips!=''">
-        and fourLetterTips like CONCAT('%',#{fourLetterTips},'%')
+        and four_letter_tips like CONCAT('%',#{fourLetterTips},'%')
       </if>
 
     </where>
+
     limit #{start},#{limit}
 
 

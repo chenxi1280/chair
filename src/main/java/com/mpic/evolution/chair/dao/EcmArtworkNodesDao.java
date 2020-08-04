@@ -1,6 +1,9 @@
 package com.mpic.evolution.chair.dao;
 
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes;
+import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
+
+import java.util.List;
 
 public interface EcmArtworkNodesDao {
     int deleteByPrimaryKey(Integer pkDetailId);
@@ -14,4 +17,6 @@ public interface EcmArtworkNodesDao {
     int updateByPrimaryKeySelective(EcmArtworkNodes record);
 
     int updateByPrimaryKey(EcmArtworkNodes record);
+
+    List<EcmArtworkNodesVo> selectByArtWorkId(Integer pkArtworkId);
 }

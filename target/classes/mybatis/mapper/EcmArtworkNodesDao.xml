@@ -34,7 +34,7 @@
     from ecm_artwork_nodes
     where pk_detail_id = #{pkDetailId,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from ecm_artwork_nodes
     where pk_detail_id = #{pkDetailId,jdbcType=INTEGER}
   </delete>
@@ -261,4 +261,16 @@
       chosen_text = #{chosenText,jdbcType=VARCHAR}
     where pk_detail_id = #{pkDetailId,jdbcType=INTEGER}
   </update>
+
+<!--SQl-->
+  <select id="selectByArtWorkId" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo">
+    select <include refid="Base_Column_List" />
+    from ecm_artwork_nodes
+    where fk_artwork_id = #{pkArtworkId}
+
+  </select>
+
+
+
+
 </mapper>
