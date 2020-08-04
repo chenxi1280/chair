@@ -12,8 +12,10 @@ import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
 import com.mpic.evolution.chair.service.EcmArtWorkService;
 import com.mpic.evolution.chair.util.TreeUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -38,9 +40,68 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         if (ecmArtwork==null){
             return ResponseDTO.fail("查询id为空");
         }
-        List<EcmArtworkNodesVo>  list = ecmArtworkNodesDao.selectByArtWorkId(ecmArtwork.getPkArtworkId());
-
+        List<EcmArtworkNodesVo>  list = ecmArtworkNodesDao.selectByArtWorkId(ecmArtWorkQuery.getPkArtworkId());
         return ResponseDTO.ok("success", TreeUtil.buildTree(list).get(0));
+    }
+
+    @Override
+    public ResponseDTO addArtWorkNode(EcmArtworkNodes ecmArtworkNodes) {
+        return ResponseDTO.get(1 == ecmArtworkNodesDao.insert(ecmArtworkNodes));
+    }
+
+    @Override
+    public ResponseDTO addArtWork(EcmArtworkNodesVo ecmArtworkNodesVo) {
+
+
+        classToTreeList(ecmArtworkNodesVo);
+
+
+        return null;
+    }
+
+    private List<EcmArtworkNodes> classToTreeList(EcmArtworkNodesVo ecmArtworkNodesVo){
+
+        List<EcmArtworkNodes> addlist = new ArrayList<>();
+        List<EcmArtworkNodes> updatalist = new ArrayList<>();
+
+        test(ecmArtworkNodesVo, addlist, updatalist);
+
+        Integer i = ecmArtworkNodesDao.insertList(addlist);
+
+
+        return null;
+    }
+
+    private void test(EcmArtworkNodesVo ecmArtworkNodesVo, List<EcmArtworkNodes> addlist, List<EcmArtworkNodes> updatalist) {
+
+        List<EcmArtworkNodesVo> nodesVos = ecmArtworkNodesVo.getNodesVos();
+
+        if (!CollectionUtils.isEmpty(nodesVos) || ecmArtworkNodesVo.getPkDetailId() != null){
+            nodesVos.forEach( node -> {
+                test(node,addlist,updatalist);
+            });
+        }else {
+
+            ecmArtworkNodesDao.insertSelective(ecmArtworkNodesVo);
+
+            test(ecmArtworkNodesVo,addlist,updatalist);
+
+        }
+
+
+        nodeClassification(ecmArtworkNodesVo, addlist, updatalist);
+    }
+
+    private void nodeClassification(EcmArtworkNodesVo ecmArtworkNodesVo, List<EcmArtworkNodes> addlist, List<EcmArtworkNodes> updatalist) {
+
+
+        if (ecmArtworkNodesVo.getPkDetailId() != null){
+            if (ecmArtworkNodesVo.getIsleaf() != null){
+                updatalist.add(ecmArtworkNodesVo);
+            }
+        }else {
+            addlist.add(ecmArtworkNodesVo);
+        }
     }
 
 
