@@ -20,8 +20,6 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
     @Override
     public ResponseDTO getArtWorks(EcmArtWorkQuery ecmArtWorkQuery) {
-        List<EcmArtworkVo> ecmArtworkVoList = ecmArtworkDao.selectArtWorks(ecmArtWorkQuery);
-
-        return   ResponseDTO.ok("sd",ecmArtworkVoList);
+        return   ResponseDTO.ok("success",ecmArtworkDao.selectArtWorks(ecmArtWorkQuery));
     }
 }
