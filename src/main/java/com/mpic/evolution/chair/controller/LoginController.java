@@ -26,7 +26,7 @@ import com.mpic.evolution.chair.util.MailUtil;
 
 @RestController
 @RequestMapping("/login")
-public class LoginController  extends  BaseController{
+public class LoginController {
 	
 	@Resource
 	LoginService loginService;
