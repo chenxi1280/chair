@@ -26,13 +26,14 @@ public class EcmArtWorkController {
 
 
     /**
-     *
-     * @param ecmArtWorkQuery 传入的 查询参数 查询参数可以有 用户id，作品名称（模糊），视频状态，类型（当前模糊）
-     * @return ResponseDTO 中的data 包含 ArtWork的 条件查询 结果集
+     * @param: [ecmArtWorkQuery] 传入的 查询参数 查询参数可以有 用户id，作品名称（模糊），视频状态，类型（当前模糊）
+     * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
      * @author: cxd
-     * @Date: 2020/8/4
+     * @Date: 2020/8/5
+     * 描述 : 按照条件查询作品
+     *       保存成功: status 200  msg "success” data: 数据
+     *       保存失败: status 500  msg "error“
      */
-
     @RequestMapping("/getArtWorks")
     @ResponseBody
     public ResponseDTO getArtWorks(EcmArtWorkQuery ecmArtWorkQuery){
@@ -42,11 +43,13 @@ public class EcmArtWorkController {
 
 
     /**
-     * @param: [ecmArtWorkQuery]
+     * @param: [ecmArtWorkQuery] 需要 作品id 必传
      * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
-     * 描述 : 查询作品详情根据 作品id
      * @author: cxd
-     * @Date: 2020/8/4
+     * @Date: 2020/8/5
+     * 描述 : 查询作品详情根据 作品id
+     *       保存成功: status 200  msg "success”  data: 数据
+     *       保存失败: status 500  msg "error“
      */
     @RequestMapping("/getArtWork")
     @ResponseBody
@@ -55,14 +58,31 @@ public class EcmArtWorkController {
         return ecmArtWorkService.getArtWork(ecmArtWorkQuery);
     }
 
+    /**
+     * @param: [ecmArtworkNodes] 单个节点类
+     * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+     * @author: cxd
+     * @Date: 2020/8/5
+     * 描述 : 保存 作品单个节点 ArtWork 接口
+     *       保存成功： status 200  msg “success”
+     *       保存失败： status 500  msg ”error“
+     */
     @ResponseBody
     @RequestMapping("/addArtWorkNode")
     public ResponseDTO addArtWorkNod(EcmArtworkNodes ecmArtworkNodes){
-
-
         return ecmArtWorkService.addArtWorkNode(ecmArtworkNodes);
     }
 
+
+    /**
+     * @param: [ecmArtworkNodesVo]  json 格式的 作品详情类（树状）
+     * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+     * @author: cxd
+     * @Date: 2020/8/5
+     * 描述 : 保存 作品(所有) ArtWork 接口
+     *       保存成功: status 200  msg "success”
+     *       保存失败: status 500  msg "error“
+     */
     @RequestMapping("/addArtWork")
     @ResponseBody
     public ResponseDTO addArtWork(@RequestBody EcmArtworkNodesVo ecmArtworkNodesVo){
