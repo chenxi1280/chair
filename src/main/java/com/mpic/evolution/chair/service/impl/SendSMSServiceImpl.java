@@ -16,6 +16,12 @@ import com.tencentcloudapi.sms.v20190711.models.SendSmsRequest;
 import com.tencentcloudapi.sms.v20190711.models.SendSmsResponse;
 import com.tencentcloudapi.sms.v20190711.models.SendStatus;
 
+/**
+ * 
+ * @author SJ
+ *
+ */
+
 @Service
 public class SendSMSServiceImpl implements SendSMSService {
 
