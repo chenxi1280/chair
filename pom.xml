@@ -155,7 +155,14 @@
 		    <version>4.3</version>
 		</dependency>
 		
-	
+		<!-- https://mvnrepository.com/artifact/com.tencentcloudapi/tencentcloud-sdk-java -->
+		<dependency>
+		    <groupId>com.tencentcloudapi</groupId>
+		    <artifactId>tencentcloud-sdk-java</artifactId>
+		    <version>3.1.72</version>
+		</dependency>
+		
+		
     </dependencies>
 
     <build>
