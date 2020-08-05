@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +26,7 @@ import com.mpic.evolution.chair.util.MailUtil;
 
 @RestController
 @RequestMapping("/login")
-public class LoginController {
+public class LoginController  extends  BaseController{
 	
 	@Resource
 	LoginService loginService;
@@ -59,6 +60,8 @@ public class LoginController {
 		sout.write(code);
 		sout.flush();
 		sout.close();
+
+
 	}
     
     @RequestMapping("/sendEmail")
