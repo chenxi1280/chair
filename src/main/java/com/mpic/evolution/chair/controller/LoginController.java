@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -25,7 +26,7 @@ import com.mpic.evolution.chair.service.LoginService;
 import com.mpic.evolution.chair.util.MailUtil;
 
 @Controller
-public class LoginController {
+public class LoginController  extends  BaseController{
 	
 	@Resource
 	LoginService loginService;
@@ -59,29 +60,31 @@ public class LoginController {
 		sout.write(code);
 		sout.flush();
 		sout.close();
+
+
 	}
     
     @RequestMapping("/sendEmail")
 	@ResponseStatus(HttpStatus.OK)
     public void sendEmail() {
-    	//鏍规嵁鐢ㄦ埛鐐瑰嚮閾炬帴杩斿洖鐨刢ode 杩涜鍒ゆ柇鏄惁閫氳繃楠岃瘉
+    	//根据用户点击链接返回的code 进行判断是否通过验证
     	if(true){
             new Thread(new MailUtil("chenxi1280@outlook.com", UUID.randomUUID().toString())).start();
         }
     }
     
-    //TODO 鐢ㄦ埛鐧诲綍鎺ュ彛 鍔犲瘑
+    //TODO 用户登录接口 加密
     @RequestMapping("login")
 	@ResponseStatus(HttpStatus.OK)
     public void loginByToken(EcmUserVo ecmUserVo) {
     	
-    	//鏍规嵁鐢ㄦ埛鐐瑰嚮閾炬帴杩斿洖鐨刢ode 杩涜鍒ゆ柇鏄惁閫氳繃楠岃瘉
+    	//根据用户点击链接返回的code 进行判断是否通过验证
     	if(true){
             new Thread(new MailUtil("chenxi1280@outlook.com", UUID.randomUUID().toString())).start();
         }
     }
     
-    //TODO 鐢ㄦ埛娉ㄥ唽鎺ュ彛md5鍔犲瘑
+    //TODO 用户注册接口md5加密
     
-    //TODO 鎵惧洖瀵嗙爜 鍙戦�侀獙璇佺爜缁欑敤鎴凤紝鐢ㄦ埛鏂板瘑鐮侊紝纭瀵嗙爜鍜岄�氳繃閭url璺冲洖淇敼瀵嗙爜椤甸潰
+    //TODO 找回密码 发送验证码给用户，用户新密码，确认密码和通过邮箱url跳回修改密码页面
 }
