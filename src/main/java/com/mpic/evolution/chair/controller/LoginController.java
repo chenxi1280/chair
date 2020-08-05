@@ -26,7 +26,7 @@ import com.mpic.evolution.chair.service.LoginService;
 import com.mpic.evolution.chair.util.MailUtil;
 
 @Controller
-public class LoginController  extends  BaseController{
+public class LoginController {
 	
 	@Resource
 	LoginService loginService;
