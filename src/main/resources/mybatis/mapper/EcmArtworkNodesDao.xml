@@ -175,7 +175,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes">
+    <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes">
     update ecm_artwork_nodes
     <set>
       <if test="parentId != null">
@@ -269,6 +269,82 @@
     where fk_artwork_id = #{pkArtworkId}
 
   </select>
+
+
+  <insert id="insertList" keyColumn="pk_detail_id" keyProperty="pkDetailId"  useGeneratedKeys="true">
+    insert into ecm_artwork_nodes  (parent_id, video_code, parent_code,
+    video_url, branch_pre, revolution_id,
+    video_text, fk_artwork_id, items,
+    items_text, items_bak_text, css_vo,
+    fk_achievement_id, fk_ending_id, isleaf,
+    a_level, is_deleted, parent_list,
+    chosen_text)
+
+    <foreach collection="list" item="item" index="index" separator=",">
+      <trim prefix="values (" suffix=")" suffixOverrides=",">
+        <if test="item.parentId != null">
+          #{item.parentId,jdbcType=INTEGER},
+        </if>
+        <if test="item.videoCode != null">
+          #{item.videoCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.parentCode != null">
+          #{item.parentCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.videoUrl != null">
+          #{item.videoUrl,jdbcType=VARCHAR},
+        </if>
+        <if test="item.branchPre != null">
+          #{item.branchPre,jdbcType=BOOLEAN},
+        </if>
+        <if test="item.revolutionId != null">
+          #{item.revolutionId,jdbcType=VARCHAR},
+        </if>
+        <if test="item.videoText != null">
+          #{item.videoText,jdbcType=VARCHAR},
+        </if>
+        <if test="item.fkArtworkId != null">
+          #{item.fkArtworkId,jdbcType=INTEGER},
+        </if>
+        <if test="item.items != null">
+          #{item.items,jdbcType=VARCHAR},
+        </if>
+        <if test="item.itemsText != null">
+          #{item.itemsText,jdbcType=VARCHAR},
+        </if>
+        <if test="itemsBakText != null">
+          #{item.itemsBakText,jdbcType=VARCHAR},
+        </if>
+        <if test="item.cssVo != null">
+          #{item.cssVo,jdbcType=VARCHAR},
+        </if>
+        <if test="item.fkAchievementId != null">
+          #{item.fkAchievementId,jdbcType=INTEGER},
+        </if>
+        <if test="item.fkEndingId != null">
+          #{item.fkEndingId,jdbcType=INTEGER},
+        </if>
+        <if test="item.isleaf != null">
+          #{item.isleaf,jdbcType=VARCHAR},
+        </if>
+        <if test="item.aLevel != null">
+          #{item.aLevel,jdbcType=INTEGER},
+        </if>
+        <if test="item.isDeleted != null">
+          #{item.isDeleted,jdbcType=VARCHAR},
+        </if>
+        <if test="item.parentitem != null">
+          #{item.parentList,jdbcType=VARCHAR},
+        </if>
+        <if test="item.chosenText != null">
+          #{item.chosenText,jdbcType=VARCHAR},
+        </if>
+      </trim>
+
+    </foreach>
+
+
+  </insert>
 
 
 

@@ -2,6 +2,7 @@ package com.mpic.evolution.chair.dao;
 
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -19,4 +20,6 @@ public interface EcmArtworkNodesDao {
     int updateByPrimaryKey(EcmArtworkNodes record);
 
     List<EcmArtworkNodesVo> selectByArtWorkId(Integer pkArtworkId);
+
+    Integer insertList(@Param("list") List<EcmArtworkNodes> addlist);
 }
