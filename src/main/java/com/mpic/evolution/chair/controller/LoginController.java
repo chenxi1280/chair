@@ -12,19 +12,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
+import com.mpic.evolution.chair.pojo.vo.EcmUserVo;
 import com.mpic.evolution.chair.service.LoginService;
 import com.mpic.evolution.chair.util.MailUtil;
 
-@RestController
-@RequestMapping("/login")
+@Controller
 public class LoginController {
 	
 	@Resource
@@ -64,8 +64,24 @@ public class LoginController {
     @RequestMapping("/sendEmail")
 	@ResponseStatus(HttpStatus.OK)
     public void sendEmail() {
+    	//根据用户点击链接返回的code 进行判断是否通过验证
     	if(true){
             new Thread(new MailUtil("chenxi1280@outlook.com", UUID.randomUUID().toString())).start();
         }
     }
+    
+    //TODO 用户登录接口 加密
+    @RequestMapping("login")
+	@ResponseStatus(HttpStatus.OK)
+    public void loginByToken(EcmUserVo ecmUserVo) {
+    	
+    	//根据用户点击链接返回的code 进行判断是否通过验证
+    	if(true){
+            new Thread(new MailUtil("chenxi1280@outlook.com", UUID.randomUUID().toString())).start();
+        }
+    }
+    
+    //TODO 用户注册接口md5加密
+    
+    //TODO 找回密码 发送验证码给用户，用户新密码，确认密码和通过邮箱url跳回修改密码页面
 }
