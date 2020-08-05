@@ -80,6 +80,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
     private void saveArtwork(EcmArtworkNodesVo ecmArtworkNodesVo) {
         //先进行判断是否有主见，没有主键则直接进行插入 并 获取到自增主键
         if ( ecmArtworkNodesVo.getPkDetailId() == null){
+//            ecmArtworkNodesVo.set
             ecmArtworkNodesDao.insertSelective(ecmArtworkNodesVo);
         }
         //再 进行 节点 是否还有子节点 判断 有就 先设置 父节点的 id 再 进行循环 并再次 进行  saveArtwork（）方法调用（递归判断）
