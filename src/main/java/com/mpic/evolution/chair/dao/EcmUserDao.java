@@ -10,6 +10,8 @@ public interface EcmUserDao {
     int insertSelective(EcmUser record);
 
     EcmUser selectByPrimaryKey(Integer pkUserId);
+    
+    EcmUser selectByRecord(EcmUser record);
 
     int updateByPrimaryKeySelective(EcmUser record);
 

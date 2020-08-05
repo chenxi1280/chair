@@ -36,11 +36,7 @@ public class LoginServiceImpl implements LoginService{
     @Value("${wx.appsecret}")
     private String pcAppsecret;
 
-	@Override
-	public boolean isExsitWxUser(String openId, String unionId) {
-		//TODO 未完成
-		return false;
-	}
+	
 
 	@Override
 	public DefaultKaptcha getConfirmCode() {
