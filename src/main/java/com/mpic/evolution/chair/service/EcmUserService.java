@@ -12,4 +12,7 @@ public interface EcmUserService {
 	
 	EcmUser getUserInfos(EcmUser record);
 	
+	boolean savaUser(EcmUser record);
+	
+	void activateEmail(EcmUser record);
 }

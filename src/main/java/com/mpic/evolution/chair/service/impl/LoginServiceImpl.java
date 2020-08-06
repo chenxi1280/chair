@@ -14,6 +14,14 @@ import com.google.code.kaptcha.util.Config;
 import com.jfinal.kit.HttpKit;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.service.LoginService;
+import com.tencentcloudapi.common.Credential;
+import com.tencentcloudapi.common.exception.TencentCloudSDKException;
+import com.tencentcloudapi.common.profile.ClientProfile;
+import com.tencentcloudapi.common.profile.HttpProfile;
+import com.tencentcloudapi.sms.v20190711.SmsClient;
+import com.tencentcloudapi.sms.v20190711.models.SendSmsRequest;
+import com.tencentcloudapi.sms.v20190711.models.SendSmsResponse;
+import com.tencentcloudapi.sms.v20190711.models.SendStatus;
 
 /**
  * 
@@ -35,8 +43,52 @@ public class LoginServiceImpl implements LoginService{
 
     @Value("${wx.appsecret}")
     private String pcAppsecret;
+    
+    @Value("${sms.appid}")
+	private String appid;// 腾讯短信应用的 SDK AppID
 
+	@Value("${sms.appkey}")
+	private String appkey;// 腾讯云短信中的 SDK AppKey
+
+	@Value("${sms.templateId}")
+	private String templateId;// 模板id
+
+	@Value("${sms.smsSign}")
+	private String smsSign;// 签名内容
 	
+	@Value("${sms.secretId}")
+	private String secretId;// 密钥对 
+	
+	@Value("${sms.secretKey}")
+	private String secretKey;// 密钥对 
+	
+	@Override
+	public SendStatus sendSMS(String code, String[] phoneNumbers) throws TencentCloudSDKException {
+		/*
+		 * 必要步骤： 实例化一个认证对象，入参需要传入腾讯云账户密钥对 secretId 和 secretKey
+		 */
+		Credential cred = new Credential(secretId, secretKey);
+		HttpProfile httpProfile = new HttpProfile();
+		httpProfile.setReqMethod("POST");
+		ClientProfile clientProfile = new ClientProfile();
+		/*
+		 * SDK 默认用 TC3-HMAC-SHA256 进行签名 非必要请不要修改该字段
+		 */
+		clientProfile.setSignMethod("HmacSHA256");
+		clientProfile.setHttpProfile(httpProfile);
+		SmsClient client = new SmsClient(cred, "ap-chongqing", clientProfile);
+		SendSmsRequest req = new SendSmsRequest();
+		req.setSmsSdkAppid(appid);
+		req.setSign(smsSign);
+		req.setTemplateID(templateId);
+		req.setPhoneNumberSet(phoneNumbers);
+		String[] templateParams = { code };
+		req.setTemplateParamSet(templateParams);
+		SendSmsResponse res = client.SendSms(req);
+		System.out.println(SendSmsResponse.toJsonString(res));
+		SendStatus sendStatus = res.getSendStatusSet()[0];
+		return sendStatus;
+	}	
 
 	@Override
 	public DefaultKaptcha getConfirmCode() {

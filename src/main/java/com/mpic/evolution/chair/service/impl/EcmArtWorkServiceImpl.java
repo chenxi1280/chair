@@ -6,6 +6,9 @@ import javax.annotation.Resource;
 
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.util.CollectionUtils;
 
 import com.mpic.evolution.chair.dao.EcmArtworkDao;
 import com.mpic.evolution.chair.dao.EcmArtworkNodesDao;
@@ -17,16 +20,6 @@ import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
 import com.mpic.evolution.chair.service.EcmArtWorkService;
 import com.mpic.evolution.chair.util.TreeUtil;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
-import org.springframework.util.CollectionUtils;
-
-import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 
 /**
@@ -69,7 +62,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 			ecmArtworkDao.updateByPrimaryKey(ecmArtwork);
 			return ResponseDTO.ok(message.getString(code)+"成功");
 		} catch (Exception e) {
-			return ResponseDTO.fail(message.getString(code)+"失败", null, null, 500);
+			return ResponseDTO.fail(message.getString(code)+"失败");
 		}
 
 	}
@@ -130,12 +123,12 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 			EcmArtwork ecmArtwork = new EcmArtwork();
 			ecmArtwork.setPkArtworkId(ecmArtWorkQuery.getPkArtworkId());
 			ecmArtwork.setFkUserid(ecmArtWorkQuery.getFkUserid());
-//			if (code.equals("updateLogoPath")) ecmArtwork.setLogoPath(ecmArtWorkQuery.getLogoPath());
+			if (code.equals("updateLogoPath")) ecmArtwork.setLogoPath(ecmArtWorkQuery.getLogoPath());
 			ecmArtwork.setArtworkName(ecmArtWorkQuery.getArtworkName());
 			ecmArtworkDao.updateByPrimaryKey(ecmArtwork);
 			return ResponseDTO.ok("修改成功");
 		} catch (Exception e) {
-			return ResponseDTO.fail("修改失败", null, null, 500);
+			return ResponseDTO.fail("修改失败");
 		}
 	}
 
@@ -171,7 +164,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 			ecmArtworkDao.insert(ecmArtwork);
 			return ResponseDTO.ok("新建成功");
 		} catch (Exception e) {
-			return ResponseDTO.fail("新建失败", null, null, 500);
+			return ResponseDTO.fail("新建失败");
 		}
 	}
 }

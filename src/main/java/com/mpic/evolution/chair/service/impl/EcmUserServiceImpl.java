@@ -16,8 +16,17 @@ public class EcmUserServiceImpl implements EcmUserService {
 
 	@Override
 	public EcmUser getUserInfos(EcmUser record) {
-		EcmUser ecmUser = ecmUserDao.selectByRecord(record);
-		return ecmUser;
+		return ecmUserDao.selectByRecord(record);
+	}
+
+	@Override
+	public boolean savaUser(EcmUser record) {
+		return ecmUserDao.insert(record) < 1 ? false : true;
+	}
+
+	@Override
+	public void activateEmail(EcmUser record) {
+		ecmUserDao.updateByPrimaryKey(record);
 	}
 
 }
