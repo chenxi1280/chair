@@ -19,9 +19,9 @@ public class EcmUser implements Serializable {
     private String password;
 
     /**
-     * 权限表id
+     * 邮件uuid
      */
-    private Short fkAccessId;
+    private String emailUuid;
 
     /**
      * 是否有效Y/N
