@@ -14,7 +14,15 @@ public interface EcmUserDao {
     int updateByPrimaryKeySelective(EcmUser record);
 
     int updateByPrimaryKey(EcmUser record);
+    
+    int updateTokenByEmail(String email, String emailUuid);
+    
+    int updateIsValidByUUID(String emailUuid, String isValid);
+
+	int updatePwdByToken(String emailUuid, String password);
 
     EcmUser selectByRecord(EcmUser record);
+
+	void clearUUID(String emailUuid, String uuid);
 
 }

@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Random;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
@@ -161,7 +162,7 @@ public class LoginController extends BaseController {
 		EcmUser ecmUser = new EcmUser();
 		ecmUser.setUsername(ecmUserVo.getUsername());
 		ecmUser.setIsValid("N");
-		ecmUser.setFkAccessId((short) 1);
+		ecmUser.setRoles("1");
 		ecmUser.setMobile(ecmUserVo.getMobile());
 		ecmUser.setEmail(ecmUserVo.getEmail());
 		ecmUser.setPassword(MD5Utils.encrypt(ecmUserVo.getPassword()));
@@ -172,19 +173,71 @@ public class LoginController extends BaseController {
 	@RequestMapping("/sendEmail")
 	@ResponseBody
 	public void sendEmail(EcmUserVo ecmUserVo) {	
-		//发送邮箱验证激活邮箱 修改isvalid状态 数据库中存入uuid
-		MailUtil mailUtil = new MailUtil(ecmUserVo.getEmail(),ecmUserVo.getMobile());
+		//发送邮邮件 并更行数据库中的uuid值
+		String uuid = UUID.randomUUID().toString();//激活码
+		String emailType = ecmUserVo.getEmailType();
+		String emailContent = this.getEmailContent(emailType, uuid);
+		MailUtil mailUtil = new MailUtil(ecmUserVo.getEmail(),emailContent);
 		mailUtil.sendEmail();
+		ecmUserService.updateUUID(ecmUserVo.getEmail(),uuid);
     }
 	
 	@RequestMapping("/activateUser")
 	@ResponseBody
 	public void activateUser(EcmUserVo ecmUserVo) {	
-		//发送邮箱验证激活邮箱 修改isvalid状态
-		EcmUser ecmUser = new EcmUser();
-		//ecmUserVo.getToken() UUID
-		ecmUser.setMobile(ecmUserVo.getToken());
-		ecmUser.setIsValid("Y");
-		ecmUserService.activateEmail(ecmUser);
+		//用户点击链接后获取uuid  根据uuid来修改数据库中isvalid状态
+		ecmUserService.updateIsValid(ecmUserVo.getToken(),"Y");
+		//修改掉uuid在数据库中的值
+		String uuid = UUID.randomUUID().toString();
+		ecmUserService.clearUUID(ecmUserVo.getToken(),uuid);
     }
+	
+	@RequestMapping("/forgetPwd")
+	@ResponseBody
+	public ResponseDTO forgetPassword(EcmUserVo ecmUserVo) {	
+		//确认密码验证
+		String password = ecmUserVo.getPassword();
+		if(!password.equals(ecmUserVo.getConfirmPwd())) {
+			return ResponseDTO.fail("密码与确认密码不一致");
+		}
+		//修改掉数据库中的密码
+		boolean flag = ecmUserService.updatePwdByToken(ecmUserVo.getToken(),password);
+		if (!flag) {
+			return ResponseDTO.ok("密码修改失败");
+		}
+		//修改掉uuid在数据库中的值
+		String uuid = UUID.randomUUID().toString();
+		ecmUserService.clearUUID(ecmUserVo.getToken(),uuid);
+		return ResponseDTO.fail("密码修改成功");
+    }
+	
+	private String getEmailContent(String emailType, String uuid) {
+		String content = "";
+		if (emailType.equals("verification")) {
+			content = String.format("<html>" + 
+					"	<head></head>" + 
+					"	<body>" + 
+					"		<h1>这是一封激活邮件,激活请点击以下链接</h1>" + 
+					"		<h3><a href='http://192.168.1.10:8080/activateUser?token=%s" + 
+					"			 		'>http://192.168.1.10:8080/activateUser?token=%s" + 
+					"			 		</href>" + 
+					"		</h3>" + 
+					"	</body>" + 
+					"</html>"
+					,uuid,uuid);
+		}else {
+			content = String.format("<html>" + 
+					"	<head></head>" + 
+					"	<body>" + 
+					"		<h1>修改密码链接,请点击以下链接</h1>" + 
+					"		<h3><a href='http://192.168.1.10:8080/activateUser?token=%s" + 
+					"			 		'>http://192.168.1.10:8080/activateUser?token=%s" + 
+					"			 		</href>" + 
+					"		</h3>" + 
+					"	</body>" + 
+					"</html>"
+					,uuid,uuid);
+		}
+		return content;
+	}
 }

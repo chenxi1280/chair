@@ -13,4 +13,6 @@ public class EcmUserVo extends EcmUser {
 	private String phoneConfirmCode;
 	
 	private String token;
+	
+	private String emailType;//fogetPwd忘记密码 verification邮箱验证
 }

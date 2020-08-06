@@ -190,9 +190,49 @@
       roles = #{roles,jdbcType=VARCHAR}
     where pk_user_id = #{pkUserId,jdbcType=INTEGER}
   </update>
+	
+	<update id="updateTokenByEmail"
+	parameterType="com.mpic.evolution.chair.pojo.entity.EcmUser">
+	update 
+		ecm_user
+	set 
+		email_uuid = #{emailUuid,jdbcType=VARCHAR}
+	where 
+		email = #{email,jdbcType=VARCHAR}
+</update>
 
+<update id="clearUUID"
+	parameterType="com.mpic.evolution.chair.pojo.entity.EcmUser">
+	update 
+		ecm_user
+	set 
+		email_uuid = #{uuid,jdbcType=VARCHAR}
+	where 
+		email_uuid = #{emailUuid,jdbcType=VARCHAR}
+</update>
+	
+	<update id="updateIsValidByUUID"
+	parameterType="com.mpic.evolution.chair.pojo.entity.EcmUser">
+	update 
+		ecm_user 
+	set
+		is_valid = #{isValid,jdbcType=VARCHAR}
+	where 
+	 	email_uuid = #{emailUuid,jdbcType=VARCHAR}
+</update>
 
-  <select id="selectByRecord" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+	<update id="updatePwdByToken"
+	parameterType="com.mpic.evolution.chair.pojo.entity.EcmUser">
+	update
+		ecm_user
+	set
+		`password` = #{password,jdbcType=VARCHAR}
+	where
+		email_uuid = #{emailUuid,jdbcType=VARCHAR}
+</update>
+
+	
+  <select id="selectByRecord" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUser" resultMap="BaseResultMap">
 	select
 	<include refid="Base_Column_List" />
 	from ecm_user
@@ -203,8 +243,8 @@
 	<if test="password != null">
 		and `password` = #{password,jdbcType=VARCHAR}
 	</if>
-	<if test="fkAccessId != null">
-		and fk_access_id = #{fkAccessId,jdbcType=SMALLINT}
+	<if test="emailUuid != null">
+		and email_uuid = #{emailUuid,jdbcType=VARCHAR}
 	</if>
 	<if test="isValid != null">
 		and is_valid = #{isValid,jdbcType=VARCHAR}
@@ -235,6 +275,9 @@
 	</if>
 	<if test="lastCheckMail != null">
 		and last_check_mail = #{lastCheckMail,jdbcType=TIMESTAMP}
+	</if>
+	<if test="roles != null">
+		and roles = #{roles,jdbcType=TIMESTAMP}
 	</if>
 </select>
 </mapper>

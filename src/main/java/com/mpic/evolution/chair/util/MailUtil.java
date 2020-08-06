@@ -22,12 +22,12 @@ import com.sun.mail.util.MailSSLSocketFactory;
 public class MailUtil{
 	
 	private String email;//收件人邮箱
-	private String code;//激活码
+	private String content;//邮件内容
 	private String host = "smtp.163.com";// 指定发送邮件的主机smtp.qq.com(QQ)|smtp.163.com(网易)
-	public MailUtil(String email, String code) {
+	public MailUtil(String email, String content) {
 		super();
 		this.email = email;
-		this.code = code;
+		this.content = content;
 	}
 
 	public void sendEmail() {
@@ -37,9 +37,8 @@ public class MailUtil{
 		Properties properties = System.getProperties();// 获取系统属性
 		properties.setProperty("mail.smtp.host", host);// 设置邮件服务器
 		properties.setProperty("mail.smtp.auth", "true");// 打开认证
-
-		// QQ邮箱需要这段代码，163不需要
 		try {
+			// QQ邮箱需要这段代码，163不需要
 			MailSSLSocketFactory mFactory = new MailSSLSocketFactory();
 			mFactory.setTrustAllHosts(true);
 			properties.put("mail.smtp.ssl.enable", "true");
@@ -50,7 +49,6 @@ public class MailUtil{
 					return new PasswordAuthentication(EmailConstants.userName, EmailConstants.password);// 发件人邮箱账号和授权码
 				}
 			});
-
 			MimeMessage message = new MimeMessage(session);
 			// 设置发件人
 			message.setFrom(new InternetAddress(EmailConstants.userName));
@@ -59,17 +57,6 @@ public class MailUtil{
 			// 设置邮件主题
 			message.setSubject("账号激活");
 			// 设置邮件内容
-			String content = String.format("<html>" + 
-					"	<head></head>" + 
-					"	<body>" + 
-					"		<h1>这是一封激活邮件,激活请点击以下链接</h1>" + 
-					"		<h3><a href='http://192.168.1.10:8080/activateUser?token=%s" + 
-					"			 		'>http://192.168.1.10:8080/activateUser?token=%s" + 
-					"			 		</href>" + 
-					"		</h3>" + 
-					"	</body>" + 
-					"</html>"
-					,code,code);
 			message.setContent(content, "text/html;charset=UTF-8");
 			// 发送邮件
 			Transport.send(message);
