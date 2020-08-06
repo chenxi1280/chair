@@ -10,6 +10,8 @@ import java.io.Serializable;
  */
 @Data
 public class EcmArtworkNodes implements Serializable {
+
+
     private Integer pkDetailId;
 
     private Integer parentId;
