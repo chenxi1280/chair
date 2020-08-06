@@ -99,8 +99,13 @@ public class LoginController extends BaseController {
     	ecmUser.setMobile(ecmUserVo.getMobile());
     	EcmUser userInfos = ecmUserService.getUserInfos(ecmUser);
     	String password = userInfos.getPassword();
-    	if (!regionCode.equals(confirmCode)) return ResponseDTO.fail("验证码错误");
-    	if (!password.equals(inputPwd)) return ResponseDTO.fail("密码错误");
+    	if (!regionCode.equals(confirmCode)) {
+			return ResponseDTO.fail("验证码错误");
+		}
+    	if (!password.equals(inputPwd)) {
+			return ResponseDTO.fail("密码错误");
+		}
+
 		return ResponseDTO.ok("成功登录");
     }
     
@@ -117,16 +122,20 @@ public class LoginController extends BaseController {
 		user.setIsValid("Y");
 		user.setMobile(ecmUserVo.getMobile());
 		EcmUser userInfos = ecmUserService.getUserInfos(user);
-		if (!StringUtil.isNullOrEmpty(userInfos.getPkUserId().toString())) 
+		if (!StringUtil.isNullOrEmpty(userInfos.getPkUserId().toString())) {
 			return ResponseDTO.fail("该账号已注册");
+		}
 		//确认密码验证
-		if(!ecmUserVo.getPassword().equals(ecmUserVo.getConfirmPwd()))
+		if(!ecmUserVo.getPassword().equals(ecmUserVo.getConfirmPwd())) {
 			return ResponseDTO.fail("密码与确认密码不一致");
+		}
 		//验证码验证
 		HttpSession session = getRequstSession();
 		String regionCode = (String) session.getAttribute("regionCode");
 		String confirmCode = ecmUserVo.getConfirmCode();
-		if (!regionCode.equals(confirmCode)) return ResponseDTO.fail("验证码错误");
+		if (!regionCode.equals(confirmCode)) {
+			return ResponseDTO.fail("验证码错误");
+		}
 		//短信验证
 		String mobile = ecmUserVo.getMobile();
 		String inputPCC = ecmUserVo.getPhoneConfirmCode();
@@ -138,14 +147,16 @@ public class LoginController extends BaseController {
         }
     	try {
 			SendStatus status = loginService.sendSMS(phoneConfirmCode,phoneNumbers);
-			if (!status.getCode().equals("Ok")) 
+			if (!status.getCode().equals("Ok")) {
 				return ResponseDTO.fail("手机发送验证码失败："+status.getMessage());
+			}
 		} catch (TencentCloudSDKException e) {
 			e.printStackTrace();
 			return ResponseDTO.fail("手机验证码发送失败");
 		}
-    	if (inputPCC.equals(phoneConfirmCode)) 
-    		return ResponseDTO.fail("手机短信验证码错误");
+    	if (inputPCC.equals(phoneConfirmCode)) {
+			return ResponseDTO.fail("手机短信验证码错误");
+		}
 		//入库
 		EcmUser ecmUser = new EcmUser();
 		ecmUser.setUsername(ecmUserVo.getUsername());
