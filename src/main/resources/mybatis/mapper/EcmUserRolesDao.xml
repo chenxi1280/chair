@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mpic.evolution.chair.dao.EcmUserRolesDao">
+  <resultMap id="BaseResultMap" type="com.mpic.evolution.chair.pojo.entity.EcmUserRoles">
+    <id column="pk_role_id" jdbcType="INTEGER" property="pkRoleId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="flag" jdbcType="VARCHAR" property="flag" />
+    <result column="note" jdbcType="VARCHAR" property="note" />
+    <result column="acess" jdbcType="VARCHAR" property="acess" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pk_role_id, `name`, flag, note, acess
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from ecm_user_roles
+    where pk_role_id = #{pkRoleId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ecm_user_roles
+    where pk_role_id = #{pkRoleId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="pk_role_id" keyProperty="pkRoleId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUserRoles" useGeneratedKeys="true">
+    insert into ecm_user_roles (`name`, flag, note, 
+      acess)
+    values (#{name,jdbcType=VARCHAR}, #{flag,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR}, 
+      #{acess,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="pk_role_id" keyProperty="pkRoleId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUserRoles" useGeneratedKeys="true">
+    insert into ecm_user_roles
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="flag != null">
+        flag,
+      </if>
+      <if test="note != null">
+        note,
+      </if>
+      <if test="acess != null">
+        acess,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="flag != null">
+        #{flag,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null">
+        #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="acess != null">
+        #{acess,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUserRoles">
+    update ecm_user_roles
+    <set>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="flag != null">
+        flag = #{flag,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null">
+        note = #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="acess != null">
+        acess = #{acess,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where pk_role_id = #{pkRoleId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUserRoles">
+    update ecm_user_roles
+    set `name` = #{name,jdbcType=VARCHAR},
+      flag = #{flag,jdbcType=VARCHAR},
+      note = #{note,jdbcType=VARCHAR},
+      acess = #{acess,jdbcType=VARCHAR}
+    where pk_role_id = #{pkRoleId,jdbcType=INTEGER}
+  </update>
+</mapper>
