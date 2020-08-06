@@ -161,7 +161,7 @@ public class LoginController extends BaseController {
 	@RequestMapping("/sendEmail")
 	@ResponseBody
 	public void sendEmail(EcmUserVo ecmUserVo) {	
-		//发送邮箱验证激活邮箱 修改isvalid状态	
+		//发送邮箱验证激活邮箱 修改isvalid状态 数据库中存入uuid
 		MailUtil mailUtil = new MailUtil(ecmUserVo.getEmail(),ecmUserVo.getMobile());
 		mailUtil.sendEmail();
     }
