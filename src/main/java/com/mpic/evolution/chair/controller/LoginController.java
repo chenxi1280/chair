@@ -101,6 +101,7 @@ public class LoginController extends BaseController {
     	String password = userInfos.getPassword();
     	if (!regionCode.equals(confirmCode)) return ResponseDTO.fail("验证码错误");
     	if (!password.equals(inputPwd)) return ResponseDTO.fail("密码错误");
+
 		return ResponseDTO.ok("成功登录");
     }
     

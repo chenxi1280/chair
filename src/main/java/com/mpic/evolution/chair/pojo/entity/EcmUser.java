@@ -18,6 +18,7 @@ public class EcmUser implements Serializable {
      */
     private String password;
 
+
     /**
      * 邮件uuid
      */
