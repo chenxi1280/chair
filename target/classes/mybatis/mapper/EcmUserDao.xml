@@ -179,4 +179,51 @@
       last_check_mail = #{lastCheckMail,jdbcType=TIMESTAMP}
     where pk_user_id = #{pkUserId,jdbcType=INTEGER}
   </update>
+  
+  <select id="selectByRecord"
+	parameterType="java.lang.Integer" resultMap="BaseResultMap">
+	select
+	<include refid="Base_Column_List" />
+	from ecm_user
+	where 1=1
+	<if test="pkUserId != null">
+		and pk_user_id = #{pkUserId,jdbcType=INTEGER}
+	</if>
+	<if test="password != null">
+		and `password` = #{password,jdbcType=VARCHAR}
+	</if>
+	<if test="fkAccessId != null">
+		and fk_access_id = #{fkAccessId,jdbcType=SMALLINT}
+	</if>
+	<if test="isValid != null">
+		and is_valid = #{isValid,jdbcType=VARCHAR}
+	</if>
+	<if test="username != null">
+		and username = #{username,jdbcType=VARCHAR}
+	</if>
+	<if test="mobile != null">
+		and mobile = #{mobile,jdbcType=VARCHAR}
+	</if>
+	<if test="email != null">
+		and email = #{email,jdbcType=VARCHAR}
+	</if>
+	<if test="createTime != null">
+		and create_time = #{createTime,jdbcType=TIMESTAMP}
+	</if>
+	<if test="updateTime != null">
+		and update_time = #{updateTime,jdbcType=TIMESTAMP}
+	</if>
+	<if test="count != null">
+		and `count` = #{count,jdbcType=INTEGER}
+	</if>
+	<if test="lastLoginTime != null">
+		and last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP}
+	</if>
+	<if test="cardCode != null">
+		and card_code = #{cardCode,jdbcType=VARCHAR}
+	</if>
+	<if test="lastCheckMail != null">
+		and last_check_mail = #{lastCheckMail,jdbcType=TIMESTAMP}
+	</if>
+</select>
 </mapper>

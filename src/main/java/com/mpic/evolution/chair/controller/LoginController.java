@@ -8,7 +8,6 @@ import java.util.UUID;
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -80,12 +79,19 @@ public class LoginController extends BaseController {
     
     @RequestMapping("login")
 	@ResponseStatus(HttpStatus.OK)
-    public void loginByToken(EcmUserVo ecmUserVo) {
+    public ResponseDTO loginByToken(EcmUserVo ecmUserVo) {
     	HttpSession session = getRequstSession();
-    	String regionCode = session.getAttribute("regionCode").toString();
+     	String regionCode = (String) session.getAttribute("regionCode");
+    	String inputPwd = ecmUserVo.getPassword();
+    	//TODO 以后在注册和登陆时都需要对password加密 String encrypt = MD5Utils.encrypt(inputPwd); 
     	String confirmCode = ecmUserVo.getConfirmCode();
     	EcmUser ecmUser = new EcmUser();
     	ecmUser.setMobile(ecmUserVo.getMobile());
+    	EcmUser userInfos = ecmUserService.getUserInfos(ecmUser);
+    	String password = userInfos.getPassword();
+    	if (!regionCode.equals(confirmCode)) return ResponseDTO.fail("验证码错误");
+    	if (!password.equals(inputPwd)) return ResponseDTO.fail("密码错误");
+		return ResponseDTO.ok("成功登录");
     }
     
 }
