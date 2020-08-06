@@ -67,5 +67,10 @@ public class EcmUser implements Serializable {
      */
     private Date lastCheckMail;
 
+    /**
+     * 角色id , 分割
+     */
+    private String roles;
+
     private static final long serialVersionUID = 1L;
 }

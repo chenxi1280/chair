@@ -3,11 +3,12 @@
 <mapper namespace="com.mpic.evolution.chair.dao.EcmUserAcessDao">
   <resultMap id="BaseResultMap" type="com.mpic.evolution.chair.pojo.entity.EcmUserAcess">
     <id column="pk_acess_id" jdbcType="INTEGER" property="pkAcessId" />
-    <result column="access_name" jdbcType="VARCHAR" property="accessName" />
-    <result column="access_details" jdbcType="VARCHAR" property="accessDetails" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="flag" jdbcType="VARCHAR" property="flag" />
+    <result column="note" jdbcType="VARCHAR" property="note" />
   </resultMap>
   <sql id="Base_Column_List">
-    pk_acess_id, access_name, access_details
+    pk_acess_id, `name`, flag, note
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -20,44 +21,56 @@
     where pk_acess_id = #{pkAcessId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyColumn="pk_acess_id" keyProperty="pkAcessId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUserAcess" useGeneratedKeys="true">
-    insert into ecm_user_acess (access_name, access_details)
-    values (#{accessName,jdbcType=VARCHAR}, #{accessDetails,jdbcType=VARCHAR})
+    insert into ecm_user_acess (`name`, flag, note
+      )
+    values (#{name,jdbcType=VARCHAR}, #{flag,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" keyColumn="pk_acess_id" keyProperty="pkAcessId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUserAcess" useGeneratedKeys="true">
     insert into ecm_user_acess
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="accessName != null">
-        access_name,
+      <if test="name != null">
+        `name`,
       </if>
-      <if test="accessDetails != null">
-        access_details,
+      <if test="flag != null">
+        flag,
+      </if>
+      <if test="note != null">
+        note,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="accessName != null">
-        #{accessName,jdbcType=VARCHAR},
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
       </if>
-      <if test="accessDetails != null">
-        #{accessDetails,jdbcType=VARCHAR},
+      <if test="flag != null">
+        #{flag,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null">
+        #{note,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUserAcess">
     update ecm_user_acess
     <set>
-      <if test="accessName != null">
-        access_name = #{accessName,jdbcType=VARCHAR},
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
       </if>
-      <if test="accessDetails != null">
-        access_details = #{accessDetails,jdbcType=VARCHAR},
+      <if test="flag != null">
+        flag = #{flag,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null">
+        note = #{note,jdbcType=VARCHAR},
       </if>
     </set>
     where pk_acess_id = #{pkAcessId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUserAcess">
     update ecm_user_acess
-    set access_name = #{accessName,jdbcType=VARCHAR},
-      access_details = #{accessDetails,jdbcType=VARCHAR}
+    set `name` = #{name,jdbcType=VARCHAR},
+      flag = #{flag,jdbcType=VARCHAR},
+      note = #{note,jdbcType=VARCHAR}
     where pk_acess_id = #{pkAcessId,jdbcType=INTEGER}
   </update>
 </mapper>

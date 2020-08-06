@@ -5,23 +5,23 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * ecm_user_acess
+ * ecm_user_roles
  * @author 
  */
 @Data
-public class EcmUserAcess implements Serializable {
+public class EcmUserRoles implements Serializable {
     /**
-     * 用户权限表
+     * 角色id
      */
-    private Integer pkAcessId;
+    private Integer pkRoleId;
 
     /**
-     * 权限名称
+     * 角色名字
      */
     private String name;
 
     /**
-     * 权限标记
+     * 标记
      */
     private String flag;
 
@@ -29,6 +29,11 @@ public class EcmUserAcess implements Serializable {
      * 备注
      */
     private String note;
+
+    /**
+     * 权限ids , 分割
+     */
+    private String acess;
 
     private static final long serialVersionUID = 1L;
 }
