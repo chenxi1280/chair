@@ -3,6 +3,7 @@ package com.mpic.evolution.chair.controller;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Random;
 import java.util.UUID;
 
@@ -106,7 +107,7 @@ public class LoginController extends BaseController {
     	if (!password.equals(inputPwd)) {
 			return ResponseDTO.fail("密码错误");
 		}
-
+    	//成功登录的话要修改数据库中用户最后登录的时间字段
 		return ResponseDTO.ok("成功登录");
     }
     
@@ -163,6 +164,7 @@ public class LoginController extends BaseController {
 		ecmUser.setUsername(ecmUserVo.getUsername());
 		ecmUser.setIsValid("N");
 		ecmUser.setRoles("1");
+		ecmUser.setCreateTime(new Date());
 		ecmUser.setMobile(ecmUserVo.getMobile());
 		ecmUser.setEmail(ecmUserVo.getEmail());
 		ecmUser.setPassword(MD5Utils.encrypt(ecmUserVo.getPassword()));

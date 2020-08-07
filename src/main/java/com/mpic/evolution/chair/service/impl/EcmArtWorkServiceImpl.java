@@ -1,5 +1,6 @@
 package com.mpic.evolution.chair.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -59,6 +60,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 			ecmArtwork.setArtworkStatus((short)condition.getInt(ecmArtworkVo.getCode()));
 			ecmArtwork.setFkUserid(ecmArtworkVo.getFkUserid());
 			ecmArtwork.setArtworkName(ecmArtworkVo.getArtworkName());
+			ecmArtwork.setLastModifyDate(new Date());
 			ecmArtworkDao.updateByPrimaryKey(ecmArtwork);
 			return ResponseDTO.ok(message.getString(ecmArtworkVo.getCode())+"成功");
 		} catch (Exception e) {
@@ -123,11 +125,11 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 			EcmArtwork ecmArtwork = new EcmArtwork();
 			ecmArtwork.setPkArtworkId(ecmArtworkVo.getPkArtworkId());
 			ecmArtwork.setFkUserid(ecmArtworkVo.getFkUserid());
-			String code = ecmArtworkVo.getCode();
-			if (code.equals("updateLogoPath")) ecmArtwork.setLogoPath(ecmArtworkVo.getLogoPath());
-			ecmArtwork.setArtworkName(ecmArtworkVo.getArtworkName());
+			ecmArtwork.setArtworkName(ecmArtworkVo.getArtworkName());//不能为null
+			ecmArtwork.setLogoPath(ecmArtworkVo.getLogoPath());
+			ecmArtwork.setLastModifyDate(new Date());
 			ecmArtworkDao.updateByPrimaryKey(ecmArtwork);
-			return ResponseDTO.ok("修改成功");
+			return ResponseDTO.ok("作品名称修改成功");
 		} catch (Exception e) {
 			return ResponseDTO.fail("修改失败");
 		}
@@ -159,7 +161,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 			ecmArtwork.setArtworkStatus(ecmArtworkVo.getArtworkStatus());
 			ecmArtwork.setArtworkDescribe(ecmArtworkVo.getArtworkDescribe());
 			ecmArtwork.setFourLetterTips(ecmArtworkVo.getFourLetterTips());
-			ecmArtwork.setLastCreateDate(ecmArtworkVo.getLastCreateDate());
+			ecmArtwork.setLastCreateDate(new Date());
 			ecmArtwork.setLastModifyDate(ecmArtworkVo.getLastModifyDate());
 			ecmArtwork.setLogoPath(ecmArtworkVo.getLogoPath());
 			ecmArtworkDao.insert(ecmArtwork);

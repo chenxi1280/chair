@@ -33,8 +33,9 @@ public class EcmArtWorkController {
      * 描述 : 按照条件查询作品
      *       保存成功: status 200  msg "success” data: 数据
      *       保存失败: status 500  msg "error“
+     *      
      */
-
+    //TODO 用户登陆的标识符来查不是id
     @RequestMapping("/getArtWorks")
     @ResponseBody
     public ResponseDTO getArtWorks(EcmArtWorkQuery ecmArtWorkQuery){

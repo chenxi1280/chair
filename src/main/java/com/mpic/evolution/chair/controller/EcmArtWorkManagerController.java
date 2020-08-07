@@ -3,6 +3,7 @@ package com.mpic.evolution.chair.controller;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -11,7 +12,7 @@ import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
 import com.mpic.evolution.chair.service.EcmArtWorkService;
 
 @Controller
-@RequestMapping("/ecmartWorkManager")
+@RequestMapping("/ecmArtWorkManager")
 public class EcmArtWorkManagerController {
 	@Resource
 	EcmArtWorkService ecmArtWorkService;
@@ -22,7 +23,7 @@ public class EcmArtWorkManagerController {
 	 */
 	@RequestMapping("/modifyArtWorksStatus")
     @ResponseBody
-    public ResponseDTO modifyArtWorksStatus(EcmArtworkVo ecmArtworkVo){
+    public ResponseDTO modifyArtWorksStatus(@RequestBody EcmArtworkVo ecmArtworkVo){
         return ecmArtWorkService.modifyArtWorkStatus(ecmArtworkVo);
     }
 	
@@ -34,7 +35,7 @@ public class EcmArtWorkManagerController {
 	 */
 	@RequestMapping("/modifyArtWorks")
     @ResponseBody
-    public ResponseDTO modifyArtWorks(EcmArtworkVo ecmArtworkVo){
+    public ResponseDTO modifyArtWorks(@RequestBody EcmArtworkVo ecmArtworkVo){
         return ecmArtWorkService.modifyArtWork(ecmArtworkVo);
     }
 	
@@ -43,9 +44,10 @@ public class EcmArtWorkManagerController {
 	 * @param ecmArtworkVo
 	 * @return
 	 */
+	
 	@RequestMapping("/addArtWorks")
     @ResponseBody
-    public ResponseDTO addArtWorks(EcmArtworkVo ecmArtworkVo){
+    public ResponseDTO addArtWorks(@RequestBody EcmArtworkVo ecmArtworkVo){
         return ecmArtWorkService.addArtWorks(ecmArtworkVo);
     }
 	
