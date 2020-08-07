@@ -39,7 +39,7 @@ public interface EcmArtWorkService {
      * @param code
      * @return
      */
-	ResponseDTO modifyArtWorkStatus(EcmArtWorkQuery ecmArtWorkQuery);
+	ResponseDTO modifyArtWorkStatus(EcmArtworkVo ecmArtworkVo);
 
 	/**
      * @author: SJ
@@ -47,7 +47,7 @@ public interface EcmArtWorkService {
      * @param code
      * @return
      */
-	ResponseDTO modifyArtWork(EcmArtWorkQuery ecmArtWorkQuery);
+	ResponseDTO modifyArtWork(EcmArtworkVo ecmArtworkVo);
 
 	/**
      * @author: SJ
