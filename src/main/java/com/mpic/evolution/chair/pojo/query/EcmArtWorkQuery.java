@@ -42,5 +42,10 @@ public class EcmArtWorkQuery extends PageQuery {
      * 	作品封面存储位置，绝对路径
      */
     private String logoPath;
+    
+    /**
+     * 	调用接口的操作类型
+     */
+    private String code;
 
 }

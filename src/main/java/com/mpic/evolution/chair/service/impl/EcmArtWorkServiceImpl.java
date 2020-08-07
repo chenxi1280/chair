@@ -50,19 +50,19 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
     }
 
 	@Override
-	public ResponseDTO modifyArtWorkStatus(EcmArtWorkQuery ecmArtWorkQuery,String code) {
+	public ResponseDTO modifyArtWorkStatus(EcmArtWorkQuery ecmArtWorkQuery) {
 		JSONObject message = this.getMessage();
 		try {
 			JSONObject condition = this.getCondition();
 			EcmArtwork ecmArtwork = new EcmArtwork();
 			ecmArtwork.setPkArtworkId(ecmArtWorkQuery.getPkArtworkId());
-			ecmArtwork.setArtworkStatus((short)condition.getInt(code));
+			ecmArtwork.setArtworkStatus((short)condition.getInt(ecmArtWorkQuery.getCode()));
 			ecmArtwork.setFkUserid(ecmArtWorkQuery.getFkUserid());
 			ecmArtwork.setArtworkName(ecmArtWorkQuery.getArtworkName());
 			ecmArtworkDao.updateByPrimaryKey(ecmArtwork);
-			return ResponseDTO.ok(message.getString(code)+"成功");
+			return ResponseDTO.ok(message.getString(ecmArtWorkQuery.getCode())+"成功");
 		} catch (Exception e) {
-			return ResponseDTO.fail(message.getString(code)+"失败");
+			return ResponseDTO.fail(message.getString(ecmArtWorkQuery.getCode())+"失败");
 		}
 
 	}
@@ -118,11 +118,12 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
 
 	@Override
-	public ResponseDTO modifyArtWork(EcmArtWorkQuery ecmArtWorkQuery, String code) {
+	public ResponseDTO modifyArtWork(EcmArtWorkQuery ecmArtWorkQuery) {
 		try {
 			EcmArtwork ecmArtwork = new EcmArtwork();
 			ecmArtwork.setPkArtworkId(ecmArtWorkQuery.getPkArtworkId());
 			ecmArtwork.setFkUserid(ecmArtWorkQuery.getFkUserid());
+			String code = ecmArtWorkQuery.getCode();
 			if (code.equals("updateLogoPath")) ecmArtwork.setLogoPath(ecmArtWorkQuery.getLogoPath());
 			ecmArtwork.setArtworkName(ecmArtWorkQuery.getArtworkName());
 			ecmArtworkDao.updateByPrimaryKey(ecmArtwork);

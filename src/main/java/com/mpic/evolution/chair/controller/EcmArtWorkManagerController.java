@@ -23,8 +23,8 @@ public class EcmArtWorkManagerController {
 	 */
 	@RequestMapping("/modifyArtWorksStatus")
     @ResponseBody
-    public ResponseDTO modifyArtWorksStatus(EcmArtWorkQuery ecmArtWorkQuery,String code){
-        return ecmArtWorkService.modifyArtWorkStatus(ecmArtWorkQuery,code);
+    public ResponseDTO modifyArtWorksStatus(EcmArtWorkQuery ecmArtWorkQuery){
+        return ecmArtWorkService.modifyArtWorkStatus(ecmArtWorkQuery);
     }
 	
 	/**
@@ -35,8 +35,8 @@ public class EcmArtWorkManagerController {
 	 */
 	@RequestMapping("/modifyArtWorks")
     @ResponseBody
-    public ResponseDTO modifyArtWorks(EcmArtWorkQuery ecmArtWorkQuery,String code){
-        return ecmArtWorkService.modifyArtWork(ecmArtWorkQuery,code);
+    public ResponseDTO modifyArtWorks(EcmArtWorkQuery ecmArtWorkQuery){
+        return ecmArtWorkService.modifyArtWork(ecmArtWorkQuery);
     }
 	
 	/**
