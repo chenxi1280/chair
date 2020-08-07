@@ -37,7 +37,7 @@ import com.tencentcloudapi.sms.v20190711.models.SendStatus;
  * 
  * @author SJ
  */
-
+//TODO  所有的操作都要打上时间戳
 @Controller
 public class LoginController extends BaseController {
 	
@@ -64,24 +64,34 @@ public class LoginController extends BaseController {
      */
     @RequestMapping("/getConfirmCode")
     @ResponseBody
-	public void getConfirmCode() throws IOException {
-    	byte[] code = null;
-    	ByteArrayOutputStream out = new ByteArrayOutputStream();
-    	DefaultKaptcha produce = loginService.getConfirmCode();
-    	String createText = produce.createText();
-    	getRequstSession().setAttribute("regionCode", createText);
-    	BufferedImage bi = produce.createImage(createText);
-    	ImageIO.write(bi, "jpg", out);
-    	code = out.toByteArray();
-    	HttpServletResponse response = getResponse();
-    	response.setHeader("Cache-Control", "no-store");
-		response.setHeader("Pragma", "no-cache");
-		response.setDateHeader("Expires", 0);
-		response.setContentType("image/jpeg");
-		ServletOutputStream sout = response.getOutputStream();
-		sout.write(code);
-		sout.flush();
-		sout.close();
+	public void getConfirmCode() {
+    	ServletOutputStream sout = null;
+    	try {
+    		byte[] code = null;
+        	ByteArrayOutputStream out = new ByteArrayOutputStream();
+        	DefaultKaptcha produce = loginService.getConfirmCode();
+        	String createText = produce.createText();
+        	getRequstSession().setAttribute("regionCode", createText);
+        	BufferedImage bi = produce.createImage(createText);
+        	ImageIO.write(bi, "jpg", out);
+        	code = out.toByteArray();
+        	HttpServletResponse response = getResponse();
+        	response.setHeader("Cache-Control", "no-store");
+    		response.setHeader("Pragma", "no-cache");
+    		response.setDateHeader("Expires", 0);
+    		response.setContentType("image/jpeg");
+    		sout = response.getOutputStream();
+    		sout.write(code);
+    		sout.flush();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				sout.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
     
     /**
@@ -95,7 +105,7 @@ public class LoginController extends BaseController {
     	HttpSession session = getRequstSession();
      	String regionCode = (String) session.getAttribute("regionCode");
     	String inputPwd = ecmUserVo.getPassword();
-    	//TODO 以后在注册和登陆时都需要对password加密 String encrypt = MD5Utils.encrypt(inputPwd); 
+    	String encrypt = MD5Utils.encrypt(inputPwd); 
     	String confirmCode = ecmUserVo.getConfirmCode();
     	EcmUser ecmUser = new EcmUser();
     	ecmUser.setMobile(ecmUserVo.getMobile());
@@ -104,10 +114,10 @@ public class LoginController extends BaseController {
     	if (!regionCode.equals(confirmCode)) {
 			return ResponseDTO.fail("验证码错误");
 		}
-    	if (!password.equals(inputPwd)) {
+    	if (!password.equals(encrypt)) {
 			return ResponseDTO.fail("密码错误");
 		}
-    	//成功登录的话要修改数据库中用户最后登录的时间字段
+    	//TODO 成功登录的话要修改数据库中用户最后登录的时间字段
 		return ResponseDTO.ok("成功登录");
     }
     

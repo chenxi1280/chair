@@ -22,4 +22,9 @@ public class MD5Utils {
         return newPassword;
     }
     
+    public static void main(String[] args) {
+    	String encrypt = MD5Utils.encrypt("123456");
+    	System.out.println(encrypt);
+	}
+    
 }
