@@ -241,8 +241,8 @@
 		<if test="recordVo.password != null">
 			and `password` = #{recordVo.password,jdbcType=VARCHAR}
 		</if>
-		<if test="recordVo.emailUuid != null">
-			and email_uuid = #{recordVo.emailUuid,jdbcType=VARCHAR}
+		<if test="recordVo.token != null">
+			and email_uuid = #{recordVo.token,jdbcType=VARCHAR}
 		</if>
 		<if test="recordVo.isValid != null">
 			and is_valid = #{recordVo.isValid,jdbcType=VARCHAR}
@@ -257,10 +257,7 @@
 			and email = #{recordVo.email,jdbcType=VARCHAR}
 		</if>
 		<if test="recordVo.roles != null">
-			and roles = #{recordVo.roles,jdbcType=TIMESTAMP}
-		</if>
-		<if test="recordVo.token != null">
-			and roles = #{recordVo.token,jdbcType=TIMESTAMP}
+			and roles = #{recordVo.roles,jdbcType=VARCHAR}
 		</if>
 	</update>
 
