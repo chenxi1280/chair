@@ -14,11 +14,11 @@ public interface EcmUserService {
 	
 	boolean savaUser(EcmUser record);
 
-	void clearUUID(String token, String uuid);
+	void saveToken(EcmUser user, String email);
 
-	void updateIsValid(String token, String isValid);
+	boolean updatePwdByToken(EcmUser user, String token);
 
-	void updateUUID(String email, String uuid);
+	void updateEcmUserByMobile(EcmUser ecmUser, String mobile);
 
-	boolean updatePwdByToken(String token, String password);
+	void updateIsvalidByToken(EcmUser user, String token);
 }

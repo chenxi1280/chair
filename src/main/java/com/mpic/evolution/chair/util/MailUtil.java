@@ -25,14 +25,16 @@ import com.sun.mail.util.MailSSLSocketFactory;
 public class MailUtil{
 	
 	private String email;//收件人邮箱
-	private String content;//邮件内容
+	private String emailType;//邮件内容
 	private String subject;
+	private String uuid;
 	private String host = "smtp.163.com";// 指定发送邮件的主机smtp.qq.com(QQ)|smtp.163.com(网易)
-	public MailUtil(String email, String content,String subject) {
+	public MailUtil(String email, String emailType, String uuid, String subject) {
 		super();
 		this.email = email;
-		this.content = content;
+		this.emailType = emailType;
 		this.subject = subject;
+		this.uuid = uuid;
 	}
 
 	public void sendEmail() throws AddressException, MessagingException, GeneralSecurityException {
@@ -61,10 +63,40 @@ public class MailUtil{
 		// 设置邮件主题
 		message.setSubject(subject);
 		// 设置邮件内容
-		message.setContent(content, "text/html;charset=UTF-8");
+		message.setContent(this.getEmailContent(emailType, uuid), "text/html;charset=UTF-8");
 		// 发送邮件
 		Transport.send(message);
 		System.out.println("邮件发送成功");
+	}
+	
+	private String getEmailContent(String emailType, String uuid) {
+		String content = "";
+		if (emailType.equals("verification")) {
+			content = String.format("<html>" + 
+					"	<head></head>" + 
+					"	<body>" + 
+					"		<h1>这是一封激活邮件,激活请点击以下链接</h1>" + 
+					"		<h3><a href='http://192.168.1.10:8080/activateUser?token=%s" + 
+					"			 		'>http://192.168.1.10:8080/activateUser?token=%s" + 
+					"			 		</href>" + 
+					"		</h3>" + 
+					"	</body>" + 
+					"</html>"
+					,uuid,uuid);
+		}else {
+			content = String.format("<html>" + 
+					"	<head></head>" + 
+					"	<body>" + 
+					"		<h1>修改密码链接,请点击以下链接</h1>" + 
+					"		<h3><a href='http://192.168.1.9:8080/#/login/setpsd?token=%s" + 
+					"			 		'>http://192.168.1.9:8080/#/login/setpsd?token=%s" + 
+					"			 		</href>" + 
+					"		</h3>" + 
+					"	</body>" + 
+					"</html>"
+					,uuid,uuid);
+		}
+		return content;
 	}
 
 }

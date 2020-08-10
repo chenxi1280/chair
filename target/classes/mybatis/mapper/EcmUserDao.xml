@@ -190,45 +190,42 @@
       roles = #{roles,jdbcType=VARCHAR}
     where pk_user_id = #{pkUserId,jdbcType=INTEGER}
   </update>
+  
+  <update id="updateByMobile">
+    update ecm_user
+    set update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      `count` = #{record.count,jdbcType=INTEGER},
+      last_login_time = #{record.lastLoginTime,jdbcType=TIMESTAMP}
+      <!-- 此处以mobile作为条件之后会改为用户token -->
+    where  mobile = #{mobile,jdbcType=VARCHAR}
+  </update>
 	
-	<update id="updateTokenByEmail"
-	parameterType="com.mpic.evolution.chair.pojo.entity.EcmUser">
-	update 
-		ecm_user
-	set 
-		email_uuid = #{emailUuid,jdbcType=VARCHAR}
+	<update id="updateTokenByEmail">
+	update ecm_user
+    set email_uuid = #{record.emailUuid,jdbcType=VARCHAR},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      last_check_mail = #{record.lastCheckMail,jdbcType=TIMESTAMP}
 	where 
 		email = #{email,jdbcType=VARCHAR}
 </update>
-
-<update id="clearUUID"
-	parameterType="com.mpic.evolution.chair.pojo.entity.EcmUser">
-	update 
-		ecm_user
-	set 
-		email_uuid = #{uuid,jdbcType=VARCHAR}
-	where 
-		email_uuid = #{emailUuid,jdbcType=VARCHAR}
-</update>
 	
-	<update id="updateIsValidByUUID"
-	parameterType="com.mpic.evolution.chair.pojo.entity.EcmUser">
-	update 
-		ecm_user 
-	set
-		is_valid = #{isValid,jdbcType=VARCHAR}
+	<update id="updateIsvalidByToken">
+	update ecm_user
+    set email_uuid = #{record.emailUuid,jdbcType=VARCHAR},
+      is_valid = #{record.isValid,jdbcType=VARCHAR},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP}
 	where 
-	 	email_uuid = #{emailUuid,jdbcType=VARCHAR}
+	 	email_uuid = #{token,jdbcType=VARCHAR}
 </update>
 
-	<update id="updatePwdByToken"
-	parameterType="com.mpic.evolution.chair.pojo.entity.EcmUser">
-	update
-		ecm_user
-	set
-		`password` = #{password,jdbcType=VARCHAR}
+	<update id="updatePwdByToken">
+	update ecm_user
+    set `password` = #{record.password,jdbcType=VARCHAR},
+      email_uuid = #{record.emailUuid,jdbcType=VARCHAR},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      last_check_mail = #{record.lastCheckMail,jdbcType=TIMESTAMP}
 	where
-		email_uuid = #{emailUuid,jdbcType=VARCHAR}
+		email_uuid = #{token,jdbcType=VARCHAR}
 </update>
 
 	

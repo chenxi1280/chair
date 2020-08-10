@@ -25,26 +25,26 @@ public class EcmUserServiceImpl implements EcmUserService {
 	}
 
 	@Override
-	public void updateUUID(String email, String uuid) {
-		ecmUserDao.updateTokenByEmail(email,uuid);
+	public void saveToken(EcmUser user, String email) {
+		ecmUserDao.updateTokenByEmail(user,email);
 	}
 
 	@Override
-	public void updateIsValid(String token, String isValid) {
-		ecmUserDao.updateIsValidByUUID(token,isValid);
-	}
-
-	@Override
-	public void clearUUID(String token, String uuid) {
-		ecmUserDao.clearUUID(token, uuid);
-		
-	}
-
-	@Override
-	public boolean updatePwdByToken(String token, String password) {
-		int flag = ecmUserDao.updatePwdByToken(token, password);
+	public boolean updatePwdByToken(EcmUser user, String token) {
+		int flag = ecmUserDao.updatePwdByToken(user, token);
 		if (flag<0) return false;
 		return true;
+	}
+
+	@Override
+	public void updateEcmUserByMobile(EcmUser ecmUser, String mobile) {
+		 ecmUserDao.updateByMobile(ecmUser, mobile);
+	}
+
+	@Override
+	public void updateIsvalidByToken(EcmUser user, String token) {
+		ecmUserDao.updateIsvalidByToken(user,token);
+		
 	}
 
 }

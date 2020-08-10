@@ -1,5 +1,7 @@
 package com.mpic.evolution.chair.dao;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.mpic.evolution.chair.pojo.entity.EcmUser;
 
 public interface EcmUserDao {
@@ -14,15 +16,15 @@ public interface EcmUserDao {
     int updateByPrimaryKeySelective(EcmUser record);
 
     int updateByPrimaryKey(EcmUser record);
-    
-    int updateTokenByEmail(String email, String emailUuid);
-    
-    int updateIsValidByUUID(String emailUuid, String isValid);
-
-	int updatePwdByToken(String emailUuid, String password);
-
+	
     EcmUser selectByRecord(EcmUser record);
+    
+    int updateTokenByEmail(@Param("record") EcmUser record, String email);
+    
+    int updatePwdByToken(@Param("record") EcmUser record, String token);
 
-	void clearUUID(String emailUuid, String uuid);
+	void updateByMobile(@Param("record") EcmUser record, String mobile);
+ 
+	void updateIsvalidByToken(@Param("record") EcmUser record, String token);
 
 }
