@@ -69,7 +69,11 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
 	}
     @Override
-    public ResponseDTO addArtWorkNode(EcmArtworkNodes ecmArtworkNodes) {
+    public ResponseDTO saveArtWorkNode(EcmArtworkNodes ecmArtworkNodes) {
+    	if (ecmArtworkNodes.getIsleaf().equals("Y")){
+
+			return ResponseDTO.get(1 == ecmArtworkNodesDao.updateByPrimaryKeySelective(ecmArtworkNodes));
+		}
         return ResponseDTO.get(1 == ecmArtworkNodesDao.insert(ecmArtworkNodes));
     }
 
