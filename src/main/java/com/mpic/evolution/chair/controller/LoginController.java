@@ -4,7 +4,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Date;
-import java.util.Random;
 import java.util.UUID;
 
 import javax.annotation.Resource;
@@ -15,6 +14,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,6 +30,7 @@ import com.mpic.evolution.chair.service.EcmUserService;
 import com.mpic.evolution.chair.service.LoginService;
 import com.mpic.evolution.chair.util.MD5Utils;
 import com.mpic.evolution.chair.util.MailUtil;
+import com.mpic.evolution.chair.util.RandomUtil;
 import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 import com.tencentcloudapi.sms.v20190711.models.SendStatus;
 
@@ -99,9 +100,9 @@ public class LoginController extends BaseController {
      * @param ecmUserVo
      * @return
      */
-    @RequestMapping("login")
+    @RequestMapping("/login")
     @ResponseBody
-    public ResponseDTO loginByToken(EcmUserVo ecmUserVo) {
+    public ResponseDTO loginByToken(@RequestBody EcmUserVo ecmUserVo) {
     	HttpSession session = getRequstSession();
      	String regionCode = (String) session.getAttribute("regionCode");
     	String inputPwd = ecmUserVo.getPassword();
@@ -126,22 +127,22 @@ public class LoginController extends BaseController {
      * @param ecmUserVo
      * @return
      */
-	@RequestMapping("register")
+	@RequestMapping("/register")
 	@ResponseBody
-	public ResponseDTO registerByUserInfos(EcmUserVo ecmUserVo) {
+	public ResponseDTO registerByUserInfos(@RequestBody EcmUserVo ecmUserVo) {
 		//判断该用户是否已注册 根据isvalid=Y 和mobile
 		EcmUser user = new EcmUser();
 		user.setIsValid("Y");
 		user.setMobile(ecmUserVo.getMobile());
 		EcmUser userInfos = ecmUserService.getUserInfos(user);
-		if (!StringUtil.isNullOrEmpty(userInfos.getPkUserId().toString())) {
+		if (userInfos!=null && !StringUtil.isNullOrEmpty(userInfos.getPkUserId().toString())) {
 			return ResponseDTO.fail("该账号已注册");
 		}
 		//确认密码验证
 		if(!ecmUserVo.getPassword().equals(ecmUserVo.getConfirmPwd())) {
 			return ResponseDTO.fail("密码与确认密码不一致");
 		}
-		//验证码验证
+		// 验证码验证
 		HttpSession session = getRequstSession();
 		String regionCode = (String) session.getAttribute("regionCode");
 		String confirmCode = ecmUserVo.getConfirmCode();
@@ -149,14 +150,10 @@ public class LoginController extends BaseController {
 			return ResponseDTO.fail("验证码错误");
 		}
 		//短信验证
-		String mobile = ecmUserVo.getMobile();
+		String mobile = "86"+ecmUserVo.getMobile();
 		String inputPCC = ecmUserVo.getPhoneConfirmCode();
 		String[] phoneNumbers = {mobile};
-		String phoneConfirmCode = "";
-		Random random = new Random();
-        for (int i = 0; i < 6; i++) {
-        	phoneConfirmCode += random.nextInt(10);
-        }
+		String phoneConfirmCode = RandomUtil.getCode();
     	try {
 			SendStatus status = loginService.sendSMS(phoneConfirmCode,phoneNumbers);
 			if (!status.getCode().equals("Ok")) {
@@ -169,7 +166,7 @@ public class LoginController extends BaseController {
     	if (inputPCC.equals(phoneConfirmCode)) {
 			return ResponseDTO.fail("手机短信验证码错误");
 		}
-		//入库
+		//TODO 入库 修改用户其他信息如时间
 		EcmUser ecmUser = new EcmUser();
 		ecmUser.setUsername(ecmUserVo.getUsername());
 		ecmUser.setIsValid("N");
@@ -184,20 +181,31 @@ public class LoginController extends BaseController {
 	
 	@RequestMapping("/sendEmail")
 	@ResponseBody
-	public void sendEmail(EcmUserVo ecmUserVo) {	
-		//发送邮邮件 并更行数据库中的uuid值
+	public ResponseDTO sendEmail(@RequestBody EcmUserVo ecmUserVo) {
+		//TODO 删除UUID生成的-
 		String uuid = UUID.randomUUID().toString();//激活码
 		String emailType = ecmUserVo.getEmailType();
+		String subject = "账号激活";
+		if (!emailType.equals("verification")) {
+			subject = "修改密码";
+		}
 		String emailContent = this.getEmailContent(emailType, uuid);
-		MailUtil mailUtil = new MailUtil(ecmUserVo.getEmail(),emailContent);
-		mailUtil.sendEmail();
-		ecmUserService.updateUUID(ecmUserVo.getEmail(),uuid);
+		MailUtil mailUtil = new MailUtil(ecmUserVo.getEmail(),emailContent,subject);
+		//发送邮邮件 并更行数据库中的uuid值
+		try {	
+			mailUtil.sendEmail();
+			ecmUserService.updateUUID(ecmUserVo.getEmail(),uuid);
+			return ResponseDTO.ok("邮件发送成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseDTO.fail("邮件发送失败");
+		}
     }
 	
 	@RequestMapping("/activateUser")
 	@ResponseBody
 	public void activateUser(EcmUserVo ecmUserVo) {	
-		//用户点击链接后获取uuid  根据uuid来修改数据库中isvalid状态
+		//TODO 用户点击链接后获取uuid  根据uuid来修改数据库中isvalid状态 邮箱激活后还要修改激活时间
 		ecmUserService.updateIsValid(ecmUserVo.getToken(),"Y");
 		//修改掉uuid在数据库中的值
 		String uuid = UUID.randomUUID().toString();
@@ -206,18 +214,19 @@ public class LoginController extends BaseController {
 	
 	@RequestMapping("/forgetPwd")
 	@ResponseBody
-	public ResponseDTO forgetPassword(EcmUserVo ecmUserVo) {	
+	public ResponseDTO forgetPassword(@RequestBody EcmUserVo ecmUserVo) {	
 		//确认密码验证
 		String password = ecmUserVo.getPassword();
 		if(!password.equals(ecmUserVo.getConfirmPwd())) {
 			return ResponseDTO.fail("密码与确认密码不一致");
 		}
-		//修改掉数据库中的密码
+		//TODO 修改掉数据库中的密码 updatePwdByToken
+		//TODO password未加密
 		boolean flag = ecmUserService.updatePwdByToken(ecmUserVo.getToken(),password);
 		if (!flag) {
 			return ResponseDTO.ok("密码修改失败");
 		}
-		//修改掉uuid在数据库中的值
+		//TODO 修改掉uuid在数据库中的值 clearUUID
 		String uuid = UUID.randomUUID().toString();
 		ecmUserService.clearUUID(ecmUserVo.getToken(),uuid);
 		return ResponseDTO.fail("密码修改成功");
@@ -242,8 +251,8 @@ public class LoginController extends BaseController {
 					"	<head></head>" + 
 					"	<body>" + 
 					"		<h1>修改密码链接,请点击以下链接</h1>" + 
-					"		<h3><a href='http://192.168.1.10:8080/activateUser?token=%s" + 
-					"			 		'>http://192.168.1.10:8080/activateUser?token=%s" + 
+					"		<h3><a href='http://192.168.1.9:8080/#/login/setpsd?token=%s" + 
+					"			 		'>http://192.168.1.9:8080/#/login/setpsd?token=%s" + 
 					"			 		</href>" + 
 					"		</h3>" + 
 					"	</body>" + 
