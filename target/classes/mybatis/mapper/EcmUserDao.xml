@@ -190,43 +190,79 @@
       roles = #{roles,jdbcType=VARCHAR}
     where pk_user_id = #{pkUserId,jdbcType=INTEGER}
   </update>
-  
-  <update id="updateByMobile">
-    update ecm_user
-    set update_time = #{record.updateTime,jdbcType=TIMESTAMP},
-      `count` = #{record.count,jdbcType=INTEGER},
-      last_login_time = #{record.lastLoginTime,jdbcType=TIMESTAMP}
-      <!-- 此处以mobile作为条件之后会改为用户token -->
-    where  mobile = #{mobile,jdbcType=VARCHAR}
-  </update>
-	
-	<update id="updateTokenByEmail">
-	update ecm_user
-    set email_uuid = #{record.emailUuid,jdbcType=VARCHAR},
-      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
-      last_check_mail = #{record.lastCheckMail,jdbcType=TIMESTAMP}
-	where 
-		email = #{email,jdbcType=VARCHAR}
-</update>
-	
-	<update id="updateIsvalidByToken">
-	update ecm_user
-    set email_uuid = #{record.emailUuid,jdbcType=VARCHAR},
-      is_valid = #{record.isValid,jdbcType=VARCHAR},
-      update_time = #{record.updateTime,jdbcType=TIMESTAMP}
-	where 
-	 	email_uuid = #{token,jdbcType=VARCHAR}
-</update>
 
-	<update id="updatePwdByToken">
-	update ecm_user
-    set `password` = #{record.password,jdbcType=VARCHAR},
-      email_uuid = #{record.emailUuid,jdbcType=VARCHAR},
-      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
-      last_check_mail = #{record.lastCheckMail,jdbcType=TIMESTAMP}
-	where
-		email_uuid = #{token,jdbcType=VARCHAR}
-</update>
+	<update id="updateEcmUser">
+		update ecm_user
+		<set>
+			<if test="record.password != null">
+				`password` = #{record.password,jdbcType=VARCHAR},
+			</if>
+			<if test="record.emailUuid != null">
+				email_uuid = #{record.emailUuid,jdbcType=VARCHAR},
+			</if>
+			<if test="record.isValid != null">
+				is_valid = #{record.isValid,jdbcType=VARCHAR},
+			</if>
+			<if test="record.username != null">
+				username = #{record.username,jdbcType=VARCHAR},
+			</if>
+			<if test="record.mobile != null">
+				mobile = #{record.mobile,jdbcType=VARCHAR},
+			</if>
+			<if test="record.email != null">
+				email = #{record.email,jdbcType=VARCHAR},
+			</if>
+			<if test="record.createTime != null">
+				create_time = #{record.createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="record.updateTime != null">
+				update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="record.count != null">
+				`count` = #{record.count,jdbcType=INTEGER},
+			</if>
+			<if test="record.lastLoginTime != null">
+				last_login_time = #{record.lastLoginTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="record.cardCode != null">
+				card_code = #{record.cardCode,jdbcType=VARCHAR},
+			</if>
+			<if test="record.lastCheckMail != null">
+				last_check_mail = #{record.lastCheckMail,jdbcType=TIMESTAMP},
+			</if>
+			<if test="record.roles != null">
+				roles = #{record.roles,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where 1=1
+		<if test="recordVo.pkUserId != null">
+			and pk_user_id = #{recordVo.pkUserId,jdbcType=INTEGER}
+		</if>
+		<if test="recordVo.password != null">
+			and `password` = #{recordVo.password,jdbcType=VARCHAR}
+		</if>
+		<if test="recordVo.emailUuid != null">
+			and email_uuid = #{recordVo.emailUuid,jdbcType=VARCHAR}
+		</if>
+		<if test="recordVo.isValid != null">
+			and is_valid = #{recordVo.isValid,jdbcType=VARCHAR}
+		</if>
+		<if test="recordVo.username != null">
+			and username = #{recordVo.username,jdbcType=VARCHAR}
+		</if>
+		<if test="recordVo.mobile != null">
+			and mobile = #{recordVo.mobile,jdbcType=VARCHAR}
+		</if>
+		<if test="recordVo.email != null">
+			and email = #{recordVo.email,jdbcType=VARCHAR}
+		</if>
+		<if test="recordVo.roles != null">
+			and roles = #{recordVo.roles,jdbcType=TIMESTAMP}
+		</if>
+		<if test="recordVo.token != null">
+			and roles = #{recordVo.token,jdbcType=TIMESTAMP}
+		</if>
+	</update>
 
 	
   <select id="selectByRecord" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUser" resultMap="BaseResultMap">

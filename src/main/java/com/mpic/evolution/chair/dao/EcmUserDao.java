@@ -3,6 +3,7 @@ package com.mpic.evolution.chair.dao;
 import org.apache.ibatis.annotations.Param;
 
 import com.mpic.evolution.chair.pojo.entity.EcmUser;
+import com.mpic.evolution.chair.pojo.vo.EcmUserVo;
 
 public interface EcmUserDao {
     int deleteByPrimaryKey(Integer pkUserId);
@@ -19,12 +20,6 @@ public interface EcmUserDao {
 	
     EcmUser selectByRecord(EcmUser record);
     
-    int updateTokenByEmail(@Param("record") EcmUser record, String email);
-    
-    int updatePwdByToken(@Param("record") EcmUser record, String token);
-
-	void updateByMobile(@Param("record") EcmUser record, String mobile);
- 
-	void updateIsvalidByToken(@Param("record") EcmUser record, String token);
+    int updateEcmUser(@Param("record") EcmUser record,@Param("recordVo") EcmUserVo ecmUserVo);
 
 }

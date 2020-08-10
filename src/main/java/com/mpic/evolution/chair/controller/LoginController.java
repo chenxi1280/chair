@@ -127,7 +127,7 @@ public class LoginController extends BaseController {
     	user.setCount(count);
     	user.setLastLoginTime(new Date());
     	user.setUpdateTime(new Date());
-    	ecmUserService.updateEcmUserByMobile(user, ecmUserVo.getMobile());
+    	ecmUserService.updateEcmUserByMobile(user, ecmUserVo);
 		return ResponseDTO.ok("成功登录");
     }
     
@@ -222,7 +222,7 @@ public class LoginController extends BaseController {
 			user.setEmailUuid(uuid);
 			user.setUpdateTime(new Date());
 			user.setLastCheckMail(new Date());
-			ecmUserService.saveToken(user,ecmUserVo.getEmail());//发送邮邮件 并更新emailUuid值
+			ecmUserService.saveToken(user,ecmUserVo);//发送邮邮件 并更新emailUuid值
 			return ResponseDTO.ok("邮件发送成功");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -244,7 +244,7 @@ public class LoginController extends BaseController {
 		user.setEmailUuid(uuid);//修改掉emailUuid在数据库中的值
 		user.setIsValid("Y");
 		user.setUpdateTime(new Date());//修改updateTime字段
-		ecmUserService.updateIsvalidByToken(user,ecmUserVo.getToken());
+		ecmUserService.updateIsvalidByToken(user,ecmUserVo);
     }
 	
 	/**
@@ -266,7 +266,7 @@ public class LoginController extends BaseController {
 		user.setPassword(MD5Utils.encrypt(password));//修改后的密码以MD5加密入库
 		user.setLastCheckMail(new Date());//发送了邮件做跳转 故修改last_check_mail字段
 		user.setUpdateTime(new Date());//修改updateTime字段
-		boolean flag = ecmUserService.updatePwdByToken(user,ecmUserVo.getToken());
+		boolean flag = ecmUserService.updatePwdByToken(user,ecmUserVo);
 		if (!flag) {
 			return ResponseDTO.ok("密码修改失败");
 		}

@@ -1,6 +1,7 @@
 package com.mpic.evolution.chair.service;
 
 import com.mpic.evolution.chair.pojo.entity.EcmUser;
+import com.mpic.evolution.chair.pojo.vo.EcmUserVo;
 
 /**
  * 
@@ -14,11 +15,11 @@ public interface EcmUserService {
 	
 	boolean savaUser(EcmUser record);
 
-	void saveToken(EcmUser user, String email);
+	void saveToken(EcmUser user, EcmUserVo userVo);
 
-	boolean updatePwdByToken(EcmUser user, String token);
+	boolean updatePwdByToken(EcmUser user, EcmUserVo userVo);
 
-	void updateEcmUserByMobile(EcmUser ecmUser, String mobile);
+	void updateEcmUserByMobile(EcmUser ecmUser, EcmUserVo userVo);
 
-	void updateIsvalidByToken(EcmUser user, String token);
+	void updateIsvalidByToken(EcmUser user, EcmUserVo userVo);
 }
