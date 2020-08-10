@@ -18,7 +18,6 @@ public class ResponseDTO implements Serializable {
      */
     private String msg;
 
-
     /**
      * 返回成功的消息
      */

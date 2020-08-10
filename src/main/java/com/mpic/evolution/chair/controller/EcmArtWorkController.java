@@ -38,7 +38,7 @@ public class EcmArtWorkController {
     //TODO 用户登陆的标识符来查不是id
     @RequestMapping("/getArtWorks")
     @ResponseBody
-    public ResponseDTO getArtWorks(EcmArtWorkQuery ecmArtWorkQuery){
+    public ResponseDTO getArtWorks(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
         return ecmArtWorkService.getArtWorks(ecmArtWorkQuery);
     }
 
@@ -55,7 +55,7 @@ public class EcmArtWorkController {
      */
     @RequestMapping("/getArtWork")
     @ResponseBody
-    public ResponseDTO getArtWork(EcmArtWorkQuery ecmArtWorkQuery){
+    public ResponseDTO getArtWork(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
 
         return ecmArtWorkService.getArtWork(ecmArtWorkQuery);
     }
@@ -70,9 +70,12 @@ public class EcmArtWorkController {
      *       保存失败： status 500  msg ”error“
      */
     @ResponseBody
-    @RequestMapping("/addArtWorkNode")
-    public ResponseDTO addArtWorkNod(EcmArtworkNodes ecmArtworkNodes){
-        return ecmArtWorkService.addArtWorkNode(ecmArtworkNodes);
+    @RequestMapping("/saveArtWorkNode")
+    public ResponseDTO saveArtWorkNod(@RequestBody EcmArtworkNodes ecmArtworkNodes){
+        if (ecmArtworkNodes.getParentId() == null){
+            return ResponseDTO.fail("父节点id为空");
+        }
+        return ecmArtWorkService.saveArtWorkNode(ecmArtworkNodes);
     }
 
 
