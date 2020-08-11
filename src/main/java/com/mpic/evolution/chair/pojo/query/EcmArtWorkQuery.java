@@ -13,12 +13,12 @@ public class EcmArtWorkQuery extends PageQuery {
 
 
     /**
-     * 作品id
+     * 	作品id
      */
     private Integer pkArtworkId;
 
     /**
-     * 作者id
+     * 	作者id
      */
     private Integer fkUserid;
 
@@ -42,5 +42,10 @@ public class EcmArtWorkQuery extends PageQuery {
      * 	作品封面存储位置，绝对路径
      */
     private String logoPath;
+    
+    /**
+     * 	用户token
+     */
+    private String token;
 
 }

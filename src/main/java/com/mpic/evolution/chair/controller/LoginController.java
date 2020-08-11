@@ -22,11 +22,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import com.hazelcast.util.StringUtil;
+import com.mpic.evolution.chair.common.constant.SecretKeyConstants;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmUser;
 import com.mpic.evolution.chair.pojo.vo.EcmUserVo;
 import com.mpic.evolution.chair.service.EcmUserService;
 import com.mpic.evolution.chair.service.LoginService;
+import com.mpic.evolution.chair.util.EncryptUtil;
+import com.mpic.evolution.chair.util.JWTUtil;
 import com.mpic.evolution.chair.util.MD5Utils;
 import com.mpic.evolution.chair.util.MailUtil;
 import com.mpic.evolution.chair.util.RandomUtil;
@@ -113,22 +116,28 @@ public class LoginController extends BaseController {
     	String inputPwd = ecmUserVo.getPassword();
     	String encrypt = MD5Utils.encrypt(inputPwd); 
     	EcmUser ecmUser = new EcmUser();
-    	//TODO  根据手机号获取用户信息 后续改成token
+    	// 根据mobile获取用户信息 后续改成token
     	ecmUser.setMobile(ecmUserVo.getMobile());
     	EcmUser userInfos = ecmUserService.getUserInfos(ecmUser);
     	String password = userInfos.getPassword();
     	if (!password.equals(encrypt)) {
 			return ResponseDTO.fail("密码错误");
 		}
-    	//TODO 所有功能完善以后，会将mobile改成用户token
+    	// 设置token
+    	String token = JWTUtil.sign(String.valueOf(userInfos.getPkUserId()), 
+    			userInfos.getUsername(), 
+    			SecretKeyConstants.jwtSecretKey);
+    	//根据userId 修改用户信息
     	EcmUser user = new EcmUser();
+    	EcmUserVo userVo = new EcmUserVo();
+    	userVo.setPkUserId(userInfos.getPkUserId());
     	Integer count = userInfos.getCount();
     	++count;
     	user.setCount(count);
     	user.setLastLoginTime(new Date());
     	user.setUpdateTime(new Date());
-    	ecmUserService.updateEcmUserByMobile(user, ecmUserVo);
-		return ResponseDTO.ok("成功登录");
+    	ecmUserService.updateEcmUserByMobile(user, userVo);
+		return ResponseDTO.ok("登陆成功", token);
     }
     
     /**
@@ -163,15 +172,21 @@ public class LoginController extends BaseController {
     	if (inputPCC.equals(phoneConfirmCode)) {
 			return ResponseDTO.fail("手机短信验证码错误");
 		}
-		//入库 TODO 用户敏感信息需要加密
+		//入库
 		EcmUser ecmUser = new EcmUser();
 		ecmUser.setUsername(ecmUserVo.getUsername());
 		ecmUser.setIsValid("N");
 		ecmUser.setRoles("1");
 		ecmUser.setCreateTime(new Date());
 		ecmUser.setUpdateTime(new Date());
-		ecmUser.setMobile(ecmUserVo.getMobile());
-		ecmUser.setEmail(ecmUserVo.getEmail());
+		try {
+			// 用户敏感信息需要加密 可反解
+			ecmUser.setMobile(EncryptUtil.aesEncrypt(ecmUserVo.getMobile(), SecretKeyConstants.secretKey));
+			ecmUser.setEmail(EncryptUtil.aesEncrypt(ecmUserVo.getEmail(), SecretKeyConstants.secretKey));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseDTO.fail("加密失败", null, null, 501);
+		}
 		ecmUser.setPassword(MD5Utils.encrypt(ecmUserVo.getPassword()));
 		ecmUserService.savaUser(ecmUser);
 		return ResponseDTO.ok("注册成功");

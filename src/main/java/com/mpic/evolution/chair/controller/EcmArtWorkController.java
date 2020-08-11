@@ -13,6 +13,7 @@ import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
 import com.mpic.evolution.chair.service.EcmArtWorkService;
+import com.mpic.evolution.chair.util.JWTUtil;
 
 /**
  * @author cxd
@@ -28,17 +29,19 @@ public class EcmArtWorkController {
     /**
      * @param: [ecmArtWorkQuery] 传入的 查询参数 查询参数可以有 用户id，作品名称（模糊），视频状态，类型（当前模糊）
      * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
-     * @author: cxd
+     * @author: SJ
      * @Date: 2020/8/5
-     * 描述 : 按照条件查询作品
+     * 	描述 : 按照条件查询作品
      *       保存成功: status 200  msg "success” data: 数据
      *       保存失败: status 500  msg "error“
      *      
      */
-    //TODO 用户登陆的标识符来查不是id
     @RequestMapping("/getArtWorks")
     @ResponseBody
     public ResponseDTO getArtWorks(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
+    	String token = ecmArtWorkQuery.getToken();
+    	Integer userId = Integer.parseInt(JWTUtil.getUserId(token));
+    	ecmArtWorkQuery.setFkUserid(userId);
         return ecmArtWorkService.getArtWorks(ecmArtWorkQuery);
     }
 
