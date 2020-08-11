@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.annotation.PostConstruct;
@@ -13,6 +14,7 @@ import java.util.TimeZone;
 @MapperScan(basePackages =  {"com.mpic.evolution.chair.dao"})
 @EnableTransactionManagement
 @SpringBootApplication
+@EnableCaching
 public class ChairApplication {
     Logger logger = LoggerFactory.getLogger(ChairApplication.class);
 

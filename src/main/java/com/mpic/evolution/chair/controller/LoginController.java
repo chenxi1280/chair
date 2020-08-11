@@ -75,7 +75,8 @@ public class LoginController extends BaseController {
         	ByteArrayOutputStream out = new ByteArrayOutputStream();
         	DefaultKaptcha produce = loginService.getConfirmCode();
         	String createText = produce.createText();
-        	getRequstSession().setAttribute("regionCode", createText);
+        	HttpSession session = getRequstSession();
+        	session.setAttribute("regionCode", createText);
         	BufferedImage bi = produce.createImage(createText);
         	ImageIO.write(bi, "jpg", out);
         	code = out.toByteArray();
@@ -161,6 +162,7 @@ public class LoginController extends BaseController {
 		}
 		// 验证码验证
 		HttpSession session = getRequstSession();
+		System.out.println(session);
 		String regionCode = (String) session.getAttribute("regionCode");
 		String confirmCode = ecmUserVo.getConfirmCode();
 		if (!regionCode.equals(confirmCode)) {
