@@ -4,7 +4,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Date;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
@@ -31,6 +30,7 @@ import com.mpic.evolution.chair.util.JWTUtil;
 import com.mpic.evolution.chair.util.MD5Utils;
 import com.mpic.evolution.chair.util.MailUtil;
 import com.mpic.evolution.chair.util.RandomUtil;
+import com.mpic.evolution.chair.util.RedisUtil;
 import com.mpic.evolution.chair.util.UUIDUtil;
 import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 import com.tencentcloudapi.sms.v20190711.models.SendStatus;
@@ -52,7 +52,8 @@ public class LoginController extends BaseController {
 	@Resource
 	EcmUserService ecmUserService;
 	
-	private ConcurrentHashMap<String,String> map = new ConcurrentHashMap<String,String>();
+	@Resource
+	RedisUtil redisUtil;
 	
 	/**
 	 * abandon! it is going to user in the future
@@ -67,8 +68,7 @@ public class LoginController extends BaseController {
     
     /**
      * 	获取图片验证码接口
-     *	 以流的形式传到前端
-     * @throws IOException
+     *	 以BASE64转码的字符串传到前端
      */
     @RequestMapping("/getConfirmCode")
     @ResponseBody
@@ -79,7 +79,8 @@ public class LoginController extends BaseController {
     	DefaultKaptcha produce = loginService.getConfirmCode();
     	String createText = produce.createText();
     	String uuid = UUIDUtil.getUUID();
-    	map.put(uuid, createText);
+    	boolean flag = redisUtil.set(uuid, createText,10L);
+    	if (!flag) return ResponseDTO.fail("验证码redis缓存失败");
     	BufferedImage bi = produce.createImage(createText);
     	try {
 			ImageIO.write(bi, "jpg", out);
@@ -104,8 +105,8 @@ public class LoginController extends BaseController {
     @RequestMapping("/login")
     @ResponseBody
     public ResponseDTO loginByToken(@RequestBody EcmUserVo ecmUserVo) {
-     	String regionCode = ecmUserVo.getImageCodeKey();
     	String confirmCode = ecmUserVo.getConfirmCode();
+    	String regionCode = String.valueOf(redisUtil.get(ecmUserVo.getImageCodeKey()));
     	if (!regionCode.equals(confirmCode)) {
 			return ResponseDTO.fail("验证码错误");
 		}
@@ -156,14 +157,14 @@ public class LoginController extends BaseController {
 			return ResponseDTO.fail("密码与确认密码不一致");
 		}
 		// 验证码验证
-		String regionCode = map.get(ecmUserVo.getImageCodeKey());
+		String regionCode = String.valueOf(redisUtil.get(ecmUserVo.getImageCodeKey()));
 		String confirmCode = ecmUserVo.getConfirmCode();
 		if (!regionCode.equals(confirmCode)) {
 			return ResponseDTO.fail("验证码错误");
 		}
 		//短信验证码验证
 		String inputPCC = ecmUserVo.getPhoneConfirmCode();
-		String phoneConfirmCode = map.get(ecmUserVo.getPhoneCodeKey());
+		String phoneConfirmCode = String.valueOf(redisUtil.get(ecmUserVo.getPhoneCodeKey()));
     	if (inputPCC.equals(phoneConfirmCode)) {
 			return ResponseDTO.fail("手机短信验证码错误");
 		}
@@ -202,7 +203,8 @@ public class LoginController extends BaseController {
 		String phoneCodeKey = "";
     	try {
     		phoneCodeKey = EncryptUtil.aesEncrypt(ecmUserVo.getMobile(), SecretKeyConstants.secretKey);
-    		map.put(phoneCodeKey, phoneConfirmCode);
+    		boolean flag = redisUtil.set(phoneCodeKey, phoneConfirmCode, 10L);
+    		if (!flag) return ResponseDTO.fail("手机验证码缓存失败");
 			SendStatus status = loginService.sendSMS(phoneConfirmCode,phoneNumbers);
 			if (!status.getCode().equals("Ok")) {
 				return ResponseDTO.fail("手机验证码发送失败："+status.getMessage());
@@ -288,40 +290,5 @@ public class LoginController extends BaseController {
 		}
 		return ResponseDTO.fail("密码修改成功");
     }
-	
-	
-	/*@RequestMapping("/getConfirmCode")
-    @ResponseBody
-	public void getConfirmCode() {
-		//以流的形式传图片到前端
-    	ServletOutputStream sout = null;
-    	try {
-    		byte[] code = null;
-        	ByteArrayOutputStream out = new ByteArrayOutputStream();
-        	DefaultKaptcha produce = loginService.getConfirmCode();
-        	String createText = produce.createText();
-        	HttpSession session = getRequstSession();
-        	session.setAttribute("regionCode", createText);
-        	BufferedImage bi = produce.createImage(createText);
-        	ImageIO.write(bi, "jpg", out);
-        	code = out.toByteArray();
-        	HttpServletResponse response = getResponse();
-        	response.setHeader("Cache-Control", "no-store");
-    		response.setHeader("Pragma", "no-cache");
-    		response.setDateHeader("Expires", 0);
-    		response.setContentType("image/jpeg");
-    		sout = response.getOutputStream();
-    		sout.write(code);
-    		sout.flush();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}finally {
-			try {
-				sout.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}*/
     
 }
