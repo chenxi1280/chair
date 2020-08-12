@@ -15,4 +15,9 @@ public class EcmUserVo extends EcmUser {
 	private String token;//用户的身份识别符
 	
 	private String emailType;//邮箱验证类型 fogetPwd忘记密码 verification邮箱验证
+	
+	private String imageCodeKey;//图片验证码key
+	
+	private String phoneCodeKey;//手机验证码
+	
 }

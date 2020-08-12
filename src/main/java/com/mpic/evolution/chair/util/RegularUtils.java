@@ -3,6 +3,8 @@ package com.mpic.evolution.chair.util;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.mpic.evolution.chair.common.constant.RegularPatternConstants;
+
 /**
  * 
  * 类名称：  RegularUtils   

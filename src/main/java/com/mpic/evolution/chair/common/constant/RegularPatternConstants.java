@@ -1,4 +1,4 @@
-package com.mpic.evolution.chair.util;
+package com.mpic.evolution.chair.common.constant;
 
 /**
  * 
@@ -9,7 +9,7 @@ package com.mpic.evolution.chair.util;
  * 修改备注：
  *
  */
-public class RegularPatternConstants {
+public interface RegularPatternConstants {
     /**
      * 数字
      */

@@ -4,12 +4,11 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Date;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
-import javax.servlet.http.HttpSession;
 
-import io.netty.util.internal.StringUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.code.kaptcha.impl.DefaultKaptcha;
-
 import com.mpic.evolution.chair.common.constant.SecretKeyConstants;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmUser;
@@ -36,6 +35,7 @@ import com.mpic.evolution.chair.util.UUIDUtil;
 import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 import com.tencentcloudapi.sms.v20190711.models.SendStatus;
 
+import io.netty.util.internal.StringUtil;
 import sun.misc.BASE64Encoder;
 
 /**
@@ -51,6 +51,8 @@ public class LoginController extends BaseController {
 	
 	@Resource
 	EcmUserService ecmUserService;
+	
+	private ConcurrentHashMap<String,String> map = new ConcurrentHashMap<String,String>();
 	
 	/**
 	 * abandon! it is going to user in the future
@@ -72,11 +74,12 @@ public class LoginController extends BaseController {
     @ResponseBody
 	public ResponseDTO getConfirmCode() {
 		byte[] code = null;
+		JSONObject data = new JSONObject();
     	ByteArrayOutputStream out = new ByteArrayOutputStream();
     	DefaultKaptcha produce = loginService.getConfirmCode();
     	String createText = produce.createText();
-    	HttpSession session = getRequstSession();
-    	session.setAttribute("regionCode", createText);
+    	String uuid = UUIDUtil.getUUID();
+    	map.put(uuid, createText);
     	BufferedImage bi = produce.createImage(createText);
     	try {
 			ImageIO.write(bi, "jpg", out);
@@ -87,7 +90,9 @@ public class LoginController extends BaseController {
 		}
     	BASE64Encoder encoder = new BASE64Encoder();
         String base64Str = encoder.encode(code);
-		return ResponseDTO.ok("获取验证码成功", base64Str);
+        data.put("imageCodeKey", uuid);
+        data.put("base64Str", base64Str);
+		return ResponseDTO.ok("获取验证码成功", data);
 	}
     
     /**
@@ -99,8 +104,7 @@ public class LoginController extends BaseController {
     @RequestMapping("/login")
     @ResponseBody
     public ResponseDTO loginByToken(@RequestBody EcmUserVo ecmUserVo) {
-    	HttpSession session = getRequstSession();
-     	String regionCode = (String) session.getAttribute("regionCode");
+     	String regionCode = ecmUserVo.getImageCodeKey();
     	String confirmCode = ecmUserVo.getConfirmCode();
     	if (!regionCode.equals(confirmCode)) {
 			return ResponseDTO.fail("验证码错误");
@@ -152,16 +156,14 @@ public class LoginController extends BaseController {
 			return ResponseDTO.fail("密码与确认密码不一致");
 		}
 		// 验证码验证
-		HttpSession session = getRequstSession();
-		System.out.println(session);
-		String regionCode = (String) session.getAttribute("regionCode");
+		String regionCode = map.get(ecmUserVo.getImageCodeKey());
 		String confirmCode = ecmUserVo.getConfirmCode();
 		if (!regionCode.equals(confirmCode)) {
 			return ResponseDTO.fail("验证码错误");
 		}
 		//短信验证码验证
 		String inputPCC = ecmUserVo.getPhoneConfirmCode();
-		String phoneConfirmCode = (String) session.getAttribute("phoneConfirmCode");
+		String phoneConfirmCode = map.get(ecmUserVo.getPhoneCodeKey());
     	if (inputPCC.equals(phoneConfirmCode)) {
 			return ResponseDTO.fail("手机短信验证码错误");
 		}
@@ -193,11 +195,14 @@ public class LoginController extends BaseController {
 	@RequestMapping("/sendSMS")
 	@ResponseBody
 	public ResponseDTO sendShortMessage(@RequestBody EcmUserVo ecmUserVo) {
+		JSONObject data = new JSONObject();
 		String mobile = "86"+ecmUserVo.getMobile();
 		String[] phoneNumbers = {mobile};
 		String phoneConfirmCode = RandomUtil.getCode();
-		getRequstSession().setAttribute("phoneConfirmCode", phoneConfirmCode);
+		String phoneCodeKey = "";
     	try {
+    		phoneCodeKey = EncryptUtil.aesEncrypt(ecmUserVo.getMobile(), SecretKeyConstants.secretKey);
+    		map.put(phoneCodeKey, phoneConfirmCode);
 			SendStatus status = loginService.sendSMS(phoneConfirmCode,phoneNumbers);
 			if (!status.getCode().equals("Ok")) {
 				return ResponseDTO.fail("手机验证码发送失败："+status.getMessage());
@@ -205,8 +210,11 @@ public class LoginController extends BaseController {
 		} catch (TencentCloudSDKException e) {
 			e.printStackTrace();
 			return ResponseDTO.fail("手机验证码发送失败");
+		}catch (Exception e1) {
+			e1.printStackTrace();
+			return ResponseDTO.fail("用户信息加密失败");
 		}
-		return ResponseDTO.ok("手机验证码发送成功");
+		return ResponseDTO.ok("手机验证码发送成功",data.put("phoneCodeKey", phoneCodeKey));
 	}
 	
 	/**
