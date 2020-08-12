@@ -17,8 +17,8 @@ public interface EcmArtWorkService {
      * @author: cxd
      * @Date: 2020/8/5
      * 描述 :  按照条件查询作品
-     *        保存成功: status 200  msg "success” data: 数据
-     *        保存失败: status 500  msg "error“
+     *        保存成功: status 200  msg "success" data: 数据
+     *        保存失败: status 500  msg "error"
      */
     ResponseDTO getArtWorks(EcmArtWorkQuery ecmArtWorkQuery);
 

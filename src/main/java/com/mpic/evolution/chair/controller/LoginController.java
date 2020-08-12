@@ -7,8 +7,6 @@ import java.util.Date;
 
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.http.HttpStatus;
@@ -37,6 +35,8 @@ import com.mpic.evolution.chair.util.UUIDUtil;
 import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 import com.tencentcloudapi.sms.v20190711.models.SendStatus;
 
+import sun.misc.BASE64Encoder;
+
 /**
  * 
  * @author SJ
@@ -64,39 +64,29 @@ public class LoginController extends BaseController {
     
     /**
      * 	获取图片验证码接口
+     *	 以流的形式传到前端
      * @throws IOException
      */
     @RequestMapping("/getConfirmCode")
     @ResponseBody
-	public void getConfirmCode() {
-    	ServletOutputStream sout = null;
+	public ResponseDTO getConfirmCode() {
+		byte[] code = null;
+    	ByteArrayOutputStream out = new ByteArrayOutputStream();
+    	DefaultKaptcha produce = loginService.getConfirmCode();
+    	String createText = produce.createText();
+    	HttpSession session = getRequstSession();
+    	session.setAttribute("regionCode", createText);
+    	BufferedImage bi = produce.createImage(createText);
     	try {
-    		byte[] code = null;
-        	ByteArrayOutputStream out = new ByteArrayOutputStream();
-        	DefaultKaptcha produce = loginService.getConfirmCode();
-        	String createText = produce.createText();
-        	HttpSession session = getRequstSession();
-        	session.setAttribute("regionCode", createText);
-        	BufferedImage bi = produce.createImage(createText);
-        	ImageIO.write(bi, "jpg", out);
-        	code = out.toByteArray();
-        	HttpServletResponse response = getResponse();
-        	response.setHeader("Cache-Control", "no-store");
-    		response.setHeader("Pragma", "no-cache");
-    		response.setDateHeader("Expires", 0);
-    		response.setContentType("image/jpeg");
-    		sout = response.getOutputStream();
-    		sout.write(code);
-    		sout.flush();
-		} catch (Exception e) {
+			ImageIO.write(bi, "jpg", out);
+	    	code = out.toByteArray();
+		} catch (IOException e) {
 			e.printStackTrace();
-		}finally {
-			try {
-				sout.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			return ResponseDTO.fail("验证码生成失败");
 		}
+    	BASE64Encoder encoder = new BASE64Encoder();
+        String base64Str = encoder.encode(code);
+		return ResponseDTO.ok("获取验证码成功", base64Str);
 	}
     
     /**
@@ -290,4 +280,39 @@ public class LoginController extends BaseController {
 		return ResponseDTO.fail("密码修改成功");
     }
 	
+	
+	/*@RequestMapping("/getConfirmCode")
+    @ResponseBody
+	public void getConfirmCode() {
+		//以流的形式传图片到前端
+    	ServletOutputStream sout = null;
+    	try {
+    		byte[] code = null;
+        	ByteArrayOutputStream out = new ByteArrayOutputStream();
+        	DefaultKaptcha produce = loginService.getConfirmCode();
+        	String createText = produce.createText();
+        	HttpSession session = getRequstSession();
+        	session.setAttribute("regionCode", createText);
+        	BufferedImage bi = produce.createImage(createText);
+        	ImageIO.write(bi, "jpg", out);
+        	code = out.toByteArray();
+        	HttpServletResponse response = getResponse();
+        	response.setHeader("Cache-Control", "no-store");
+    		response.setHeader("Pragma", "no-cache");
+    		response.setDateHeader("Expires", 0);
+    		response.setContentType("image/jpeg");
+    		sout = response.getOutputStream();
+    		sout.write(code);
+    		sout.flush();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				sout.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}*/
+    
 }

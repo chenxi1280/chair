@@ -120,7 +120,7 @@ public class JWTUtil {
     }
     
     public static void main(String[] args) {
-		String token = JWTUtil.sign("74", "张三", SecretKeyConstants.jwtSecretKey);
+		String token = JWTUtil.sign("1352", "12313", SecretKeyConstants.jwtSecretKey);
 		System.out.println(token);
 		String userId = JWTUtil.getUserId(token);
 		System.out.println(userId);
