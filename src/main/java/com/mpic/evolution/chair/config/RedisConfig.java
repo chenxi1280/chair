@@ -1,4 +1,4 @@
-package com.mpic.evolution.chair;
+package com.mpic.evolution.chair.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
