@@ -79,7 +79,7 @@ public class LoginController extends BaseController {
     	DefaultKaptcha produce = loginService.getConfirmCode();
     	String createText = produce.createText();
     	String uuid = UUIDUtil.getUUID();
-    	boolean flag = redisUtil.set(uuid, createText,10L);
+    	boolean flag = redisUtil.set(uuid, createText,300L);
     	if (!flag) return ResponseDTO.fail("验证码redis缓存失败");
     	BufferedImage bi = produce.createImage(createText);
     	try {
@@ -114,7 +114,12 @@ public class LoginController extends BaseController {
     	String encrypt = MD5Utils.encrypt(inputPwd); 
     	EcmUser ecmUser = new EcmUser();
     	// 根据mobile获取用户信息 后续改成token
-    	ecmUser.setMobile(ecmUserVo.getMobile());
+    	try {
+			ecmUser.setMobile(EncryptUtil.aesEncrypt(ecmUserVo.getMobile(), SecretKeyConstants.secretKey));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseDTO.fail("用户信息加密失败，请重新登录");
+		}
     	EcmUser userInfos = ecmUserService.getUserInfos(ecmUser);
     	String password = userInfos.getPassword();
     	if (!password.equals(encrypt)) {
@@ -128,6 +133,7 @@ public class LoginController extends BaseController {
     	EcmUser user = new EcmUser();
     	EcmUserVo userVo = new EcmUserVo();
     	userVo.setPkUserId(userInfos.getPkUserId());
+    	//TODO  count 初始时没有count 在注册时设置为0
     	Integer count = userInfos.getCount();
     	++count;
     	user.setCount(count);
@@ -165,7 +171,7 @@ public class LoginController extends BaseController {
 		//短信验证码验证
 		String inputPCC = ecmUserVo.getPhoneConfirmCode();
 		String phoneConfirmCode = String.valueOf(redisUtil.get(ecmUserVo.getPhoneCodeKey()));
-    	if (inputPCC.equals(phoneConfirmCode)) {
+    	if (!inputPCC.equals(phoneConfirmCode)) {
 			return ResponseDTO.fail("手机短信验证码错误");
 		}
 		//入库
@@ -203,8 +209,9 @@ public class LoginController extends BaseController {
 		String phoneCodeKey = "";
     	try {
     		phoneCodeKey = EncryptUtil.aesEncrypt(ecmUserVo.getMobile(), SecretKeyConstants.secretKey);
-    		boolean flag = redisUtil.set(phoneCodeKey, phoneConfirmCode, 10L);
+    		boolean flag = redisUtil.set(phoneCodeKey, phoneConfirmCode, 300L);
     		if (!flag) return ResponseDTO.fail("手机验证码缓存失败");
+    		data.put("phoneCodeKey", phoneCodeKey);
 			SendStatus status = loginService.sendSMS(phoneConfirmCode,phoneNumbers);
 			if (!status.getCode().equals("Ok")) {
 				return ResponseDTO.fail("手机验证码发送失败："+status.getMessage());
@@ -216,7 +223,7 @@ public class LoginController extends BaseController {
 			e1.printStackTrace();
 			return ResponseDTO.fail("用户信息加密失败");
 		}
-		return ResponseDTO.ok("手机验证码发送成功",data.put("phoneCodeKey", phoneCodeKey));
+		return ResponseDTO.ok("手机验证码发送成功",data);
 	}
 	
 	/**
@@ -233,6 +240,7 @@ public class LoginController extends BaseController {
 		if (!emailType.equals("verification")) {
 			subject = "修改密码";
 		}
+		//TODO 如果是修改密码我需要根据传递的手机号来查询邮箱发送邮件
 		MailUtil mailUtil = new MailUtil(ecmUserVo.getEmail(),emailType,uuid,subject);
 		try {	
 			mailUtil.sendEmail();
@@ -240,7 +248,8 @@ public class LoginController extends BaseController {
 			user.setEmailUuid(uuid);
 			user.setUpdateTime(new Date());
 			user.setLastCheckMail(new Date());
-			ecmUserService.saveToken(user,ecmUserVo);//发送邮邮件 并更新emailUuid值
+			ecmUserVo.setEmail(EncryptUtil.aesEncrypt(ecmUserVo.getEmail(), SecretKeyConstants.secretKey));
+			ecmUserService.saveToken(user,ecmUserVo);//发送邮邮件 并更新emailUuid值	
 			return ResponseDTO.ok("邮件发送成功");
 		} catch (Exception e) {
 			e.printStackTrace();
