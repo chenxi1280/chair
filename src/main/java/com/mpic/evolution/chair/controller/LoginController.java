@@ -222,7 +222,7 @@ public class LoginController extends BaseController {
 			return ResponseDTO.fail("手机验证码发送失败");
 		}catch (Exception e1) {
 			e1.printStackTrace();
-			return ResponseDTO.fail("用户信息加密失败");
+			return ResponseDTO.fail("加密失败", null, null, 501);
 		}
 		return ResponseDTO.ok("手机验证码发送成功",data);
 	}
@@ -239,14 +239,14 @@ public class LoginController extends BaseController {
 			String uuid = UUIDUtil.getUUID();//激活码
 			String emailType = ecmUserVo.getEmailType();
 			String email = ecmUserVo.getEmail();
-			String mobile = EncryptUtil.aesEncrypt(ecmUserVo.getMobile(), SecretKeyConstants.secretKey);
+			String mobile = ecmUserVo.getMobile();
 			MailUtil mailUtil = null;
 			// 如果是修改密码我需要根据传递的手机号来查询邮箱发送邮件
 			if (!StringUtil.isNullOrEmpty(email)) {
 				mailUtil = new MailUtil(email,emailType,uuid,"账号激活");
 			}else if (!StringUtil.isNullOrEmpty(mobile)) {
 				EcmUser user = new EcmUser();
-				user.setMobile(mobile);
+				user.setMobile(EncryptUtil.aesEncrypt(mobile, SecretKeyConstants.secretKey));
 				EcmUser userInfos = ecmUserService.getUserInfos(user);
 				String userEmail = EncryptUtil.aesDecrypt(userInfos.getEmail(), SecretKeyConstants.secretKey);
 				mailUtil = new MailUtil(userEmail,emailType,uuid,"修改密码");
