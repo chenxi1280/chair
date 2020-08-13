@@ -8,6 +8,8 @@ import java.util.Date;
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,6 +47,8 @@ import sun.misc.BASE64Encoder;
 
 @Controller
 public class LoginController extends BaseController {
+	
+	private Logger log = LogManager.getLogger(LoginController.class);
 	
 	@Resource
 	LoginService loginService;
@@ -244,12 +248,14 @@ public class LoginController extends BaseController {
 			// 如果是修改密码我需要根据传递的手机号来查询邮箱发送邮件
 			if (!StringUtil.isNullOrEmpty(email)) {
 				mailUtil = new MailUtil(email,emailType,uuid,"账号激活");
+				ecmUserVo.setEmail(EncryptUtil.aesEncrypt(ecmUserVo.getEmail(), SecretKeyConstants.secretKey));
 			}else if (!StringUtil.isNullOrEmpty(mobile)) {
 				EcmUser user = new EcmUser();
 				user.setMobile(EncryptUtil.aesEncrypt(mobile, SecretKeyConstants.secretKey));
 				EcmUser userInfos = ecmUserService.getUserInfos(user);
 				String userEmail = EncryptUtil.aesDecrypt(userInfos.getEmail(), SecretKeyConstants.secretKey);
 				mailUtil = new MailUtil(userEmail,emailType,uuid,"修改密码");
+				ecmUserVo.setMobile(EncryptUtil.aesEncrypt(mobile, SecretKeyConstants.secretKey));
 			}else {
 				return ResponseDTO.fail("邮件发送失败,未指定用户信息");
 			}
@@ -258,7 +264,6 @@ public class LoginController extends BaseController {
 			user.setEmailUuid(uuid);
 			user.setUpdateTime(new Date());
 			user.setLastCheckMail(new Date());
-			ecmUserVo.setEmail(EncryptUtil.aesEncrypt(ecmUserVo.getEmail(), SecretKeyConstants.secretKey));
 			ecmUserService.saveToken(user,ecmUserVo);//发送邮邮件 并更新emailUuid值	
 			return ResponseDTO.ok("邮件发送成功");
 		} catch (Exception e) {
@@ -294,8 +299,13 @@ public class LoginController extends BaseController {
 	public ResponseDTO forgetPassword(@RequestBody EcmUserVo ecmUserVo) {	
 		//确认密码验证
 		String password = ecmUserVo.getPassword();
+		String confirmCode = ecmUserVo.getConfirmCode();
 		if(!password.equals(ecmUserVo.getConfirmPwd())) {
 			return ResponseDTO.fail("密码与确认密码不一致");
+		}
+		String regionCode = String.valueOf(redisUtil.get(ecmUserVo.getImageCodeKey()));
+    	if (!regionCode.equals(confirmCode)) {
+			return ResponseDTO.fail("验证码错误");
 		}
 		EcmUser user = new EcmUser();
 		String uuid = UUIDUtil.getUUID();

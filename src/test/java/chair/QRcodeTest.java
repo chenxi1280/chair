@@ -63,7 +63,7 @@ public class QRcodeTest {
 
         Map<String, String> paramMap = new HashMap<>();
         paramMap.put("page","pages/play/play");
-        paramMap.put("scene","12345");
+        paramMap.put("scene","12345");//videoId
 
         JSONObject jsonObject = (JSONObject) JSONObject.toJSON(paramMap);
         wxPost(url, jsonObject, "asd");
