@@ -5,6 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -15,7 +17,7 @@ import java.util.TimeZone;
 @EnableTransactionManagement
 @SpringBootApplication
 @EnableCaching
-public class ChairApplication {
+public class ChairApplication  extends SpringBootServletInitializer {
     Logger logger = LoggerFactory.getLogger(ChairApplication.class);
 
     /**
@@ -29,6 +31,11 @@ public class ChairApplication {
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
     }
 
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(ChairApplication.class);
+
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(ChairApplication.class, args);
