@@ -118,7 +118,7 @@ public class LoginController extends BaseController {
 			ecmUser.setMobile(EncryptUtil.aesEncrypt(ecmUserVo.getMobile(), SecretKeyConstants.secretKey));
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseDTO.fail("用户信息加密失败，请重新登录");
+			return ResponseDTO.fail("用户信息加密失败",null, null, 501);
 		}
     	EcmUser userInfos = ecmUserService.getUserInfos(ecmUser);
     	String password = userInfos.getPassword();
@@ -133,13 +133,12 @@ public class LoginController extends BaseController {
     	EcmUser user = new EcmUser();
     	EcmUserVo userVo = new EcmUserVo();
     	userVo.setPkUserId(userInfos.getPkUserId());
-    	//TODO  count 初始时没有count 在注册时设置为0
     	Integer count = userInfos.getCount();
     	++count;
     	user.setCount(count);
     	user.setLastLoginTime(new Date());
     	user.setUpdateTime(new Date());
-    	ecmUserService.updateEcmUserByMobile(user, userVo);
+    	ecmUserService.updateEcmUserById(user, userVo);
 		return ResponseDTO.ok("登陆成功", token);
     }
     
@@ -177,6 +176,8 @@ public class LoginController extends BaseController {
 		//入库
 		EcmUser ecmUser = new EcmUser();
 		ecmUser.setUsername(ecmUserVo.getUsername());
+    	// count 初始时没有count 在注册时设置为0
+		ecmUser.setCount(0);
 		ecmUser.setIsValid("N");
 		ecmUser.setRoles("1");
 		ecmUser.setCreateTime(new Date());
@@ -234,15 +235,24 @@ public class LoginController extends BaseController {
 	@RequestMapping("/sendEmail")
 	@ResponseBody
 	public ResponseDTO sendEmail(@RequestBody EcmUserVo ecmUserVo) {
-		String uuid = UUIDUtil.getUUID();//激活码
-		String emailType = ecmUserVo.getEmailType();
-		String subject = "账号激活";
-		if (!emailType.equals("verification")) {
-			subject = "修改密码";
-		}
-		//TODO 如果是修改密码我需要根据传递的手机号来查询邮箱发送邮件
-		MailUtil mailUtil = new MailUtil(ecmUserVo.getEmail(),emailType,uuid,subject);
-		try {	
+		try {
+			String uuid = UUIDUtil.getUUID();//激活码
+			String emailType = ecmUserVo.getEmailType();
+			String email = ecmUserVo.getEmail();
+			String mobile = EncryptUtil.aesEncrypt(ecmUserVo.getMobile(), SecretKeyConstants.secretKey);
+			MailUtil mailUtil = null;
+			// 如果是修改密码我需要根据传递的手机号来查询邮箱发送邮件
+			if (!StringUtil.isNullOrEmpty(email)) {
+				mailUtil = new MailUtil(email,emailType,uuid,"账号激活");
+			}else if (!StringUtil.isNullOrEmpty(mobile)) {
+				EcmUser user = new EcmUser();
+				user.setMobile(mobile);
+				EcmUser userInfos = ecmUserService.getUserInfos(user);
+				String userEmail = EncryptUtil.aesDecrypt(userInfos.getEmail(), SecretKeyConstants.secretKey);
+				mailUtil = new MailUtil(userEmail,emailType,uuid,"修改密码");
+			}else {
+				return ResponseDTO.fail("邮件发送失败,未指定用户信息");
+			}
 			mailUtil.sendEmail();
 			EcmUser user = new EcmUser();
 			user.setEmailUuid(uuid);
