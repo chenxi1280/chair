@@ -1,13 +1,15 @@
 package chair;
 
 import com.alibaba.fastjson.JSONObject;
-import org.junit.Test;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.junit.Test;
+
 
 /**
  * 需求描述：
@@ -54,7 +56,6 @@ public class QRcodeTest {
      * 参数
      * 是前台要传过来的业务参数
      */
-    @Test
     public void test2() {
 
         String acc_code = wxGetQrcode("","");
@@ -69,8 +70,8 @@ public class QRcodeTest {
         wxPost(url, jsonObject, "asd");
 
     }
-
-    private static void wxPost(String uri, JSONObject paramJson, String fileName) {
+    
+    public void wxPost(String uri, JSONObject paramJson, String fileName) {
         try {
             URL url = new URL(uri);
             HttpURLConnection httpURLConnection = (HttpURLConnection) url
@@ -104,5 +105,10 @@ public class QRcodeTest {
             e.printStackTrace();
         }
     }
+    
+    public static void main(String[] args) {
+    	String wxGetQrcode = QRcodeTest.wxGetQrcode("wxa001a9842ad0f851", "335ecf3ab57b04828d9003bf144f1369");
+    	System.out.println(wxGetQrcode);
+	}
 
 }
