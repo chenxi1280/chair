@@ -19,7 +19,7 @@ public interface EcmUserService {
 
 	boolean updatePwdByToken(EcmUser user, EcmUserVo userVo);
 
-	void updateEcmUserByMobile(EcmUser ecmUser, EcmUserVo userVo);
+	void updateEcmUserById(EcmUser ecmUser, EcmUserVo userVo);
 
 	void updateIsvalidByToken(EcmUser user, EcmUserVo userVo);
 }

@@ -38,7 +38,7 @@ public class EcmUserServiceImpl implements EcmUserService {
 	}
 
 	@Override
-	public void updateEcmUserByMobile(EcmUser ecmUser, EcmUserVo userVo) {
+	public void updateEcmUserById(EcmUser ecmUser, EcmUserVo userVo) {
 		 ecmUserDao.updateEcmUser(ecmUser, userVo);
 	}
 
