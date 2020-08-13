@@ -38,7 +38,7 @@ import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 import com.tencentcloudapi.sms.v20190711.models.SendStatus;
 
 import io.netty.util.internal.StringUtil;
-import sun.misc.BASE64Encoder;
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * 
@@ -93,8 +93,8 @@ public class LoginController extends BaseController {
 			e.printStackTrace();
 			return ResponseDTO.fail("验证码生成失败");
 		}
-    	BASE64Encoder encoder = new BASE64Encoder();
-        String base64Str = encoder.encode(code);
+		Base64 encoder = new Base64();
+        String base64Str = Base64.encodeBase64String(code);
         data.put("imageCodeKey", uuid);
         data.put("base64Str", base64Str);
 		return ResponseDTO.ok("获取验证码成功", data);
