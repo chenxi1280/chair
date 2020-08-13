@@ -159,7 +159,8 @@ public class LoginController extends BaseController {
 		user.setIsValid("Y");//表示注册成功已激活
 		user.setMobile(ecmUserVo.getMobile());
 		EcmUser userInfos = ecmUserService.getUserInfos(user);
-		if (userInfos!=null && !StringUtil.isNullOrEmpty(userInfos.getPkUserId().toString())) {
+		//isNullOrEmpty 如果字符串为null 返回false
+		if (userInfos!=null && StringUtil.isNullOrEmpty(userInfos.getPkUserId().toString())) {
 			return ResponseDTO.fail("该账号已注册");
 		}
 		if(!ecmUserVo.getPassword().equals(ecmUserVo.getConfirmPwd())) {
@@ -246,10 +247,11 @@ public class LoginController extends BaseController {
 			String mobile = ecmUserVo.getMobile();
 			MailUtil mailUtil = null;
 			// 如果是修改密码我需要根据传递的手机号来查询邮箱发送邮件
-			if (!StringUtil.isNullOrEmpty(email)) {
+			// isNullOrEmpty 如果字符串为null 返回false
+			if (StringUtil.isNullOrEmpty(email)) {
 				mailUtil = new MailUtil(email,emailType,uuid,"账号激活");
 				ecmUserVo.setEmail(EncryptUtil.aesEncrypt(ecmUserVo.getEmail(), SecretKeyConstants.secretKey));
-			}else if (!StringUtil.isNullOrEmpty(mobile)) {
+			}else if (StringUtil.isNullOrEmpty(mobile)) {
 				EcmUser user = new EcmUser();
 				user.setMobile(EncryptUtil.aesEncrypt(mobile, SecretKeyConstants.secretKey));
 				EcmUser userInfos = ecmUserService.getUserInfos(user);
