@@ -1,11 +1,11 @@
 spring:
   redis:
 # Redis服务器地址  
-    host: 192.168.1.100
+    host: 129.28.197.177
 # Redis数据库索引（默认为0）
     database: 0
 # Redis服务器连接端口 
-    port: 6379
+    port: 17251
 # 连接超时时间（毫秒）
     timeout: 20000
     pool:
@@ -18,7 +18,7 @@ spring:
 # 连接池最大阻塞等待时间（使用负值表示没有限制）
       max-wait: -1
 # Redis服务器连接密码（默认为空）
-    password:
+    password: JqZf$Xpu!gm@w7J5
   application:
     name: spring-boot-redis
   messages:

@@ -4,8 +4,9 @@ import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import javax.annotation.Resource;
+
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
@@ -18,8 +19,10 @@ import com.mpic.evolution.chair.common.constant.publishConstants;
 */
 @Component
 public class WxcodeUtil {
-	@Autowired
+	
+	@Resource
 	private RedisUtil redisUtil;
+	
 	/**
      * 	通过请求获取accessToken
      *	用户登陆时的token 解密出来的用户id
