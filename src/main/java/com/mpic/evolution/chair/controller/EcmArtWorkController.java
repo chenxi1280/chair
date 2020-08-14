@@ -5,9 +5,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.mpic.evolution.chair.util.HttpMpicUtil;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -116,13 +119,13 @@ public class EcmArtWorkController {
      * 	
      * @author: SJ
      * @Date: 2020/8/14
-     * @param token
+     * @param
      */
     @RequestMapping("/getWxcode")
     @ResponseBody
-    public ResponseDTO getWxcode (@RequestBody EcmArtWorkQuery ecmArtWorkQuery) {
+    public ResponseDTO getWxcode () {
     	try {
-	    	String userId = JWTUtil.getUserId(ecmArtWorkQuery.getToken());
+	    	String userId = "1531";//JWTUtil.getUserId(ecmArtWorkQuery.getToken());
 	    	boolean hasKey = redisUtil.hasKey(userId);
 	    	String accessToken = "";
 	    	//如果是null返回false
@@ -167,7 +170,7 @@ public class EcmArtWorkController {
      * 	更具参数获取二维码
      * @param uri
      * @param param
-     * @param fileName
+     * @param
      * @throws Exception 
      */
     private String wxPost(String uri, JSONObject param) throws Exception {
@@ -184,11 +187,12 @@ public class EcmArtWorkController {
 //		//TODO	判断是否为请求失败的返回
 //		String message = httpURLConnection.getResponseMessage();
 //		System.out.println(message);
-    	String jsonStr = HttpKit.post(uri, param.toJSONString());
-    	byte[] bytes = jsonStr.getBytes();
-		String base64Str = Base64.encodeBase64String(bytes);
-		return base64Str;
-    }
+		//RequestBase request = HttpKit.post(uri,  param.toJSONString());
+    	//byte[] bytes = jsonStr.getBytes();
 
+        String s =HttpMpicUtil.sendPostForBase64(uri, param);
+        System.out.println(s);
+		return s;
+    }
 
 }

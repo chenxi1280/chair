@@ -2,12 +2,14 @@ package com.mpic.evolution.chair.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.code.kaptcha.impl.DefaultKaptcha;
+import com.mpic.evolution.chair.core.signature.CosSignatureUtils;
 import com.mpic.evolution.chair.core.signature.SignatureUtil;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.util.UUIDUtil;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.imageio.ImageIO;
@@ -33,4 +35,14 @@ public class SignatureController extends BaseController {
     }
 
 
+    /**
+     * 获取签名
+     * @author xuezx
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value="/artworkMaking/findCosSingature",method= RequestMethod.POST)
+    public ResponseDTO findCosSingature(){
+        return ResponseDTO.ok("获取验证码成功", CosSignatureUtils.getSignature());
+    }
 }

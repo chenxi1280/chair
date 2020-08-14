@@ -21,7 +21,7 @@ public class VideoHandleConsumerController {
 
     @RequestMapping("/videoHandleConsumer")
     @ResponseBody
-    public ResponseDTO getConfirmCode ( @RequestBody JSONObject jsonParam) {
+    public ResponseDTO videoHandleConsumer ( @RequestBody JSONObject jsonParam) {
         System.out.println("jsonParam.toJSONString() :  " + jsonParam.toJSONString());
         return null;
     }
