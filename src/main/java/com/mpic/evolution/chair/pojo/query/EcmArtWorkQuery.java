@@ -47,5 +47,10 @@ public class EcmArtWorkQuery extends PageQuery {
      * 	用户token
      */
     private String token;
+    
+    /**
+     * 	作品子节点id
+     */
+    private String videoId;
 
 }

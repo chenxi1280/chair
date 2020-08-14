@@ -135,7 +135,9 @@ public class EcmArtWorkController {
 	        		+ "access_token=%s", accessToken);
 	        JSONObject param = new JSONObject();
 	        param.put("page","pages/play/play");
-	        param.put("scene","12345");
+	        //String videoId = ecmArtWorkQuery.getVideoId();
+	        //scene的value 是 videoId
+	        param.put("scene","115");
 			String wxPost = wxPost(url, param);
 			return ResponseDTO.ok("获取发布二维码成功", wxPost);
 		} catch (Exception e) {
@@ -179,6 +181,9 @@ public class EcmArtWorkController {
 		httpURLConnection.setDoInput(true);
 		// 获取URLConnection对象对应的输出流
 		OutputStream out = httpURLConnection.getOutputStream();
+		//TODO	判断是否为请求失败的返回
+		String message = httpURLConnection.getResponseMessage();
+		System.out.println(message);
 		ByteArrayOutputStream bao = new ByteArrayOutputStream();
 		bao.writeTo(out);
 		byte[] byteArray = bao.toByteArray();
