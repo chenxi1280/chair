@@ -1,14 +1,8 @@
 package com.mpic.evolution.chair.controller;
 
 
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
 import javax.annotation.Resource;
 
-import org.apache.commons.codec.binary.Base64;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +16,7 @@ import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
 import com.mpic.evolution.chair.service.EcmArtWorkService;
+import com.mpic.evolution.chair.util.HttpMpicUtil;
 import com.mpic.evolution.chair.util.JWTUtil;
 import com.mpic.evolution.chair.util.RedisUtil;
 
@@ -135,11 +130,18 @@ public class EcmArtWorkController {
 	        		+ "access_token=%s", accessToken);
 	        JSONObject param = new JSONObject();
 	        param.put("page","pages/play/play");
-	        //String videoId = ecmArtWorkQuery.getVideoId();
+	        String videoId = ecmArtWorkQuery.getVideoId();
 	        //scene的value 是 videoId
-	        param.put("scene","115");
-			String wxPost = wxPost(url, param);
-			return ResponseDTO.ok("获取发布二维码成功", wxPost);
+	        param.put("scene",videoId);
+			String Base64Str = HttpMpicUtil.sendPostForBase64(url, param);
+			if (HttpMpicUtil.isJsonObject(Base64Str)) {
+				//返回的结果是：{"errcode":40001,"errmsg":"invalid credential, access_token is invalid or not latest rid: 5f364b21-395edb8d-336ae042"}
+				JSONObject result = JSONObject.parseObject(Base64Str);
+				return ResponseDTO.fail("获取发布二维码失败", result.get("errmsg"),null,(Integer)result.get("errcode"));
+			}else {
+				String str = "data:image/jpg;base64," + Base64Str;
+				return ResponseDTO.ok("获取发布二维码成功",str);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseDTO.fail("获取二维码图片失败");
@@ -162,33 +164,5 @@ public class EcmArtWorkController {
     	redisUtil.set(userId, accessToken, 3000L);
         return accessToken;
     }   
-    
-    /**
-     * 	更具参数获取二维码
-     * @param uri
-     * @param param
-     * @param fileName
-     * @throws Exception 
-     */
-    private String wxPost(String uri, JSONObject param) throws Exception {
-//		URL url = new URL(uri);
-//		HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-//		httpURLConnection.setRequestMethod("POST");// 提交模式
-//		// conn.setConnectTimeout(10000);//连接超时 单位毫秒
-//		// conn.setReadTimeout(2000);//读取超时 单位毫秒
-//		// 发送POST请求必须设置如下两行
-//		httpURLConnection.setDoOutput(true);
-//		httpURLConnection.setDoInput(true);
-//		// 获取URLConnection对象对应的输出流
-//		OutputStream out = httpURLConnection.getOutputStream();
-//		//TODO	判断是否为请求失败的返回
-//		String message = httpURLConnection.getResponseMessage();
-//		System.out.println(message);
-    	String jsonStr = HttpKit.post(uri, param.toJSONString());
-    	byte[] bytes = jsonStr.getBytes();
-		String base64Str = Base64.encodeBase64String(bytes);
-		return base64Str;
-    }
-
 
 }
