@@ -20,7 +20,19 @@ public class Signature {
     private long currentTime;
     private int random;
     private int signValidDuration;
+    /**
+     *  	视频后续任务处理操作，即完成视频上传后，可自动发起任务流操作。参数值为任务流模板名，云点播支持 创建任务流模板 并为模板命名。
+     */
+    private String procedure;
 
+    /**
+     *任务流状态变更通知模式（仅当指定了 procedure 时才有效）。
+     Finish：只有当任务流全部执行完毕时，才发起一次事件通知。
+     Change：只要任务流中每个子任务的状态发生变化，都进行事件通知。
+     None：不接受该任务流回调。
+     默认为 Finish
+     */
+    private String taskNotifyMode;
     private static final String HMAC_ALGORITHM = "HmacSHA1";
     private static final String CONTENT_CHARSET = "UTF-8";
 
@@ -40,6 +52,8 @@ public class Signature {
         contextStr += "&currentTimeStamp=" + currentTime;
         contextStr += "&expireTime=" + endTime;
         contextStr += "&random=" + random;
+        contextStr += "&procedure=" + procedure;
+        contextStr += "&taskNotifyMode=" + taskNotifyMode;
 
         try {
             Mac mac = Mac.getInstance(HMAC_ALGORITHM);
@@ -81,18 +95,26 @@ public class Signature {
         this.signValidDuration = signValidDuration;
     }
 
+    public void setProcedure(String procedure) {
+        this.procedure = procedure;
+    }
+
+    public void setTaskNotifyMode(String taskNotifyMode) {
+        this.taskNotifyMode = taskNotifyMode;
+    }
 
 
 
    
     public  static void test() {
         Signature sign = new Signature();
-        sign.setSecretId("AKIDNs9B1a3HUSFmMgJeIgneFpnYAWcRGfKm");
-        sign.setSecretKey("MXYlmOeLm9KErRk1TfKj7E4oImzvlKsA");
+        sign.setSecretId("AKIDebOJ4yeOIiuc5HRmIXKqY3KK2YmtxDUT");
+        sign.setSecretKey("EIBqMaWCnOjHdhPu4zfGXcXCfz0qQimY");
         sign.setCurrentTime(System.currentTimeMillis() / 1000);
         sign.setRandom(new Random().nextInt(Integer.MAX_VALUE));
         sign.setSignValidDuration(3600 * 24 * 2);
-
+        sign.setProcedure("转码540mp4");
+        sign.setTaskNotifyMode("Finish");
         try {
             String signature = sign.getUploadSignature();
             System.out.println("signature : " + signature);

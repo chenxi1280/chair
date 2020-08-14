@@ -31,9 +31,13 @@ public class SignatureUtil {
         return "";
     }
 
+    /**
+     * 通过子账户的id和key获取云点播签名，这个签名是有时效的，也是每个账户不同的，也是全平台公用的
+     * @return 签名
+     */
     public static String getUploadSignature(){
 
-        return getUploadSignature("AKIDNs9B1a3HUSFmMgJeIgneFpnYAWcRGfKm",
-                "MXYlmOeLm9KErRk1TfKj7E4oImzvlKsA");
+        return getUploadSignature("AKIDebOJ4yeOIiuc5HRmIXKqY3KK2YmtxDUT",
+                "EIBqMaWCnOjHdhPu4zfGXcXCfz0qQimY");
     }
 }
