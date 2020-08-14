@@ -1,15 +1,11 @@
 package chair;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
-import com.alibaba.fastjson.JSONObject;
-import com.mpic.evolution.chair.common.constant.publishConstants;
+import com.mpic.evolution.chair.ChairApplication;
 
 
 /**
@@ -30,77 +26,13 @@ import com.mpic.evolution.chair.common.constant.publishConstants;
  *
  *
  */
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = ChairApplication.class)
 public class QRcodeTest {
 	
-    /**
-     * 	发送该请求getQrcode 返回内容：
-     * {"access_token":"36__h45mu6_20MC7dbJE8fNdc0zaa8MrQESUYkdMFRmoq-wzgWurveqRswGwZjAj_oCEi0PXLaoQ3yR3lDqS9UB-MQfkPFjOoyHrAICN-1UbZM_1WVSMsRM9Y-1lVq4a3n7RqYxYk7F4TKD9QO9CGCeAJAMQM",
-     * "expires_in":7200}
-     *	用户登陆时的token 解密出来的用户id
-     * 	此处要根据过期时间，存redis，有人请求，先从redis里面拿token，没有再请求
-     *
-     */
-    private static String getAccessToken(String appid, String secret) {
-    	String accessToken = "";
-//    	String requestUrl = String.format("https://api.weixin.qq.com/cgi-bin/token?"
-//    			+ "grant_type=client_credential&appid=%s&secret=%s", appid,secret);
-        //将返回的access_token 存入redis 有效时间 3000秒
-        return accessToken;
+	@Test
+	public void test() {
+		
     }
-
-
-    /**
-     * 	这里面的
-     * scene
-     *	 参数
-     * 	是前台要传过来的业务参数
-     */
-    public void test2() {
-
-        String accessToken = getAccessToken(publishConstants.appid,publishConstants.secret);
-        String url = String.format("https://api.weixin.qq.com/wxa/getwxacodeunlimit?"
-        		+ "access_token=%s", accessToken);
-        JSONObject param = new JSONObject();
-        param.put("page","pages/play/play");
-        param.put("scene","12345");//videoId
-        wxPost(url, param, "asd");
-
-    }
-    
-    private void wxPost(String uri, JSONObject param, String fileName) {
-        try {
-            URL url = new URL(uri);
-            HttpURLConnection httpURLConnection = (HttpURLConnection) url
-                    .openConnection();
-            httpURLConnection.setRequestMethod("POST");// 提交模式
-            // conn.setConnectTimeout(10000);//连接超时 单位毫秒
-            // conn.setReadTimeout(2000);//读取超时 单位毫秒
-            // 发送POST请求必须设置如下两行
-            httpURLConnection.setDoOutput(true);
-            httpURLConnection.setDoInput(true);
-            // 获取URLConnection对象对应的输出流
-            PrintWriter printWriter = new PrintWriter(
-                    httpURLConnection.getOutputStream());
-            printWriter.write(param.toString());
-            // flush输出流的缓冲
-            printWriter.flush();
-            // 开始获取数据
-            BufferedInputStream bis = new BufferedInputStream(
-                    httpURLConnection.getInputStream());
-            OutputStream os = new FileOutputStream(new File("D:/"
-                    + fileName + ".png"));
-            int len;
-            byte[] arr = new byte[1024];
-            while ((len = bis.read(arr)) != -1) {
-                os.write(arr, 0, len);
-                os.flush();
-            }
-            os.close();
-            bis.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    
 
 }

@@ -38,31 +38,28 @@
             <artifactId>javacsv</artifactId>
             <version>2.0</version>
         </dependency>
-
-
-
         <dependency>
             <groupId>com.qcloud</groupId>
             <artifactId>cos_api</artifactId>
             <version>5.6.8</version>
         </dependency>
-
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.16</version>
         </dependency>
-
-        <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-api</artifactId>
-        <version>5.0.0</version>
-
-        </dependency>
+        <!-- 测试工具类 -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-test</artifactId>
+		    <version>2.3.1.RELEASE</version>
+		    <scope>test</scope>
+		</dependency>  
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.13</version>
+            <scope>test</scope>
         </dependency>
         <!--apache工具类-->
         <dependency>
