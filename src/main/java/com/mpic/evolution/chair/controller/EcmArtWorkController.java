@@ -171,23 +171,22 @@ public class EcmArtWorkController {
      * @throws Exception 
      */
     private String wxPost(String uri, JSONObject param) throws Exception {
-		URL url = new URL(uri);
-		HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-		httpURLConnection.setRequestMethod("POST");// 提交模式
-		// conn.setConnectTimeout(10000);//连接超时 单位毫秒
-		// conn.setReadTimeout(2000);//读取超时 单位毫秒
-		// 发送POST请求必须设置如下两行
-		httpURLConnection.setDoOutput(true);
-		httpURLConnection.setDoInput(true);
-		// 获取URLConnection对象对应的输出流
-		OutputStream out = httpURLConnection.getOutputStream();
-		//TODO	判断是否为请求失败的返回
-		String message = httpURLConnection.getResponseMessage();
-		System.out.println(message);
-		ByteArrayOutputStream bao = new ByteArrayOutputStream();
-		bao.writeTo(out);
-		byte[] byteArray = bao.toByteArray();
-		String base64Str = Base64.encodeBase64String(byteArray);
+//		URL url = new URL(uri);
+//		HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+//		httpURLConnection.setRequestMethod("POST");// 提交模式
+//		// conn.setConnectTimeout(10000);//连接超时 单位毫秒
+//		// conn.setReadTimeout(2000);//读取超时 单位毫秒
+//		// 发送POST请求必须设置如下两行
+//		httpURLConnection.setDoOutput(true);
+//		httpURLConnection.setDoInput(true);
+//		// 获取URLConnection对象对应的输出流
+//		OutputStream out = httpURLConnection.getOutputStream();
+//		//TODO	判断是否为请求失败的返回
+//		String message = httpURLConnection.getResponseMessage();
+//		System.out.println(message);
+    	String jsonStr = HttpKit.post(uri, param.toJSONString());
+    	byte[] bytes = jsonStr.getBytes();
+		String base64Str = Base64.encodeBase64String(bytes);
 		return base64Str;
     }
 
