@@ -12,6 +12,8 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.mpic.evolution.chair.common.constant.SecretKeyConstants;
+
 /**
  * 
  * 类名称：  EncryptUtil   
@@ -365,4 +367,8 @@ public class EncryptUtil {
         return builder.toString();
     }
     
+    public static void main(String[] args) throws Exception {
+    	String aesEncrypt = EncryptUtil.aesEncrypt("18502314019", SecretKeyConstants.secretKey);
+    	System.out.println(aesEncrypt);
+	}
 }

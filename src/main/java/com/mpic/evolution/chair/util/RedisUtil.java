@@ -535,6 +535,21 @@ public final class RedisUtil {
 			return false;
 		}
 	}
+	
+	/**
+	 * 	移出并获取列表的第一个元素
+	 * 
+	 * @param key   键
+	 * @return
+	 */
+	public Object lPop(String key) {
+		try {
+			return redisTemplate.opsForList().rightPop(key);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 	/**
 	 * 根据索引修改list中的某条数据

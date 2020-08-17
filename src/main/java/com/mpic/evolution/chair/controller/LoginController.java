@@ -83,7 +83,7 @@ public class LoginController extends BaseController {
     	DefaultKaptcha produce = loginService.getConfirmCode();
     	String createText = produce.createText();
     	String uuid = UUIDUtil.getUUID();
-    	boolean flag = redisUtil.set(uuid, createText,300L);
+    	boolean flag = redisUtil.lSet(uuid, createText,300L);
     	if (!flag) return ResponseDTO.fail("验证码redis缓存失败");
     	BufferedImage bi = produce.createImage(createText);
     	try {
@@ -109,7 +109,7 @@ public class LoginController extends BaseController {
     @ResponseBody
     public ResponseDTO loginByToken(@RequestBody EcmUserVo ecmUserVo) {
 		String confirmCode = ecmUserVo.getConfirmCode(); 
-		String regionCode = String.valueOf(redisUtil.get(ecmUserVo.getImageCodeKey())); 
+		String regionCode = String.valueOf(redisUtil.lPop(ecmUserVo.getImageCodeKey())); 
 		if (!regionCode.equals(confirmCode)) { 
 			return ResponseDTO.fail("验证码错误"); 
 		}
@@ -170,7 +170,7 @@ public class LoginController extends BaseController {
 			return ResponseDTO.fail("密码与确认密码不一致");
 		}
 		// 验证码验证
-		String regionCode = String.valueOf(redisUtil.get(ecmUserVo.getImageCodeKey()));
+		String regionCode = String.valueOf(redisUtil.lPop(ecmUserVo.getImageCodeKey()));
 		String confirmCode = ecmUserVo.getConfirmCode();
 		if (!regionCode.equals(confirmCode)) {
 			return ResponseDTO.fail("验证码错误");
@@ -312,7 +312,7 @@ public class LoginController extends BaseController {
 		if(!password.equals(ecmUserVo.getConfirmPwd())) {
 			return ResponseDTO.fail("密码与确认密码不一致");
 		}
-		String regionCode = String.valueOf(redisUtil.get(ecmUserVo.getImageCodeKey()));
+		String regionCode = String.valueOf(redisUtil.lPop(ecmUserVo.getImageCodeKey()));
     	if (!regionCode.equals(confirmCode)) {
 			return ResponseDTO.fail("验证码错误");
 		}

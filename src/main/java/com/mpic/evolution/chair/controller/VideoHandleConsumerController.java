@@ -1,12 +1,12 @@
 package com.mpic.evolution.chair.controller;
 
-import com.alibaba.fastjson.JSONObject;
-import com.mpic.evolution.chair.core.signature.SignatureUtil;
-import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSONObject;
+import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 
 /**
  *
