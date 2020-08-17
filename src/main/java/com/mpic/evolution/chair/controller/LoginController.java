@@ -8,6 +8,7 @@ import java.util.Date;
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -30,7 +31,6 @@ import com.mpic.evolution.chair.service.LoginService;
 import com.mpic.evolution.chair.util.EncryptUtil;
 import com.mpic.evolution.chair.util.JWTUtil;
 import com.mpic.evolution.chair.util.MD5Utils;
-import com.mpic.evolution.chair.util.MailUtil;
 import com.mpic.evolution.chair.util.RandomUtil;
 import com.mpic.evolution.chair.util.RedisUtil;
 import com.mpic.evolution.chair.util.UUIDUtil;
@@ -38,7 +38,6 @@ import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 import com.tencentcloudapi.sms.v20190711.models.SendStatus;
 
 import io.netty.util.internal.StringUtil;
-import org.apache.commons.codec.binary.Base64;
 
 /**
  * 
@@ -76,27 +75,26 @@ public class LoginController extends BaseController {
      */
     @RequestMapping("/getConfirmCode")
     @ResponseBody
-	public ResponseDTO getConfirmCode() {
+	public void getConfirmCode() {
 		byte[] code = null;
 		JSONObject data = new JSONObject();
     	ByteArrayOutputStream out = new ByteArrayOutputStream();
     	DefaultKaptcha produce = loginService.getConfirmCode();
     	String createText = produce.createText();
     	String uuid = UUIDUtil.getUUID();
-    	boolean flag = redisUtil.lSet(uuid, createText,300L);
-    	if (!flag) return ResponseDTO.fail("验证码redis缓存失败");
+    	//存的时候不做处理 在获取不到时做报错提示
+    	redisUtil.lSet(uuid, createText,300L);
     	BufferedImage bi = produce.createImage(createText);
     	try {
 			ImageIO.write(bi, "jpg", out);
 	    	code = out.toByteArray();
 		} catch (IOException e) {
+			log.error("获取图片验证码失败");
 			e.printStackTrace();
-			return ResponseDTO.fail("验证码生成失败");
 		}
         String base64Str = Base64.encodeBase64String(code);
         data.put("imageCodeKey", uuid);
         data.put("base64Str", base64Str);
-		return ResponseDTO.ok("获取验证码成功", data);
 	}
     
     /**
@@ -111,7 +109,7 @@ public class LoginController extends BaseController {
 		String confirmCode = ecmUserVo.getConfirmCode(); 
 		String regionCode = String.valueOf(redisUtil.lPop(ecmUserVo.getImageCodeKey())); 
 		if (!regionCode.equals(confirmCode)) { 
-			return ResponseDTO.fail("验证码错误"); 
+			return ResponseDTO.fail("请正确输入验证码",null,null,501); 
 		}
     	String inputPwd = ecmUserVo.getPassword();
     	String encrypt = MD5Utils.encrypt(inputPwd); 
@@ -120,17 +118,17 @@ public class LoginController extends BaseController {
     	try {
 			ecmUser.setMobile(EncryptUtil.aesEncrypt(ecmUserVo.getMobile(), SecretKeyConstants.secretKey));
 		} catch (Exception e) {
+			log.error("用户信息加密失败");
 			e.printStackTrace();
-			return ResponseDTO.fail("用户信息加密失败",null, null, 501);
 		}
     	EcmUser userInfos = ecmUserService.getUserInfos(ecmUser);
     	// 如果用户传的 是假数据会导致空指针 在这做判断
     	if (userInfos==null || StringUtil.isNullOrEmpty(userInfos.getPassword())) {
-			return ResponseDTO.fail("用户不存在！");
+			return ResponseDTO.fail("用账号未注册，请注册账号！",null,null,506);
 		}
     	String password = userInfos.getPassword();
     	if (!password.equals(encrypt)) {
-			return ResponseDTO.fail("密码错误");
+			return ResponseDTO.fail("密码输入错误",null,null,507);
 		}
     	// 设置token
     	String token = JWTUtil.sign(String.valueOf(userInfos.getPkUserId()), 
@@ -158,28 +156,12 @@ public class LoginController extends BaseController {
 	@RequestMapping("/register")
 	@ResponseBody
 	public ResponseDTO registerByUserInfos(@RequestBody EcmUserVo ecmUserVo) {
-		EcmUser user = new EcmUser();
-		user.setIsValid("Y");//表示注册成功已激活
-		user.setMobile(ecmUserVo.getMobile());
-		EcmUser userInfos = ecmUserService.getUserInfos(user);
-		//isNullOrEmpty 如果字符串为null 返回true
-		if (userInfos!=null && !StringUtil.isNullOrEmpty(userInfos.getPkUserId().toString())) {
-			return ResponseDTO.fail("该账号已注册");
-		}
-		if(!ecmUserVo.getPassword().equals(ecmUserVo.getConfirmPwd())) {
-			return ResponseDTO.fail("密码与确认密码不一致");
-		}
-		// 验证码验证
-		String regionCode = String.valueOf(redisUtil.lPop(ecmUserVo.getImageCodeKey()));
-		String confirmCode = ecmUserVo.getConfirmCode();
-		if (!regionCode.equals(confirmCode)) {
-			return ResponseDTO.fail("验证码错误");
-		}
+		JSONObject data = this.checkRegisterInfo(ecmUserVo);
 		//短信验证码验证
 		String inputPCC = ecmUserVo.getPhoneConfirmCode();
 		String phoneConfirmCode = String.valueOf(redisUtil.get(ecmUserVo.getPhoneCodeKey()));
     	if (!inputPCC.equals(phoneConfirmCode)) {
-			return ResponseDTO.fail("手机短信验证码错误");
+    		data.put("502", "请正确输入验证码");
 		}
 		//入库
 		EcmUser ecmUser = new EcmUser();
@@ -195,15 +177,18 @@ public class LoginController extends BaseController {
 			ecmUser.setMobile(EncryptUtil.aesEncrypt(ecmUserVo.getMobile(), SecretKeyConstants.secretKey));
 			ecmUser.setEmail(EncryptUtil.aesEncrypt(ecmUserVo.getEmail(), SecretKeyConstants.secretKey));
 		} catch (Exception e) {
+			log.error("用户信息加密失败");
 			e.printStackTrace();
-			return ResponseDTO.fail("加密失败", null, null, 501);
 		}
 		ecmUser.setPassword(MD5Utils.encrypt(ecmUserVo.getPassword()));
 		ecmUserService.savaUser(ecmUser);
+		if (data != null) {
+			return ResponseDTO.fail("注册失败", data, null, 508);
+		}
 		return ResponseDTO.ok("注册成功");
 	}
 	
-	 /**
+	 /*
      * 	短信验证
      * @param ecmUserVo
      * @return
@@ -218,85 +203,54 @@ public class LoginController extends BaseController {
 		String phoneCodeKey = "";
     	try {
     		phoneCodeKey = EncryptUtil.aesEncrypt(ecmUserVo.getMobile(), SecretKeyConstants.secretKey);
-    		boolean flag = redisUtil.set(phoneCodeKey, phoneConfirmCode, 300L);
-    		if (!flag) return ResponseDTO.fail("手机验证码缓存失败");
+    		//往redis存的时候不做判断 取得时候做错误校验
+    		redisUtil.set(phoneCodeKey, phoneConfirmCode, 300L);
     		data.put("phoneCodeKey", phoneCodeKey);
 			SendStatus status = loginService.sendSMS(phoneConfirmCode,phoneNumbers);
 			if (!status.getCode().equals("Ok")) {
-				return ResponseDTO.fail("手机验证码发送失败："+status.getMessage());
+				return ResponseDTO.fail("手机验证码发送失败："+status.getMessage(),null,null,502);
 			}
 		} catch (TencentCloudSDKException e) {
+			log.error("手机验证码发送失败");
 			e.printStackTrace();
-			return ResponseDTO.fail("手机验证码发送失败");
 		}catch (Exception e1) {
+			log.error("手机号加密查询用户信息时手机号加密失败");
 			e1.printStackTrace();
-			return ResponseDTO.fail("加密失败", null, null, 501);
 		}
 		return ResponseDTO.ok("手机验证码发送成功",data);
 	}
 	
 	/**
-	 * 	发送邮件
+	 * 	验证手机号 
 	 * @param ecmUserVo
 	 * @return
 	 */
-	@RequestMapping("/sendEmail")
+	@RequestMapping("/validateMobile")
 	@ResponseBody
-	public ResponseDTO sendEmail(@RequestBody EcmUserVo ecmUserVo) {
-		try {
-			String uuid = UUIDUtil.getUUID();//激活码
-			String emailType = ecmUserVo.getEmailType();
-			String email = ecmUserVo.getEmail();
-			String mobile = ecmUserVo.getMobile();
-			MailUtil mailUtil = null;
-			// 如果是修改密码我需要根据传递的手机号来查询邮箱发送邮件
-			// isNullOrEmpty 如果字符串为null 返回true
-			if (!StringUtil.isNullOrEmpty(email)) {
-				mailUtil = new MailUtil(email,emailType,uuid,"账号激活");
-				ecmUserVo.setEmail(EncryptUtil.aesEncrypt(ecmUserVo.getEmail(), SecretKeyConstants.secretKey));
-			}else if (!StringUtil.isNullOrEmpty(mobile)) {
-				EcmUser user = new EcmUser();
-				user.setMobile(EncryptUtil.aesEncrypt(mobile, SecretKeyConstants.secretKey));
-				EcmUser userInfos = ecmUserService.getUserInfos(user);
-				// 如果用户传的 是假数据会导致空指针 在这里做判断
-				if (userInfos==null || StringUtil.isNullOrEmpty(userInfos.getEmail())) {
-					return ResponseDTO.fail("用户不存在！");
-				}
-				String userEmail = EncryptUtil.aesDecrypt(userInfos.getEmail(), SecretKeyConstants.secretKey);
-				mailUtil = new MailUtil(userEmail,emailType,uuid,"修改密码");
-				ecmUserVo.setMobile(EncryptUtil.aesEncrypt(mobile, SecretKeyConstants.secretKey));
-			}else {
-				return ResponseDTO.fail("邮件发送失败,未指定用户信息");
-			}
-			mailUtil.sendEmail();
-			EcmUser user = new EcmUser();
-			user.setEmailUuid(uuid);
-			user.setUpdateTime(new Date());
-			user.setLastCheckMail(new Date());
-			ecmUserService.saveToken(user,ecmUserVo);//发送邮邮件 并更新emailUuid值	
-			return ResponseDTO.ok("邮件发送成功");
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseDTO.fail("邮件发送失败");
+	public ResponseDTO validateMobile(@RequestBody EcmUserVo ecmUserVo) {
+		//验证码是否存在
+		String confirmCode = ecmUserVo.getConfirmCode();
+		String regionCode = String.valueOf(redisUtil.lPop(ecmUserVo.getImageCodeKey()));
+		if(StringUtil.isNullOrEmpty(regionCode)){
+			return ResponseDTO.fail("请重新获取验证码",null,null,501);
+    	}
+		if (!regionCode.equals(confirmCode)) {
+			return ResponseDTO.fail("请正确输入验证码",null,null,501);
 		}
-    }
-	
-	/**
-	 * 	邮箱激活
-	 * 	邮箱激活之后还需要修改last_check_mail字段和 updateTime字段
-	 * @param ecmUserVo
-	 */
-	@RequestMapping("/activateUser")
-	@ResponseBody
-	public void activateUser(EcmUserVo ecmUserVo) {	
-		//根据uuid来修改数据库中isvalid状态 
-		String uuid = UUIDUtil.getUUID();
-		EcmUser user = new EcmUser();
-		user.setEmailUuid(uuid);//修改掉emailUuid在数据库中的值
-		user.setIsValid("Y");
-		user.setUpdateTime(new Date());//修改updateTime字段
-		ecmUserService.updateIsvalidByToken(user,ecmUserVo);
-    }
+		String mobile = ecmUserVo.getMobile();
+		EcmUser ecmUser = new EcmUser();
+    	try {
+			ecmUser.setMobile(EncryptUtil.aesEncrypt(mobile, SecretKeyConstants.secretKey));
+		} catch (Exception e) {
+			log.error("用户信息加密失败");
+			e.printStackTrace();
+		}
+    	EcmUser userInfos = ecmUserService.getUserInfos(ecmUser);
+    	if (userInfos==null || StringUtil.isNullOrEmpty(userInfos.getMobile())) {
+			return ResponseDTO.fail("账号未注册，请注册账号",null,null,506);
+		}
+		return ResponseDTO.ok("账号已注册");
+	}
 	
 	/**
 	 * 	忘记密码  
@@ -307,26 +261,66 @@ public class LoginController extends BaseController {
 	@ResponseBody
 	public ResponseDTO forgetPassword(@RequestBody EcmUserVo ecmUserVo) {	
 		//确认密码验证
-		String password = ecmUserVo.getPassword();
-		String confirmCode = ecmUserVo.getConfirmCode();
-		if(!password.equals(ecmUserVo.getConfirmPwd())) {
-			return ResponseDTO.fail("密码与确认密码不一致");
+		String inputPwd = ecmUserVo.getPassword();
+		String inputPCC = ecmUserVo.getPhoneConfirmCode();
+		String mobile = ecmUserVo.getMobile();
+		String mobileKey = "";
+		try {
+			mobileKey = EncryptUtil.aesEncrypt(mobile, SecretKeyConstants.secretKey);		
+		} catch (Exception e) {
+			log.error("用户信息加密失败");
+			e.printStackTrace();
 		}
-		String regionCode = String.valueOf(redisUtil.lPop(ecmUserVo.getImageCodeKey()));
-    	if (!regionCode.equals(confirmCode)) {
-			return ResponseDTO.fail("验证码错误");
+		EcmUserVo userVo = new EcmUserVo();
+		userVo.setMobile(mobileKey);
+		String phoneConfirmCode = String.valueOf(redisUtil.get(mobileKey));
+		if(StringUtil.isNullOrEmpty(phoneConfirmCode)){
+			return ResponseDTO.fail("请重新获取手机短信验证码",null,null,502);
+    	}
+		if (!phoneConfirmCode.equals(inputPCC)) {
+			return ResponseDTO.fail("请正确输入验证码",null,null,502);
 		}
+		if(!inputPwd.equals(ecmUserVo.getConfirmPwd())) {
+			return ResponseDTO.fail("两次密码输入不一致",null,null,503);
+		}
+		//手机验证码校验
 		EcmUser user = new EcmUser();
-		String uuid = UUIDUtil.getUUID();
-		user.setEmailUuid(uuid);// 修改EmailUuid在数据库中的值 
-		user.setPassword(MD5Utils.encrypt(password));//修改后的密码以MD5加密入库
-		user.setLastCheckMail(new Date());//发送了邮件做跳转 故修改last_check_mail字段
+		user.setPassword(MD5Utils.encrypt(inputPwd));//修改后的密码以MD5加密入库
 		user.setUpdateTime(new Date());//修改updateTime字段
-		boolean flag = ecmUserService.updatePwdByToken(user,ecmUserVo);
+		boolean flag = ecmUserService.updatePwdByToken(user,userVo);
 		if (!flag) {
 			return ResponseDTO.ok("密码修改失败");
 		}
 		return ResponseDTO.fail("密码修改成功");
     }
+	
+	private JSONObject checkRegisterInfo(EcmUserVo ecmUserVo) {
+		JSONObject data = new JSONObject();
+		//TODO 用户昵称是否违法
+		EcmUser userOne = new EcmUser();
+		userOne.setUsername(ecmUserVo.getUsername());
+		EcmUser userInfoOne = ecmUserService.getUserInfos(userOne);
+		EcmUser userTwo = new EcmUser();
+		userTwo.setMobile(ecmUserVo.getMobile());
+		EcmUser userInfosTwo = ecmUserService.getUserInfos(userTwo);
+		//isNullOrEmpty 如果字符串为null 返回true
+		//用户昵称是否存在
+		if (userInfoOne!=null && !StringUtil.isNullOrEmpty(String.valueOf(userInfoOne.getUsername()))) {
+			data.put("505", "昵称已被使用");
+		}
+		if (userInfosTwo!=null && !StringUtil.isNullOrEmpty(String.valueOf(userInfosTwo.getMobile()))) {
+			data.put("506", "账号已被注册，请直接登陆");
+		}
+		if(!ecmUserVo.getPassword().equals(ecmUserVo.getConfirmPwd())) {
+			data.put("503", "两次密码输入不一致");
+		}
+		// 验证码验证
+		String regionCode = String.valueOf(redisUtil.lPop(ecmUserVo.getImageCodeKey()));
+		String confirmCode = ecmUserVo.getConfirmCode();
+		if (!regionCode.equals(confirmCode)) {
+			data.put("501", "请正确输入验证码");
+		}
+		return data;
+	}
     
 }

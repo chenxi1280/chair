@@ -3,6 +3,8 @@ package com.mpic.evolution.chair.controller;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,7 +49,11 @@ public class EcmArtWorkController {
     @ResponseBody
     public ResponseDTO getArtWorks(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
     	String token = ecmArtWorkQuery.getToken();
-    	Integer userId = Integer.parseInt(JWTUtil.getUserId(token));
+    	String userIdStr = JWTUtil.getUserId(token);
+    	Integer userId = null;
+    	if(StringUtils.isBlank(userIdStr) || !NumberUtils.isParsable(userIdStr)){
+    		userId = Integer.parseInt(userIdStr);
+    	}
     	ecmArtWorkQuery.setFkUserid(userId);
         return ecmArtWorkService.getArtWorks(ecmArtWorkQuery);
     }
