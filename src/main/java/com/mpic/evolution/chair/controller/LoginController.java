@@ -124,6 +124,10 @@ public class LoginController extends BaseController {
 			return ResponseDTO.fail("用户信息加密失败",null, null, 501);
 		}
     	EcmUser userInfos = ecmUserService.getUserInfos(ecmUser);
+    	// 如果用户传的 是假数据会导致空指针 在这做判断
+    	if (userInfos==null || StringUtil.isNullOrEmpty(userInfos.getPassword())) {
+			return ResponseDTO.fail("用户不存在！");
+		}
     	String password = userInfos.getPassword();
     	if (!password.equals(encrypt)) {
 			return ResponseDTO.fail("密码错误");
@@ -254,6 +258,10 @@ public class LoginController extends BaseController {
 				EcmUser user = new EcmUser();
 				user.setMobile(EncryptUtil.aesEncrypt(mobile, SecretKeyConstants.secretKey));
 				EcmUser userInfos = ecmUserService.getUserInfos(user);
+				// 如果用户传的 是假数据会导致空指针 在这里做判断
+				if (userInfos==null || StringUtil.isNullOrEmpty(userInfos.getEmail())) {
+					return ResponseDTO.fail("用户不存在！");
+				}
 				String userEmail = EncryptUtil.aesDecrypt(userInfos.getEmail(), SecretKeyConstants.secretKey);
 				mailUtil = new MailUtil(userEmail,emailType,uuid,"修改密码");
 				ecmUserVo.setMobile(EncryptUtil.aesEncrypt(mobile, SecretKeyConstants.secretKey));
