@@ -108,10 +108,10 @@ public class LoginController extends BaseController {
     @RequestMapping("/login")
     @ResponseBody
     public ResponseDTO loginByToken(@RequestBody EcmUserVo ecmUserVo) {
-    	String confirmCode = ecmUserVo.getConfirmCode();
-    	String regionCode = String.valueOf(redisUtil.get(ecmUserVo.getImageCodeKey()));
-    	if (!regionCode.equals(confirmCode)) {
-			return ResponseDTO.fail("验证码错误");
+		String confirmCode = ecmUserVo.getConfirmCode(); 
+		String regionCode = String.valueOf(redisUtil.get(ecmUserVo.getImageCodeKey())); 
+		if (!regionCode.equals(confirmCode)) { 
+			return ResponseDTO.fail("验证码错误"); 
 		}
     	String inputPwd = ecmUserVo.getPassword();
     	String encrypt = MD5Utils.encrypt(inputPwd); 
