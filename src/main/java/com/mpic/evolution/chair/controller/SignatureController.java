@@ -33,8 +33,8 @@ public class SignatureController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value="/artworkMaking/findCosSingature",method= RequestMethod.POST)
+    @RequestMapping(value="/artworkMaking/findCosSingature")
     public ResponseDTO findCosSingature(){
-        return ResponseDTO.ok("获取验证码成功", CosSignatureUtils.getSignature());
+        return ResponseDTO.ok("获取验证码成功", CosSignatureUtils.getSignature().toString());
     }
 }
