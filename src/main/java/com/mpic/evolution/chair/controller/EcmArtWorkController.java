@@ -117,7 +117,7 @@ public class EcmArtWorkController {
      * 	
      * @author: SJ
      * @Date: 2020/8/14
-     * @param token
+     * @param ecmArtWorkQuery token
      */
     @RequestMapping("/getWxcode")
     @ResponseBody

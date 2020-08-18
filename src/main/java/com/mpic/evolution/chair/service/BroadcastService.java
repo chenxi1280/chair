@@ -9,4 +9,7 @@ public interface BroadcastService {
 
 
     ResponseDTO getStorylineInfo(int intVideoId);
+
+    void recordStorylineClick(int userId, int videoId, int passiveFlag, int currentPlayTime);
+
 }
