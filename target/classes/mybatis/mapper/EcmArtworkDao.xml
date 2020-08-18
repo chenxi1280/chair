@@ -145,9 +145,9 @@
       <if test="fkUserid != null">
         and fk_userId = #{fkUserid}
       </if>
-
+	  <!-- 查询作品是不包括删除作品5 和审核不通过3 -->
       <if test="artworkStatus != null and artworkStatus!=''">
-        and artwork_status = #{artworkStatus}
+        and artwork_status = #{0,1,2,4}
       </if>
 
       <if test="artworkName != null and artworkName!=''">
