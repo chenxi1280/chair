@@ -287,7 +287,7 @@ public class LoginController extends BaseController {
 			e.printStackTrace();
 		}
 		EcmUserVo userVo = new EcmUserVo();
-		userVo.setMobile(mobileKey);
+		userVo.setMobile(mobile);
 		String phoneConfirmCode = String.valueOf(redisUtil.get(mobileKey));
 		if(StringUtil.isNullOrEmpty(phoneConfirmCode)){
 			data.put("502", "请重新获取手机短信验证码");
