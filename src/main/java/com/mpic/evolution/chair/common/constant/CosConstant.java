@@ -11,14 +11,14 @@ public interface CosConstant {
 
     /**
      *
-     * 小程序id
+     * 腾讯云id
      */
-    String SECREID="AKIDNs9B1a3HUSFmMgJeIgneFpnYAWcRGfKm";
+    String SECRET_ID ="AKIDNs9B1a3HUSFmMgJeIgneFpnYAWcRGfKm";
     /**
      *
-     * 小程序key
+     * 腾讯云key
      */
-    String SECRETKEY="MXYlmOeLm9KErRk1TfKj7E4oImzvlKsA";
+    String SECRET_KEY ="MXYlmOeLm9KErRk1TfKj7E4oImzvlKsA";
     /**
      *
      * 设置地域
@@ -28,7 +28,8 @@ public interface CosConstant {
      *
      * 存储桶的名称
      */
-    String BUCKETNAME="sike-1259692143";
+    String BUCKET_NAME ="sike-1259692143";
 
+    String TC_API = "vod.tencentcloudapi.com";
 
 }

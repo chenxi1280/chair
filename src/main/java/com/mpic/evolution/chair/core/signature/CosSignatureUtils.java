@@ -32,15 +32,15 @@ public class CosSignatureUtils {
 
         try {
             // 替换为您的 SecretId
-            config.put("SecretId", SECREID);
+            config.put("SecretId", SECRET_ID);
             // 替换为您的 SecretKey
-            config.put("SecretKey",  SECRETKEY);
+            config.put("SecretKey", SECRET_KEY);
 
             // 临时密钥有效时长，单位是秒，默认1800秒，最长可设定有效期为7200秒
             config.put("durationSeconds", 1800);
 
             // 换成您的 bucket
-            config.put("bucket", BUCKETNAME);
+            config.put("bucket", BUCKET_NAME);
             // 换成 bucket 所在地区
             config.put("region", REGION);
 
