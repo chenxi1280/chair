@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mpic.evolution.chair.dao.BroadcastStatisticsDAO">
+
+    <resultMap id="userBroadcastInterested" type="com.mpic.evolution.chair.pojo.vo.UserBroadcastInterestedVO">
+        <result property="userId" column="fk_user_id"/>
+        <result property="nickName" column="nickname"/>
+        <result property="artworkId" column="pk_artwork_id"/>
+        <result property="artworkName" column="artwork_name"/>
+        <result property="rowTitles" column="row_titles"/>
+        <result property="lineTitles" column="line_titles"/>
+    </resultMap>
+    <resultMap id="userClickStoryLineTimeVideoPart" type="com.mpic.evolution.chair.pojo.vo.UserClickStoryLineTimeVideoPartVO">
+        <result property="userId" column="fk_user_id"/>
+        <result property="nickName" column="nickname"/>
+        <result property="artworkId" column="pk_artwork_id"/>
+        <result property="artworkName" column="artwork_name"/>
+        <result property="videoId" column="fk_artwork_detail_id"/>
+        <result property="videoUrl" column="video_url"/>
+        <result property="options" column="items_text"/>
+        <result property="actType" column="act_type"/>
+    </resultMap>
+    
+    <select id="getUserBroadcastInterested" resultMap="userBroadcastInterested">
+        <!--看过任意一个视频就算看过-->
+        SELECT
+        u.fk_user_id,
+        ANY_VALUE(u.nickname) as nickname,
+        a.pk_artwork_id,
+        ANY_VALUE(a.artwork_name) as artwork_name
+        FROM
+        wx_user u,
+        ecm_artwork a,
+        ecm_artwork_broadcast_history abh
+        WHERE abh.fk_artwork_id = a.pk_artwork_id
+        AND abh.fk_user_id = u.fk_user_id
+        GROUP BY u.fk_user_id,
+        a.pk_artwork_id
+    </select>
+
+    <select id="getUserBroadcastEnd" resultMap="userBroadcastInterested">
+        <!--看过任意一个视频的最后一个视频就算看过-->
+        SELECT
+        ANY_VALUE (u.nickname) AS nickname,
+        u.fk_user_id,
+        ANY_VALUE (a.artwork_name) AS artwork_name,
+        a.pk_artwork_id
+        FROM
+        ecm_statistics_timeline st,
+        wx_user u,
+        ecm_artwork a
+        WHERE st.is_active = 1
+        AND u.fk_user_id = st.fk_user_id
+        AND a.pk_artwork_id = st.fk_artwork_id
+        GROUP BY u.fk_user_id,
+        a.pk_artwork_id
+    </select>
+
+    <select id="getUserClickStoryLineTimes" resultMap="userBroadcastInterested">
+        <!--用户主动点击故事线的次数-->
+        SELECT
+        ANY_VALUE (u.nickname) AS nickname,
+        u.fk_user_id,
+        ANY_VALUE (a.artwork_name) AS artwork_name,
+        a.pk_artwork_id
+        FROM
+        ecm_statistics_timeline st,
+        wx_user u,
+        ecm_artwork a
+        WHERE st.is_active = 0
+        AND u.fk_user_id = st.fk_user_id
+        AND a.pk_artwork_id = st.fk_artwork_id
+        GROUP BY u.fk_user_id,
+        a.pk_artwork_id
+    </select>
+
+    <select id="getUserClickStoryLineTimeVideoPart" resultMap="userClickStoryLineTimeVideoPart">
+        <!--用户主动点击故事线或点击退出到发现页面的动作-->
+        (SELECT
+        u.fk_user_id,
+        IFNULL (u.nickname, "未认证") AS nickname,
+        a.pk_artwork_id ,
+        ANY_VALUE (a.artwork_name) AS artwork_name,
+        st.fk_artwork_detail_id,
+        an.video_url,an.items_text,
+        '主动点击故事线' AS act_type
+        FROM
+        ecm_statistics_timeline st,
+        wx_user u,
+        ecm_artwork a ,
+        ecm_artwork_nodes an
+        WHERE st.is_active = 0
+        AND u.fk_user_id = st.fk_user_id
+        AND a.pk_artwork_id = st.fk_artwork_id
+        AND an.pk_detail_id = st.fk_artwork_detail_id)
+
+        UNION ALL
+
+        (SELECT
+        u.fk_user_id,
+        IFNULL (u.nickname, "未认证") AS nickname,
+        a.pk_artwork_id ,
+        ANY_VALUE (a.artwork_name) AS artwork_name,
+        sba.fk_artwork_detail_id,
+        an.video_url,an.items_text,
+        '主动点击退出到发现页面' AS act_type
+        FROM
+        ecm_statistics_broadcast_actions sba,
+        wx_user u,
+        ecm_artwork a ,
+        ecm_artwork_nodes an
+        WHERE sba.act_type = 'exitToFind'
+        AND u.fk_user_id = sba.fk_user_id
+        AND a.pk_artwork_id = sba.fk_artwork_id
+        AND an.pk_detail_id = sba.fk_artwork_detail_id  )
+
+        ORDER BY fk_user_id
+    </select>
+
+    <select id="getUserBroadcastInterestedLineTitles" resultMap="userBroadcastInterested">
+        SELECT GROUP_CONCAT(a.pk_artwork_id,'x♀x',REPLACE(a.artwork_name,',','，')) AS line_titles FROM ecm_artwork a WHERE a.artwork_name IS NOT NULL AND a.artwork_status = 1
+
+    </select>
+
+    <select id="getUserBroadcastInterestedRowTitles" resultMap="userBroadcastInterested">
+      SELECT GROUP_CONCAT(u.fk_user_id,'x♀x',REPLACE(IFNULL(u.nickname,"未认证"),',','，')) AS row_titles FROM   wx_user u
+    </select>
+
+    <insert id="broadcastPageAction">
+        INSERT INTO ecm_statistics_broadcast_actions
+        (act_type,
+        fk_artwork_id,
+        fk_artwork_detail_id,
+        fk_user_Id,
+        current_play_time,
+        start_time)
+        values
+        (#{actionType},
+        (SELECT ad.fk_artwork_id FROM ecm_artwork_nodes ad WHERE ad.pk_detail_id = #{videoId}),
+        #{videoId},
+        #{userId},
+        #{currentPlayTime},
+        sysdate()
+        )
+    </insert>
+</mapper>

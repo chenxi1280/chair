@@ -1,14 +1,17 @@
 package com.mpic.evolution.chair.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
+import com.mpic.evolution.chair.pojo.vo.ClickActionVo;
 import com.mpic.evolution.chair.service.BroadcastService;
 import com.mpic.evolution.chair.util.JWTUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -78,7 +81,6 @@ public class BroadcastController {
     @ResponseBody
     public ResponseDTO getStorylineInfo(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
         String videoId = ecmArtWorkQuery.getVideoId();
-        //if(StringUtils.isBlank(userId) || !NumberUtils.isParsable(userId)){
         if(StringUtils.isBlank(videoId) || !NumberUtils.isParsable(videoId)){
             return ResponseDTO.fail(ErrorEnum.ERR_201.getValue());
         }
@@ -87,59 +89,6 @@ public class BroadcastController {
         return service.getStorylineInfo(intVideoId);
     }
 
-
-    /**
-     *
-     * 方法名:  recordStorylineClick
-     * @author Xuezx
-     * @date 2020/6/19 0019 13:40
-     * @param userId, userId
-     * @param videoId,  videoId
-     * @param passiveFlag 是否是主动退出
-     * @param currentPlayTime 点击时视频的当前播放进度（秒）
-     *
-     * 描述: 记录故事线触发事件，有主动点击和被动点击两种
-     *                被动点击被记录为作品看完
-     *
-     * todo 此处应该有错误码返回，不应该直接void
-
-    @RequestMapping(value="/storyline/click/{userId}/{videoId}/{passiveFlag}/{currentPlayTime}")
-    @ResponseBody
-    public String recordStorylineClick(@PathVariable("userId") String userId,
-                                       @PathVariable("videoId") String videoId,
-                                       @PathVariable("passiveFlag") String passiveFlag,
-                                       @PathVariable("currentPlayTime") String currentPlayTime
-    ){
-
-        String checkUserId = intFailReturn(userId, ErrorEnum.ERR_003);
-        if(StringUtils.isNotBlank(checkUserId)){
-            return ErrorEnum.ERR_003.toString();
-        }
-
-        String checkVideo = intFailReturn(videoId, ErrorEnum.ERR_201);
-        if(StringUtils.isNotBlank(checkVideo)){
-            return ErrorEnum.ERR_201.toString();
-        }
-
-        String checkPassiveFlag = intFailReturn(passiveFlag, ErrorEnum.ERR_202);
-        if(StringUtils.isNotBlank(checkPassiveFlag)){
-            return ErrorEnum.ERR_202.toString();
-        }
-
-        String checktCurrentPlayTime = intFailReturn(currentPlayTime, ErrorEnum.ERR_203);
-        if(StringUtils.isNotBlank(checktCurrentPlayTime)){
-            return ErrorEnum.ERR_203.toString();
-        }
-
-        int intUserId = Integer.parseInt(userId);
-        int intPassiveFlag = Integer.parseInt(passiveFlag);
-        int intVideoId = Integer.parseInt(videoId);
-        int intCurrentPlayTime = Integer.parseInt(currentPlayTime);
-
-        service.recordStorylineClick(intUserId, intVideoId, intPassiveFlag, intCurrentPlayTime);
-        return "true";
-    }
-     */
 
 
 }

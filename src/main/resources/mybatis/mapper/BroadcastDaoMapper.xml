@@ -18,6 +18,23 @@
         <result property="chosenText" column="chosen_text"/>
         <result property="videoUrl" column="video_url"/>
     </resultMap>
+    <insert id="recordStorylineClick" parameterType="int">
+        INSERT INTO ecm_statistics_timeline
+        (is_active,
+        fk_artwork_id,
+        fk_artwork_detail_id,
+        fk_user_Id,
+        current_play_time,
+        start_time)
+        values
+        (#{passiveFlag},
+        (SELECT ad.fk_artwork_id FROM ecm_artwork_nodes ad WHERE ad.pk_detail_id = #{videoId}),
+        #{videoId},
+        #{userId},
+        #{currentPlayTime},
+        sysdate()
+        )
+    </insert>
     <!--级联查询父菜单-->
     <select id="selectParentVideo" resultMap="VedioBasicInfo" parameterType="int">
         SELECT 

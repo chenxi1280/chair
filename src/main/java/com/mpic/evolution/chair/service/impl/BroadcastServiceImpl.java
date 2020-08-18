@@ -71,8 +71,9 @@ public class BroadcastServiceImpl  implements BroadcastService{
      * @param passiveFlag 0 主动 1被动
      * @return com.mpic.evolution.common.returnvo.ReturnVo<com.mpic.evolution.forward.play.broadcast.vo.BroadcastVo>
      * 描述:
-
+     */
+    @Override
     public void recordStorylineClick(int userId, int videoId, int passiveFlag, int currentPlayTime){
         broadcastDao.recordStorylineClick(userId, videoId, passiveFlag, currentPlayTime);
-    }*/
+    }
 }

@@ -28,8 +28,6 @@ public interface BroadcastDao {
     /**
      * 方法名: insertBroadcast
      *
-     * @param userId  userId
-     * @param videoId videoId
      *                描述: 插入播放记录一条
      * @author Xuezx
      * @date 2019/9/24 0024 8:42
@@ -41,4 +39,6 @@ public interface BroadcastDao {
     VideoBasicInfoVo getStorylineInfoSelf(int videoId);
 
     VideoBasicInfoVo getStorylineInfo(int nowId);
+
+    void recordStorylineClick(int userId, int videoId, int passiveFlag, int currentPlayTime);
 }
