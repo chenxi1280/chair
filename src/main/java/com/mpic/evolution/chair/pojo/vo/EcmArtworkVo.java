@@ -16,4 +16,9 @@ public class EcmArtworkVo extends EcmArtwork {
      * 	调用接口的操作类型
      */
     private String code;
+    
+    /**
+     * 	用户token
+     */
+    private String token;
 }

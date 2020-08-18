@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +22,7 @@ import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
 import com.mpic.evolution.chair.service.EcmArtWorkService;
+import com.mpic.evolution.chair.util.JWTUtil;
 import com.mpic.evolution.chair.util.TreeUtil;
 
 
@@ -58,7 +61,8 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 			EcmArtwork ecmArtwork = new EcmArtwork();
 			ecmArtwork.setPkArtworkId(ecmArtworkVo.getPkArtworkId());
 			ecmArtwork.setArtworkStatus((short)condition.getInt(ecmArtworkVo.getCode()));
-			ecmArtwork.setFkUserid(ecmArtworkVo.getFkUserid());
+			Integer userId = this.getIdByToken(ecmArtworkVo.getToken());
+			ecmArtwork.setFkUserid(userId);
 			ecmArtwork.setArtworkName(ecmArtworkVo.getArtworkName());
 			ecmArtwork.setLastModifyDate(new Date());
 			ecmArtworkDao.updateByPrimaryKey(ecmArtwork);
@@ -128,31 +132,17 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 		try {
 			EcmArtwork ecmArtwork = new EcmArtwork();
 			ecmArtwork.setPkArtworkId(ecmArtworkVo.getPkArtworkId());
-			ecmArtwork.setFkUserid(ecmArtworkVo.getFkUserid());
+			Integer userId = this.getIdByToken(ecmArtworkVo.getToken());
+			ecmArtwork.setFkUserid(userId);
+			ecmArtwork.setArtworkStatus(ecmArtworkVo.getArtworkStatus());
 			ecmArtwork.setArtworkName(ecmArtworkVo.getArtworkName());//不能为null
 			ecmArtwork.setLogoPath(ecmArtworkVo.getLogoPath());
 			ecmArtwork.setLastModifyDate(new Date());
-			ecmArtworkDao.updateByPrimaryKey(ecmArtwork);
+ 			ecmArtworkDao.updateByPrimaryKey(ecmArtwork);
 			return ResponseDTO.ok("作品名称修改成功");
 		} catch (Exception e) {
 			return ResponseDTO.fail("修改失败");
 		}
-	}
-
-	private JSONObject getCondition() {
-		JSONObject condition = new JSONObject();
-		condition.put("delete", 5);
-		condition.put("publish", 1);
-		condition.put("cancel", 0);
-		return condition;
-	}
-
-	private JSONObject getMessage() {
-		JSONObject message = new JSONObject();
-		message.put("delete", "删除");
-		message.put("publish", "发布");
-		message.put("cancel", "撤销审核");
-		return message;
 	}
 
 	@Override
@@ -160,7 +150,8 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 		try {
 			EcmArtwork ecmArtwork = new EcmArtwork();
 			ecmArtwork.setPkArtworkId(ecmArtworkVo.getPkArtworkId());
-			ecmArtwork.setFkUserid(ecmArtworkVo.getFkUserid());
+			Integer userId = this.getIdByToken(ecmArtworkVo.getToken());
+			ecmArtwork.setFkUserid(userId);
 			ecmArtwork.setArtworkName(ecmArtworkVo.getArtworkName());
 			ecmArtwork.setArtworkStatus(ecmArtworkVo.getArtworkStatus());
 			ecmArtwork.setArtworkDescribe(ecmArtworkVo.getArtworkDescribe());
@@ -174,5 +165,31 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 			return ResponseDTO.fail("新建失败");
 		}
 	}
+	
+	private JSONObject getCondition() {
+		JSONObject condition = new JSONObject();
+		condition.put("delete", 5);
+		condition.put("publish", 4);
+		condition.put("cancel", 0);
+		return condition;
+	}
+
+	private JSONObject getMessage() {
+		JSONObject message = new JSONObject();
+		message.put("delete", "删除");
+		message.put("publish", "发布");
+		message.put("cancel", "撤销审核");
+		return message;
+	}
+	
+	private Integer getIdByToken(String token) {
+    	String userIdStr = JWTUtil.getUserId(token);
+    	Integer userId = null;
+    	if(StringUtils.isNotBlank(userIdStr) && NumberUtils.isParsable(userIdStr)){
+    		userId = Integer.parseInt(userIdStr);
+    	}
+		return userId;
+	}
+	
 }
 
