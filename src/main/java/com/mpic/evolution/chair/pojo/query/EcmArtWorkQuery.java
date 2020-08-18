@@ -53,4 +53,8 @@ public class EcmArtWorkQuery extends PageQuery {
      */
     private String videoId;
 
+    /**
+     * 	作品子节点id int类型
+     */
+    private Integer intVideoId;
 }
