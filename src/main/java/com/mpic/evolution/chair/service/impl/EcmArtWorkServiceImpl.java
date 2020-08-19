@@ -65,7 +65,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 			ecmArtwork.setFkUserid(userId);
 			ecmArtwork.setArtworkName(ecmArtworkVo.getArtworkName());
 			ecmArtwork.setLastModifyDate(new Date());
-			ecmArtworkDao.updateByPrimaryKey(ecmArtwork);
+			ecmArtworkDao.updateByPrimaryKeySelective(ecmArtwork);
 			return ResponseDTO.ok(message.getString(ecmArtworkVo.getCode())+"成功");
 		} catch (Exception e) {
 			return ResponseDTO.fail(message.getString(ecmArtworkVo.getCode())+"失败");

@@ -33,11 +33,10 @@ import com.mpic.evolution.chair.util.JWTUtil;
 import com.mpic.evolution.chair.util.MD5Utils;
 import com.mpic.evolution.chair.util.RandomUtil;
 import com.mpic.evolution.chair.util.RedisUtil;
+import com.mpic.evolution.chair.util.StringUtils;
 import com.mpic.evolution.chair.util.UUIDUtil;
 import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 import com.tencentcloudapi.sms.v20190711.models.SendStatus;
-
-import io.netty.util.internal.StringUtil;
 
 /**
  * 
@@ -110,11 +109,11 @@ public class LoginController extends BaseController {
     	JSONObject data = new JSONObject();
 		String confirmCode = ecmUserVo.getConfirmCode(); 
 		String regionCode = String.valueOf(redisUtil.lPop(ecmUserVo.getImageCodeKey())); 
-		if(StringUtil.isNullOrEmpty(regionCode)){
-			data.put("501", "点击刷新，重新获取验证码");
+		if(StringUtils.isNullOrEmpty(regionCode)){
+			data.put("errorKey","501");
     	}
 		if (!regionCode.equals(confirmCode)) { 
-			data.put("501", "请正确输入验证码"); 
+			data.put("errorKey","501"); 
 		}
     	String inputPwd = ecmUserVo.getPassword();
     	String encrypt = MD5Utils.encrypt(inputPwd); 
@@ -128,12 +127,15 @@ public class LoginController extends BaseController {
 		}
     	EcmUser userInfos = ecmUserService.getUserInfos(ecmUser);
     	// 如果用户传的 是假数据会导致空指针 在这做判断
-    	if (userInfos==null || StringUtil.isNullOrEmpty(userInfos.getPassword())) {
-    		data.put("506", "用账号未注册，请注册账号");
+    	if (userInfos==null || StringUtils.isNullOrBlank(userInfos.getPassword())) {
+    		data.put("errorKey","506");
+		}
+    	if (!data.isEmpty()) {
+			return ResponseDTO.fail("登陆失败", data, null, 508);
 		}
     	String password = userInfos.getPassword();
     	if (!encrypt.equals(password)) {
-    		data.put("507", "密码输入错误");
+    		data.put("errorKey","507");
 		}
     	if (!data.isEmpty()) {
 			return ResponseDTO.fail("登陆失败", data, null, 508);
@@ -165,11 +167,11 @@ public class LoginController extends BaseController {
 		//短信验证码验证
 		String inputPCC = ecmUserVo.getPhoneConfirmCode();
 		String phoneConfirmCode = String.valueOf(redisUtil.get(ecmUserVo.getPhoneCodeKey()));
-		if(StringUtil.isNullOrEmpty(phoneConfirmCode)){
+		if(StringUtils.isNullOrEmpty(phoneConfirmCode)){
 			return ResponseDTO.fail("请重新获取手机短信验证码",null,null,502);
     	}
     	if (!inputPCC.equals(phoneConfirmCode)) {
-    		data.put("502", "请正确输入验证码");
+    		data.put("errorKey","502");
 		}
 		if (!data.isEmpty()) {
 			return ResponseDTO.fail("注册失败", data, null, 508);
@@ -239,7 +241,7 @@ public class LoginController extends BaseController {
 		JSONObject data = new JSONObject();
 		String confirmCode = ecmUserVo.getConfirmCode();
 		String regionCode = String.valueOf(redisUtil.lPop(ecmUserVo.getImageCodeKey()));
-		if(StringUtil.isNullOrEmpty(regionCode)){
+		if(StringUtils.isNullOrEmpty(regionCode)){
 			data.put("501", "点击刷新，重新获取验证码");
     	}
 		if (!regionCode.equals(confirmCode)) {
@@ -254,7 +256,7 @@ public class LoginController extends BaseController {
 			e.printStackTrace();
 		}
     	EcmUser userInfos = ecmUserService.getUserInfos(ecmUser);
-    	if (userInfos==null || StringUtil.isNullOrEmpty(userInfos.getMobile())) {
+    	if (userInfos==null || StringUtils.isNullOrBlank(userInfos.getMobile())) {
     		data.put("506", "账号未注册，请注册账号");
 		}
     	if (!data.isEmpty()) {
@@ -289,7 +291,7 @@ public class LoginController extends BaseController {
 		EcmUserVo userVo = new EcmUserVo();
 		userVo.setMobile(mobile);
 		String phoneConfirmCode = String.valueOf(redisUtil.get(mobileKey));
-		if(StringUtil.isNullOrEmpty(phoneConfirmCode)){
+		if(StringUtils.isNullOrEmpty(phoneConfirmCode)){
 			data.put("502", "请重新获取手机短信验证码");
     	}
 		//手机验证码校验
@@ -322,7 +324,7 @@ public class LoginController extends BaseController {
 		user.setUsername(ecmUserVo.getUsername());
 		EcmUser userInfo = ecmUserService.getUserInfos(user);
 		//用户昵称是否存在
-		if (userInfo!=null && !StringUtil.isNullOrEmpty(String.valueOf(userInfo.getUsername()))) {
+		if (userInfo!=null && !StringUtils.isNullOrBlank(String.valueOf(userInfo.getUsername()))) {
 			ResponseDTO.fail("昵称已被使用", null, null, 505);
 		}
 		return ResponseDTO.ok();
@@ -339,7 +341,7 @@ public class LoginController extends BaseController {
 		EcmUser user = new EcmUser();
 		user.setMobile(ecmUserVo.getMobile());
 		EcmUser userInfo = ecmUserService.getUserInfos(user);
-		if (userInfo!=null && !StringUtil.isNullOrEmpty(String.valueOf(userInfo.getMobile()))) {
+		if (userInfo!=null && !StringUtils.isNullOrBlank(String.valueOf(userInfo.getMobile()))) {
 			ResponseDTO.fail("账号已被注册，请直接登陆", null, null, 506);
 		}
 		return ResponseDTO.ok();
@@ -355,7 +357,7 @@ public class LoginController extends BaseController {
 	private ResponseDTO validateImageCode(EcmUserVo ecmUserVo) {
 		// 验证码验证
 		String regionCode = String.valueOf(redisUtil.lPop(ecmUserVo.getImageCodeKey()));
-		if(StringUtil.isNullOrEmpty(regionCode)){
+		if(StringUtils.isNullOrEmpty(regionCode)){
 			return ResponseDTO.fail("点击刷新，重新获取验证码",null,null,501);
     	}
 		String confirmCode = ecmUserVo.getConfirmCode();
