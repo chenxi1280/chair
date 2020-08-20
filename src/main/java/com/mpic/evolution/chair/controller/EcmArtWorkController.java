@@ -50,10 +50,10 @@ public class EcmArtWorkController {
     public ResponseDTO getArtWorks(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
     	String token = ecmArtWorkQuery.getToken();
     	String userIdStr = JWTUtil.getUserId(token);
-    	Integer userId = null;
     	if(StringUtils.isBlank(userIdStr) || !NumberUtils.isParsable(userIdStr)){
-    		userId = Integer.parseInt(userIdStr);
+    		return ResponseDTO.fail("获取作品失败");
     	}
+    	Integer userId = Integer.parseInt(userIdStr);
     	ecmArtWorkQuery.setFkUserid(userId);
         return ecmArtWorkService.getArtWorks(ecmArtWorkQuery);
     }
