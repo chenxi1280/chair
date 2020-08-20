@@ -50,6 +50,9 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         }
 
         List<EcmArtworkNodesVo>  list = ecmArtworkNodesDao.selectByArtWorkId(ecmArtWorkQuery.getPkArtworkId());
+        if (list.isEmpty()) {
+        	return ResponseDTO.fail("查询id不存在");
+		}
         return ResponseDTO.ok("success", TreeUtil.buildTree(list).get(0));
     }
 
@@ -153,11 +156,11 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 			Integer userId = this.getIdByToken(ecmArtworkVo.getToken());
 			ecmArtwork.setFkUserid(userId);
 			ecmArtwork.setArtworkName(ecmArtworkVo.getArtworkName());
-			ecmArtwork.setArtworkStatus(ecmArtworkVo.getArtworkStatus());
+			ecmArtwork.setArtworkStatus((short)0);
 			ecmArtwork.setArtworkDescribe(ecmArtworkVo.getArtworkDescribe());
 			ecmArtwork.setFourLetterTips(ecmArtworkVo.getFourLetterTips());
 			ecmArtwork.setLastCreateDate(new Date());
-			ecmArtwork.setLastModifyDate(ecmArtworkVo.getLastModifyDate());
+			ecmArtwork.setLastModifyDate(new Date());
 			ecmArtwork.setLogoPath(ecmArtworkVo.getLogoPath());
 			ecmArtworkDao.insert(ecmArtwork);
 			return ResponseDTO.ok("新建成功");
