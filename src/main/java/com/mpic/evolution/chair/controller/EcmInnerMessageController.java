@@ -1,6 +1,7 @@
 package com.mpic.evolution.chair.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.jfinal.template.expr.ast.Map;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmInnerMessage;
 import com.mpic.evolution.chair.pojo.vo.EcmUserVo;
@@ -32,11 +34,14 @@ public class EcmInnerMessageController {
     @ResponseBody
 	public ResponseDTO getInnerMessage(EcmUserVo user) {
     	//求和信息
-    	List<EcmInnerMessage> innerMessages = ecmInnerMessageService.getInnerMessage(user);
-    	if (innerMessages == null || innerMessages.isEmpty()) {
+    	List<EcmInnerMessage> messages = ecmInnerMessageService.getInnerMessage(user);
+    	if (messages == null || messages.isEmpty()) {
 			return ResponseDTO.fail("获取message失败");
 		}
-		return ResponseDTO.ok("获取成功", innerMessages);	
+    	messages = messages.stream().filter((EcmInnerMessage m)->m.getMessageStatus()<2).collect(Collectors.toList());
+		messages.sort((EcmInnerMessage m1, EcmInnerMessage m2)->m2.getSendDate().compareTo(m1.getSendDate()));
+		//TODO 分组操作
+		return ResponseDTO.ok("获取成功", messages);	
     }
     
     /**

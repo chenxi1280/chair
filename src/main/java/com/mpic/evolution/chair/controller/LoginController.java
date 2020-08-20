@@ -107,6 +107,7 @@ public class LoginController extends BaseController {
     @RequestMapping("/login")
     @ResponseBody
     public ResponseDTO loginByToken(@RequestBody EcmUserVo ecmUserVo) {
+    	JSONArray data = new JSONArray();
     	EcmUser ecmUser = new EcmUser();
     	try {
 			ecmUser.setMobile(EncryptUtil.aesEncrypt(ecmUserVo.getMobile(), SecretKeyConstants.secretKey));
@@ -117,9 +118,8 @@ public class LoginController extends BaseController {
     	EcmUser userInfos = ecmUserService.getUserInfos(ecmUser);
     	// 判断账号是否存在
     	if (userInfos==null || StringUtils.isNullOrBlank(userInfos.getPassword())) {
-    		return ResponseDTO.fail("账号未注册，请注册账号", null, null, 505);
+    		data.add("505");
 		}
-    	JSONArray data = new JSONArray();
 		String confirmCode = ecmUserVo.getConfirmCode(); 
 		String regionCode = String.valueOf(redisUtil.lPop(ecmUserVo.getImageCodeKey())); 
 		if(StringUtils.isNullOrEmpty(regionCode)){
@@ -183,7 +183,6 @@ public class LoginController extends BaseController {
 		try {
 			// 用户敏感信息需要加密 可反解
 			ecmUser.setMobile(EncryptUtil.aesEncrypt(ecmUserVo.getMobile(), SecretKeyConstants.secretKey));
-			ecmUser.setEmail(EncryptUtil.aesEncrypt(ecmUserVo.getEmail(), SecretKeyConstants.secretKey));
 		} catch (Exception e) {
 			log.error("用户信息加密失败");
 			e.printStackTrace();
@@ -286,7 +285,7 @@ public class LoginController extends BaseController {
 			e.printStackTrace();
 		}
 		EcmUserVo userVo = new EcmUserVo();
-		userVo.setMobile(mobile);
+		userVo.setMobile(mobileKey);
 		String phoneConfirmCode = String.valueOf(redisUtil.get(mobileKey));
 		if(StringUtils.isNullOrEmpty(phoneConfirmCode)){
 			data.add("502");

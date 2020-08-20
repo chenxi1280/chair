@@ -368,7 +368,7 @@ public class EncryptUtil {
     }
     
     public static void main(String[] args) throws Exception {
-    	String aesEncrypt = EncryptUtil.aesEncrypt("18502314019", SecretKeyConstants.secretKey);
+    	String aesEncrypt = EncryptUtil.aesEncrypt("15213064486", SecretKeyConstants.secretKey);
     	System.out.println(aesEncrypt);
 	}
 }
