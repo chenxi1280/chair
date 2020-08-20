@@ -27,7 +27,6 @@ public class SqlTest {
 	@Test
 	public void selectSqlTest() {
 		EcmInnerMessage ecmInnerMessage = new EcmInnerMessage();
-		ecmInnerMessage.setFkTemplateId(1);
 //		ecmInnerMessage.setFkUserId(1352);
 		List<EcmInnerMessage> selectByList = ecmInnerMessageDao.selectByList(ecmInnerMessage);
 		JSONArray data = new JSONArray();

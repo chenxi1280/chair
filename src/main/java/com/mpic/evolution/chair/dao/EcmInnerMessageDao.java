@@ -12,7 +12,9 @@ public interface EcmInnerMessageDao {
     int insertSelective(EcmInnerMessage record);
 
     EcmInnerMessage selectByPrimaryKey(Integer pkMessageId);
+    
     List<EcmInnerMessage> selectByList(EcmInnerMessage ecmInnerMessage);
+    
     int updateByPrimaryKeySelective(EcmInnerMessage record);
 
     int updateByPrimaryKey(EcmInnerMessage record);
