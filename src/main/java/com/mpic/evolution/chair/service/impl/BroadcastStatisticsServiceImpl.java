@@ -1,7 +1,7 @@
 package com.mpic.evolution.chair.service.impl;
 
 import com.csvreader.CsvWriter;
-import com.mpic.evolution.chair.dao.BroadcastStatisticsDAO;
+import com.mpic.evolution.chair.dao.BroadcastStatisticsDao;
 import com.mpic.evolution.chair.pojo.vo.UserBroadcastInterestedVO;
 import com.mpic.evolution.chair.pojo.vo.UserClickStoryLineTimeVideoPartVO;
 import com.mpic.evolution.chair.service.BroadcastStatisticsService;
@@ -25,7 +25,7 @@ import java.util.UUID;
 public class BroadcastStatisticsServiceImpl implements BroadcastStatisticsService {
 
     @Autowired
-    BroadcastStatisticsDAO dao;
+    BroadcastStatisticsDao dao;
 
     /**
      *

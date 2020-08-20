@@ -15,7 +15,7 @@ import java.util.List;
  * 描述:
  */
 @Component
-public interface BroadcastStatisticsDAO {
+public interface BroadcastStatisticsDao {
     /**
      *
      * 方法名:  getUserBroadcastInterested

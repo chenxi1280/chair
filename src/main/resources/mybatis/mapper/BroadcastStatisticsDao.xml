@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.mpic.evolution.chair.dao.BroadcastStatisticsDAO">
+<mapper namespace="com.mpic.evolution.chair.dao.BroadcastStatisticsDao">
 
     <resultMap id="userBroadcastInterested" type="com.mpic.evolution.chair.pojo.vo.UserBroadcastInterestedVO">
         <result property="userId" column="fk_user_id"/>
