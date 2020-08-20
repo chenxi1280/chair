@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mpic.evolution.chair.dao.ProcessMediaByProcedureDao">
+
+    <resultMap id="mediaProcedure" type="com.mpic.evolution.chair.pojo.vo.MediaByProcedureVo">
+        <id property="pipelineId" column="pk_pipeline_id"/>
+        <result property="artworkId" column="fk_artwork_id"/>
+        <result property="videoId" column="fk_video_id"/>
+        <result property="finishedFlag" column="finished_flag"/>
+        <result property="videoCode" column="video_code"/>
+    </resultMap>
+
+    <select id="getUnHandledVideo" resultMap="mediaProcedure">
+        SELECT
+        an.video_code,
+        vp.pk_pipeline_id,
+        vp.fk_artwork_id,
+        vp.fk_video_id,
+        vp.finished_flag
+        FROM
+        tc_video_pipeline vp,
+        ecm_artwork_nodes an
+        WHERE vp.finished_flag = 0
+        AND an.pk_detail_id = vp.fk_video_id
+    </select>
+
+</mapper>

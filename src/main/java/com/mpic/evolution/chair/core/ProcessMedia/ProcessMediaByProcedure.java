@@ -1,6 +1,9 @@
 package com.mpic.evolution.chair.core.ProcessMedia;
 
 import com.alibaba.fastjson.JSONObject;
+import com.mpic.evolution.chair.dao.ProcessMediaByProcedureDao;
+import com.mpic.evolution.chair.pojo.vo.MediaByProcedureVo;
+import com.mpic.evolution.chair.util.RedisUtil;
 import com.tencentcloudapi.common.Credential;
 import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 import com.tencentcloudapi.common.profile.ClientProfile;
@@ -8,7 +11,16 @@ import com.tencentcloudapi.common.profile.HttpProfile;
 import com.tencentcloudapi.vod.v20180717.VodClient;
 import com.tencentcloudapi.vod.v20180717.models.ProcessMediaByProcedureRequest;
 import com.tencentcloudapi.vod.v20180717.models.ProcessMediaByProcedureResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.mpic.evolution.chair.common.constant.CosConstant.*;
 
@@ -19,20 +31,47 @@ import static com.mpic.evolution.chair.common.constant.CosConstant.*;
  * @date 2020/8/18 14:49
  * 类描述：
  */
+@Slf4j
 @Component
+@EnableScheduling
 public class ProcessMediaByProcedure {
+
+    @Resource
+    private
+    ProcessMediaByProcedureDao processMediaByProcedureDao;
+
+    @Resource
+    private
+    RedisUtil redisUtil;
 
     /**
       * 方法名:getUnHandeledVideo
       * @author Xuezx (◔‸◔）
       * @date 2020/8/18 15:00
-      * 方法描述: 定时任务，捞取库中未审核的视频，并将之开始任务流
+      * 方法描述: 定时任务10分钟一次，捞取库中10条未审核的视频，并将之存入redis队列
+     * 开始任务流
+      * 以后有mq后把这个存到mq里
       */
-    private void getUnHandeledVideo(){
+    @Scheduled(fixedRate=60*1000*10)
+    private void getUnHandledVideo(){
+          
+        List<MediaByProcedureVo> res = processMediaByProcedureDao.getUnHandledVideo();
+        for( MediaByProcedureVo vo : res){
+            String videoCode = vo.getVideoCode();
+            if(StringUtils.isBlank(videoCode)){
+                log.info("获取视频处理任务流数据错误，id为=" + vo.getPipelineId());
+                continue;
+            }
+            //先存入redis，避免多节点重复操作
+            String hasValue = String.valueOf(redisUtil.get(videoCode));
+            if(StringUtils.isNotBlank(hasValue)){
+                continue;
+            }
+            redisUtil.set(vo.getVideoCode(), "value", 60*60);
+            handleOneMedia(videoCode, null);
+        }
 
     }
-
-
 
 
     /**
@@ -58,6 +97,9 @@ public class ProcessMediaByProcedure {
             JSONObject params = new JSONObject();
             params.put("FileId", videoCode);
             params.put("ProcedureName", "转码540mp4");
+            if(StringUtils.isNotBlank(SessionContext)){
+                params.put("SessionContext", SessionContext);
+            }
 
             ProcessMediaByProcedureRequest req = ProcessMediaByProcedureRequest.fromJsonString(params.toJSONString(), ProcessMediaByProcedureRequest.class);
             ProcessMediaByProcedureResponse resp = client.ProcessMediaByProcedure(req);
