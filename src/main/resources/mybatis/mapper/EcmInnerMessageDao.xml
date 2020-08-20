@@ -9,25 +9,47 @@
     <result column="message_status" jdbcType="SMALLINT" property="messageStatus" />
     <result column="send_date" jdbcType="TIMESTAMP" property="sendDate" />
   </resultMap>
+  
+  <resultMap id="EcmInnerMessageDto" type="com.mpic.evolution.chair.pojo.dto.EcmInnerMessageDto">
+    <id column="pk_message_id" jdbcType="INTEGER" property="pkMessageId" />
+    <result column="fk_template_id" jdbcType="INTEGER" property="fkTemplateId" />
+    <result column="fk_user_id" jdbcType="INTEGER" property="fkUserId" />
+    <result column="reviewer_id" jdbcType="INTEGER" property="reviewerId" />
+    <result column="message_status" jdbcType="SMALLINT" property="messageStatus" />
+    <result column="send_date" jdbcType="TIMESTAMP" property="sendDate" />
+    
+    <association property="ecmTemplate">
+    	<id column="pk_template_id" jdbcType="INTEGER" property="pkTemplateId" />
+    	<result column="content" jdbcType="VARCHAR" property="content" />
+    	<result column="template_name" jdbcType="VARCHAR" property="templateName" />
+    	<result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    	<result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    </association>
+  </resultMap>
+  
   <sql id="Base_Column_List">
     pk_message_id, fk_template_id, fk_user_id, reviewer_id, message_status, send_date
   </sql>
+  
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from ecm_inner_message
     where pk_message_id = #{pkMessageId,jdbcType=INTEGER}
   </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from ecm_inner_message
     where pk_message_id = #{pkMessageId,jdbcType=INTEGER}
   </delete>
+  
   <insert id="insert" keyColumn="pk_message_id" keyProperty="pkMessageId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmInnerMessage" useGeneratedKeys="true">
     insert into ecm_inner_message (fk_template_id, fk_user_id, reviewer_id, 
       message_status, send_date)
     values (#{fkTemplateId,jdbcType=INTEGER}, #{fkUserId,jdbcType=INTEGER}, #{reviewerId,jdbcType=INTEGER}, 
       #{messageStatus,jdbcType=SMALLINT}, #{sendDate,jdbcType=TIMESTAMP})
   </insert>
+  
   <insert id="insertSelective" keyColumn="pk_message_id" keyProperty="pkMessageId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmInnerMessage" useGeneratedKeys="true">
     insert into ecm_inner_message
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -65,6 +87,7 @@
       </if>
     </trim>
   </insert>
+  
   <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmInnerMessage">
     update ecm_inner_message
     <set>
@@ -86,6 +109,7 @@
     </set>
     where pk_message_id = #{pkMessageId,jdbcType=INTEGER}
   </update>
+  
   <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmInnerMessage">
     update ecm_inner_message
     set fk_template_id = #{fkTemplateId,jdbcType=INTEGER},
@@ -95,4 +119,34 @@
       send_date = #{sendDate,jdbcType=TIMESTAMP}
     where pk_message_id = #{pkMessageId,jdbcType=INTEGER}
   </update>
+  
+  <select id="selectByList" parameterType="com.mpic.evolution.chair.pojo.entity.EcmInnerMessage" 
+  resultMap="EcmInnerMessageDto">
+    select 
+    	*
+    from 
+    	ecm_inner_message m 
+    left join 
+    	ecm_template t 
+    on 
+    	m.fk_template_id = t.pk_template_id
+    <where>
+    	<if test="fkTemplateId != null">
+        fk_template_id = #{fkTemplateId}
+      </if>
+      <if test="fkUserId != null">
+        fk_user_id = #{fkUserId}
+      </if>
+      <if test="reviewerId != null">
+        reviewer_id = #{reviewerId}
+      </if>
+      <if test="messageStatus != null">
+        message_status = #{messageStatus}
+      </if>
+      <if test="sendDate != null">
+        send_date = #{sendDate}
+      </if>
+    </where>
+  </select>
+  
 </mapper>

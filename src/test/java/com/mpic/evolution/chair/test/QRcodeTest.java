@@ -1,4 +1,4 @@
-package chair;
+package com.mpic.evolution.chair.test;
 
 import java.io.BufferedInputStream;
 import java.io.File;
