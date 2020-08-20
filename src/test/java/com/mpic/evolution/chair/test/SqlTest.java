@@ -10,7 +10,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.alibaba.fastjson.JSONArray;
 import com.mpic.evolution.chair.dao.EcmInnerMessageDao;
-import com.mpic.evolution.chair.pojo.dto.EcmInnerMessageDto;
 import com.mpic.evolution.chair.pojo.entity.EcmInnerMessage;
 
 import net.minidev.json.JSONObject;
@@ -30,14 +29,12 @@ public class SqlTest {
 		EcmInnerMessage ecmInnerMessage = new EcmInnerMessage();
 		ecmInnerMessage.setFkTemplateId(1);
 //		ecmInnerMessage.setFkUserId(1352);
-		List<EcmInnerMessageDto> selectByList = ecmInnerMessageDao.selectByList(ecmInnerMessage);
+		List<EcmInnerMessage> selectByList = ecmInnerMessageDao.selectByList(ecmInnerMessage);
 		JSONArray data = new JSONArray();
 		selectByList.forEach(intem->{
 			//键一样问题
 			JSONObject object = new JSONObject();
-			String content = intem.getEcmTemplate().getContent();
 			Short status = intem.getMessageStatus();
-			object.put("content", content);
 			object.put("status", status);
 			data.add(object);
 		});

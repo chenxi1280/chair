@@ -2,7 +2,6 @@ package com.mpic.evolution.chair.service;
 
 import java.util.List;
 
-import com.mpic.evolution.chair.pojo.dto.EcmInnerMessageDto;
 import com.mpic.evolution.chair.pojo.entity.EcmInnerMessage;
 import com.mpic.evolution.chair.pojo.vo.EcmUserVo;
 
@@ -12,7 +11,7 @@ import com.mpic.evolution.chair.pojo.vo.EcmUserVo;
 */
 public interface EcmInnerMessageService {
 
-	List<EcmInnerMessageDto> getInnerMessage(EcmUserVo user);
+	List<EcmInnerMessage> getInnerMessage(EcmUserVo user);
 
 	boolean deleteInnerMessage(EcmInnerMessage ecmInnerMessage);
 

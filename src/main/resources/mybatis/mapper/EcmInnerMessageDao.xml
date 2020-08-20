@@ -125,11 +125,7 @@
     select 
     	*
     from 
-    	ecm_inner_message m 
-    left join 
-    	ecm_template t 
-    on 
-    	m.fk_template_id = t.pk_template_id
+    	ecm_inner_message
     <where>
     	<if test="fkTemplateId != null">
         fk_template_id = #{fkTemplateId}

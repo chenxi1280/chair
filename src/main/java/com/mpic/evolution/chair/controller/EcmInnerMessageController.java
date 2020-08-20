@@ -8,7 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.mpic.evolution.chair.pojo.dto.EcmInnerMessageDto;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmInnerMessage;
 import com.mpic.evolution.chair.pojo.vo.EcmUserVo;
@@ -33,7 +32,7 @@ public class EcmInnerMessageController {
     @ResponseBody
 	public ResponseDTO getInnerMessage(EcmUserVo user) {
     	//求和信息
-    	List<EcmInnerMessageDto> innerMessages = ecmInnerMessageService.getInnerMessage(user);
+    	List<EcmInnerMessage> innerMessages = ecmInnerMessageService.getInnerMessage(user);
     	if (innerMessages == null || innerMessages.isEmpty()) {
 			return ResponseDTO.fail("获取message失败");
 		}

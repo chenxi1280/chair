@@ -2,7 +2,6 @@ package com.mpic.evolution.chair.dao;
 
 import java.util.List;
 
-import com.mpic.evolution.chair.pojo.dto.EcmInnerMessageDto;
 import com.mpic.evolution.chair.pojo.entity.EcmInnerMessage;
 
 public interface EcmInnerMessageDao {
@@ -14,7 +13,7 @@ public interface EcmInnerMessageDao {
 
     EcmInnerMessage selectByPrimaryKey(Integer pkMessageId);
     
-    List<EcmInnerMessageDto> selectByList(EcmInnerMessage ecmInnerMessage);
+    List<EcmInnerMessage> selectByList(EcmInnerMessage ecmInnerMessage);
 
     int updateByPrimaryKeySelective(EcmInnerMessage record);
 

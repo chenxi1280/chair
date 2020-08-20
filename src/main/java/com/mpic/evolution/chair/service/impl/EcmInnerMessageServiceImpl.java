@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mpic.evolution.chair.dao.EcmInnerMessageDao;
-import com.mpic.evolution.chair.pojo.dto.EcmInnerMessageDto;
 import com.mpic.evolution.chair.pojo.entity.EcmInnerMessage;
 import com.mpic.evolution.chair.pojo.vo.EcmUserVo;
 import com.mpic.evolution.chair.service.EcmInnerMessageService;
@@ -25,14 +24,14 @@ public class EcmInnerMessageServiceImpl implements EcmInnerMessageService{
 	EcmInnerMessageDao ecmInnerMessageDao;
 
 	@Override
-	public List<EcmInnerMessageDto> getInnerMessage(EcmUserVo user) {
+	public List<EcmInnerMessage> getInnerMessage(EcmUserVo user) {
 		String userId = JWTUtil.getUserId(user.getToken());
 		if (StringUtils.isBlank(userId) || !NumberUtils.isParsable(userId)) {
 			return null;
 		}
 		EcmInnerMessage ecmInnerMessage = new EcmInnerMessage();
 		ecmInnerMessage.setFkUserId(Integer.valueOf(userId));
-		List<EcmInnerMessageDto> messageDtos = ecmInnerMessageDao.selectByList(ecmInnerMessage);
+		List<EcmInnerMessage> messageDtos = ecmInnerMessageDao.selectByList(ecmInnerMessage);
 		return messageDtos;
 	}
 
