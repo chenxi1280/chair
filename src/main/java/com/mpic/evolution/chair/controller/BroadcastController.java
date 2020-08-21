@@ -4,14 +4,13 @@ import com.alibaba.fastjson.JSON;
 import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
-import com.mpic.evolution.chair.pojo.vo.ClickActionVo;
 import com.mpic.evolution.chair.service.BroadcastService;
 import com.mpic.evolution.chair.util.JWTUtil;
+import com.mpic.evolution.chair.util.LogUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -27,7 +26,6 @@ import javax.annotation.Resource;
  * 描述: 视频播放相关类
  */
 
-@Slf4j
 @Controller
 public class BroadcastController {
 
@@ -46,6 +44,8 @@ public class BroadcastController {
     @ResponseBody
     public ResponseDTO getBroadcastInfo(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
 
+        LogUtil.outputLog("/getBroadcastInfo", "getBroadcastInfo", ecmArtWorkQuery.toString(),
+                false, "", "getBroadcastInfo入参日志");
         Integer intUserId = ecmArtWorkQuery.getFkUserid();
         if(intUserId == null) {
             String token = ecmArtWorkQuery.getToken();

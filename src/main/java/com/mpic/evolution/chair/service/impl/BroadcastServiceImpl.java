@@ -35,7 +35,6 @@ public class BroadcastServiceImpl  implements BroadcastService{
      * @author Xuezx
      * @date 2019/12/5 0005 14:25
      * @param videoId  视频id
-     * @return com.mpic.evolution.common.returnvo.ReturnVo
      * 描述: 获得固始县信息
      */
     @Override
@@ -69,7 +68,6 @@ public class BroadcastServiceImpl  implements BroadcastService{
      * @date 2020/6/11 0011 14:03
      * @param userId, videoId
      * @param passiveFlag 0 主动 1被动
-     * @return com.mpic.evolution.common.returnvo.ReturnVo<com.mpic.evolution.forward.play.broadcast.vo.BroadcastVo>
      * 描述:
      */
     @Override
