@@ -106,7 +106,10 @@ public final class RedisUtil {
 	public boolean set(String key, Object value) {
 		try {
 
-			redisTemplate.opsForValue().set(key, value);
+			// redisTemplate.opsForValue().set(key, value)
+			// 默认数据保留14天
+			long time = 60*60*24*14;
+			this.set(key, value, time);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -370,8 +373,9 @@ public final class RedisUtil {
 	public long sSetAndTime(String key, long time, Object... values) {
 		try {
 			Long count = redisTemplate.opsForSet().add(key, values);
-			if (time > 0)
+			if (time > 0){
 				expire(key, time);
+			}
 			return count;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -465,7 +469,6 @@ public final class RedisUtil {
 	 * 
 	 * @param key   键
 	 * @param value 值
-	 * @param time  时间(秒)
 	 * @return
 	 */
 	public boolean lSet(String key, Object value) {
@@ -489,8 +492,28 @@ public final class RedisUtil {
 	public boolean lSet(String key, Object value, long time) {
 		try {
 			redisTemplate.opsForList().rightPush(key, value);
-			if (time > 0)
+			if (time > 0){
 				expire(key, time);
+			}
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	/**
+	 * 将list放入缓存
+	 * 
+	 * @param key   键
+	 * @param value 值
+	 * @return boolean
+	 */
+	public boolean lSetAll(String key, List<Object> value) {
+		try {
+			// 默认数据保留14天
+			long time = 60*60*24*14;
+			this.lSetAll(key, value, time);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -506,29 +529,12 @@ public final class RedisUtil {
 	 * @param time  时间(秒)
 	 * @return
 	 */
-	public boolean lSet(String key, List<Object> value) {
+	public boolean lSetAll(String key, List<Object> value, long time) {
 		try {
 			redisTemplate.opsForList().rightPushAll(key, value);
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-
-	/**
-	 * 将list放入缓存
-	 * 
-	 * @param key   键
-	 * @param value 值
-	 * @param time  时间(秒)
-	 * @return
-	 */
-	public boolean lSet(String key, List<Object> value, long time) {
-		try {
-			redisTemplate.opsForList().rightPushAll(key, value);
-			if (time > 0)
+			if (time > 0){
 				expire(key, time);
+			}
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
