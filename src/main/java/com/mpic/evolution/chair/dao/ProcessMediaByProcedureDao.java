@@ -15,4 +15,8 @@ public interface ProcessMediaByProcedureDao {
 
     List<MediaByProcedureVo> getUnHandledVideo();
 
+    int insertUnHandledVideo(MediaByProcedureVo vo);
+
+    List<MediaByProcedureVo> getUnHandledVideoByVideoCode(MediaByProcedureVo vo);
+
 }

@@ -10,9 +10,16 @@
         <result property="videoCode" column="video_code"/>
     </resultMap>
 
+    <insert id="insertUnHandledVideo" keyColumn="pk_pipeline_id" keyProperty="pipelineId" parameterType="com.mpic.evolution.chair.pojo.vo.MediaByProcedureVo" useGeneratedKeys="true">
+        insert into tc_video_pipeline (fK_artwork_id, fk_video_id, video_code)
+        values (#{artworkId,jdbcType=INTEGER}, #{videoId   ,jdbcType=INTEGER}, #{videoCode,jdbcType=String})
+    </insert>
+
+
+
     <select id="getUnHandledVideo" resultMap="mediaProcedure">
         SELECT
-        an.video_code,
+        vp.video_code,
         vp.pk_pipeline_id,
         vp.fk_artwork_id,
         vp.fk_video_id,
@@ -21,7 +28,20 @@
         tc_video_pipeline vp,
         ecm_artwork_nodes an
         WHERE vp.finished_flag = 0
-        AND an.pk_detail_id = vp.fk_video_id
+    </select>
+    <select id="getUnHandledVideoByVideoCode" resultMap="mediaProcedure" parameterType="com.mpic.evolution.chair.pojo.vo.MediaByProcedureVo" >
+
+        SELECT
+        vp.video_code,
+        vp.pk_pipeline_id,
+        vp.fk_artwork_id,
+        vp.fk_video_id,
+        vp.finished_flag
+        FROM
+        tc_video_pipeline vp,
+        ecm_artwork_nodes an
+        WHERE vp.finished_flag = 0
+        AND vp.video_code = #{videoCode}
     </select>
 
 </mapper>

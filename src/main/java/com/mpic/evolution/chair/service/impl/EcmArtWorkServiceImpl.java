@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.mpic.evolution.chair.dao.ProcessMediaByProcedureDao;
+import com.mpic.evolution.chair.pojo.vo.MediaByProcedureVo;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.json.JSONObject;
@@ -35,7 +37,8 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
     EcmArtworkDao ecmArtworkDao;
     @Resource
     EcmArtworkNodesDao ecmArtworkNodesDao;
-
+	@Resource
+	ProcessMediaByProcedureDao processMediaByProcedureDao;
     @Override
     public ResponseDTO getArtWorks(EcmArtWorkQuery ecmArtWorkQuery) {
 
@@ -77,6 +80,16 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 	}
     @Override
     public ResponseDTO saveArtWorkNode(EcmArtworkNodes ecmArtworkNodes) {
+    	String videoCode = ecmArtworkNodes.getVideoCode();
+    	if(StringUtils.isNotBlank(videoCode)){
+			MediaByProcedureVo vo = new MediaByProcedureVo();
+			vo.setVideoCode(videoCode);
+			List<MediaByProcedureVo> list = processMediaByProcedureDao.getUnHandledVideoByVideoCode(vo);
+			if (list == null || list.size() <= 0) {
+				processMediaByProcedureDao.insertUnHandledVideo(vo);
+			}
+		}
+
     	if (ecmArtworkNodes.getIsleaf().equals("Y")){
 
 			return ResponseDTO.get(1 == ecmArtworkNodesDao.updateByPrimaryKeySelective(ecmArtworkNodes));
