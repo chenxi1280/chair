@@ -12,7 +12,7 @@
 
     <insert id="insertUnHandledVideo" keyColumn="pk_pipeline_id" keyProperty="pipelineId" parameterType="com.mpic.evolution.chair.pojo.vo.MediaByProcedureVo" useGeneratedKeys="true">
         insert into tc_video_pipeline (fK_artwork_id, fk_video_id, video_code)
-        values (#{artworkId,jdbcType=INTEGER}, #{videoId   ,jdbcType=INTEGER}, #{videoCode,jdbcType=String})
+        values (#{artworkId,jdbcType=INTEGER}, #{videoId   ,jdbcType=INTEGER}, #{videoCode})
     </insert>
 
 
