@@ -1,6 +1,8 @@
 package com.mpic.evolution.chair.test;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,11 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.alibaba.fastjson.JSONArray;
 import com.mpic.evolution.chair.dao.EcmInnerMessageDao;
 import com.mpic.evolution.chair.pojo.entity.EcmInnerMessage;
-
-import net.minidev.json.JSONObject;
 
 /** 
 * @author 作者 SJ: 
@@ -27,17 +26,12 @@ public class SqlTest {
 	@Test
 	public void selectSqlTest() {
 		EcmInnerMessage ecmInnerMessage = new EcmInnerMessage();
-//		ecmInnerMessage.setFkUserId(1352);
-		List<EcmInnerMessage> selectByList = ecmInnerMessageDao.selectByList(ecmInnerMessage);
-		JSONArray data = new JSONArray();
-		selectByList.forEach(intem->{
-			//键一样问题
-			JSONObject object = new JSONObject();
-			Short status = intem.getMessageStatus();
-			object.put("status", status);
-			data.add(object);
-		});
-		System.out.println();
+		ecmInnerMessage.setFkUserId(1352);
+		List<EcmInnerMessage> messages = ecmInnerMessageDao.selectByList(ecmInnerMessage);
+		messages = messages.stream().filter((EcmInnerMessage m)->m.getMessageStatus()<2).collect(Collectors.toList());
+		messages.sort((EcmInnerMessage m1, EcmInnerMessage m2)->m2.getSendDate().compareTo(m1.getSendDate()));
+		Map<Short, Long> sum = messages.stream().collect(Collectors.groupingBy(EcmInnerMessage::getMessageStatus, Collectors.counting()));
+		sum.forEach((k,v)->System.out.println(k+":"+v));
 	}
 
 }

@@ -31,8 +31,8 @@ public class EcmInnerMessageServiceImpl implements EcmInnerMessageService{
 		}
 		EcmInnerMessage ecmInnerMessage = new EcmInnerMessage();
 		ecmInnerMessage.setFkUserId(Integer.valueOf(userId));
-		List<EcmInnerMessage> messageDtos = ecmInnerMessageDao.selectByList(ecmInnerMessage);
-		return messageDtos;
+		List<EcmInnerMessage> messages = ecmInnerMessageDao.selectByList(ecmInnerMessage);
+		return messages;
 	}
 
 	@Override

@@ -1,5 +1,19 @@
 package com.mpic.evolution.chair.core.ProcessMedia;
 
+import static com.mpic.evolution.chair.common.constant.CosConstant.REGION;
+import static com.mpic.evolution.chair.common.constant.CosConstant.SECRET_ID;
+import static com.mpic.evolution.chair.common.constant.CosConstant.SECRET_KEY;
+import static com.mpic.evolution.chair.common.constant.CosConstant.TC_API;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
 import com.alibaba.fastjson.JSONObject;
 import com.mpic.evolution.chair.dao.ProcessMediaByProcedureDao;
 import com.mpic.evolution.chair.pojo.vo.MediaByProcedureVo;
@@ -11,18 +25,8 @@ import com.tencentcloudapi.common.profile.HttpProfile;
 import com.tencentcloudapi.vod.v20180717.VodClient;
 import com.tencentcloudapi.vod.v20180717.models.ProcessMediaByProcedureRequest;
 import com.tencentcloudapi.vod.v20180717.models.ProcessMediaByProcedureResponse;
+
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.mpic.evolution.chair.common.constant.CosConstant.*;
 
 /**
  * 类名称： ProcessMediaByProcedure
