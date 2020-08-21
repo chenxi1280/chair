@@ -30,7 +30,7 @@ public class ResponseDTO implements Serializable {
     /**
      * 返回的状态
      */
-    private Integer status = 200;
+    private Object status = 200;
     /**
      * 返回的结果
      */
@@ -64,7 +64,7 @@ public class ResponseDTO implements Serializable {
      * @param errorCode
      * @param status
      */
-    public ResponseDTO(String msg, Object data, Integer errorCode, Integer status) {
+    public ResponseDTO(String msg, Object data, Integer errorCode, Object status) {
         this.msg = msg;
         this.data = data;
         this.errorCode = errorCode;
@@ -121,7 +121,7 @@ public class ResponseDTO implements Serializable {
      * @param data
      * @return
      */
-    public static ResponseDTO fail(String msg, Object data, Integer errorCode, Integer status) {
+    public static ResponseDTO fail(String msg, Object data, Integer errorCode, Object status) {
         return new ResponseDTO(msg, data, errorCode, status);
     }
 

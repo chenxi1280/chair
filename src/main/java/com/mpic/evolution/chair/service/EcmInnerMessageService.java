@@ -13,6 +13,8 @@ public interface EcmInnerMessageService {
 
 	List<EcmInnerMessage> getInnerMessage(EcmUserVo user);
 
-	boolean deleteInnerMessage(EcmInnerMessage ecmInnerMessage);
+	boolean batchDelete(EcmInnerMessage ecmInnerMessage);
+
+	boolean batchModify(EcmInnerMessage ecmInnerMessage);
 
 }

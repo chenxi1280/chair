@@ -4,6 +4,8 @@ import com.mpic.evolution.chair.pojo.entity.EcmInnerMessage;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 public interface EcmInnerMessageDao {
     int deleteByPrimaryKey(Integer pkMessageId);
 
@@ -18,4 +20,6 @@ public interface EcmInnerMessageDao {
     int updateByPrimaryKeySelective(EcmInnerMessage record);
 
     int updateByPrimaryKey(EcmInnerMessage record);
+    
+    int batchUpdate(@Param("record") EcmInnerMessage record, List<Integer> ids);
 }

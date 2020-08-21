@@ -36,7 +36,13 @@ public class EcmInnerMessageServiceImpl implements EcmInnerMessageService{
 	}
 
 	@Override
-	public boolean deleteInnerMessage(EcmInnerMessage ecmInnerMessage) {
+	public boolean batchDelete(EcmInnerMessage ecmInnerMessage) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean batchModify(EcmInnerMessage ecmInnerMessage) {
 		// TODO Auto-generated method stub
 		return false;
 	}

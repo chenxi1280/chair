@@ -1,5 +1,6 @@
 package com.mpic.evolution.chair.test;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,6 +21,7 @@ import com.mpic.evolution.chair.pojo.entity.EcmInnerMessage;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class SqlTest {
+	
 	@Autowired
 	EcmInnerMessageDao ecmInnerMessageDao;
 	
@@ -33,5 +35,21 @@ public class SqlTest {
 		Map<Short, Long> sum = messages.stream().collect(Collectors.groupingBy(EcmInnerMessage::getMessageStatus, Collectors.counting()));
 		sum.forEach((k,v)->System.out.println(k+":"+v));
 	}
+	
+	@Test
+	public void batchUpdateSqlTest() {
+		List<Integer> list = new ArrayList<Integer>();
+		list.add(6);
+		list.add(7);
+		list.add(8);
+		list.add(9);
+		list.add(10);
+		EcmInnerMessage message = new EcmInnerMessage();
+		message.setMessageStatus((short) 2);
+		int num = ecmInnerMessageDao.batchUpdate(message, list);
+		System.out.println(num);
+	}
+	
+	
 
 }

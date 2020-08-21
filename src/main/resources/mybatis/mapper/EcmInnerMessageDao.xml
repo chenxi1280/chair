@@ -134,5 +134,17 @@
 			</if>
 		</where>
 	</select>
-
+	
+	<update id="batchUpdate">
+		update 
+			ecm_inner_message
+		set 
+			message_status = #{record.messageStatus,jdbcType=SMALLINT}
+		where 
+			pk_message_id in
+			<foreach collection="ids" index="index" item="item"
+				separator="," open="(" close=")">
+				#{item,jdbcType=INTEGER}
+			</foreach>
+	</update>
 </mapper>
