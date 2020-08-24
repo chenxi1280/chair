@@ -11,9 +11,7 @@ import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 import com.tencentcloudapi.common.profile.ClientProfile;
 import com.tencentcloudapi.common.profile.HttpProfile;
 
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
+import java.util.*;
 
 import static com.mpic.evolution.chair.common.constant.CosConstant.SECRET_ID;
 import static com.mpic.evolution.chair.common.constant.CosConstant.SECRET_KEY;
@@ -75,15 +73,26 @@ public class AIVerifyUtil {
 
 
     public static void main(String [] args) {
-        List<String> res;
-        res = getDirtyWords("他妈的八九的时候你还是个傻逼呢，我是吾尔开希，你吃婴儿，脑残，妈拉个巴子的，操你妈，草拟吗，草泥马，白花花的奶子");
+        Map<String, Object> res;
+        res = convertContent("他妈的八九的时候你还是个傻逼呢，我是吾尔开希，你吃婴儿，脑残，他妈的八九的时候你还是个傻逼呢，我是吾尔开希，你吃婴儿，脑残，妈拉个巴子的，操你妈，草拟吗他妈的八九的时候你还是个傻逼呢，我是吾尔开希，你吃婴儿，脑残，妈拉个巴子的，操你妈，草拟吗妈拉个巴子的，操你妈，草拟吗，草泥马，白花花的奶子");
         System.out.println(res);
-        res = getDirtyWords("的，操你妈，草拟吗，草泥马，白花花的奶子");
+        res = convertContent("的，操你妈，草拟吗，草泥马，白花花的奶子");
         System.out.println(res);
-        res = getDirtyWords("刘真？呵呵，我是文明人，我讲文明化");
+        res = convertContent("刘真？呵呵，我是文明人，我讲文明化");
         System.out.println(res);
-        res = getDirtyWords("");
+        res = convertContent("");
         System.out.println(res);
 
+    }
+
+    public static Map<String, Object> convertContent(String content){
+        Map<String, Object> map = new HashMap<>(4);
+        List<String> res = getDirtyWords(content);
+        for (String re : res) {
+            content = content.replace(re, "**");
+        }
+        map.put("res", content);
+        map.put("list", res);
+        return map;
     }
 }
