@@ -117,7 +117,6 @@ public class LoginController extends BaseController {
 		EcmUserVo userVo = new EcmUserVo();
 		try {
 			ecmUser.setMobile(EncryptUtil.aesEncrypt(ecmUserVo.getMobile(), SecretKeyConstants.secretKey));
-			ecmUser.setIsValid("Y");
 			ecmUser = ecmUserService.getUserInfos(ecmUser);
 			// 判断账号是否存在
 			if (ecmUser == null || StringUtils.isNullOrBlank(ecmUser.getPassword())) {
@@ -135,6 +134,9 @@ public class LoginController extends BaseController {
 			// 账号不存在需要直接返回
 			if (!data.isEmpty()) {
 				return ResponseDTO.fail("登陆失败", data, null, 508);
+			}
+			if (ecmUser.getIsValid().equals("N")) {
+				data.add("509");
 			}
 			String inputPwd = ecmUserVo.getPassword();
 			String encrypt = MD5Utils.encrypt(inputPwd);
