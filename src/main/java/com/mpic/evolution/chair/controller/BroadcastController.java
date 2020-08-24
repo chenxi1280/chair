@@ -1,13 +1,11 @@
 package com.mpic.evolution.chair.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
 import com.mpic.evolution.chair.service.BroadcastService;
 import com.mpic.evolution.chair.util.JWTUtil;
 import com.mpic.evolution.chair.util.LogUtil;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Controller;
