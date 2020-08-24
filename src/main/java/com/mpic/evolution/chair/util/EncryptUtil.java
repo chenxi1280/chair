@@ -369,7 +369,7 @@ public class EncryptUtil {
     
     public static void main(String[] args) throws Exception {
     	String aesEncrypt = EncryptUtil.aesEncrypt("18895397505", SecretKeyConstants.secretKey);
-    	String aesDecrypt = EncryptUtil.aesDecrypt("659D636A10660BFA624EB47735E2CDB3", SecretKeyConstants.secretKey);
+    	String aesDecrypt = EncryptUtil.aesDecrypt("C1F293236B49949322DBA88C2EE2B429", SecretKeyConstants.secretKey);
     	System.out.println(aesEncrypt);
     	System.out.println(aesDecrypt);
 	}

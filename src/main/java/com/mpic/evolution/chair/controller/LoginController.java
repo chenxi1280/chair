@@ -117,6 +117,7 @@ public class LoginController extends BaseController {
 		EcmUserVo userVo = new EcmUserVo();
 		try {
 			ecmUser.setMobile(EncryptUtil.aesEncrypt(ecmUserVo.getMobile(), SecretKeyConstants.secretKey));
+			ecmUser.setIsValid("Y");
 			ecmUser = ecmUserService.getUserInfos(ecmUser);
 			// 判断账号是否存在
 			if (ecmUser == null || StringUtils.isNullOrBlank(ecmUser.getPassword())) {
