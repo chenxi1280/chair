@@ -62,11 +62,13 @@ public class AIVerifyUtil {
                         }
                     }
                 }
-
+            }else if (obj !=null && obj.get("Error")!= null ){
+                res.add("error");
             }
 
         } catch (TencentCloudSDKException e) {
             System.out.println(e.toString());
+            res.add("error");
         }
         return res;
     }
@@ -78,7 +80,9 @@ public class AIVerifyUtil {
         System.out.println(res);
         res = getDirtyWords("的，操你妈，草拟吗，草泥马，白花花的奶子");
         System.out.println(res);
-        res = getDirtyWords("我是文明人，我讲文明化");
+        res = getDirtyWords("刘真？呵呵，我是文明人，我讲文明化");
+        System.out.println(res);
+        res = getDirtyWords("");
         System.out.println(res);
 
     }
