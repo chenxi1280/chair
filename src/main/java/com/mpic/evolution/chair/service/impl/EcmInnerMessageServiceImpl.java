@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.mpic.evolution.chair.dao.EcmInnerMessageDao;
 import com.mpic.evolution.chair.pojo.entity.EcmInnerMessage;
+import com.mpic.evolution.chair.pojo.vo.EcmInnerMessageVo;
 import com.mpic.evolution.chair.pojo.vo.EcmUserVo;
 import com.mpic.evolution.chair.service.EcmInnerMessageService;
 import com.mpic.evolution.chair.util.JWTUtil;
@@ -36,15 +37,29 @@ public class EcmInnerMessageServiceImpl implements EcmInnerMessageService{
 	}
 
 	@Override
-	public boolean batchDelete(EcmInnerMessage ecmInnerMessage) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean batchDelete(EcmInnerMessageVo ecmInnerMessageVo) {
+		List<Integer> messageIds = ecmInnerMessageVo.getMessageIds();
+		int size = messageIds.size();
+		EcmInnerMessage ecmInnerMessage = new EcmInnerMessage();
+		ecmInnerMessage.setMessageStatus((short) 2);
+		int update = ecmInnerMessageDao.batchUpdate(ecmInnerMessage, messageIds);
+		if (update != size) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override
-	public boolean batchModify(EcmInnerMessage ecmInnerMessage) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean batchModifyRead(EcmInnerMessageVo ecmInnerMessageVo) {
+		List<Integer> messageIds = ecmInnerMessageVo.getMessageIds();
+		int size = messageIds.size();
+		EcmInnerMessage ecmInnerMessage = new EcmInnerMessage();
+		ecmInnerMessage.setMessageStatus((short) 1);
+		int update = ecmInnerMessageDao.batchUpdate(ecmInnerMessage, messageIds);
+		if (update != size) {
+			return false;
+		}
+		return true;
 	}
 	
 }

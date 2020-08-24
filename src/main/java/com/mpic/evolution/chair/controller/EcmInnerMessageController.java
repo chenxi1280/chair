@@ -13,13 +13,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONObject;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmInnerMessage;
+import com.mpic.evolution.chair.pojo.vo.EcmInnerMessageVo;
 import com.mpic.evolution.chair.pojo.vo.EcmUserVo;
 import com.mpic.evolution.chair.service.EcmInnerMessageService;
+
+import lombok.extern.slf4j.Slf4j;
 
 /** 
 * @author 作者 SJ: 
 * @date 创建时间：2020-8-20 10:48:54 
 */
+@Slf4j
 @Controller
 @RequestMapping("/EcmInnerMessage")
 public class EcmInnerMessageController {
@@ -54,21 +58,31 @@ public class EcmInnerMessageController {
      */
     @RequestMapping("/batchDelete")
     @ResponseBody
-	public ResponseDTO batchDelete(EcmInnerMessage ecmInnerMessage) {
-    	boolean flag = ecmInnerMessageService.batchDelete(ecmInnerMessage);
-		return null;
-    	
+	public ResponseDTO batchDelete(EcmInnerMessageVo ecmInnerMessageVo) {
+    	List<Integer> messageIds = ecmInnerMessageVo.getMessageIds();
+    	boolean batchDelete = ecmInnerMessageService.batchDelete(ecmInnerMessageVo);
+    	if (batchDelete) {
+			return ResponseDTO.ok("批量删除信息success");
+		}else {
+			log.error("批量删除信息failed受影响的id："+messageIds);
+			return ResponseDTO.fail("failed", null, null, "000039");
+		}
     }
     
     /**
      * 	获取图片验证码接口
      *	 以BASE64转码的字符串传到前端
      */
-    @RequestMapping("/batchModify")
+    @RequestMapping("/batchModifyRead")
     @ResponseBody
-	public ResponseDTO batchModify(EcmInnerMessage ecmInnerMessage) {
-    	boolean flag = ecmInnerMessageService.batchModify(ecmInnerMessage);
-		return null;
-    	
+	public ResponseDTO batchModifyRead(EcmInnerMessageVo ecmInnerMessageVo) {
+    	List<Integer> messageIds = ecmInnerMessageVo.getMessageIds();
+    	boolean batchModifyRead = ecmInnerMessageService.batchModifyRead(ecmInnerMessageVo);
+    	if (batchModifyRead) {
+    		return ResponseDTO.ok("批量标记已读success");
+		}else {
+			log.error("批量标记已读failed受影响的id："+messageIds);
+			return ResponseDTO.fail("failed", null, null, "000039");
+		}
     }
 }	
