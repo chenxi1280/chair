@@ -10,7 +10,7 @@
     pk_broadcast_hot_id, fk_arkwork_id, broadcast_count
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from ecm_artwork_broadcast_hot
     where pk_broadcast_hot_id = #{pkBroadcastHotId,jdbcType=INTEGER}
@@ -60,4 +60,17 @@
       broadcast_count = #{broadcastCount,jdbcType=INTEGER}
     where pk_broadcast_hot_id = #{pkBroadcastHotId,jdbcType=INTEGER}
   </update>
+
+
+<!--  sql-->
+  <select id="selectFindAll" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkBroadcastHotVO">
+    select <include refid="Base_Column_List" />
+    from ecm_artwork_broadcast_hot
+    order by broadcast_count desc
+    limit #{start},#{limit}
+
+
+
+
+  </select>
 </mapper>

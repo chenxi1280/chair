@@ -172,6 +172,15 @@ public class EcmArtWorkController {
     }
 
 
+    /**
+	 * @param: [ecmArtWorkQuery] 自带分页
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2020/8/26
+	 * 描述 :  根据热度进行主页 查询
+	 *       保存成功: status 200  msg "success” data "数据"
+	 *       保存失败: status 500  msg "error“
+	 */
 	@RequestMapping("/getFindArtWorks")
 	@ResponseBody
 	public ResponseDTO getFindArtWorks(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){

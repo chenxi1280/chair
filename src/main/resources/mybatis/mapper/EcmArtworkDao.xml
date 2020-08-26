@@ -183,6 +183,20 @@
 
 
   </select>
+  <select id="selectFindArtWorks" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkVo">
+    select <include refid="Base_Column_List" />
+    from ecm_artwork
+    where pk_artwork_id in
+    <foreach collection="ids" separator="," open="(" item="id" close=")">
+        #{ id.fkArkworkId}
+    </foreach>
+    order by field(
+    pk_artwork_id,
+    <foreach collection="ids" separator="," item="id">
+      #{ id.fkArkworkId}
+    </foreach>
+    )
+  </select>
 
 
 </mapper>

@@ -2,7 +2,9 @@ package com.mpic.evolution.chair.dao;
 
 import com.mpic.evolution.chair.pojo.entity.EcmArtwork;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
+import com.mpic.evolution.chair.pojo.vo.EcmArtworkBroadcastHotVO;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -21,4 +23,5 @@ public interface EcmArtworkDao {
 
     List<EcmArtworkVo> selectArtWorks(EcmArtWorkQuery ecmArtWorkQuery);
 
+    List<EcmArtworkVo> selectFindArtWorks(@Param("ids") List<EcmArtworkBroadcastHotVO> ecmArtworkBroadcastHotVOS);
 }

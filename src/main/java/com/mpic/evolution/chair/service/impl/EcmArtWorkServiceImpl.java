@@ -7,6 +7,8 @@ import javax.annotation.Resource;
 
 import com.mpic.evolution.chair.dao.EcmArtworkBroadcastHotDao;
 import com.mpic.evolution.chair.dao.ProcessMediaByProcedureDao;
+import com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHot;
+import com.mpic.evolution.chair.pojo.vo.EcmArtworkBroadcastHotVO;
 import com.mpic.evolution.chair.pojo.vo.MediaByProcedureVo;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -119,11 +121,9 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
 	@Override
 	public ResponseDTO getFindArtWorks(EcmArtWorkQuery ecmArtWorkQuery) {
-//		ecmArtworkBroadcastHotDao.select
-
-
-
-    	return null;
+		List<EcmArtworkBroadcastHotVO> ecmArtworkBroadcastHotVOS= ecmArtworkBroadcastHotDao.selectFindAll(ecmArtWorkQuery);
+		List<EcmArtworkVo> list = ecmArtworkDao.selectFindArtWorks(ecmArtworkBroadcastHotVOS);
+    	return ResponseDTO.ok("sucess",list);
 	}
 
 	/**
