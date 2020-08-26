@@ -30,10 +30,13 @@ public class EcmArtworkNodes implements Serializable {
     /**
      * 前台id
      */
+    @JsonProperty(value = "xid" )
+    @JSONField(name = "xid" )
     private String revolutionId;
 
     /**
      * 备注
+     * 播放
      */
     @JsonProperty(value = "selectTitle" )
     @JSONField(name = "selectTitle")

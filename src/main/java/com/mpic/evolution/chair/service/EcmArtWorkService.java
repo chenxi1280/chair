@@ -79,4 +79,6 @@ public interface EcmArtWorkService {
      *       保存失败: status 500  msg "error“
      */
     ResponseDTO addArtWork(EcmArtworkNodesVo ecmArtworkNodesVo);
+
+    ResponseDTO getFindArtWorks(EcmArtWorkQuery ecmArtWorkQuery);
 }

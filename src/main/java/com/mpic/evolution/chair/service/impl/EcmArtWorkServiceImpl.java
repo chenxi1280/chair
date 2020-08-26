@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.mpic.evolution.chair.dao.EcmArtworkBroadcastHotDao;
 import com.mpic.evolution.chair.dao.ProcessMediaByProcedureDao;
 import com.mpic.evolution.chair.pojo.vo.MediaByProcedureVo;
 import org.apache.commons.lang.StringUtils;
@@ -39,6 +40,8 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
     EcmArtworkNodesDao ecmArtworkNodesDao;
 	@Resource
 	ProcessMediaByProcedureDao processMediaByProcedureDao;
+	@Resource
+	EcmArtworkBroadcastHotDao ecmArtworkBroadcastHotDao;
     @Override
     public ResponseDTO getArtWorks(EcmArtWorkQuery ecmArtWorkQuery) {
 
@@ -114,7 +117,16 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         return ResponseDTO.ok("success");
     }
 
-    /**
+	@Override
+	public ResponseDTO getFindArtWorks(EcmArtWorkQuery ecmArtWorkQuery) {
+//		ecmArtworkBroadcastHotDao.select
+
+
+
+    	return null;
+	}
+
+	/**
      * @param: [ecmArtworkNodesVo]
      * @return: void
      * @author: cxd

@@ -169,6 +169,13 @@ public class EcmArtWorkController {
     	String accessToken = result.getString("access_token");
     	redisUtil.set(userId, accessToken, 3000L);
         return accessToken;
-    }   
+    }
+
+
+	@RequestMapping("/getFindArtWorks")
+	@ResponseBody
+	public ResponseDTO getFindArtWorks(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
+		return ecmArtWorkService.getFindArtWorks(ecmArtWorkQuery);
+	}
 
 }
