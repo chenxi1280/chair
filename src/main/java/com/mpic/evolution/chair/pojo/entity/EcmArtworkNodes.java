@@ -1,5 +1,6 @@
 package com.mpic.evolution.chair.pojo.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
@@ -35,11 +36,13 @@ public class EcmArtworkNodes implements Serializable {
      * 备注
      */
     @JsonProperty(value = "selectTitle" )
+    @JSONField(name = "selectTitle")
     private String videoText;
 
     private Integer fkArtworkId;
 
     @JsonProperty(value = "linkUrl" )
+    @JSONField(name = "linkUrl")
     private String items;
 
     private String itemsText;
@@ -47,11 +50,12 @@ public class EcmArtworkNodes implements Serializable {
     private String itemsBakText;
 
     @JsonProperty(value = "selectText" )
+    @JSONField(name = "selectText")
     private String cssVo;
 
     @JsonIgnore
     private Integer fkAchievementId;
-
+    @JsonIgnore
     private Integer fkEndingId;
 
     /**
@@ -63,6 +67,7 @@ public class EcmArtworkNodes implements Serializable {
      * 级别，0为根结点，1为1级节点
      */
     @JsonProperty(value = "isLink" )
+    @JSONField(name = "isLink" )
     private Integer aLevel;
 
     /**
