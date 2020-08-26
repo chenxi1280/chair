@@ -1,5 +1,7 @@
 package com.mpic.evolution.chair.pojo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -32,30 +34,35 @@ public class EcmArtworkNodes implements Serializable {
     /**
      * 备注
      */
+    @JsonProperty(value = "selectTitle" )
     private String videoText;
 
     private Integer fkArtworkId;
 
+    @JsonProperty(value = "linkUrl" )
     private String items;
 
     private String itemsText;
 
     private String itemsBakText;
 
+    @JsonProperty(value = "selectText" )
     private String cssVo;
 
+    @JsonIgnore
     private Integer fkAchievementId;
 
     private Integer fkEndingId;
 
     /**
-     * Y是椰子节点，N不是
+     * Y是更新节点，N不是
      */
     private String isleaf;
 
     /**
      * 级别，0为根结点，1为1级节点
      */
+    @JsonProperty(value = "isLink" )
     private Integer aLevel;
 
     /**

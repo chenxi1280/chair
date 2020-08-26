@@ -53,8 +53,10 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         }
 
         List<EcmArtworkNodesVo>  list = ecmArtworkNodesDao.selectByArtWorkId(ecmArtWorkQuery.getPkArtworkId());
+
+
         if (list.isEmpty()) {
-        	return ResponseDTO.fail("查询id不存在");
+        	return ResponseDTO.fail("查询id无子节点");
 		}
         return ResponseDTO.ok("success", TreeUtil.buildTree(list).get(0));
     }
