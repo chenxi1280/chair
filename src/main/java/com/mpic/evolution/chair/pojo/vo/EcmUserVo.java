@@ -16,4 +16,6 @@ public class EcmUserVo extends EcmUser {
 	
 	private String imageCodeKey;//图片验证码key
 	
+	private String openid;//用户打开微信小程序时的唯一身份标识
+	
 }
