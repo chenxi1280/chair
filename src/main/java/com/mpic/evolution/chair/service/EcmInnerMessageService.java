@@ -2,6 +2,7 @@ package com.mpic.evolution.chair.service;
 
 import java.util.List;
 
+import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmInnerMessage;
 import com.mpic.evolution.chair.pojo.vo.EcmInnerMessageVo;
 import com.mpic.evolution.chair.pojo.vo.EcmUserVo;
@@ -18,4 +19,5 @@ public interface EcmInnerMessageService {
 
 	boolean batchModifyRead(EcmInnerMessageVo ecmInnerMessageVo);
 
+	ResponseDTO getMsg(EcmUserVo user);
 }

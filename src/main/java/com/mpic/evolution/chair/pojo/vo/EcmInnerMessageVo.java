@@ -16,4 +16,10 @@ public class EcmInnerMessageVo extends EcmInnerMessage {
 	 * 	前端传回的信息id list
 	 */
 	private List<Integer> messageIds;
+
+	/**
+	 * 模板名称
+	 */
+	private String templateName;
+
 }

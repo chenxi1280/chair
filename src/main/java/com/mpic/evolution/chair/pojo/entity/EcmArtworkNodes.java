@@ -50,6 +50,8 @@ public class EcmArtworkNodes implements Serializable {
 
     private String itemsText;
 
+    @JsonProperty(value = "nodeImgUrl" )
+    @JSONField(name = "nodeImgUrl" )
     private String itemsBakText;
 
     @JsonProperty(value = "selectText" )

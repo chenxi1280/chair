@@ -22,7 +22,7 @@ public class EcmInnerMessage implements Serializable {
     private Integer fkUserId;
 
     /**
-     * 审核人id
+     * 审核人发送人id
      */
     private Integer reviewerId;
 
@@ -40,6 +40,11 @@ public class EcmInnerMessage implements Serializable {
      * 消息内容
      */
     private String content;
+
+    /**
+     * 消息模板id
+     */
+    private Integer fkTemplateId;
 
     private static final long serialVersionUID = 1L;
 }
