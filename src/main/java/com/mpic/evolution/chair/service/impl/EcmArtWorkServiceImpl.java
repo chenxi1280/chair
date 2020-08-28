@@ -97,8 +97,8 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 			}
 		}
 
-    	if (ecmArtworkNodes.getIsleaf().equals("Y")){
-
+    	if ("Y".equals(ecmArtworkNodes.getIsleaf())){
+			ecmArtworkNodes.setIsleaf("");
 			return ResponseDTO.get(1 == ecmArtworkNodesDao.updateByPrimaryKeySelective(ecmArtworkNodes));
 		}
         return ResponseDTO.get(1 == ecmArtworkNodesDao.insert(ecmArtworkNodes));

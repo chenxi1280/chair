@@ -42,5 +42,5 @@ mybatis:
 logging:
   level:
     com.mpic.evolution.chair.dao: debug
-
-
+server:
+  port: 8008
