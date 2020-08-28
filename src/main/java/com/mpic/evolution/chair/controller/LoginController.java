@@ -32,6 +32,7 @@ import com.mpic.evolution.chair.pojo.entity.EcmUser;
 import com.mpic.evolution.chair.pojo.vo.EcmUserVo;
 import com.mpic.evolution.chair.service.EcmUserService;
 import com.mpic.evolution.chair.service.LoginService;
+import com.mpic.evolution.chair.util.AIVerifyUtil;
 import com.mpic.evolution.chair.util.EncryptUtil;
 import com.mpic.evolution.chair.util.JWTUtil;
 import com.mpic.evolution.chair.util.MD5Utils;
@@ -347,10 +348,17 @@ public class LoginController extends BaseController {
 	@RequestMapping("/validateUserName")
 	@ResponseBody
 	public ResponseDTO validateUsername(@RequestBody EcmUserVo ecmUserVo) {
-		// TODO 用户昵称是否违法
 		EcmUser user = new EcmUser();
 		try {
-			user.setUsername(ecmUserVo.getUsername());
+			String username = ecmUserVo.getUsername();
+			if (StringUtils.isNullOrBlank(username)) {
+				return ResponseDTO.fail("昵称已被使用", null, null, 504);
+			}
+			String result = AIVerifyUtil.convertContent(username);
+			if (!StringUtils.isNullOrBlank(result)) {
+				return ResponseDTO.fail("昵称使用了违禁词汇", result, null, 510);
+			}
+			user.setUsername(username);
 			user = ecmUserService.getUserInfos(user);
 			// 用户昵称是否存在
 			if (user != null && !StringUtils.isNullOrBlank(String.valueOf(user.getUsername()))) {

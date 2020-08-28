@@ -179,4 +179,84 @@
       authorized = #{authorized,jdbcType=BOOLEAN}
     where pk_id = #{pkId,jdbcType=INTEGER}
   </update>
+  
+  <update id="updateByWxUser">
+		update wx_user
+	    <set>
+	      <if test="w1.fkUserId != null">
+	        fk_user_id = #{w1.fkUserId,jdbcType=INTEGER},
+	      </if>
+	      <if test="w1.openid != null">
+	        openid = #{w1.openid,jdbcType=VARCHAR},
+	      </if>
+	      <if test="w1.nickname != null">
+	        nickname = #{w1.nickname,jdbcType=VARCHAR},
+	      </if>
+	      <if test="w1.avatarurl != null">
+	        avatarurl = #{w1.avatarurl,jdbcType=VARCHAR},
+	      </if>
+	      <if test="w1.gender != null">
+	        gender = #{w1.gender,jdbcType=BOOLEAN},
+	      </if>
+	      <if test="w1.country != null">
+	        country = #{w1.country,jdbcType=VARCHAR},
+	      </if>
+	      <if test="w1.province != null">
+	        province = #{w1.province,jdbcType=VARCHAR},
+	      </if>
+	      <if test="w1.city != null">
+	        city = #{w1.city,jdbcType=VARCHAR},
+	      </if>
+	      <if test="w1.language != null">
+	        `language` = #{w1.language,jdbcType=VARCHAR},
+	      </if>
+	      <if test="w1.ctime != null">
+	        ctime = #{w1.ctime,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="w1.mobile != null">
+	        mobile = #{w1.mobile,jdbcType=VARCHAR},
+	      </if>
+	      <if test="w1.authorized != null">
+	        authorized = #{w1.authorized,jdbcType=BOOLEAN},
+	      </if>
+	    </set>
+		where 1=1
+		<if test="w2.fkUserId != null">
+	        and fk_user_id = #{w2.fkUserId,jdbcType=INTEGER}
+	      </if>
+	      <if test="w2.openid != null">
+	        and openid = #{w2.openid,jdbcType=VARCHAR}
+	      </if>
+	      <if test="w2.nickname != null">
+	        and nickname = #{w2.nickname,jdbcType=VARCHAR}
+	      </if>
+	      <if test="w2.avatarurl != null">
+	        and avatarurl = #{w2.avatarurl,jdbcType=VARCHAR}
+	      </if>
+	      <if test="w2.gender != null">
+	        and gender = #{w2.gender,jdbcType=BOOLEAN}
+	      </if>
+	      <if test="w2.country != null">
+	        and country = #{w2.country,jdbcType=VARCHAR}
+	      </if>
+	      <if test="w2.province != null">
+	        and province = #{w2.province,jdbcType=VARCHAR}
+	      </if>
+	      <if test="w2.city != null">
+	        and city = #{w2.city,jdbcType=VARCHAR}
+	      </if>
+	      <if test="w2.language != null">
+	        and `language` = #{w2.language,jdbcType=VARCHAR}
+	      </if>
+	      <if test="w2.ctime != null">
+	        and ctime = #{w2.ctime,jdbcType=TIMESTAMP}
+	      </if>
+	      <if test="w2.mobile != null">
+	        and mobile = #{w2.mobile,jdbcType=VARCHAR}
+	      </if>
+	      <if test="w2.authorized != null">
+	        and authorized = #{w2.authorized,jdbcType=BOOLEAN}
+	      </if>
+	</update>
+	
 </mapper>

@@ -73,26 +73,27 @@ public class AIVerifyUtil {
 
 
     public static void main(String [] args) {
-        Map<String, Object> res;
+        String res;
         res = convertContent("他妈的八九的时候你还是个傻逼呢，我是吾尔开希，你吃婴儿，脑残，他妈的八九的时候你还是个傻逼呢，我是吾尔开希，你吃婴儿，脑残，妈拉个巴子的，操你妈，草拟吗他妈的八九的时候你还是个傻逼呢，我是吾尔开希，你吃婴儿，脑残，妈拉个巴子的，操你妈，草拟吗妈拉个巴子的，操你妈，草拟吗，草泥马，白花花的奶子");
         System.out.println(res);
         res = convertContent("的，操你妈，草拟吗，草泥马，白花花的奶子");
         System.out.println(res);
         res = convertContent("刘真？呵呵，我是文明人，我讲文明化");
         System.out.println(res);
-        res = convertContent("");
+        res = convertContent(""); 
         System.out.println(res);
 
     }
 
-    public static Map<String, Object> convertContent(String content){
-        Map<String, Object> map = new HashMap<>(4);
+    public static String convertContent(String content){
         List<String> res = getDirtyWords(content);
+        if (res.isEmpty()) {
+			return null;
+		}
         for (String re : res) {
             content = content.replace(re, "**");
         }
-        map.put("res", content);
-        map.put("list", res);
-        return map;
+        return content;
     }
+    
 }
