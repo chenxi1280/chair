@@ -2,10 +2,17 @@ package com.mpic.evolution.chair.service.impl;
 
 import java.util.Properties;
 
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Service;
 
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import com.google.code.kaptcha.util.Config;
+import com.mpic.evolution.chair.dao.EcmUserDao;
+import com.mpic.evolution.chair.dao.WxUserDao;
+import com.mpic.evolution.chair.pojo.entity.EcmUser;
+import com.mpic.evolution.chair.pojo.entity.WxUser;
+import com.mpic.evolution.chair.pojo.vo.EcmUserVo;
 import com.mpic.evolution.chair.service.WxLoginService;
 
 /** 
@@ -15,6 +22,13 @@ import com.mpic.evolution.chair.service.WxLoginService;
 
 @Service
 public class WxLoginServiceImpl implements WxLoginService {
+	
+	@Resource
+	EcmUserDao ecmUserDao;
+	
+	@Resource
+	WxUserDao wxUserDao;
+	
 	@Override
 	public DefaultKaptcha getConfirmCode() {
 		return this.produce();
@@ -39,6 +53,19 @@ public class WxLoginServiceImpl implements WxLoginService {
 		Config config = new Config(properties);
 		defaultKaptcha.setConfig(config);
 		return defaultKaptcha;
+	}
+
+	@Override
+	public boolean savaUser(EcmUser ecmUser, EcmUserVo ecmUserVo) {
+		int ecmRow = ecmUserDao.insertSelective(ecmUser);
+		Integer userId = ecmUser.getPkUserId();
+		String openid = ecmUserVo.getOpenid();
+		WxUser wxUser1 = new WxUser();
+		wxUser1.setFkUserId(userId);
+		WxUser wxUser2 = new WxUser();
+		wxUser2.setOpenid(openid);
+		int wxRow = wxUserDao.updateByWxUser(wxUser1, wxUser2);
+		return ecmRow < 1 ? false : wxRow < 1 ? false : true;	
 	}
 
 }

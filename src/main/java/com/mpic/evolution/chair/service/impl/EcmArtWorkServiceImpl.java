@@ -5,11 +5,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.mpic.evolution.chair.dao.EcmArtworkBroadcastHotDao;
-import com.mpic.evolution.chair.dao.ProcessMediaByProcedureDao;
-import com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHot;
-import com.mpic.evolution.chair.pojo.vo.EcmArtworkBroadcastHotVO;
-import com.mpic.evolution.chair.pojo.vo.MediaByProcedureVo;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.json.JSONObject;
@@ -18,15 +13,20 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.util.CollectionUtils;
 
+import com.mpic.evolution.chair.dao.EcmArtworkBroadcastHotDao;
 import com.mpic.evolution.chair.dao.EcmArtworkDao;
 import com.mpic.evolution.chair.dao.EcmArtworkNodesDao;
+import com.mpic.evolution.chair.dao.ProcessMediaByProcedureDao;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmArtwork;
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
+import com.mpic.evolution.chair.pojo.vo.EcmArtworkBroadcastHotVO;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
+import com.mpic.evolution.chair.pojo.vo.MediaByProcedureVo;
 import com.mpic.evolution.chair.service.EcmArtWorkService;
+import com.mpic.evolution.chair.util.AIVerifyUtil;
 import com.mpic.evolution.chair.util.JWTUtil;
 import com.mpic.evolution.chair.util.TreeUtil;
 
@@ -165,7 +165,16 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 			Integer userId = this.getIdByToken(ecmArtworkVo.getToken());
 			ecmArtwork.setFkUserid(userId);
 			ecmArtwork.setArtworkStatus(ecmArtworkVo.getArtworkStatus());
-			ecmArtwork.setArtworkName(ecmArtworkVo.getArtworkName());//不能为null
+			String artworkName = ecmArtworkVo.getArtworkName();
+			if (StringUtils.isEmpty(artworkName)) {
+				ResponseDTO.fail("作品名称不能为空");
+			}
+			String result = AIVerifyUtil.convertContent(artworkName);
+			if (!StringUtils.isEmpty(result)) {
+				ResponseDTO.fail("作品名称违规含有违禁词",result,null,510);
+			}
+			ecmArtwork.setArtworkName(artworkName);
+			ecmArtwork.setLogoPathStatus((short)0);
 			ecmArtwork.setLogoPath(ecmArtworkVo.getLogoPath());
 			ecmArtwork.setLastModifyDate(new Date());
  			ecmArtworkDao.updateByPrimaryKey(ecmArtwork);

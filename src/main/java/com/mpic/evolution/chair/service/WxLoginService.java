@@ -1,6 +1,8 @@
 package com.mpic.evolution.chair.service;
 
 import com.google.code.kaptcha.impl.DefaultKaptcha;
+import com.mpic.evolution.chair.pojo.entity.EcmUser;
+import com.mpic.evolution.chair.pojo.vo.EcmUserVo;
 
 /** 
 * @author 作者 SJ: 
@@ -13,5 +15,7 @@ public interface WxLoginService {
 	 *	 获取验证码
 	 */ 
 	DefaultKaptcha getConfirmCode();
+
+	boolean savaUser(EcmUser user, EcmUserVo ecmUserVo);
 
 }

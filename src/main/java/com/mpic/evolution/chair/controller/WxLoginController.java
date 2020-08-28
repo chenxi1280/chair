@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,7 +18,6 @@ import org.mybatis.spring.MyBatisSystemException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
@@ -28,9 +26,12 @@ import com.google.code.kaptcha.impl.DefaultKaptcha;
 import com.mpic.evolution.chair.common.constant.SecretKeyConstants;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmUser;
+import com.mpic.evolution.chair.pojo.entity.WxUser;
 import com.mpic.evolution.chair.pojo.vo.EcmUserVo;
+import com.mpic.evolution.chair.pojo.vo.WxLoginVo;
 import com.mpic.evolution.chair.service.EcmUserService;
 import com.mpic.evolution.chair.service.WxLoginService;
+import com.mpic.evolution.chair.service.WxUserService;
 import com.mpic.evolution.chair.util.EncryptUtil;
 import com.mpic.evolution.chair.util.JWTUtil;
 import com.mpic.evolution.chair.util.MD5Utils;
@@ -57,6 +58,9 @@ public class WxLoginController {
 	
 	@Resource
 	EcmUserService ecmUserService;
+	
+	@Resource
+	WxUserService wxUserService;
 	
 	/**
 	 * 获取图片验证码接口 以BASE64转码的字符串传到前端
@@ -95,11 +99,14 @@ public class WxLoginController {
 
     @ResponseBody
     @RequestMapping("/getOpenid")
-    public ResponseDTO getOpenid(@RequestParam HashMap<String, Object> params) {
+    public ResponseDTO getOpenid(@RequestBody WxLoginVo wxLoginVo) {
         InputStream inputStream = null;
         JSONObject data = new JSONObject();
         try {
-            URL url = new URL("https://api.weixin.qq.com/sns/jscode2session?appid=" + params.get("appid") + "&secret=" + params.get("secret") + "&js_code=" + params.get("code") + "&grant_type=authorization_code");
+            URL url = new URL(String.format("https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code", 
+            		wxLoginVo.getAppid(),
+            		wxLoginVo.getSecret(),
+            		wxLoginVo.getCode()));
             URLConnection open = url.openConnection();
             inputStream = open.getInputStream();
             String result = org.apache.commons.io.IOUtils.toString(inputStream, "utf-8");
@@ -124,6 +131,18 @@ public class WxLoginController {
             }
         }
 
+    }
+    
+    @RequestMapping("/savaUserInfo")
+	@ResponseBody
+	public ResponseDTO savaWxUserInfo(@RequestBody WxUser wxUser) {
+    	boolean flag = wxUserService.savaWxUer(wxUser);
+    	if (flag) {
+    		return ResponseDTO.ok();	
+		}else {
+			return ResponseDTO.fail("保存微信用户信息失败");
+		}
+    	
     }
 	
 	/**
@@ -225,7 +244,7 @@ public class WxLoginController {
 			// 用户敏感信息需要加密 可反解
 			user.setMobile(phoneKey);
 			user.setPassword(MD5Utils.encrypt(ecmUserVo.getPassword()));
-			ecmUserService.savaUser(user);
+			wxLoginService.savaUser(user,ecmUserVo);
 			return ResponseDTO.ok("注册成功");
 		} catch (Exception e) {
 			e.printStackTrace();
