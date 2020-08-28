@@ -139,7 +139,7 @@
         </where>
     </select>
     <select id="selectByMsgList" resultType="com.mpic.evolution.chair.pojo.vo.EcmInnerMessageVo">
-		select fk_user_id, reviewer_id, message_status,send_date, m.content, fk_template_id,template_name
+		select fk_user_id, reviewer_id, message_status,send_date, m.content, fk_template_id,template_name,pk_message_id
 		from ecm_template t
 		inner join  ecm_inner_message m
 		on m.fk_template_id = t.pk_template_id
@@ -157,5 +157,22 @@
                  separator="," open="(" close=")">
             #{item,jdbcType=INTEGER}
         </foreach>
+    </update>
+    <update id="updateRedaMsg">
+        update ecm_inner_message
+        set message_status = 1
+        where fk_user_id = #{uid}
+        and pk_message_id in <foreach collection="ids" item="id" close=")" open="(" separator=",">
+        #{id}
+        </foreach>
+
+    </update>
+    <update id="updateDelMsg">
+        update ecm_inner_message
+        set message_status = 2
+        where fk_user_id = #{uid}
+        and pk_message_id in <foreach collection="ids" item="id" close=")" open="(" separator=",">
+        #{id}
+    </foreach>
     </update>
 </mapper>

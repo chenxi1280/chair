@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import com.mpic.evolution.chair.pojo.query.EcmInnerMessageQurey;
 import com.mpic.evolution.chair.util.JWTUtil;
 import com.mpic.evolution.chair.util.StringUtils;
 import com.qcloud.vod.common.StringUtil;
@@ -66,15 +67,13 @@ public class EcmInnerMessageController {
      */
     @RequestMapping("/batchDelete")
     @ResponseBody
-	public ResponseDTO batchDelete(EcmInnerMessageVo ecmInnerMessageVo) {
-    	List<Integer> messageIds = ecmInnerMessageVo.getMessageIds();
-    	boolean batchDelete = ecmInnerMessageService.batchDelete(ecmInnerMessageVo);
-    	if (batchDelete) {
-			return ResponseDTO.ok("批量删除信息success");
-		}else {
-			log.error("批量删除信息failed受影响的id："+messageIds);
-			return ResponseDTO.fail("failed", null, null, "000039");
+	public ResponseDTO batchDelete(@RequestBody EcmInnerMessageQurey ecmInnerMessageQurey) {
+		if (StringUtil.isEmpty(ecmInnerMessageQurey.getToken())){
+			return ResponseDTO.fail("非法访问");
 		}
+		String userId = JWTUtil.getUserId(ecmInnerMessageQurey.getToken());
+		ecmInnerMessageQurey.setPkUserId(Integer.valueOf(userId));
+		return ecmInnerMessageService.batchDelete(ecmInnerMessageQurey);
     }
     
     /**
@@ -83,14 +82,13 @@ public class EcmInnerMessageController {
      */
     @RequestMapping("/batchModifyRead")
     @ResponseBody
-	public ResponseDTO batchModifyRead(EcmInnerMessageVo ecmInnerMessageVo) {
-    	List<Integer> messageIds = ecmInnerMessageVo.getMessageIds();
-    	boolean batchModifyRead = ecmInnerMessageService.batchModifyRead(ecmInnerMessageVo);
-    	if (batchModifyRead) {
-    		return ResponseDTO.ok("批量标记已读success");
-		}else {
-			log.error("批量标记已读failed受影响的id："+messageIds);
-			return ResponseDTO.fail("failed", null, null, "000039");
+	public ResponseDTO batchModifyRead(@RequestBody EcmInnerMessageQurey ecmInnerMessageQurey) {
+    	if (StringUtil.isEmpty(ecmInnerMessageQurey.getToken())){
+    		return ResponseDTO.fail("非法访问");
 		}
-    }
+		String userId = JWTUtil.getUserId(ecmInnerMessageQurey.getToken());
+		ecmInnerMessageQurey.setPkUserId(Integer.valueOf(userId));
+		return ecmInnerMessageService.batchModifyRead(ecmInnerMessageQurey);
+
+	}
 }	

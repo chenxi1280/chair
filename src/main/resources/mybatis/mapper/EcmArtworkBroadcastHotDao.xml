@@ -64,6 +64,7 @@
 
 <!--  sql-->
   <select id="selectFindAll" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkBroadcastHotVO">
+
     select <include refid="Base_Column_List" />
     from ecm_artwork_broadcast_hot
     order by broadcast_count desc
