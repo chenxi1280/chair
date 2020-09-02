@@ -78,7 +78,7 @@ public class EcmArtworkNodes implements Serializable {
     private String isleaf;
 
     /**
-     * 是否为跳转节点
+     * 是否为跳转节点 1 跳
      */
     @JsonProperty(value = "isLink" )
     @JSONField(name = "isLink" )

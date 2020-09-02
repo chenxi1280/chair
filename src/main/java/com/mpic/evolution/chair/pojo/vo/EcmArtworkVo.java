@@ -21,4 +21,6 @@ public class EcmArtworkVo extends EcmArtwork {
      * 	用户token
      */
     private String token;
+
+    private String userName;
 }

@@ -187,4 +187,17 @@ public class EcmArtWorkController {
 		return ecmArtWorkService.getFindArtWorks(ecmArtWorkQuery);
 	}
 
+	@RequestMapping("/getFindSortArtWorks")
+	@ResponseBody
+	public ResponseDTO getFindSortArtWorks(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
+		return ecmArtWorkService.getFindSortArtWorks(ecmArtWorkQuery);
+	}
+
+
+	@RequestMapping("/removeNode")
+	@ResponseBody
+	public ResponseDTO removeNode(@RequestBody EcmArtworkNodesVo ecmArtworkNodesVo){
+		return ecmArtWorkService.removeNode(ecmArtworkNodesVo);
+	}
+
 }

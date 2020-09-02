@@ -90,4 +90,8 @@ public interface EcmArtWorkService {
      *       保存失败: status 500  msg "error“
      */
     ResponseDTO getFindArtWorks(EcmArtWorkQuery ecmArtWorkQuery);
+
+    ResponseDTO removeNode(EcmArtworkNodesVo ecmArtworkNodesVo);
+
+    ResponseDTO getFindSortArtWorks(EcmArtWorkQuery ecmArtWorkQuery);
 }

@@ -1,37 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mpic.evolution.chair.dao.EcmUserDao">
-  <resultMap id="BaseResultMap" type="com.mpic.evolution.chair.pojo.entity.EcmUser">
-    <id column="pk_user_id" jdbcType="INTEGER" property="pkUserId" />
-    <result column="password" jdbcType="VARCHAR" property="password" />
-    <result column="email_uuid" jdbcType="VARCHAR" property="emailUuid" />
-    <result column="is_valid" jdbcType="VARCHAR" property="isValid" />
-    <result column="username" jdbcType="VARCHAR" property="username" />
-    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
-    <result column="email" jdbcType="VARCHAR" property="email" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="count" jdbcType="INTEGER" property="count" />
-    <result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime" />
-    <result column="card_code" jdbcType="VARCHAR" property="cardCode" />
-    <result column="last_check_mail" jdbcType="TIMESTAMP" property="lastCheckMail" />
-    <result column="roles" jdbcType="VARCHAR" property="roles" />
-  </resultMap>
-  <sql id="Base_Column_List">
+    <resultMap id="BaseResultMap" type="com.mpic.evolution.chair.pojo.entity.EcmUser">
+        <id column="pk_user_id" jdbcType="INTEGER" property="pkUserId"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="email_uuid" jdbcType="VARCHAR" property="emailUuid"/>
+        <result column="is_valid" jdbcType="VARCHAR" property="isValid"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="mobile" jdbcType="VARCHAR" property="mobile"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="count" jdbcType="INTEGER" property="count"/>
+        <result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime"/>
+        <result column="card_code" jdbcType="VARCHAR" property="cardCode"/>
+        <result column="last_check_mail" jdbcType="TIMESTAMP" property="lastCheckMail"/>
+        <result column="roles" jdbcType="VARCHAR" property="roles"/>
+    </resultMap>
+    <sql id="Base_Column_List">
     pk_user_id, `password`, email_uuid, is_valid, username, mobile, email, create_time,
     update_time, `count`, last_login_time, card_code, last_check_mail, roles
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from ecm_user
-    where pk_user_id = #{pkUserId,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ecm_user
+        where pk_user_id = #{pkUserId,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from ecm_user
     where pk_user_id = #{pkUserId,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" keyColumn="pk_user_id" keyProperty="pkUserId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUser" useGeneratedKeys="true">
+    <insert id="insert" keyColumn="pk_user_id" keyProperty="pkUserId"
+            parameterType="com.mpic.evolution.chair.pojo.entity.EcmUser" useGeneratedKeys="true">
     insert into ecm_user (`password`, email_uuid, is_valid,
       username, mobile, email,
       create_time, update_time, `count`,
@@ -43,137 +44,138 @@
       #{lastLoginTime,jdbcType=TIMESTAMP}, #{cardCode,jdbcType=VARCHAR}, #{lastCheckMail,jdbcType=TIMESTAMP},
       #{roles,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" keyColumn="pk_user_id" keyProperty="pkUserId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUser" useGeneratedKeys="true">
-    insert into ecm_user
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="password != null">
-        `password`,
-      </if>
-      <if test="emailUuid != null">
-        email_uuid,
-      </if>
-      <if test="isValid != null">
-        is_valid,
-      </if>
-      <if test="username != null">
-        username,
-      </if>
-      <if test="mobile != null">
-        mobile,
-      </if>
-      <if test="email != null">
-        email,
-      </if>
-      <if test="createTime != null">
-        create_time,
-      </if>
-      <if test="updateTime != null">
-        update_time,
-      </if>
-      <if test="count != null">
-        `count`,
-      </if>
-      <if test="lastLoginTime != null">
-        last_login_time,
-      </if>
-      <if test="cardCode != null">
-        card_code,
-      </if>
-      <if test="lastCheckMail != null">
-        last_check_mail,
-      </if>
-      <if test="roles != null">
-        roles,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="password != null">
-        #{password,jdbcType=VARCHAR},
-      </if>
-      <if test="emailUuid != null">
-        #{emailUuid,jdbcType=VARCHAR},
-      </if>
-      <if test="isValid != null">
-        #{isValid,jdbcType=VARCHAR},
-      </if>
-      <if test="username != null">
-        #{username,jdbcType=VARCHAR},
-      </if>
-      <if test="mobile != null">
-        #{mobile,jdbcType=VARCHAR},
-      </if>
-      <if test="email != null">
-        #{email,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null">
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="count != null">
-        #{count,jdbcType=INTEGER},
-      </if>
-      <if test="lastLoginTime != null">
-        #{lastLoginTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="cardCode != null">
-        #{cardCode,jdbcType=VARCHAR},
-      </if>
-      <if test="lastCheckMail != null">
-        #{lastCheckMail,jdbcType=TIMESTAMP},
-      </if>
-      <if test="roles != null">
-        #{roles,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUser">
-    update ecm_user
-    <set>
-      <if test="password != null">
-        `password` = #{password,jdbcType=VARCHAR},
-      </if>
-      <if test="emailUuid != null">
-        email_uuid = #{emailUuid,jdbcType=VARCHAR},
-      </if>
-      <if test="isValid != null">
-        is_valid = #{isValid,jdbcType=VARCHAR},
-      </if>
-      <if test="username != null">
-        username = #{username,jdbcType=VARCHAR},
-      </if>
-      <if test="mobile != null">
-        mobile = #{mobile,jdbcType=VARCHAR},
-      </if>
-      <if test="email != null">
-        email = #{email,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="count != null">
-        `count` = #{count,jdbcType=INTEGER},
-      </if>
-      <if test="lastLoginTime != null">
-        last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="cardCode != null">
-        card_code = #{cardCode,jdbcType=VARCHAR},
-      </if>
-      <if test="lastCheckMail != null">
-        last_check_mail = #{lastCheckMail,jdbcType=TIMESTAMP},
-      </if>
-      <if test="roles != null">
-        roles = #{roles,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where pk_user_id = #{pkUserId,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUser">
+    <insert id="insertSelective" keyColumn="pk_user_id" keyProperty="pkUserId"
+            parameterType="com.mpic.evolution.chair.pojo.entity.EcmUser" useGeneratedKeys="true">
+        insert into ecm_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="password != null">
+                `password`,
+            </if>
+            <if test="emailUuid != null">
+                email_uuid,
+            </if>
+            <if test="isValid != null">
+                is_valid,
+            </if>
+            <if test="username != null">
+                username,
+            </if>
+            <if test="mobile != null">
+                mobile,
+            </if>
+            <if test="email != null">
+                email,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="count != null">
+                `count`,
+            </if>
+            <if test="lastLoginTime != null">
+                last_login_time,
+            </if>
+            <if test="cardCode != null">
+                card_code,
+            </if>
+            <if test="lastCheckMail != null">
+                last_check_mail,
+            </if>
+            <if test="roles != null">
+                roles,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="emailUuid != null">
+                #{emailUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="isValid != null">
+                #{isValid,jdbcType=VARCHAR},
+            </if>
+            <if test="username != null">
+                #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="mobile != null">
+                #{mobile,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="count != null">
+                #{count,jdbcType=INTEGER},
+            </if>
+            <if test="lastLoginTime != null">
+                #{lastLoginTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="cardCode != null">
+                #{cardCode,jdbcType=VARCHAR},
+            </if>
+            <if test="lastCheckMail != null">
+                #{lastCheckMail,jdbcType=TIMESTAMP},
+            </if>
+            <if test="roles != null">
+                #{roles,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUser">
+        update ecm_user
+        <set>
+            <if test="password != null">
+                `password` = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="emailUuid != null">
+                email_uuid = #{emailUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="isValid != null">
+                is_valid = #{isValid,jdbcType=VARCHAR},
+            </if>
+            <if test="username != null">
+                username = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="mobile != null">
+                mobile = #{mobile,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                email = #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="count != null">
+                `count` = #{count,jdbcType=INTEGER},
+            </if>
+            <if test="lastLoginTime != null">
+                last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="cardCode != null">
+                card_code = #{cardCode,jdbcType=VARCHAR},
+            </if>
+            <if test="lastCheckMail != null">
+                last_check_mail = #{lastCheckMail,jdbcType=TIMESTAMP},
+            </if>
+            <if test="roles != null">
+                roles = #{roles,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where pk_user_id = #{pkUserId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUser">
     update ecm_user
     set `password` = #{password,jdbcType=VARCHAR},
       email_uuid = #{emailUuid,jdbcType=VARCHAR},
@@ -191,123 +193,132 @@
     where pk_user_id = #{pkUserId,jdbcType=INTEGER}
   </update>
 
-	<update id="updateEcmUser">
-		update ecm_user
-		<set>
-			<if test="record.password != null">
-				`password` = #{record.password,jdbcType=VARCHAR},
-			</if>
-			<if test="record.emailUuid != null">
-				email_uuid = #{record.emailUuid,jdbcType=VARCHAR},
-			</if>
-			<if test="record.isValid != null">
-				is_valid = #{record.isValid,jdbcType=VARCHAR},
-			</if>
-			<if test="record.username != null">
-				username = #{record.username,jdbcType=VARCHAR},
-			</if>
-			<if test="record.mobile != null">
-				mobile = #{record.mobile,jdbcType=VARCHAR},
-			</if>
-			<if test="record.email != null">
-				email = #{record.email,jdbcType=VARCHAR},
-			</if>
-			<if test="record.createTime != null">
-				create_time = #{record.createTime,jdbcType=TIMESTAMP},
-			</if>
-			<if test="record.updateTime != null">
-				update_time = #{record.updateTime,jdbcType=TIMESTAMP},
-			</if>
-			<if test="record.count != null">
-				`count` = #{record.count,jdbcType=INTEGER},
-			</if>
-			<if test="record.lastLoginTime != null">
-				last_login_time = #{record.lastLoginTime,jdbcType=TIMESTAMP},
-			</if>
-			<if test="record.cardCode != null">
-				card_code = #{record.cardCode,jdbcType=VARCHAR},
-			</if>
-			<if test="record.lastCheckMail != null">
-				last_check_mail = #{record.lastCheckMail,jdbcType=TIMESTAMP},
-			</if>
-			<if test="record.roles != null">
-				roles = #{record.roles,jdbcType=VARCHAR},
-			</if>
-		</set>
-		where 1=1
-		<if test="recordVo.pkUserId != null">
-			and pk_user_id = #{recordVo.pkUserId,jdbcType=INTEGER}
-		</if>
-		<if test="recordVo.password != null">
-			and `password` = #{recordVo.password,jdbcType=VARCHAR}
-		</if>
-		<if test="recordVo.token != null">
-			and email_uuid = #{recordVo.token,jdbcType=VARCHAR}
-		</if>
-		<if test="recordVo.isValid != null">
-			and is_valid = #{recordVo.isValid,jdbcType=VARCHAR}
-		</if>
-		<if test="recordVo.username != null">
-			and username = #{recordVo.username,jdbcType=VARCHAR}
-		</if>
-		<if test="recordVo.mobile != null">
-			and mobile = #{recordVo.mobile,jdbcType=VARCHAR}
-		</if>
-		<if test="recordVo.email != null">
-			and email = #{recordVo.email,jdbcType=VARCHAR}
-		</if>
-		<if test="recordVo.roles != null">
-			and roles = #{recordVo.roles,jdbcType=VARCHAR}
-		</if>
-	</update>
+    <update id="updateEcmUser">
+        update ecm_user
+        <set>
+            <if test="record.password != null">
+                `password` = #{record.password,jdbcType=VARCHAR},
+            </if>
+            <if test="record.emailUuid != null">
+                email_uuid = #{record.emailUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="record.isValid != null">
+                is_valid = #{record.isValid,jdbcType=VARCHAR},
+            </if>
+            <if test="record.username != null">
+                username = #{record.username,jdbcType=VARCHAR},
+            </if>
+            <if test="record.mobile != null">
+                mobile = #{record.mobile,jdbcType=VARCHAR},
+            </if>
+            <if test="record.email != null">
+                email = #{record.email,jdbcType=VARCHAR},
+            </if>
+            <if test="record.createTime != null">
+                create_time = #{record.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.updateTime != null">
+                update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.count != null">
+                `count` = #{record.count,jdbcType=INTEGER},
+            </if>
+            <if test="record.lastLoginTime != null">
+                last_login_time = #{record.lastLoginTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.cardCode != null">
+                card_code = #{record.cardCode,jdbcType=VARCHAR},
+            </if>
+            <if test="record.lastCheckMail != null">
+                last_check_mail = #{record.lastCheckMail,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.roles != null">
+                roles = #{record.roles,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where 1=1
+        <if test="recordVo.pkUserId != null">
+            and pk_user_id = #{recordVo.pkUserId,jdbcType=INTEGER}
+        </if>
+        <if test="recordVo.password != null">
+            and `password` = #{recordVo.password,jdbcType=VARCHAR}
+        </if>
+        <if test="recordVo.token != null">
+            and email_uuid = #{recordVo.token,jdbcType=VARCHAR}
+        </if>
+        <if test="recordVo.isValid != null">
+            and is_valid = #{recordVo.isValid,jdbcType=VARCHAR}
+        </if>
+        <if test="recordVo.username != null">
+            and username = #{recordVo.username,jdbcType=VARCHAR}
+        </if>
+        <if test="recordVo.mobile != null">
+            and mobile = #{recordVo.mobile,jdbcType=VARCHAR}
+        </if>
+        <if test="recordVo.email != null">
+            and email = #{recordVo.email,jdbcType=VARCHAR}
+        </if>
+        <if test="recordVo.roles != null">
+            and roles = #{recordVo.roles,jdbcType=VARCHAR}
+        </if>
+    </update>
 
-	
-  <select id="selectByRecord" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUser" resultMap="BaseResultMap">
-	select
-	<include refid="Base_Column_List" />
-	from ecm_user
-	where 1=1
-	<if test="pkUserId != null">
-		and pk_user_id = #{pkUserId,jdbcType=INTEGER}
-	</if>
-	<if test="password != null">
-		and `password` = #{password,jdbcType=VARCHAR}
-	</if>
-	<if test="emailUuid != null">
-		and email_uuid = #{emailUuid,jdbcType=VARCHAR}
-	</if>
-	<if test="isValid != null">
-		and is_valid = #{isValid,jdbcType=VARCHAR}
-	</if>
-	<if test="username != null">
-		and username = #{username,jdbcType=VARCHAR}
-	</if>
-	<if test="mobile != null">
-		and mobile = #{mobile,jdbcType=VARCHAR}
-	</if>
-	<if test="email != null">
-		and email = #{email,jdbcType=VARCHAR}
-	</if>
-	<if test="createTime != null">
-		and create_time = #{createTime,jdbcType=TIMESTAMP}
-	</if>
-	<if test="updateTime != null">
-		and update_time = #{updateTime,jdbcType=TIMESTAMP}
-	</if>
-	<if test="count != null">
-		and `count` = #{count,jdbcType=INTEGER}
-	</if>
-	<if test="lastLoginTime != null">
-		and last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP}
-	</if>
-	<if test="cardCode != null">
-		and card_code = #{cardCode,jdbcType=VARCHAR}
-	</if>
-	<if test="lastCheckMail != null">
-		and last_check_mail = #{lastCheckMail,jdbcType=TIMESTAMP}
-	</if>
-	<if test="roles != null">
-		and roles = #{roles,jdbcType=TIMESTAMP}
-	</if>
-</select>
+
+    <select id="selectByRecord" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUser" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ecm_user
+        where 1=1
+        <if test="pkUserId != null">
+            and pk_user_id = #{pkUserId,jdbcType=INTEGER}
+        </if>
+        <if test="password != null">
+            and `password` = #{password,jdbcType=VARCHAR}
+        </if>
+        <if test="emailUuid != null">
+            and email_uuid = #{emailUuid,jdbcType=VARCHAR}
+        </if>
+        <if test="isValid != null">
+            and is_valid = #{isValid,jdbcType=VARCHAR}
+        </if>
+        <if test="username != null">
+            and username = #{username,jdbcType=VARCHAR}
+        </if>
+        <if test="mobile != null">
+            and mobile = #{mobile,jdbcType=VARCHAR}
+        </if>
+        <if test="email != null">
+            and email = #{email,jdbcType=VARCHAR}
+        </if>
+        <if test="createTime != null">
+            and create_time = #{createTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="updateTime != null">
+            and update_time = #{updateTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="count != null">
+            and `count` = #{count,jdbcType=INTEGER}
+        </if>
+        <if test="lastLoginTime != null">
+            and last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="cardCode != null">
+            and card_code = #{cardCode,jdbcType=VARCHAR}
+        </if>
+        <if test="lastCheckMail != null">
+            and last_check_mail = #{lastCheckMail,jdbcType=TIMESTAMP}
+        </if>
+        <if test="roles != null">
+            and roles = #{roles,jdbcType=TIMESTAMP}
+        </if>
+    </select>
+    <select id="selectUserByEcmArtworkList" resultType="com.mpic.evolution.chair.pojo.vo.EcmUserVo">
+        select <include refid="Base_Column_List" />
+        from ecm_user
+        where pk_user_id
+        in <foreach collection="ids" separator="," open="(" close=")" item="id" >
+                #{id.fkUserid}
+        </foreach>
+
+    </select>
 </mapper>
