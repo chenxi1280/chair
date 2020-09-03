@@ -18,6 +18,11 @@
     pk_artwork_id, fk_userId, artwork_name, artwork_describe, artwork_status, logo_path,
     logo_path_status, last_create_date, last_modify_date, four_letter_tips, fk_audit_id
   </sql>
+  <sql id="WxuserEcmArtwork_Column_List">
+    pk_artwork_id, fk_userId, artwork_name, artwork_describe, artwork_status, logo_path,
+    logo_path_status, last_create_date, last_modify_date, four_letter_tips, fk_audit_id,
+    broadcast_count
+  </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
@@ -197,6 +202,32 @@
     </foreach>
     )
   </select>
-
-
+	
+	<select id="selectArtWorksByWxUser" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkVo">
+    select 
+    	<include refid="WxuserEcmArtwork_Column_List" />
+    from
+    	 ecm_artwork a
+    left join
+    	ecm_artwork_broadcast_hot b 
+    on
+    	a.pk_artwork_id = b.fk_arkwork_id
+    where 
+    	<!-- 查询作品是不包括删除作品5 和审核不通过3 -->
+    	1=1 and artwork_status in (0,1,2,4)
+      <if test="pkArtworkId != null">
+        and pk_artwork_id = #{pkArtworkId}
+      </if>
+      <if test="fkUserid != null">
+        and fk_userId = #{fkUserid}
+      </if>
+      <if test="artworkName != null and artworkName!=''">
+        and artwork_name like CONCAT('%',#{artworkName},'%')
+      </if>
+      <if test="fourLetterTips != null and fourLetterTips!=''">
+        and four_letter_tips like CONCAT('%',#{fourLetterTips},'%')
+      </if>
+	 limit #{start},#{limit}
+  </select>
+	
 </mapper>

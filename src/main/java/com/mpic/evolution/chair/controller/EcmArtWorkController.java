@@ -146,6 +146,7 @@ public class EcmArtWorkController {
 				return ResponseDTO.fail("获取发布二维码失败", result.get("errmsg"),null,(Integer)result.get("errcode"));
 			}else {
 				String str = "data:image/jpg;base64," + Base64Str;
+				System.out.println(str);
 				return ResponseDTO.ok("获取发布二维码成功",str);
 			}
 		} catch (Exception e) {
@@ -186,5 +187,28 @@ public class EcmArtWorkController {
 	public ResponseDTO getFindArtWorks(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
 		return ecmArtWorkService.getFindArtWorks(ecmArtWorkQuery);
 	}
-
+	
+	/**
+	 * @
+	 * @param ecmArtWorkQuery 自带分页
+	 * @return com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: sunjie
+	 * 	根据用户的token获取个人中的个人作品
+	 * @Date: 2020/9/1
+	 */
+	@RequestMapping("/getWxUserArtWorks")
+	@ResponseBody
+	public ResponseDTO getWxUserArtWorks(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
+		String token = ecmArtWorkQuery.getToken();
+		String userIdStr = JWTUtil.getUserId(token);
+		if(StringUtils.isBlank(userIdStr) || !NumberUtils.isParsable(userIdStr)){
+    		return ResponseDTO.fail("游客进入");
+    	}
+		Integer userId = Integer.parseInt(userIdStr);
+    	ecmArtWorkQuery.setFkUserid(userId);
+		return ecmArtWorkService.getWxUserArtWorks(ecmArtWorkQuery);
+	}
+	
+	
+	
 }

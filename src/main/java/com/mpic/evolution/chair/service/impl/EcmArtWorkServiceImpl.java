@@ -2,17 +2,19 @@ package com.mpic.evolution.chair.service.impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.util.CollectionUtils;
 
+import com.alibaba.fastjson.JSONObject;
 import com.mpic.evolution.chair.dao.EcmArtworkBroadcastHotDao;
 import com.mpic.evolution.chair.dao.EcmArtworkDao;
 import com.mpic.evolution.chair.dao.EcmArtworkNodesDao;
@@ -47,7 +49,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
     @Override
     public ResponseDTO getArtWorks(EcmArtWorkQuery ecmArtWorkQuery) {
 
-        return   ResponseDTO.ok("success",ecmArtworkDao.selectArtWorks(ecmArtWorkQuery));
+        return ResponseDTO.ok("success",ecmArtworkDao.selectArtWorks(ecmArtWorkQuery));
     }
 
     @Override
@@ -73,7 +75,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 			JSONObject condition = this.getCondition();
 			EcmArtwork ecmArtwork = new EcmArtwork();
 			ecmArtwork.setPkArtworkId(ecmArtworkVo.getPkArtworkId());
-			ecmArtwork.setArtworkStatus((short)condition.getInt(ecmArtworkVo.getCode()));
+			ecmArtwork.setArtworkStatus(condition.getShort(ecmArtworkVo.getCode()));
 			Integer userId = this.getIdByToken(ecmArtworkVo.getToken());
 			ecmArtwork.setFkUserid(userId);
 			ecmArtwork.setArtworkName(ecmArtworkVo.getArtworkName());
@@ -228,6 +230,26 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
     		userId = Integer.parseInt(userIdStr);
     	}
 		return userId;
+	}
+
+	@Override
+	public ResponseDTO getWxUserArtWorks(EcmArtWorkQuery ecmArtWorkQuery) {
+		List<EcmArtworkVo> artworks = ecmArtworkDao.selectArtWorksByWxUser(ecmArtWorkQuery);
+		artworks.sort((EcmArtworkVo a1,EcmArtworkVo a2)->a2.getLastModifyDate().compareTo(a1.getLastModifyDate()));
+		Map<Short, List<EcmArtworkVo>> collect = artworks.stream().collect(Collectors.groupingBy(EcmArtworkVo::getArtworkStatus));
+		if (collect.isEmpty()) {
+			return ResponseDTO.ok("获取成功", null);
+		}
+		JSONObject data = new JSONObject();
+		collect.forEach((k,v)->{
+			if (k == 2) {
+				data.put("verfied", collect.get(k));
+			}
+			if (k == 4) {
+				data.put("published", collect.get(k));
+			}
+		});
+		return ResponseDTO.ok("获取成功", data);
 	}
 	
 }
