@@ -26,6 +26,11 @@ public class EcmArtworkNodesVo extends EcmArtworkNodes {
     private List<EcmArtworkNodesVo> nodesVos;
 
 
+    /**
+     * 	用户token
+     */
+    private String token;
 
+    private Integer fkUserId;
 
 }

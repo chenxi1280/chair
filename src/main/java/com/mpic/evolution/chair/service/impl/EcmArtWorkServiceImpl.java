@@ -7,6 +7,9 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import com.mpic.evolution.chair.dao.*;
+import com.mpic.evolution.chair.pojo.vo.*;
+import com.mpic.evolution.chair.util.RandomUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Service;
@@ -23,10 +26,6 @@ import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmArtwork;
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
-import com.mpic.evolution.chair.pojo.vo.EcmArtworkBroadcastHotVO;
-import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
-import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
-import com.mpic.evolution.chair.pojo.vo.MediaByProcedureVo;
 import com.mpic.evolution.chair.service.EcmArtWorkService;
 import com.mpic.evolution.chair.util.AIVerifyUtil;
 import com.mpic.evolution.chair.util.JWTUtil;
@@ -40,6 +39,8 @@ import com.mpic.evolution.chair.util.TreeUtil;
 public class EcmArtWorkServiceImpl implements EcmArtWorkService {
     @Resource
     EcmArtworkDao ecmArtworkDao;
+	@Resource
+	EcmUserDao ecmUserDao;
     @Resource
     EcmArtworkNodesDao ecmArtworkNodesDao;
 	@Resource
@@ -60,12 +61,12 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         }
 
         List<EcmArtworkNodesVo>  list = ecmArtworkNodesDao.selectByArtWorkId(ecmArtWorkQuery.getPkArtworkId());
+		List<EcmArtworkNodesVo> collect = list.stream().filter(ecmArtworkNodesVo -> !"Y".equals(ecmArtworkNodesVo.getIsDeleted())).collect(Collectors.toList());
 
-
-        if (list.isEmpty()) {
+		if (list.isEmpty()) {
         	return ResponseDTO.fail("查询id无子节点");
 		}
-        return ResponseDTO.ok("success", TreeUtil.buildTree(list).get(0));
+        return ResponseDTO.ok("success", TreeUtil.buildTree(collect).get(0));
     }
 
 	@Override
@@ -88,22 +89,36 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
 	}
     @Override
-    public ResponseDTO saveArtWorkNode(EcmArtworkNodes ecmArtworkNodes) {
-    	String videoCode = ecmArtworkNodes.getVideoCode();
+    public ResponseDTO saveArtWorkNode(EcmArtworkNodesVo ecmArtworkNodes) {
+		if (ecmArtworkNodes.getFkArtworkId() == null ){
+			return ResponseDTO.fail("作品错误");
+		}
+		EcmArtwork ecmArtwork = ecmArtworkDao.selectByPrimaryKey(ecmArtworkNodes.getFkArtworkId());
+		if (!ecmArtwork.getFkUserid().equals(ecmArtworkNodes.getFkUserId())){
+			return ResponseDTO.fail("非法访问");
+		}
+
+
+		String videoCode = ecmArtworkNodes.getVideoCode();
     	if(StringUtils.isNotBlank(videoCode)){
 			MediaByProcedureVo vo = new MediaByProcedureVo();
 			vo.setVideoCode(videoCode);
 			List<MediaByProcedureVo> list = processMediaByProcedureDao.getUnHandledVideoByVideoCode(vo);
 			if (list == null || list.size() <= 0) {
+				vo.setArtworkId(ecmArtworkNodes.getFkArtworkId());
+				vo.setVideoId(ecmArtworkNodes.getPkDetailId());
 				processMediaByProcedureDao.insertUnHandledVideo(vo);
 			}
 		}
 
-    	if (ecmArtworkNodes.getIsleaf().equals("Y")){
-
+    	if ("Y".equals(ecmArtworkNodes.getIsleaf())){
+			ecmArtworkNodes.setIsleaf("");
 			return ResponseDTO.get(1 == ecmArtworkNodesDao.updateByPrimaryKeySelective(ecmArtworkNodes));
 		}
-        return ResponseDTO.get(1 == ecmArtworkNodesDao.insert(ecmArtworkNodes));
+    	if (1 == ecmArtworkNodesDao.insert(ecmArtworkNodes)){
+			return ResponseDTO.ok("success",ecmArtworkNodes);
+		}
+       return ResponseDTO.fail("正在保存上一个节点数据");
     }
 
 
@@ -123,9 +138,84 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
 	@Override
 	public ResponseDTO getFindArtWorks(EcmArtWorkQuery ecmArtWorkQuery) {
+
 		List<EcmArtworkBroadcastHotVO> ecmArtworkBroadcastHotVOS= ecmArtworkBroadcastHotDao.selectFindAll(ecmArtWorkQuery);
 		List<EcmArtworkVo> list = ecmArtworkDao.selectFindArtWorks(ecmArtworkBroadcastHotVOS);
+		List<EcmUserVo> userVoList = ecmUserDao.selectUserByEcmArtworkList(list);
+		list.forEach(ecmArtworkVo -> {
+			userVoList.forEach(ecmUserVo -> {
+				if (ecmUserVo.getPkUserId().equals(ecmArtworkVo.getFkUserid())){
+					ecmArtworkVo.setUserName(ecmUserVo.getUsername());
+				}
+			});
+			ecmArtworkBroadcastHotVOS.forEach( ecmArtworkBroadcastHotVO -> {
+				if (ecmArtworkBroadcastHotVO.getFkArkworkId().equals(ecmArtworkVo.getPkArtworkId())){
+					ecmArtworkVo.setHotCount(ecmArtworkBroadcastHotVO.getBroadcastCount());
+				}
+			});
+		});
+
+		EcmArtworkVo ecmArtworkVo = new EcmArtworkVo();
+		ecmArtworkVo.setUserName("ad");
+		ecmArtworkVo.setLogoPath("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1599039415911&di=41f622b164548552e3e407e5e955b940&imgtype=0&src=http%3A%2F%2Fa4.att.hudong.com%2F52%2F52%2F01200000169026136208529565374.jpg");
+		ecmArtworkVo.setArtworkName("好产品XXX造");
+		ecmArtworkVo.setCode("ad");
+		list.add(1,ecmArtworkVo);
+
     	return ResponseDTO.ok("sucess",list);
+	}
+
+	@Override
+	public ResponseDTO removeNode(EcmArtworkNodesVo ecmArtworkNodesVo) {
+		if (ecmArtworkNodesVo.getFkArtworkId() == null ){
+			return ResponseDTO.fail("作品错误");
+		}
+		EcmArtwork ecmArtwork = ecmArtworkDao.selectByPrimaryKey(ecmArtworkNodesVo.getFkArtworkId());
+		if (!ecmArtwork.getFkUserid().equals(ecmArtworkNodesVo.getFkUserId())){
+			return ResponseDTO.fail("非法访问");
+		}
+
+		if ( ecmArtworkNodesVo.getPkDetailId() != null ){
+			return ResponseDTO.get(1 == ecmArtworkNodesDao.removeByPrimaryKey(ecmArtworkNodesVo.getPkDetailId()));
+		}
+    	return ResponseDTO.fail("网络错误");
+	}
+
+	@Override
+	public ResponseDTO getFindSortArtWorks(EcmArtWorkQuery ecmArtWorkQuery) {
+
+		List<EcmArtworkVo> list = ecmArtworkDao.selectFindSortArtWorks(ecmArtWorkQuery);
+		if (list.size() == 0) {
+			return ResponseDTO.fail("无数据");
+		}
+		List<EcmUserVo> userVoList = ecmUserDao.selectUserByEcmArtworkList(list);
+		List<EcmArtworkBroadcastHotVO> ecmArtworkBroadcastHotVOS= ecmArtworkBroadcastHotDao.selectEcmArtworkList(list);
+		list.forEach(ecmArtworkVo -> {
+			userVoList.forEach(ecmUserVo -> {
+				if (ecmUserVo.getPkUserId().equals(ecmArtworkVo.getFkUserid())){
+					ecmArtworkVo.setUserName(ecmUserVo.getUsername());
+				}
+
+				ecmArtworkBroadcastHotVOS.forEach( ecmArtworkBroadcastHotVO -> {
+					if (ecmArtworkBroadcastHotVO.getFkArkworkId().equals(ecmArtworkVo.getPkArtworkId())){
+						ecmArtworkVo.setHotCount(ecmArtworkBroadcastHotVO.getBroadcastCount());
+					}
+				});
+				if (ecmArtworkVo.getHotCount() == null){
+					ecmArtworkVo.setHotCount(RandomUtil.getCode(3));
+				}
+
+			});
+		});
+
+		EcmArtworkVo ecmArtworkVo = new EcmArtworkVo();
+		ecmArtworkVo.setUserName("ad");
+		ecmArtworkVo.setLogoPath("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1599039415911&di=41f622b164548552e3e407e5e955b940&imgtype=0&src=http%3A%2F%2Fa4.att.hudong.com%2F52%2F52%2F01200000169026136208529565374.jpg");
+		ecmArtworkVo.setArtworkName("好产品XXX造");
+		ecmArtworkVo.setCode("ad");
+		list.add(1,ecmArtworkVo);
+
+		return ResponseDTO.ok("sucess",list);
 	}
 
 	/**
@@ -138,6 +228,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
      */
     private void saveArtwork(EcmArtworkNodesVo ecmArtworkNodesVo) {
         //先进行判断是否有主见，没有主键则直接进行插入 并 获取到自增主键
+
         if ( ecmArtworkNodesVo.getPkDetailId() == null){
 //            ecmArtworkNodesVo.set
             ecmArtworkNodesDao.insertSelective(ecmArtworkNodesVo);
@@ -201,9 +292,17 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 			ecmArtwork.setLastModifyDate(new Date());
 			ecmArtwork.setLogoPath(ecmArtworkVo.getLogoPath());
 			ecmArtworkDao.insert(ecmArtwork);
+			EcmArtworkNodes ecmArtworkNodes = new EcmArtworkNodes();
+			ecmArtworkNodes.setFkArtworkId(ecmArtwork.getPkArtworkId());
+			ecmArtworkNodes.setParentId(0);
+			ecmArtworkNodes.setIsleaf("N");
+			ecmArtworkNodes.setRevolutionId("x");
+			ecmArtworkNodes.setALevel(0);
+			ecmArtworkNodesDao.insertSelective(ecmArtworkNodes);
 			return ResponseDTO.ok("新建成功");
 		} catch (Exception e) {
 			return ResponseDTO.fail("新建失败");
+
 		}
 	}
 	

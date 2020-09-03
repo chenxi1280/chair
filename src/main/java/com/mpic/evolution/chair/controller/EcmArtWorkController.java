@@ -3,6 +3,7 @@ package com.mpic.evolution.chair.controller;
 
 import javax.annotation.Resource;
 
+import com.qcloud.vod.common.StringUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Controller;
@@ -22,12 +23,14 @@ import com.mpic.evolution.chair.util.HttpMpicUtil;
 import com.mpic.evolution.chair.util.JWTUtil;
 import com.mpic.evolution.chair.util.RedisUtil;
 
+import java.util.Enumeration;
+
 /**
  * @author cxd
  */
 @Controller
 @RequestMapping("/Ecmartwork")
-public class EcmArtWorkController {
+public class EcmArtWorkController extends BaseController{
 
     @Resource
     EcmArtWorkService ecmArtWorkService;
@@ -73,7 +76,13 @@ public class EcmArtWorkController {
     @ResponseBody
     public ResponseDTO getArtWork(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
 
-        return ecmArtWorkService.getArtWork(ecmArtWorkQuery);
+		String token = getRequest().getHeader("Authorization");
+		if (StringUtil.isEmpty(token)){
+			return ResponseDTO.fail("非法访问");
+		}
+//
+
+		return ecmArtWorkService.getArtWork(ecmArtWorkQuery);
     }
 
     /**
@@ -87,10 +96,19 @@ public class EcmArtWorkController {
      */
     @ResponseBody
     @RequestMapping("/saveArtWorkNode")
-    public ResponseDTO saveArtWorkNod(@RequestBody EcmArtworkNodes ecmArtworkNodes){
+    public ResponseDTO saveArtWorkNod(@RequestBody EcmArtworkNodesVo ecmArtworkNodes){
+		String token = getRequest().getHeader("Authorization");
+		if (StringUtil.isEmpty(token)){
+			return ResponseDTO.fail("非法访问");
+		}
+
         if (ecmArtworkNodes.getParentId() == null){
             return ResponseDTO.fail("父节点id为空");
         }
+
+		String userId = JWTUtil.getUserId(token);
+		ecmArtworkNodes.setFkUserId(Integer.valueOf(userId));
+
         return ecmArtWorkService.saveArtWorkNode(ecmArtworkNodes);
     }
 
@@ -107,6 +125,10 @@ public class EcmArtWorkController {
     @RequestMapping("/addArtWork")
     @ResponseBody
     public ResponseDTO addArtWork(@RequestBody EcmArtworkNodesVo ecmArtworkNodesVo){
+		String token = getRequest().getHeader("Authorization");
+		if (StringUtil.isEmpty(token)){
+			return ResponseDTO.fail("非法访问");
+		}
         return ecmArtWorkService.addArtWork(ecmArtworkNodesVo);
     }
     
@@ -211,4 +233,24 @@ public class EcmArtWorkController {
 	
 	
 	
+	@RequestMapping("/getFindSortArtWorks")
+	@ResponseBody
+	public ResponseDTO getFindSortArtWorks(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
+		return ecmArtWorkService.getFindSortArtWorks(ecmArtWorkQuery);
+	}
+
+
+	@RequestMapping("/removeNode")
+	@ResponseBody
+	public ResponseDTO removeNode(@RequestBody EcmArtworkNodesVo ecmArtworkNodesVo){
+		String token = getRequest().getHeader("Authorization");
+		if (StringUtil.isEmpty(token)){
+			return ResponseDTO.fail("非法访问");
+		}
+		String userId = JWTUtil.getUserId(token);
+		ecmArtworkNodesVo.setFkUserId(Integer.valueOf(userId));
+
+		return ecmArtWorkService.removeNode(ecmArtworkNodesVo);
+	}
+
 }

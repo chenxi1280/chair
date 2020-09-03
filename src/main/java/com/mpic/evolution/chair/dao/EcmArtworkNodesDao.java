@@ -22,4 +22,6 @@ public interface EcmArtworkNodesDao {
     List<EcmArtworkNodesVo> selectByArtWorkId(Integer pkArtworkId);
 
     Integer insertList(@Param("list") List<EcmArtworkNodes> addlist);
+
+    int removeByPrimaryKey(Integer pkDetailId);
 }

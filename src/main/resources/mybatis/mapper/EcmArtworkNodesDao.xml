@@ -262,7 +262,7 @@
     where pk_detail_id = #{pkDetailId,jdbcType=INTEGER}
   </update>
 
-<!--SQl-->
+  <!--SQl-->
   <select id="selectByArtWorkId" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo">
     select <include refid="Base_Column_List" />
     from ecm_artwork_nodes
@@ -346,6 +346,12 @@
 
   </insert>
 
+  <update id="removeByPrimaryKey">
+   update ecm_artwork_nodes
+    set  is_deleted = 'Y'
+    where pk_detail_id = #{pkDetailId}
+
+  </update>
 
 
 

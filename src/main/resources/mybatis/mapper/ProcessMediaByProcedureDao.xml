@@ -16,7 +16,6 @@
     </insert>
 
 
-
     <select id="getUnHandledVideo" resultMap="mediaProcedure">
         SELECT
         vp.video_code,

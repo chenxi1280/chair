@@ -66,7 +66,7 @@ public interface EcmArtWorkService {
      *       保存成功： status 200  msg “success”
      *       保存失败： status 500  msg ”error“
      */
-    ResponseDTO saveArtWorkNode(EcmArtworkNodes ecmArtworkNodes);
+    ResponseDTO saveArtWorkNode(EcmArtworkNodesVo ecmArtworkNodes);
 
 
     /**
@@ -92,4 +92,8 @@ public interface EcmArtWorkService {
     ResponseDTO getFindArtWorks(EcmArtWorkQuery ecmArtWorkQuery);
 
 	ResponseDTO getWxUserArtWorks(EcmArtWorkQuery ecmArtWorkQuery);
+
+    ResponseDTO removeNode(EcmArtworkNodesVo ecmArtworkNodesVo);
+
+    ResponseDTO getFindSortArtWorks(EcmArtWorkQuery ecmArtWorkQuery);
 }

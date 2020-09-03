@@ -26,4 +26,8 @@ public class EcmArtworkVo extends EcmArtwork {
      * 	播放次数
      */
     private Integer broadcastCount;
+
+    private String userName;
+
+    private Integer hotCount;
 }

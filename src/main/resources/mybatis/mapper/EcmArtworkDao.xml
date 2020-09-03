@@ -195,6 +195,8 @@
     <foreach collection="ids" separator="," open="(" item="id" close=")">
         #{ id.fkArkworkId}
     </foreach>
+
+
     order by field(
     pk_artwork_id,
     <foreach collection="ids" separator="," item="id">
@@ -230,4 +232,13 @@
 	 limit #{start},#{limit}
   </select>
 	
+  <select id="selectFindSortArtWorks" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkVo">
+    select <include refid="Base_Column_List" />
+    from ecm_artwork
+    where four_letter_tips like CONCAT('%',#{queryType},'%')
+    limit #{start},#{limit}
+
+  </select>
+
+
 </mapper>
