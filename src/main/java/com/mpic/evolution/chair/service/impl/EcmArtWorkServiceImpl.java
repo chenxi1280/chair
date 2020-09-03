@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 
 import com.mpic.evolution.chair.dao.*;
 import com.mpic.evolution.chair.pojo.vo.*;
+import com.mpic.evolution.chair.util.RandomUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.json.JSONObject;
@@ -83,8 +84,17 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
 	}
     @Override
-    public ResponseDTO saveArtWorkNode(EcmArtworkNodes ecmArtworkNodes) {
-    	String videoCode = ecmArtworkNodes.getVideoCode();
+    public ResponseDTO saveArtWorkNode(EcmArtworkNodesVo ecmArtworkNodes) {
+		if (ecmArtworkNodes.getFkArtworkId() == null ){
+			return ResponseDTO.fail("作品错误");
+		}
+		EcmArtwork ecmArtwork = ecmArtworkDao.selectByPrimaryKey(ecmArtworkNodes.getFkArtworkId());
+		if (!ecmArtwork.getFkUserid().equals(ecmArtworkNodes.getFkUserId())){
+			return ResponseDTO.fail("非法访问");
+		}
+
+
+		String videoCode = ecmArtworkNodes.getVideoCode();
     	if(StringUtils.isNotBlank(videoCode)){
 			MediaByProcedureVo vo = new MediaByProcedureVo();
 			vo.setVideoCode(videoCode);
@@ -133,6 +143,11 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 					ecmArtworkVo.setUserName(ecmUserVo.getUsername());
 				}
 			});
+			ecmArtworkBroadcastHotVOS.forEach( ecmArtworkBroadcastHotVO -> {
+				if (ecmArtworkBroadcastHotVO.getFkArkworkId().equals(ecmArtworkVo.getPkArtworkId())){
+					ecmArtworkVo.setHotCount(ecmArtworkBroadcastHotVO.getBroadcastCount());
+				}
+			});
 		});
 
 		EcmArtworkVo ecmArtworkVo = new EcmArtworkVo();
@@ -147,6 +162,14 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
 	@Override
 	public ResponseDTO removeNode(EcmArtworkNodesVo ecmArtworkNodesVo) {
+		if (ecmArtworkNodesVo.getFkArtworkId() == null ){
+			return ResponseDTO.fail("作品错误");
+		}
+		EcmArtwork ecmArtwork = ecmArtworkDao.selectByPrimaryKey(ecmArtworkNodesVo.getFkArtworkId());
+		if (!ecmArtwork.getFkUserid().equals(ecmArtworkNodesVo.getFkUserId())){
+			return ResponseDTO.fail("非法访问");
+		}
+
 		if ( ecmArtworkNodesVo.getPkDetailId() != null ){
 			return ResponseDTO.get(1 == ecmArtworkNodesDao.removeByPrimaryKey(ecmArtworkNodesVo.getPkDetailId()));
 		}
@@ -161,11 +184,22 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 			return ResponseDTO.fail("无数据");
 		}
 		List<EcmUserVo> userVoList = ecmUserDao.selectUserByEcmArtworkList(list);
+		List<EcmArtworkBroadcastHotVO> ecmArtworkBroadcastHotVOS= ecmArtworkBroadcastHotDao.selectEcmArtworkList(list);
 		list.forEach(ecmArtworkVo -> {
 			userVoList.forEach(ecmUserVo -> {
 				if (ecmUserVo.getPkUserId().equals(ecmArtworkVo.getFkUserid())){
 					ecmArtworkVo.setUserName(ecmUserVo.getUsername());
 				}
+
+				ecmArtworkBroadcastHotVOS.forEach( ecmArtworkBroadcastHotVO -> {
+					if (ecmArtworkBroadcastHotVO.getFkArkworkId().equals(ecmArtworkVo.getPkArtworkId())){
+						ecmArtworkVo.setHotCount(ecmArtworkBroadcastHotVO.getBroadcastCount());
+					}
+				});
+				if (ecmArtworkVo.getHotCount() == null){
+					ecmArtworkVo.setHotCount(RandomUtil.getCode(3));
+				}
+
 			});
 		});
 
@@ -189,6 +223,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
      */
     private void saveArtwork(EcmArtworkNodesVo ecmArtworkNodesVo) {
         //先进行判断是否有主见，没有主键则直接进行插入 并 获取到自增主键
+
         if ( ecmArtworkNodesVo.getPkDetailId() == null){
 //            ecmArtworkNodesVo.set
             ecmArtworkNodesDao.insertSelective(ecmArtworkNodesVo);
@@ -252,9 +287,17 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 			ecmArtwork.setLastModifyDate(new Date());
 			ecmArtwork.setLogoPath(ecmArtworkVo.getLogoPath());
 			ecmArtworkDao.insert(ecmArtwork);
+			EcmArtworkNodes ecmArtworkNodes = new EcmArtworkNodes();
+			ecmArtworkNodes.setFkArtworkId(ecmArtwork.getPkArtworkId());
+			ecmArtworkNodes.setParentId(0);
+			ecmArtworkNodes.setIsleaf("N");
+			ecmArtworkNodes.setRevolutionId("x");
+			ecmArtworkNodes.setALevel(0);
+			ecmArtworkNodesDao.insertSelective(ecmArtworkNodes);
 			return ResponseDTO.ok("新建成功");
 		} catch (Exception e) {
 			return ResponseDTO.fail("新建失败");
+
 		}
 	}
 	

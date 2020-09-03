@@ -69,9 +69,13 @@
     from ecm_artwork_broadcast_hot
     order by broadcast_count desc
     limit #{start},#{limit}
-
-
-
+  </select>
+  <select id="selectEcmArtworkList" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkBroadcastHotVO">
+    select <include refid="Base_Column_List" />
+    from ecm_artwork_broadcast_hot
+    where fk_arkwork_id in <foreach collection="ids" item="id" close=")" open="(" separator=",">
+    #{id.pkArtworkId}
+  </foreach>
 
   </select>
 </mapper>

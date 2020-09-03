@@ -23,4 +23,6 @@ public class EcmArtworkVo extends EcmArtwork {
     private String token;
 
     private String userName;
+
+    private Integer hotCount;
 }
