@@ -1,13 +1,12 @@
 package com.mpic.evolution.chair.pojo.entity;
 
-import lombok.Data;
-
 import java.io.Serializable;
 import java.util.Date;
+import lombok.Data;
 
 /**
  * ecm_user
- * @author 
+ * @author
  */
 @Data
 public class EcmUser implements Serializable {
@@ -71,6 +70,11 @@ public class EcmUser implements Serializable {
      * 角色id , 分割
      */
     private String roles;
+
+    /**
+     * 用户头像
+     */
+    private String userLogoUrl;
 
     private static final long serialVersionUID = 1L;
 }
