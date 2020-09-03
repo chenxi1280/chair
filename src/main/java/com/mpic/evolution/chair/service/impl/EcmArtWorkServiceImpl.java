@@ -323,6 +323,9 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 	}
 	
 	private Integer getIdByToken(String token) {
+		if (!StringUtils.isNotBlank(token)) {
+			return null;
+		}
     	String userIdStr = JWTUtil.getUserId(token);
     	Integer userId = null;
     	if(StringUtils.isNotBlank(userIdStr) && NumberUtils.isParsable(userIdStr)){
