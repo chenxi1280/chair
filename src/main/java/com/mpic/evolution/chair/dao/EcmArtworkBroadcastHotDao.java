@@ -24,4 +24,8 @@ public interface EcmArtworkBroadcastHotDao {
     List<EcmArtworkBroadcastHotVO> selectFindAll(EcmArtWorkQuery ecmArtWorkQuery);
 
     List<EcmArtworkBroadcastHotVO> selectEcmArtworkList(@Param("ids") List<EcmArtworkVo> list);
+
+    int playArtWorkByArtworkId(Integer ecmArtworkBroadcastHot);
+
+
 }

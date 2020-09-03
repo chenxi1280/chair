@@ -3,6 +3,7 @@ package com.mpic.evolution.chair.controller;
 
 import javax.annotation.Resource;
 
+import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
 import com.qcloud.vod.common.StringUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -251,6 +252,11 @@ public class EcmArtWorkController extends BaseController{
 		ecmArtworkNodesVo.setFkUserId(Integer.valueOf(userId));
 
 		return ecmArtWorkService.removeNode(ecmArtworkNodesVo);
+	}
+	@RequestMapping("/playArtWork")
+	@ResponseBody
+	public ResponseDTO playArtWork(@RequestBody EcmArtworkVo ecmArtworkVo){
+		return ecmArtWorkService.playArtWork(ecmArtworkVo);
 	}
 
 }

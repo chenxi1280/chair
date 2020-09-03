@@ -1,5 +1,6 @@
 package com.mpic.evolution.chair.service.impl;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,8 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 
 import com.mpic.evolution.chair.dao.*;
+import com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHistory;
+import com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHot;
 import com.mpic.evolution.chair.pojo.vo.*;
 import com.mpic.evolution.chair.util.RandomUtil;
 import org.apache.commons.lang.StringUtils;
@@ -45,6 +48,8 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
     EcmArtworkNodesDao ecmArtworkNodesDao;
 	@Resource
 	ProcessMediaByProcedureDao processMediaByProcedureDao;
+	@Resource
+	EcmArtworkBroadcastHistoryDao ecmArtworkBroadcastHistoryDao;
 	@Resource
 	EcmArtworkBroadcastHotDao ecmArtworkBroadcastHotDao;
     @Override
@@ -140,6 +145,9 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 	public ResponseDTO getFindArtWorks(EcmArtWorkQuery ecmArtWorkQuery) {
 
 		List<EcmArtworkBroadcastHotVO> ecmArtworkBroadcastHotVOS= ecmArtworkBroadcastHotDao.selectFindAll(ecmArtWorkQuery);
+		if (CollectionUtils.isEmpty(ecmArtworkBroadcastHotVOS)){
+			return ResponseDTO.fail("无数据");
+		}
 		List<EcmArtworkVo> list = ecmArtworkDao.selectFindArtWorks(ecmArtworkBroadcastHotVOS);
 		List<EcmUserVo> userVoList = ecmUserDao.selectUserByEcmArtworkList(list);
 		list.forEach(ecmArtworkVo -> {
@@ -185,7 +193,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 	public ResponseDTO getFindSortArtWorks(EcmArtWorkQuery ecmArtWorkQuery) {
 
 		List<EcmArtworkVo> list = ecmArtworkDao.selectFindSortArtWorks(ecmArtWorkQuery);
-		if (list.size() == 0) {
+		if (CollectionUtils.isEmpty(list)) {
 			return ResponseDTO.fail("无数据");
 		}
 		List<EcmUserVo> userVoList = ecmUserDao.selectUserByEcmArtworkList(list);
@@ -216,6 +224,37 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 		list.add(1,ecmArtworkVo);
 
 		return ResponseDTO.ok("sucess",list);
+	}
+
+	@Override
+	public ResponseDTO playArtWork(EcmArtworkVo ecmArtworkVo) {
+
+
+
+
+		List<EcmArtworkNodesVo>  list = ecmArtworkNodesDao.selectByArtWorkId(ecmArtworkVo.getPkArtworkId());
+		if (list.isEmpty()) {
+			return ResponseDTO.fail("查询id无子节点");
+		}
+		List<EcmArtworkNodesVo> collect = list.stream().filter(ecmArtworkNodesVo -> !"Y".equals(ecmArtworkNodesVo.getIsDeleted())).collect(Collectors.toList());
+
+//		ecmArtworkBroadcastHistoryDao.insertSelective()
+		//需要添加 播放 历史表 数据
+		EcmArtworkBroadcastHistory ecmArtworkBroadcastHistory = new EcmArtworkBroadcastHistory();
+		ecmArtworkBroadcastHistory.setFkArtworkId(ecmArtworkVo.getPkArtworkId());
+
+		EcmArtworkBroadcastHot ecmArtworkBroadcastHot = new EcmArtworkBroadcastHot();
+		ecmArtworkBroadcastHot.setFkArkworkId(ecmArtworkVo.getPkArtworkId());
+		try {
+			ecmArtworkBroadcastHotDao.playArtWorkByArtworkId(ecmArtworkVo.getPkArtworkId());
+			ecmArtworkBroadcastHistoryDao.insertSelective(ecmArtworkBroadcastHistory);
+		}catch (Exception e){
+
+		}
+		return ResponseDTO.ok("success", TreeUtil.buildTree(collect).get(0));
+
+
+
 	}
 
 	/**

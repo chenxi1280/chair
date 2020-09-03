@@ -96,4 +96,6 @@ public interface EcmArtWorkService {
     ResponseDTO removeNode(EcmArtworkNodesVo ecmArtworkNodesVo);
 
     ResponseDTO getFindSortArtWorks(EcmArtWorkQuery ecmArtWorkQuery);
+
+    ResponseDTO playArtWork(EcmArtworkVo ecmArtworkVo);
 }
