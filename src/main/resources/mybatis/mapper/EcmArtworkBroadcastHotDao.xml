@@ -62,7 +62,8 @@
   </update>
 
 
-<!--  sql-->
+
+  <!--  sql-->
   <select id="selectFindAll" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkBroadcastHotVO">
 
     select <include refid="Base_Column_List" />
@@ -78,4 +79,8 @@
   </foreach>
 
   </select>
+  <update id="playArtWorkByArtworkId">
+    update ecm_artwork_broadcast_hot set broadcast_count = broadcast_count + 1 where #{fk_arkwork_id}
+
+  </update>
 </mapper>
