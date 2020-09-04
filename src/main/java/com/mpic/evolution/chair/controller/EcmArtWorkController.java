@@ -78,7 +78,6 @@ public class EcmArtWorkController extends BaseController{
 		if (StringUtil.isEmpty(token)){
 			return ResponseDTO.fail("非法访问");
 		}
-//
 
 		return ecmArtWorkService.getArtWork(ecmArtWorkQuery);
     }
@@ -235,6 +234,25 @@ public class EcmArtWorkController extends BaseController{
 	@ResponseBody
 	public ResponseDTO playArtWork(@RequestBody EcmArtworkVo ecmArtworkVo){
 		return ecmArtWorkService.playArtWork(ecmArtworkVo);
+	}
+
+
+	@RequestMapping("/saveLinkArtWorkNode")
+	@ResponseBody
+	public ResponseDTO saveLinkArtWorkNode(@RequestBody EcmArtworkNodesVo ecmArtworkNodes){
+		String token = getRequest().getHeader("Authorization");
+		if (StringUtil.isEmpty(token)){
+			return ResponseDTO.fail("非法访问");
+		}
+
+		if (ecmArtworkNodes.getParentId() == null){
+			return ResponseDTO.fail("父节点id为空");
+		}
+
+		String userId = JWTUtil.getUserId(token);
+		ecmArtworkNodes.setFkUserId(Integer.valueOf(userId));
+
+		return ecmArtWorkService.saveLinkArtWorkNode(ecmArtworkNodes);
 	}
 
 }

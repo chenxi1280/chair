@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @author 
  */
 @Data
-public class EcmArtworkNodes implements Serializable {
+public class EcmArtworkNodes implements Serializable  {
 
 
     private Integer pkDetailId;
@@ -100,4 +100,7 @@ public class EcmArtworkNodes implements Serializable {
     private String chosenText;
 
     private static final long serialVersionUID = 1L;
+
+
+
 }

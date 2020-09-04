@@ -70,4 +70,6 @@ public interface EcmArtWorkService {
     ResponseDTO getFindSortArtWorks(EcmArtWorkQuery ecmArtWorkQuery);
 
     ResponseDTO playArtWork(EcmArtworkVo ecmArtworkVo);
+
+    ResponseDTO saveLinkArtWorkNode( EcmArtworkNodesVo ecmArtworkNodes);
 }
