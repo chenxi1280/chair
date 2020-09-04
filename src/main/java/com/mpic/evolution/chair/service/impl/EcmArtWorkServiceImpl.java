@@ -1,37 +1,34 @@
 package com.mpic.evolution.chair.service.impl;
 
-import java.sql.SQLException;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
-import com.mpic.evolution.chair.dao.*;
-import com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHistory;
-import com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHot;
-import com.mpic.evolution.chair.pojo.vo.*;
-import com.mpic.evolution.chair.util.RandomUtil;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.util.CollectionUtils;
 
-import com.alibaba.fastjson.JSONObject;
+import com.mpic.evolution.chair.dao.EcmArtworkBroadcastHistoryDao;
 import com.mpic.evolution.chair.dao.EcmArtworkBroadcastHotDao;
 import com.mpic.evolution.chair.dao.EcmArtworkDao;
 import com.mpic.evolution.chair.dao.EcmArtworkNodesDao;
+import com.mpic.evolution.chair.dao.EcmUserDao;
 import com.mpic.evolution.chair.dao.ProcessMediaByProcedureDao;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmArtwork;
-import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes;
+import com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHistory;
+import com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHot;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
+import com.mpic.evolution.chair.pojo.vo.EcmArtworkBroadcastHotVO;
+import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
+import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
+import com.mpic.evolution.chair.pojo.vo.EcmUserVo;
+import com.mpic.evolution.chair.pojo.vo.MediaByProcedureVo;
 import com.mpic.evolution.chair.service.EcmArtWorkService;
-import com.mpic.evolution.chair.util.AIVerifyUtil;
-import com.mpic.evolution.chair.util.JWTUtil;
+import com.mpic.evolution.chair.util.RandomUtil;
 import com.mpic.evolution.chair.util.TreeUtil;
 
 
@@ -74,25 +71,6 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         return ResponseDTO.ok("success", TreeUtil.buildTree(collect).get(0));
     }
 
-	@Override
-	public ResponseDTO modifyArtWorkStatus(EcmArtworkVo ecmArtworkVo) {
-		JSONObject message = this.getMessage();
-		try {
-			JSONObject condition = this.getCondition();
-			EcmArtwork ecmArtwork = new EcmArtwork();
-			ecmArtwork.setPkArtworkId(ecmArtworkVo.getPkArtworkId());
-			ecmArtwork.setArtworkStatus(condition.getShort(ecmArtworkVo.getCode()));
-			Integer userId = this.getIdByToken(ecmArtworkVo.getToken());
-			ecmArtwork.setFkUserid(userId);
-			ecmArtwork.setArtworkName(ecmArtworkVo.getArtworkName());
-			ecmArtwork.setLastModifyDate(new Date());
-			ecmArtworkDao.updateByPrimaryKeySelective(ecmArtwork);
-			return ResponseDTO.ok(message.getString(ecmArtworkVo.getCode())+"成功");
-		} catch (Exception e) {
-			return ResponseDTO.fail(message.getString(ecmArtworkVo.getCode())+"失败");
-		}
-
-	}
     @Override
     public ResponseDTO saveArtWorkNode(EcmArtworkNodesVo ecmArtworkNodes) {
 		if (ecmArtworkNodes.getFkArtworkId() == null ){
@@ -102,8 +80,6 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 		if (!ecmArtwork.getFkUserid().equals(ecmArtworkNodes.getFkUserId())){
 			return ResponseDTO.fail("非法访问");
 		}
-
-
 		String videoCode = ecmArtworkNodes.getVideoCode();
     	if(StringUtils.isNotBlank(videoCode)){
 			MediaByProcedureVo vo = new MediaByProcedureVo();
@@ -143,7 +119,6 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
 	@Override
 	public ResponseDTO getFindArtWorks(EcmArtWorkQuery ecmArtWorkQuery) {
-
 		List<EcmArtworkBroadcastHotVO> ecmArtworkBroadcastHotVOS= ecmArtworkBroadcastHotDao.selectFindAll(ecmArtWorkQuery);
 		if (CollectionUtils.isEmpty(ecmArtworkBroadcastHotVOS)){
 			return ResponseDTO.fail("无数据");
@@ -165,14 +140,12 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 				}
 			});
 		});
-
 		EcmArtworkVo ecmArtworkVo = new EcmArtworkVo();
 		ecmArtworkVo.setUserName("ad");
 		ecmArtworkVo.setLogoPath("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1599039415911&di=41f622b164548552e3e407e5e955b940&imgtype=0&src=http%3A%2F%2Fa4.att.hudong.com%2F52%2F52%2F01200000169026136208529565374.jpg");
 		ecmArtworkVo.setArtworkName("好产品XXX造");
 		ecmArtworkVo.setCode("ad");
 		list.add(1,ecmArtworkVo);
-
     	return ResponseDTO.ok("sucess",list);
 	}
 
@@ -194,7 +167,6 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
 	@Override
 	public ResponseDTO getFindSortArtWorks(EcmArtWorkQuery ecmArtWorkQuery) {
-
 		List<EcmArtworkVo> list = ecmArtworkDao.selectFindSortArtWorks(ecmArtWorkQuery);
 		if (CollectionUtils.isEmpty(list)) {
 			return ResponseDTO.fail("无数据");
@@ -218,23 +190,17 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
 			});
 		});
-
 		EcmArtworkVo ecmArtworkVo = new EcmArtworkVo();
 		ecmArtworkVo.setUserName("ad");
 		ecmArtworkVo.setLogoPath("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1599039415911&di=41f622b164548552e3e407e5e955b940&imgtype=0&src=http%3A%2F%2Fa4.att.hudong.com%2F52%2F52%2F01200000169026136208529565374.jpg");
 		ecmArtworkVo.setArtworkName("好产品XXX造");
 		ecmArtworkVo.setCode("ad");
 		list.add(1,ecmArtworkVo);
-
 		return ResponseDTO.ok("sucess",list);
 	}
 
 	@Override
 	public ResponseDTO playArtWork(EcmArtworkVo ecmArtworkVo) {
-
-
-
-
 		List<EcmArtworkNodesVo>  list = ecmArtworkNodesDao.selectByArtWorkId(ecmArtworkVo.getPkArtworkId());
 		if (list.isEmpty()) {
 			return ResponseDTO.fail("查询id无子节点");
@@ -255,9 +221,6 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
 		}
 		return ResponseDTO.ok("success", TreeUtil.buildTree(collect).get(0));
-
-
-
 	}
 
 	/**
@@ -291,110 +254,5 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
     }
 
-
-	@Override
-	public ResponseDTO modifyArtWork(EcmArtworkVo ecmArtworkVo) {
-		try {
-			EcmArtwork ecmArtwork = new EcmArtwork();
-			ecmArtwork.setPkArtworkId(ecmArtworkVo.getPkArtworkId());
-			Integer userId = this.getIdByToken(ecmArtworkVo.getToken());
-			ecmArtwork.setFkUserid(userId);
-			ecmArtwork.setArtworkStatus(ecmArtworkVo.getArtworkStatus());
-			String artworkName = ecmArtworkVo.getArtworkName();
-			if (StringUtils.isEmpty(artworkName)) {
-				ResponseDTO.fail("作品名称不能为空");
-			}
-			String result = AIVerifyUtil.convertContent(artworkName);
-			if (!StringUtils.isEmpty(result)) {
-				ResponseDTO.fail("作品名称违规含有违禁词",result,null,510);
-			}
-			ecmArtwork.setArtworkName(artworkName);
-			ecmArtwork.setLogoPathStatus((short)0);
-			ecmArtwork.setLogoPath(ecmArtworkVo.getLogoPath());
-			ecmArtwork.setLastModifyDate(new Date());
- 			ecmArtworkDao.updateByPrimaryKey(ecmArtwork);
-			return ResponseDTO.ok("作品名称修改成功");
-		} catch (Exception e) {
-			return ResponseDTO.fail("修改失败");
-		}
-	}
-
-	@Override
-	public ResponseDTO addArtWorks(EcmArtworkVo ecmArtworkVo) {
-		try {
-			EcmArtwork ecmArtwork = new EcmArtwork();
-			ecmArtwork.setPkArtworkId(ecmArtworkVo.getPkArtworkId());
-			Integer userId = this.getIdByToken(ecmArtworkVo.getToken());
-			ecmArtwork.setFkUserid(userId);
-			ecmArtwork.setArtworkName(ecmArtworkVo.getArtworkName());
-			ecmArtwork.setArtworkStatus((short)0);
-			ecmArtwork.setArtworkDescribe(ecmArtworkVo.getArtworkDescribe());
-			ecmArtwork.setFourLetterTips(ecmArtworkVo.getFourLetterTips());
-			ecmArtwork.setLastCreateDate(new Date());
-			ecmArtwork.setLastModifyDate(new Date());
-			ecmArtwork.setLogoPath(ecmArtworkVo.getLogoPath());
-			ecmArtworkDao.insert(ecmArtwork);
-			EcmArtworkNodes ecmArtworkNodes = new EcmArtworkNodes();
-			ecmArtworkNodes.setFkArtworkId(ecmArtwork.getPkArtworkId());
-			ecmArtworkNodes.setParentId(0);
-			ecmArtworkNodes.setIsleaf("N");
-			ecmArtworkNodes.setRevolutionId("x");
-			ecmArtworkNodes.setALevel(0);
-			ecmArtworkNodesDao.insertSelective(ecmArtworkNodes);
-			return ResponseDTO.ok("新建成功");
-		} catch (Exception e) {
-			return ResponseDTO.fail("新建失败");
-
-		}
-	}
-	
-	private JSONObject getCondition() {
-		JSONObject condition = new JSONObject();
-		condition.put("delete", 5);
-		condition.put("publish", 4);
-		condition.put("cancel", 0);
-		return condition;
-	}
-
-	private JSONObject getMessage() {
-		JSONObject message = new JSONObject();
-		message.put("delete", "删除");
-		message.put("publish", "发布");
-		message.put("cancel", "撤销审核");
-		return message;
-	}
-	
-	private Integer getIdByToken(String token) {
-		if (!StringUtils.isNotBlank(token)) {
-			return null;
-		}
-    	String userIdStr = JWTUtil.getUserId(token);
-    	Integer userId = null;
-    	if(StringUtils.isNotBlank(userIdStr) && NumberUtils.isParsable(userIdStr)){
-    		userId = Integer.parseInt(userIdStr);
-    	}
-		return userId;
-	}
-
-	@Override
-	public ResponseDTO getWxUserArtWorks(EcmArtWorkQuery ecmArtWorkQuery) {
-		List<EcmArtworkVo> artworks = ecmArtworkDao.selectArtWorksByWxUser(ecmArtWorkQuery);
-		artworks.sort((EcmArtworkVo a1,EcmArtworkVo a2)->a2.getLastModifyDate().compareTo(a1.getLastModifyDate()));
-		Map<Short, List<EcmArtworkVo>> collect = artworks.stream().collect(Collectors.groupingBy(EcmArtworkVo::getArtworkStatus));
-		if (collect.isEmpty()) {
-			return ResponseDTO.ok("获取成功", null);
-		}
-		JSONObject data = new JSONObject();
-		collect.forEach((k,v)->{
-			if (k == 2) {
-				data.put("verfied", collect.get(k));
-			}
-			if (k == 4) {
-				data.put("published", collect.get(k));
-			}
-		});
-		return ResponseDTO.ok("获取成功", data);
-	}
-	
 }
 

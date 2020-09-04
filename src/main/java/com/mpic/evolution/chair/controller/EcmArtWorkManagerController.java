@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
-import com.mpic.evolution.chair.service.EcmArtWorkService;
+import com.mpic.evolution.chair.service.EcmArtworkManagerService;
 
 @Controller
 @RequestMapping("/ecmArtWorkManager")
 public class EcmArtWorkManagerController {
 	@Resource
-	EcmArtWorkService ecmArtWorkService;
+	EcmArtworkManagerService artworkManagerService;
 	
 	/**
 	 * @author SJ
@@ -25,7 +25,7 @@ public class EcmArtWorkManagerController {
 	@RequestMapping("/modifyArtWorksStatus")
     @ResponseBody
     public ResponseDTO modifyArtWorksStatus(@RequestBody EcmArtworkVo ecmArtworkVo){
-        return ecmArtWorkService.modifyArtWorkStatus(ecmArtworkVo);
+        return artworkManagerService.modifyArtWorkStatus(ecmArtworkVo);
     }
 	
 	/**
@@ -37,7 +37,7 @@ public class EcmArtWorkManagerController {
 	@RequestMapping("/modifyArtWorks")
     @ResponseBody
     public ResponseDTO modifyArtWorks(@RequestBody EcmArtworkVo ecmArtworkVo){
-        return ecmArtWorkService.modifyArtWork(ecmArtworkVo);
+        return artworkManagerService.modifyArtWork(ecmArtworkVo);
     }
 	
 	/**
@@ -49,7 +49,7 @@ public class EcmArtWorkManagerController {
 	@RequestMapping("/addArtWorks")
     @ResponseBody
     public ResponseDTO addArtWorks(@RequestBody EcmArtworkVo ecmArtworkVo){
-        return ecmArtWorkService.addArtWorks(ecmArtworkVo);
+        return artworkManagerService.addArtWorks(ecmArtworkVo);
     }
 	
 }

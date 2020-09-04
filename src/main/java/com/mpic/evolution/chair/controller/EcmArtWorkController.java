@@ -3,8 +3,6 @@ package com.mpic.evolution.chair.controller;
 
 import javax.annotation.Resource;
 
-import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
-import com.qcloud.vod.common.StringUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Controller;
@@ -16,15 +14,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.HttpKit;
 import com.mpic.evolution.chair.common.constant.publishConstants;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
-import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
+import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
 import com.mpic.evolution.chair.service.EcmArtWorkService;
 import com.mpic.evolution.chair.util.HttpMpicUtil;
 import com.mpic.evolution.chair.util.JWTUtil;
 import com.mpic.evolution.chair.util.RedisUtil;
-
-import java.util.Enumeration;
+import com.qcloud.vod.common.StringUtil;
 
 /**
  * @author cxd
@@ -45,8 +42,8 @@ public class EcmArtWorkController extends BaseController{
      * @author: SJ
      * @Date: 2020/8/5
      * 	描述 : 按照条件查询作品
-     *       保存成功: status 200  msg "success” data: 数据
-     *       保存失败: status 500  msg "error“
+     *  	保存成功: status 200  msg "success” data: 数据
+     *     	保存失败: status 500  msg "error“
      *      
      */
     @RequestMapping("/getArtWorks")
@@ -145,11 +142,15 @@ public class EcmArtWorkController extends BaseController{
     @RequestMapping("/getWxcode")
     @ResponseBody
     public ResponseDTO getWxcode (@RequestBody EcmArtWorkQuery ecmArtWorkQuery) {
+    	String token = ecmArtWorkQuery.getToken();
+		if (StringUtil.isEmpty(token)){
+			return ResponseDTO.fail("非法访问");
+		}
+    	String userId = JWTUtil.getUserId(token);
+    	//如果是null返回false
+    	boolean hasKey = redisUtil.hasKey(userId);
+    	String accessToken = "";
     	try {
-	    	String userId = JWTUtil.getUserId(ecmArtWorkQuery.getToken());
-	    	boolean hasKey = redisUtil.hasKey(userId);
-	    	String accessToken = "";
-	    	//如果是null返回false
 	    	if (hasKey) {
 	    		accessToken = String.valueOf(redisUtil.get(userId));
 			}else {
@@ -211,35 +212,11 @@ public class EcmArtWorkController extends BaseController{
 		return ecmArtWorkService.getFindArtWorks(ecmArtWorkQuery);
 	}
 	
-	/**
-	 * @
-	 * @param ecmArtWorkQuery 自带分页
-	 * @return com.mpic.evolution.chair.pojo.dto.ResponseDTO
-	 * @author: sunjie
-	 * 	根据用户的token获取个人中的个人作品
-	 * @Date: 2020/9/1
-	 */
-	@RequestMapping("/getWxUserArtWorks")
-	@ResponseBody
-	public ResponseDTO getWxUserArtWorks(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
-		String token = ecmArtWorkQuery.getToken();
-		String userIdStr = JWTUtil.getUserId(token);
-		if(StringUtils.isBlank(userIdStr) || !NumberUtils.isParsable(userIdStr)){
-    		return ResponseDTO.fail("游客进入");
-    	}
-		Integer userId = Integer.parseInt(userIdStr);
-    	ecmArtWorkQuery.setFkUserid(userId);
-		return ecmArtWorkService.getWxUserArtWorks(ecmArtWorkQuery);
-	}
-	
-	
-	
 	@RequestMapping("/getFindSortArtWorks")
 	@ResponseBody
 	public ResponseDTO getFindSortArtWorks(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
 		return ecmArtWorkService.getFindSortArtWorks(ecmArtWorkQuery);
 	}
-
 
 	@RequestMapping("/removeNode")
 	@ResponseBody
@@ -253,6 +230,7 @@ public class EcmArtWorkController extends BaseController{
 
 		return ecmArtWorkService.removeNode(ecmArtworkNodesVo);
 	}
+	
 	@RequestMapping("/playArtWork")
 	@ResponseBody
 	public ResponseDTO playArtWork(@RequestBody EcmArtworkVo ecmArtworkVo){
