@@ -154,6 +154,9 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 			userVoList.forEach(ecmUserVo -> {
 				if (ecmUserVo.getPkUserId().equals(ecmArtworkVo.getFkUserid())){
 					ecmArtworkVo.setUserName(ecmUserVo.getUsername());
+					if (!StringUtils.isEmpty(ecmUserVo.getUserLogoUrl())) {
+						ecmArtworkVo.setUserLogoUrl(ecmUserVo.getUserLogoUrl());
+					}
 				}
 			});
 			ecmArtworkBroadcastHotVOS.forEach( ecmArtworkBroadcastHotVO -> {
