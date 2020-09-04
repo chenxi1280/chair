@@ -14,7 +14,6 @@ import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.mybatis.spring.MyBatisSystemException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,7 +27,6 @@ import com.mpic.evolution.chair.common.constant.SecretKeyConstants;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmUser;
 import com.mpic.evolution.chair.pojo.entity.WxUser;
-import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
 import com.mpic.evolution.chair.pojo.vo.EcmUserVo;
 import com.mpic.evolution.chair.pojo.vo.WxLoginVo;
 import com.mpic.evolution.chair.service.EcmUserService;
@@ -135,6 +133,11 @@ public class WxLoginController {
 
     }
     
+    /**
+	 * 	保存wx游客用户的临时信息
+	 * @param params
+	 * @return
+	 */
     @RequestMapping("/savaUserInfo")
 	@ResponseBody
 	public ResponseDTO savaWxUserInfo(@RequestBody WxUser wxUser) {
@@ -252,30 +255,6 @@ public class WxLoginController {
 			e.printStackTrace();
 			return ResponseDTO.fail("failed", null, null, "000039");
 		}
-	}
-	
-
-	/**
-	 * 
-	 * @param ecmArtWorkQuery 自带分页
-	 * @return com.mpic.evolution.chair.pojo.dto.ResponseDTO
-	 * @author: sunjie
-	 *	个人中心根据用户token获取用户个人信息
-	 * @Date: 2020/9/1
-	 */
-	@RequestMapping("/getWxUserInfo")
-	@ResponseBody
-	public ResponseDTO getWxUserInfo(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
-		String token = ecmArtWorkQuery.getToken();
-		String userIdStr = JWTUtil.getUserId(token);
-		if(StringUtils.isNullOrBlank(userIdStr) || !NumberUtils.isParsable(userIdStr)){
-    		return ResponseDTO.fail("游客进入");
-    	}
-		Integer userId = Integer.parseInt(userIdStr);
-		EcmUser user = new EcmUser();
-		user.setPkUserId(userId);
-		user = ecmUserService.getUserInfos(user);
-		return ResponseDTO.ok("获取用户信息成功", user);
 	}
 	
 	/**
