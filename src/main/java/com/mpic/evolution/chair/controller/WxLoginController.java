@@ -134,7 +134,7 @@ public class WxLoginController {
     }
     
     /**
-	 * 	保存wx游客用户的临时信息
+	 * 	保存wx游客用户的临时信息到wxUser表
 	 * @param params
 	 * @return
 	 */

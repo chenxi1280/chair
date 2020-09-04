@@ -129,7 +129,6 @@ public class EcmArtWorkController extends BaseController{
         return ecmArtWorkService.addArtWork(ecmArtworkNodesVo);
     }
     
-    
     /**
      * 	获取发布微信二维码
      * 	这里面的 scene 参数是前台要传过来的videoId
@@ -194,7 +193,6 @@ public class EcmArtWorkController extends BaseController{
     	redisUtil.set(userId, accessToken, 3000L);
         return accessToken;
     }
-
 
     /**
 	 * @param: [ecmArtWorkQuery] 自带分页

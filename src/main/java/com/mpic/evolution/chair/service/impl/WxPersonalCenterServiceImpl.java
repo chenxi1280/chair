@@ -10,8 +10,10 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.mpic.evolution.chair.dao.EcmArtworkDao;
+import com.mpic.evolution.chair.dao.EcmArtworkNodesDao;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
+import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
 import com.mpic.evolution.chair.service.WxPersonalCenterService;
 
@@ -25,6 +27,9 @@ public class WxPersonalCenterServiceImpl implements WxPersonalCenterService {
 	
 	@Resource
     EcmArtworkDao ecmArtworkDao;
+	
+	@Resource
+	EcmArtworkNodesDao ecmArtworkNodesDao;
 	
 	@Override
 	public ResponseDTO getWxUserArtWorks(EcmArtWorkQuery ecmArtWorkQuery) {
@@ -44,5 +49,20 @@ public class WxPersonalCenterServiceImpl implements WxPersonalCenterService {
 			}
 		});
 		return ResponseDTO.ok("获取成功", data);
+	}
+
+
+
+	@Override
+	public Integer getEcmArtworkRootNode(Integer pkArtworkId) {
+		List<EcmArtworkNodesVo> artworkNodes = ecmArtworkNodesDao.selectByArtWorkId(103);
+		List<EcmArtworkNodesVo> collect = artworkNodes.stream().filter(item->item.getParentId() == 0).distinct().collect(Collectors.toList());
+		if (!collect.isEmpty()) {
+			EcmArtworkNodesVo ecmArtworkNodesVo = collect.get(0);
+			Integer pkDetailId = ecmArtworkNodesVo.getPkDetailId();
+			return pkDetailId;
+		}else {
+			return null;
+		}
 	}
 }
