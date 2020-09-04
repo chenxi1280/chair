@@ -16,6 +16,7 @@ import com.mpic.evolution.chair.service.EcmArtWorkService;
 public class EcmArtWorkManagerController {
 	@Resource
 	EcmArtWorkService ecmArtWorkService;
+	
 	/**
 	 * @author SJ
 	 * @param ecmArtWorkQuery
