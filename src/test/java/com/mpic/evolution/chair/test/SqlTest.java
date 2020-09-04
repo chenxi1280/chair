@@ -1,10 +1,12 @@
 package com.mpic.evolution.chair.test;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.annotation.Resource;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,9 +15,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.mpic.evolution.chair.dao.EcmArtworkDao;
+import com.mpic.evolution.chair.dao.EcmArtworkNodesDao;
 import com.mpic.evolution.chair.dao.EcmInnerMessageDao;
 import com.mpic.evolution.chair.pojo.entity.EcmInnerMessage;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
+import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
 
 import net.minidev.json.JSONObject;
@@ -34,6 +38,12 @@ public class SqlTest {
 	@Autowired
 	EcmArtworkDao ecmArtworkDao;
 	
+	@Resource
+	EcmArtworkNodesDao ecmArtworkNodesDao;
+	
+	/**
+	 * java8 流排序和分组 遍历
+	 */
 	@Test
 	public void selectSqlTest() {
 		EcmInnerMessage ecmInnerMessage = new EcmInnerMessage();
@@ -45,6 +55,9 @@ public class SqlTest {
 		sum.forEach((k,v)->System.out.println(k+":"+v));
 	}
 	
+	/**
+	 * java8 流排序和分组 遍历
+	 */
 	@Test
 	public void batchUpdateSqlTest() {
 		EcmArtWorkQuery ecmArtWorkQuery = new EcmArtWorkQuery();
@@ -65,6 +78,17 @@ public class SqlTest {
 		System.out.println("修改数据完成");
 	}
 	
-	
+	/**
+	 * java8 流筛选出根节点
+	 */
+	@Test
+	public void selectByArtWorkIdSqlTest() {
+		List<EcmArtworkNodesVo> artworkNodes = ecmArtworkNodesDao.selectByArtWorkId(103);
+		List<EcmArtworkNodesVo> collect = artworkNodes.stream().filter(item->item.getParentId() == 0).distinct().collect(Collectors.toList());
+		if (!collect.isEmpty()) {
+			EcmArtworkNodesVo ecmArtworkNodesVo = collect.get(0);
+			System.out.println(ecmArtworkNodesVo.getPkDetailId());
+		}
+	}
 
 }
