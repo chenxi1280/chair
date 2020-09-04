@@ -1,9 +1,6 @@
 package com.mpic.evolution.chair.util;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -26,35 +23,36 @@ public class HttpMpicUtil {
      * @return 所代表远程资源的响应结果
      */
     public static String sendPostForBase64(String uri, JSONObject param) {
-        PrintWriter out = null;
-        BufferedReader in = null;
+        PrintWriter printWriter = null;
+        InputStream inStream = null;
+        ByteArrayOutputStream byteArrayOutputStream = null;
         String result = "";
         try {
             URL url = new URL(uri);
-            HttpURLConnection httpURLConnection = (HttpURLConnection) url
+            HttpURLConnection urlConnection = (HttpURLConnection) url
                     .openConnection();
-            httpURLConnection.setRequestMethod("POST");// 提交模式
-
+            urlConnection.setRequestMethod("POST");
             // 发送POST请求必须设置如下两行
-            httpURLConnection.setDoOutput(true);
-            httpURLConnection.setDoInput(true);
+            urlConnection.setDoOutput(true);
+            urlConnection.setDoInput(true);
             // 获取URLConnection对象对应的输出流
-            PrintWriter printWriter = new PrintWriter(
-			httpURLConnection.getOutputStream()); printWriter.write(param.toString());
+            printWriter = new PrintWriter(
+			urlConnection.getOutputStream()); printWriter.write(param.toString());
 			//flush输出流的缓冲 
 			printWriter.flush();
-            // 开始获取数据
-            BufferedInputStream bufferedInputStream = new BufferedInputStream(httpURLConnection.getInputStream());
-            byte[] bytes = new byte[bufferedInputStream.available()];
-            bufferedInputStream.read(bytes);
-            String content = new String(bytes);
+            inStream = urlConnection.getInputStream();
+            byteArrayOutputStream = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            //每次读取的字符串长度，如果为-1，代表全部读取完毕
+            int len;
+            while ((len = inStream.read(buffer)) != -1) {
+                byteArrayOutputStream.write(buffer, 0, len);
+            }
+            byte[] data;
+            data = byteArrayOutputStream.toByteArray();
+            String content = new String(data);
             // 能被转成json 表示获取二维码失败
-            if (HttpMpicUtil.isJsonObject(content)) {
-            	return content;
-			}else {
-				String base64Str = Base64.encodeBase64String(bytes);
-	            return base64Str;
-			}
+            return HttpMpicUtil.isJsonObject(content) ? content : Base64.encodeBase64String(data);
         } catch (Exception e) {
             System.out.println("发送 POST 请求出现异常！" + e);
             e.printStackTrace();
@@ -62,11 +60,14 @@ public class HttpMpicUtil {
         // 使用finally块来关闭输出流、输入流
         finally {
             try {
-                if (out != null) {
-                    out.close();
+                if (printWriter != null) {
+                    printWriter.close();
                 }
-                if (in != null) {
-                    in.close();
+                if (inStream != null) {
+                    inStream.close();
+                }
+                if (byteArrayOutputStream != null) {
+                    byteArrayOutputStream.close();
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();
@@ -83,8 +84,9 @@ public class HttpMpicUtil {
     public static boolean isJsonObject(String content) {
         // 此处应该注意，不要使用StringUtils.isEmpty(),因为当content为"  "空格字符串时，JSONObject.parseObject可以解析成功，
         // 实际上，这是没有什么意义的。所以content应该是非空白字符串且不为空，判断是否是JSON数组也是相同的情况。
-        if(StringUtils.isBlank(content))
+        if(StringUtils.isBlank(content)){
             return false;
+        }
         try {
             JSONObject jsonStr = JSONObject.parseObject(content);
             return true;
