@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mpic.evolution.chair.dao.EcmUserHistoryFlowDao">
+  <resultMap id="BaseResultMap" type="com.mpic.evolution.chair.pojo.entity.EcmUserHistoryFlow">
+    <id column="flow_history_id" jdbcType="INTEGER" property="flowHistoryId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="video_code" jdbcType="VARCHAR" property="videoCode" />
+    <result column="video_flow" jdbcType="INTEGER" property="videoFlow" />
+    <result column="creat_time" jdbcType="TIMESTAMP" property="creatTime" />
+    <result column="atrwork_id" jdbcType="INTEGER" property="atrworkId" />
+    <result column="artwork_node_id" jdbcType="INTEGER" property="artworkNodeId" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    flow_history_id, user_id, video_code, video_flow, creat_time, atrwork_id, artwork_node_id, 
+    remarks
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from ecm_user_history_flow
+    where flow_history_id = #{flowHistoryId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ecm_user_history_flow
+    where flow_history_id = #{flowHistoryId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="flow_history_id" keyProperty="flowHistoryId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUserHistoryFlow" useGeneratedKeys="true">
+    insert into ecm_user_history_flow (user_id, video_code, video_flow, 
+      creat_time, atrwork_id, artwork_node_id, 
+      remarks)
+    values (#{userId,jdbcType=INTEGER}, #{videoCode,jdbcType=VARCHAR}, #{videoFlow,jdbcType=INTEGER}, 
+      #{creatTime,jdbcType=TIMESTAMP}, #{atrworkId,jdbcType=INTEGER}, #{artworkNodeId,jdbcType=INTEGER}, 
+      #{remarks,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="flow_history_id" keyProperty="flowHistoryId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUserHistoryFlow" useGeneratedKeys="true">
+    insert into ecm_user_history_flow
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="videoCode != null">
+        video_code,
+      </if>
+      <if test="videoFlow != null">
+        video_flow,
+      </if>
+      <if test="creatTime != null">
+        creat_time,
+      </if>
+      <if test="atrworkId != null">
+        atrwork_id,
+      </if>
+      <if test="artworkNodeId != null">
+        artwork_node_id,
+      </if>
+      <if test="remarks != null">
+        remarks,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="videoCode != null">
+        #{videoCode,jdbcType=VARCHAR},
+      </if>
+      <if test="videoFlow != null">
+        #{videoFlow,jdbcType=INTEGER},
+      </if>
+      <if test="creatTime != null">
+        #{creatTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="atrworkId != null">
+        #{atrworkId,jdbcType=INTEGER},
+      </if>
+      <if test="artworkNodeId != null">
+        #{artworkNodeId,jdbcType=INTEGER},
+      </if>
+      <if test="remarks != null">
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUserHistoryFlow">
+    update ecm_user_history_flow
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="videoCode != null">
+        video_code = #{videoCode,jdbcType=VARCHAR},
+      </if>
+      <if test="videoFlow != null">
+        video_flow = #{videoFlow,jdbcType=INTEGER},
+      </if>
+      <if test="creatTime != null">
+        creat_time = #{creatTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="atrworkId != null">
+        atrwork_id = #{atrworkId,jdbcType=INTEGER},
+      </if>
+      <if test="artworkNodeId != null">
+        artwork_node_id = #{artworkNodeId,jdbcType=INTEGER},
+      </if>
+      <if test="remarks != null">
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where flow_history_id = #{flowHistoryId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUserHistoryFlow">
+    update ecm_user_history_flow
+    set user_id = #{userId,jdbcType=INTEGER},
+      video_code = #{videoCode,jdbcType=VARCHAR},
+      video_flow = #{videoFlow,jdbcType=INTEGER},
+      creat_time = #{creatTime,jdbcType=TIMESTAMP},
+      atrwork_id = #{atrworkId,jdbcType=INTEGER},
+      artwork_node_id = #{artworkNodeId,jdbcType=INTEGER},
+      remarks = #{remarks,jdbcType=VARCHAR}
+    where flow_history_id = #{flowHistoryId,jdbcType=INTEGER}
+  </update>
+</mapper>

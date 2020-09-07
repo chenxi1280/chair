@@ -128,6 +128,29 @@ public class EcmArtWorkController extends BaseController{
 		}
         return ecmArtWorkService.addArtWork(ecmArtworkNodesVo);
     }
+
+	/**
+	 * @param: [ecmArtworkNodesVo] 节点id 请求头token 作品id
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2020/9/7
+	 * 描述 : 删除节点
+	 *       成功: status 200  msg "success”
+	 *       失败: status 500  msg "error“
+	 */
+	@RequestMapping("/removeNode")
+	@ResponseBody
+	public ResponseDTO removeNode(@RequestBody EcmArtworkNodesVo ecmArtworkNodesVo){
+		Integer userId = getUserIdByHandToken();
+		if (userId == null){
+			return ResponseDTO.fail("非法访问");
+		}
+		ecmArtworkNodesVo.setFkUserId(userId);
+
+		return ecmArtWorkService.removeNode(ecmArtworkNodesVo);
+	}
+
+
     
     /**
      * 	获取发布微信二维码
@@ -194,14 +217,20 @@ public class EcmArtWorkController extends BaseController{
         return accessToken;
     }
 
+
+	// 下面小程序端接口
+
+
+
     /**
 	 * @param: [ecmArtWorkQuery] 自带分页
 	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
 	 * @author: cxd
 	 * @Date: 2020/8/26
-	 * 描述 :  根据热度进行主页 查询
-	 *       保存成功: status 200  msg "success” data "数据"
-	 *       保存失败: status 500  msg "error“
+	 * 描述 :  小程序端
+	 * 			获取发现页面的热门数据 按照热门 HOT表中热度进行排序
+	 *       成功: status 200  msg "success” data "EcmArtWorkVO"
+	 *       失败: status 500  msg "error“
 	 */
 	@RequestMapping("/getFindArtWorks")
 	@ResponseBody
@@ -209,48 +238,62 @@ public class EcmArtWorkController extends BaseController{
 		return ecmArtWorkService.getFindArtWorks(ecmArtWorkQuery);
 	}
 	
+	/**
+	 * @param: [ecmArtWorkQuery] 自带分页
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2020/9/7
+	 * 描述 : 小程序端
+	 * 		获取发现页面的分类数据 按照热门 HOT表中热度进行排序
+	 *       成功: status 200  msg "success” data "EcmArtWorkVO"
+	 *       失败: status 500  msg "error“
+	 */
 	@RequestMapping("/getFindSortArtWorks")
 	@ResponseBody
 	public ResponseDTO getFindSortArtWorks(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
 		return ecmArtWorkService.getFindSortArtWorks(ecmArtWorkQuery);
 	}
 
-	@RequestMapping("/removeNode")
-	@ResponseBody
-	public ResponseDTO removeNode(@RequestBody EcmArtworkNodesVo ecmArtworkNodesVo){
-		String token = getRequest().getHeader("Authorization");
-		if (StringUtil.isEmpty(token)){
-			return ResponseDTO.fail("非法访问");
-		}
-		String userId = JWTUtil.getUserId(token);
-		ecmArtworkNodesVo.setFkUserId(Integer.valueOf(userId));
 
-		return ecmArtWorkService.removeNode(ecmArtworkNodesVo);
-	}
-	
+
+	/**
+	 * @param: [ecmArtworkVo] 作品id
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2020/9/7
+	 * 描述 : 小程序端
+	 * 			根据作品id 查询作品详情 ，同时增加一次播放记录
+	 *       成功: status 200  msg "success”
+	 *       失败: status 500  msg "error“
+	 */
 	@RequestMapping("/playArtWork")
 	@ResponseBody
 	public ResponseDTO playArtWork(@RequestBody EcmArtworkVo ecmArtworkVo){
 		return ecmArtWorkService.playArtWork(ecmArtworkVo);
 	}
 
-
-	@RequestMapping("/saveLinkArtWorkNode")
+	/**
+	 * @param: [ecmArtWorkQuery] 搜索页面热度榜
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2020/9/7
+	 * 描述 : 小程序端
+	 *       成功: status 200  msg "success”   date: List<EcmartWorkVO>
+	 *       失败: status 500  msg "error“
+	 */
+	@RequestMapping("/getRankingArtWorks")
 	@ResponseBody
-	public ResponseDTO saveLinkArtWorkNode(@RequestBody EcmArtworkNodesVo ecmArtworkNodes){
-		String token = getRequest().getHeader("Authorization");
-		if (StringUtil.isEmpty(token)){
-			return ResponseDTO.fail("非法访问");
-		}
-
-		if (ecmArtworkNodes.getParentId() == null){
-			return ResponseDTO.fail("父节点id为空");
-		}
-
-		String userId = JWTUtil.getUserId(token);
-		ecmArtworkNodes.setFkUserId(Integer.valueOf(userId));
-
-		return ecmArtWorkService.saveLinkArtWorkNode(ecmArtworkNodes);
+	public ResponseDTO getRankingArtWorks(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
+		return ecmArtWorkService.getRankingArtWorks(ecmArtWorkQuery);
 	}
+
+
+	@RequestMapping("/search")
+	@ResponseBody
+	public ResponseDTO search(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
+		return ecmArtWorkService.search(ecmArtWorkQuery);
+	}
+
+
 
 }

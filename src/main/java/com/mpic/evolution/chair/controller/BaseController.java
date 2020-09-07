@@ -1,5 +1,8 @@
 package com.mpic.evolution.chair.controller;
 
+import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
+import com.mpic.evolution.chair.util.JWTUtil;
+import com.qcloud.vod.common.StringUtil;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -26,6 +29,19 @@ public class BaseController {
 
     public HttpSession getRequstSession() {// 获取shiro自己的session
         return getRequest().getSession();
+    }
+
+    public Integer getUserIdByHandToken(){
+        String token = this.getRequest().getHeader("Authorization");
+        if (StringUtil.isEmpty(token)){
+            return null;
+        }
+        String userId = JWTUtil.getUserId(token);
+        if (!StringUtil.isEmpty(userId)){
+           return  Integer.valueOf(userId);
+        }
+        return null;
+
     }
 
 }

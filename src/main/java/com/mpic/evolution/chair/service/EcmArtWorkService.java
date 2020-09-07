@@ -54,6 +54,8 @@ public interface EcmArtWorkService {
      */
     ResponseDTO addArtWork(EcmArtworkNodesVo ecmArtworkNodesVo);
 
+    ResponseDTO removeNode(EcmArtworkNodesVo ecmArtworkNodesVo);
+
     /**
      * @param: [ecmArtWorkQuery]
      * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
@@ -65,11 +67,12 @@ public interface EcmArtWorkService {
      */
     ResponseDTO getFindArtWorks(EcmArtWorkQuery ecmArtWorkQuery);
 
-    ResponseDTO removeNode(EcmArtworkNodesVo ecmArtworkNodesVo);
 
     ResponseDTO getFindSortArtWorks(EcmArtWorkQuery ecmArtWorkQuery);
 
     ResponseDTO playArtWork(EcmArtworkVo ecmArtworkVo);
 
-    ResponseDTO saveLinkArtWorkNode( EcmArtworkNodesVo ecmArtworkNodes);
+    ResponseDTO getRankingArtWorks(EcmArtWorkQuery ecmArtWorkQuery);
+
+    ResponseDTO search(EcmArtWorkQuery ecmArtWorkQuery);
 }

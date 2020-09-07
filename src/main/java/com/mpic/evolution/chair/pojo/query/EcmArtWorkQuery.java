@@ -63,5 +63,13 @@ public class EcmArtWorkQuery extends PageQuery {
      */
     private Integer intVideoId;
 
+    /**
+     * 小程序发现分类 查询字段
+     */
     private String queryType;
+
+    /**
+     *  小程序 搜索文本字段
+     */
+    private String searchText;
 }
