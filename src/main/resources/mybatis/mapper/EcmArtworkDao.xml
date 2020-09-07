@@ -214,11 +214,12 @@
     	ecm_artwork_broadcast_hot b 
     on
     	a.pk_artwork_id = b.fk_arkwork_id
-    where 
-    	<!-- 查询作品是不包括删除作品5 和审核不通过3 -->
-    	1=1 and artwork_status in (0,1,2,4)
+    where 1=1
       <if test="pkArtworkId != null">
         and pk_artwork_id = #{pkArtworkId}
+      </if>
+      <if test="artworkStatus != null">
+        and artwork_status = #{artworkStatus,jdbcType=SMALLINT}
       </if>
       <if test="fkUserid != null">
         and fk_userId = #{fkUserid}
@@ -229,7 +230,8 @@
       <if test="fourLetterTips != null and fourLetterTips!=''">
         and four_letter_tips like CONCAT('%',#{fourLetterTips},'%')
       </if>
-	 limit #{start},#{limit}
+      order by a.last_modify_date desc
+	  limit #{start},#{limit}
   </select>
 	
   <select id="selectFindSortArtWorks" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkVo">
