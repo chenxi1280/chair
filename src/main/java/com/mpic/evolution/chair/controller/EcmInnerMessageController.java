@@ -36,20 +36,14 @@ public class EcmInnerMessageController {
 	@Resource
 	EcmInnerMessageService ecmInnerMessageService;
 	
-	/**
-     * 	获取图片验证码接口
-     *	 以BASE64转码的字符串传到前端
-     */
+
     @RequestMapping("/getInnerMessage")
     @ResponseBody
 	public ResponseDTO getInnerMessage(@RequestBody EcmUserVo user) {
 		return ecmInnerMessageService.getMsg(user);
     }
     
-    /**
-     * 	获取图片验证码接口
-     *	 以BASE64转码的字符串传到前端
-     */
+
     @RequestMapping("/batchDelete")
     @ResponseBody
 	public ResponseDTO batchDelete(@RequestBody EcmInnerMessageQurey ecmInnerMessageQurey) {
@@ -61,10 +55,7 @@ public class EcmInnerMessageController {
 		return ecmInnerMessageService.batchDelete(ecmInnerMessageQurey);
     }
     
-    /**
-     * 	获取图片验证码接口
-     *	 以BASE64转码的字符串传到前端
-     */
+
     @RequestMapping("/batchModifyRead")
     @ResponseBody
 	public ResponseDTO batchModifyRead(@RequestBody EcmInnerMessageQurey ecmInnerMessageQurey) {

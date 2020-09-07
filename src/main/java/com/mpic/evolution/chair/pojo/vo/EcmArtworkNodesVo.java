@@ -16,7 +16,7 @@ import java.util.List;
  */
 
 @Data
-public class EcmArtworkNodesVo extends EcmArtworkNodes {
+public class EcmArtworkNodesVo extends EcmArtworkNodes  {
 
     /**
      * 储存 自己的 子节点集合
@@ -32,5 +32,7 @@ public class EcmArtworkNodesVo extends EcmArtworkNodes {
     private String token;
 
     private Integer fkUserId;
+
+    private EcmArtworkNodes linkNode;
 
 }
