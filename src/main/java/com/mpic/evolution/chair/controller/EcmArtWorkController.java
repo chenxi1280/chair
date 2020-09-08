@@ -183,9 +183,9 @@ public class EcmArtWorkController extends BaseController{
 	        		+ "access_token=%s", accessToken);
 	        JSONObject param = new JSONObject();
 	        param.put("page","pages/play/play");
-	        String videoId = ecmArtWorkQuery.getVideoId();
+	        String artWorkId = ecmArtWorkQuery.getArtWorkId();
 	        //scene的value 是 videoId
-	        param.put("scene",videoId);
+	        param.put("scene",artWorkId);
 			String Base64Str = HttpMpicUtil.sendPostForBase64(url, param);
 			if (HttpMpicUtil.isJsonObject(Base64Str)) {
 				//返回的结果是：{"errcode":40001,"errmsg":"invalid credential, access_token is invalid or not latest rid: 5f364b21-395edb8d-336ae042"}

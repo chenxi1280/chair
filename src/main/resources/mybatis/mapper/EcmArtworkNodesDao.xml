@@ -266,8 +266,7 @@
   <select id="selectByArtWorkId" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo">
     select <include refid="Base_Column_List" />
     from ecm_artwork_nodes
-    where fk_artwork_id = #{pkArtworkId}
-
+    where fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER}
   </select>
 
 
@@ -350,7 +349,6 @@
    update ecm_artwork_nodes
     set  is_deleted = 'Y'
     where pk_detail_id = #{pkDetailId}
-
   </update>
 
 

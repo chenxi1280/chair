@@ -1,5 +1,6 @@
 package com.mpic.evolution.chair.service.impl;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -248,10 +249,11 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             return ResponseDTO.fail("查询id无子节点");
         }
         List<EcmArtworkNodesVo> collect = list.stream().filter(ecmArtworkNodesVo -> !"Y".equals(ecmArtworkNodesVo.getIsDeleted())).collect(Collectors.toList());
-
+        //筛选出根节点的pk_detailId
         //需要添加 播放 历史表 数据
         EcmArtworkBroadcastHistory ecmArtworkBroadcastHistory = new EcmArtworkBroadcastHistory();
         ecmArtworkBroadcastHistory.setFkArtworkId(ecmArtworkVo.getPkArtworkId());
+        ecmArtworkBroadcastHistory.setStartTime(new Date());
 
         EcmArtworkBroadcastHot ecmArtworkBroadcastHot = new EcmArtworkBroadcastHot();
         ecmArtworkBroadcastHot.setFkArkworkId(ecmArtworkVo.getPkArtworkId());

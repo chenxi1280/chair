@@ -38,8 +38,9 @@ public class WxPersonalCenterServiceImpl implements WxPersonalCenterService {
 		return ResponseDTO.ok("获取成功", artworks);
 	}
 
-
-
+	/**
+	 * 根据pkArtworkId 获取载nodes表里面的pkDetailId
+	 */
 	@Override
 	public Integer getEcmArtworkRootNode(Integer pkArtworkId) {
 		List<EcmArtworkNodesVo> artworkNodes = ecmArtworkNodesDao.selectByArtWorkId(103);

@@ -117,13 +117,8 @@ public class WxPersonalCenterController {
 	        		+ "access_token=%s", accessToken);
 	        JSONObject param = new JSONObject();
 	        param.put("page","pages/play/play");
-	        //通过作品id查询作品根节点的id 根节点id为videoId
 	        Integer pkArtworkId = ecmArtWorkQuery.getPkArtworkId();
-	        Integer videoId = personalCenterService.getEcmArtworkRootNode(pkArtworkId);
-	        if (StringUtils.isBlank(String.valueOf(videoId))) {
-	        	return ResponseDTO.fail("该作品无播放源");
-			}
-	        param.put("scene",videoId);
+	        param.put("scene",pkArtworkId);
 			String Base64Str = HttpMpicUtil.sendPostForBase64(url, param);
 			if (HttpMpicUtil.isJsonObject(Base64Str)) {
 				//返回的结果是：{"errcode":40001,"errmsg":"invalid credential, access_token is invalid or not latest rid: 5f364b21-395edb8d-336ae042"}

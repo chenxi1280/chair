@@ -10,6 +10,6 @@ import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
 public interface WxPersonalCenterService {
 
 	ResponseDTO getWxUserArtWorks(EcmArtWorkQuery ecmArtWorkQuery);
-
+	
 	Integer getEcmArtworkRootNode(Integer pkArtworkId);
 }
