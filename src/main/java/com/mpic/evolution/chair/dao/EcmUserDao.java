@@ -26,4 +26,6 @@ public interface EcmUserDao {
     int updateEcmUser(@Param("record") EcmUser record,@Param("recordVo") EcmUserVo ecmUserVo);
 
     List<EcmUserVo> selectUserByEcmArtworkList(@Param("ids") List<EcmArtworkVo> list);
+
+    EcmUserVo selectByPkUserId(Integer pkUserId);
 }

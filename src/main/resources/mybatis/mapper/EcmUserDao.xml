@@ -347,4 +347,10 @@
         </foreach>
 
     </select>
+    <select id="selectByPkUserId" resultType="com.mpic.evolution.chair.pojo.vo.EcmUserVo">
+        select
+        <include refid="Base_Column_List" />
+        from ecm_user
+        where pk_user_id = #{pkUserId}
+    </select>
 </mapper>

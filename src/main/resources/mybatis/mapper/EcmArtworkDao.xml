@@ -242,5 +242,13 @@
 
   </select>
 
+    <select id="selectSearchArtworkName" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkVo">
+      select <include refid="Base_Column_List" />
+      from ecm_artwork
+      where artwork_name like CONCAT('%',#{searchText},'%')
+      limit #{start},#{limit}
+
+    </select>
+
 
 </mapper>

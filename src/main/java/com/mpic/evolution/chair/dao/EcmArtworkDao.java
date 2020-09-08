@@ -28,4 +28,7 @@ public interface EcmArtworkDao {
     List<EcmArtworkVo> selectFindSortArtWorks(EcmArtWorkQuery ecmArtWorkQuery);
 
 	List<EcmArtworkVo> selectArtWorksByWxUser(EcmArtWorkQuery ecmArtWorkQuery);
+
+    List<EcmArtworkVo> selectSearchArtworkName(EcmArtWorkQuery ecmArtWorkQuery);
+
 }
