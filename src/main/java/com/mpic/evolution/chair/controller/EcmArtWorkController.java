@@ -94,16 +94,18 @@ public class EcmArtWorkController extends BaseController{
     @ResponseBody
     @RequestMapping("/saveArtWorkNode")
     public ResponseDTO saveArtWorkNod(@RequestBody EcmArtworkNodesVo ecmArtworkNodes){
-		String token = getRequest().getHeader("Authorization");
-		if (StringUtil.isEmpty(token)){
+		Integer userId = getUserIdByHandToken();
+
+		if (userId== null){
 			return ResponseDTO.fail("非法访问");
 		}
-
-        if (ecmArtworkNodes.getParentId() == null){
+		if (ecmArtworkNodes.getParentId() == null){
             return ResponseDTO.fail("父节点id为空");
         }
+		if (ecmArtworkNodes.getFkArtworkId() == null) {
+			return ResponseDTO.fail("作品错误");
+		}
 
-		String userId = JWTUtil.getUserId(token);
 		ecmArtworkNodes.setFkUserId(Integer.valueOf(userId));
 
         return ecmArtWorkService.saveArtWorkNode(ecmArtworkNodes);
@@ -287,7 +289,16 @@ public class EcmArtWorkController extends BaseController{
 		return ecmArtWorkService.getRankingArtWorks(ecmArtWorkQuery);
 	}
 
-
+	/**
+	 * @param: [ecmArtWorkQuery] searchText 搜索文本
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2020/9/8
+	 * 描述 : 小程序端
+	 * 		搜索结果
+	 *       成功: status 200  msg "success”   date: List<EcmArtworkVo>
+	 *       失败: status 500  msg "error“
+	 */
 	@RequestMapping("/search")
 	@ResponseBody
 	public ResponseDTO search(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
@@ -295,5 +306,10 @@ public class EcmArtWorkController extends BaseController{
 	}
 
 
+	@RequestMapping("/getArtWorkNodes")
+	@ResponseBody
+	public ResponseDTO getArtWorkNodes(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
+		return ecmArtWorkService.getArtWorkNodes(ecmArtWorkQuery);
+	}
 
 }

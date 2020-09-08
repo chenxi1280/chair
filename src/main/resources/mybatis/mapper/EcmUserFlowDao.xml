@@ -101,7 +101,7 @@
   <update id="updateReduceFlow">
     update ecm_user_flow
     set
-      surplus_flow = surplus_flow+#{surplusFlow},
+      surplus_flow = surplus_flow - #{surplusFlow},
       update_time = #{updateTime}
     where user_id = #{userId}
 

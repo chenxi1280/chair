@@ -98,6 +98,9 @@ public class EcmUserServiceImpl implements EcmUserService {
 	@Override
 	public ResponseDTO inspectFlow(EcmUserFlowQuery ecmUserFlowQuery) {
 		EcmUserFlowVO userFlow = ecmUserFlowDao.selectByPkUserId(ecmUserFlowQuery.getPkUserId());
+		if (Integer.valueOf(ecmUserFlowQuery.getVideoFlow()) > 1024 * 500 ){
+			return ResponseDTO.fail("视频大于500M，请减小视频大小");
+		}
 		if (userFlow.getSurplusFlow() >= Integer.valueOf(ecmUserFlowQuery.getVideoFlow())){
 			return ResponseDTO.ok("流量足够，可以上传");
 		}

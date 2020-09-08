@@ -65,7 +65,6 @@ public class EcmUserController extends BaseController{
             return ResponseDTO.fail("非法访问");
         }
         ecmUserFlowQuery.setPkUserId(Integer.valueOf(userId));
-
         return ecmUserService.inspectFlow(ecmUserFlowQuery);
     }
 
@@ -78,7 +77,6 @@ public class EcmUserController extends BaseController{
             return ResponseDTO.fail("非法访问");
         }
         ecmUserHistoryFlowVO.setUserId(userId);
-
         return ecmUserService.reduceFlow(ecmUserHistoryFlowVO);
     }
 

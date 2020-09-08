@@ -1,6 +1,8 @@
 package com.mpic.evolution.chair.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
@@ -97,9 +99,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
     @Override
     public ResponseDTO saveArtWorkNode(EcmArtworkNodesVo ecmArtworkNodes) {
-        if (ecmArtworkNodes.getFkArtworkId() == null) {
-            return ResponseDTO.fail("作品错误");
-        }
+
         EcmArtwork ecmArtwork = ecmArtworkDao.selectByPrimaryKey(ecmArtworkNodes.getFkArtworkId());
         if (!ecmArtwork.getFkUserid().equals(ecmArtworkNodes.getFkUserId())) {
             return ResponseDTO.fail("非法访问");
@@ -296,18 +296,53 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         List<EcmArtworkVo> list = ecmArtworkDao.selectSearchArtworkName(ecmArtWorkQuery);
 
         List<EcmUserVo> userVoList = ecmUserDao.selectUserByEcmArtworkList(list);
+
+        List<EcmArtworkBroadcastHotVO> ecmArtworkBroadcastHotVOS = ecmArtworkBroadcastHotDao.selectEcmArtworkList(list);
         list.forEach(ecmArtworkVo -> {
             userVoList.forEach(ecmUserVo -> {
+                // 设置作者名字
+                if (ecmUserVo.getPkUserId().equals(ecmArtworkVo.getFkUserid())) {
+                    ecmArtworkVo.setUserName(ecmUserVo.getUsername());
+                }
+                // 设置用户头像
                 if (ecmUserVo.getPkUserId().equals(ecmArtworkVo.getFkUserid())) {
                     ecmArtworkVo.setUserName(ecmUserVo.getUsername());
                     if (!StringUtils.isEmpty(ecmUserVo.getUserLogoUrl())) {
                         ecmArtworkVo.setUserLogoUrl(ecmUserVo.getUserLogoUrl());
                     }
                 }
+                //设置热度
+                ecmArtworkBroadcastHotVOS.forEach(ecmArtworkBroadcastHotVO -> {
+                    if (ecmArtworkBroadcastHotVO.getFkArkworkId().equals(ecmArtworkVo.getPkArtworkId())) {
+                        ecmArtworkVo.setHotCount(ecmArtworkBroadcastHotVO.getBroadcastCount());
+                    }
+                });
+                // 没有在热度表中 作品 随机 热度
+                if (ecmArtworkVo.getHotCount() == null) {
+                    ecmArtworkVo.setHotCount(RandomUtil.getCode(3));
+                }
+
             });
         });
-
         return  ResponseDTO.ok("sucess", list);
+    }
+
+    @Override
+    public ResponseDTO getArtWorkNodes(EcmArtWorkQuery ecmArtWorkQuery) {
+
+        EcmArtwork ecmArtwork = ecmArtworkDao.selectByPrimaryKey(ecmArtWorkQuery.getPkArtworkId());
+        if (ecmArtwork == null) {
+            return ResponseDTO.fail("查询id为空");
+        }
+
+        List<EcmArtworkNodesVo> list = ecmArtworkNodesDao.selectByArtWorkId(ecmArtWorkQuery.getPkArtworkId());
+
+        Map<Integer, List<EcmArtworkNodesVo>> collect = list.stream().collect(Collectors.groupingBy(EcmArtworkNodes::getParentId));
+
+        Map map = new HashMap(2);
+        map.put("list",list);
+        map.put("map",collect);
+        return ResponseDTO.ok("",map);
     }
 
 

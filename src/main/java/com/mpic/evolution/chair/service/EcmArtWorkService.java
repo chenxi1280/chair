@@ -75,4 +75,6 @@ public interface EcmArtWorkService {
     ResponseDTO getRankingArtWorks(EcmArtWorkQuery ecmArtWorkQuery);
 
     ResponseDTO search(EcmArtWorkQuery ecmArtWorkQuery);
+
+    ResponseDTO getArtWorkNodes(EcmArtWorkQuery ecmArtWorkQuery);
 }
