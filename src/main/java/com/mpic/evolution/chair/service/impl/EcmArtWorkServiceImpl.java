@@ -1,5 +1,6 @@
 package com.mpic.evolution.chair.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -126,6 +127,8 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             }
             return ResponseDTO.ok("成功", ecmArtworkNodes);
         }
+        //默认图片地址
+        ecmArtworkNodes.setItemsBakText("https://sike-1259692143.cos.ap-chongqing.myqcloud.com/baseImg/1599646010668nodeImgUrl.png");
         if (1 == ecmArtworkNodesDao.insert(ecmArtworkNodes)) {
             return ResponseDTO.ok("success", ecmArtworkNodes);
         }
@@ -319,10 +322,19 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
         Map<Integer, List<EcmArtworkNodesVo>> collect = list.stream().collect(Collectors.groupingBy(EcmArtworkNodes::getParentId));
 
-        Map map = new HashMap(2);
-        map.put("list",list);
-        map.put("map",collect);
-        return ResponseDTO.ok("",map);
+        List<EcmArtworkNodesDTO> artworkNodesDTOS = new ArrayList<>();
+
+        list.forEach( node -> {
+            EcmArtworkNodesDTO ecmArtworkNodesDTO = new EcmArtworkNodesDTO();
+
+            BeanUtils.copyProperties(node,ecmArtworkNodesDTO);
+
+            ecmArtworkNodesDTO.setBrotherNode(collect.get(node.getParentId()));
+
+            artworkNodesDTOS.add(ecmArtworkNodesDTO);
+        });
+
+        return ResponseDTO.ok("",artworkNodesDTOS);
     }
 
 
