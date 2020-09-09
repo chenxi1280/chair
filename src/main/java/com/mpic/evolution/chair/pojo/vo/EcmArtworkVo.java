@@ -30,6 +30,8 @@ public class EcmArtworkVo extends EcmArtwork {
     private String userName;
 
     private Integer hotCount;
-
+    /**
+     * 	用户头像
+     */
     private String userLogoUrl;
 }
