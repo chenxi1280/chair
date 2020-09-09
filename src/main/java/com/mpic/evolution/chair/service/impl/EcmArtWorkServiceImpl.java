@@ -7,7 +7,11 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import com.mpic.evolution.chair.pojo.dto.EcmArtworkNodesDTO;
+import com.mpic.evolution.chair.pojo.entity.*;
+
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -20,7 +24,6 @@ import com.mpic.evolution.chair.dao.EcmArtworkNodesDao;
 import com.mpic.evolution.chair.dao.EcmUserDao;
 import com.mpic.evolution.chair.dao.ProcessMediaByProcedureDao;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
-import com.mpic.evolution.chair.pojo.entity.EcmArtwork;
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkBroadcastHotVO;
@@ -129,6 +132,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         return ResponseDTO.fail("正在保存上一个节点数据");
     }
 
+
     @Override
     @Transactional
     public ResponseDTO addArtWork(EcmArtworkNodesVo ecmArtworkNodesVo) {
@@ -193,6 +197,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         return ResponseDTO.ok("sucess", list);
     }
 
+
     @Override
     public ResponseDTO getFindSortArtWorks(EcmArtWorkQuery ecmArtWorkQuery) {
         List<EcmArtworkVo> list = ecmArtworkDao.selectFindSortArtWorks(ecmArtWorkQuery);
@@ -236,6 +241,8 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         list.add(1, ecmArtworkVo);
         return ResponseDTO.ok("sucess", list);
     }
+
+
 
     @Override
     public ResponseDTO getRankingArtWorks(EcmArtWorkQuery ecmArtWorkQuery) {
