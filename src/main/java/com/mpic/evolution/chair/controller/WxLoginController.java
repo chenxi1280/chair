@@ -141,9 +141,9 @@ public class WxLoginController {
     @RequestMapping("/savaUserInfo")
 	@ResponseBody
 	public ResponseDTO savaWxUserInfo(@RequestBody WxUser wxUser) {
-    	boolean flag = wxUserService.savaWxUer(wxUser);
-    	if (flag) {
-    		return ResponseDTO.ok();	
+    	Integer fkUserId = wxUserService.savaWxUer(wxUser);
+    	if (fkUserId != null) {
+    		return ResponseDTO.ok("保存微信用户信息成功",fkUserId);
 		}else {
 			return ResponseDTO.fail("保存微信用户信息失败");
 		}
@@ -249,8 +249,12 @@ public class WxLoginController {
 			// 用户敏感信息需要加密 可反解
 			user.setMobile(phoneKey);
 			user.setPassword(MD5Utils.encrypt(ecmUserVo.getPassword()));
-			wxLoginService.savaUser(user,ecmUserVo);
-			return ResponseDTO.ok("注册成功");
+			Integer userId = wxLoginService.savaUser(user,ecmUserVo);
+			if (userId != null) {
+				return ResponseDTO.ok("注册成功",userId);
+			}else {
+				return ResponseDTO.fail("保存注册用户信息失败", null, null, "000039");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseDTO.fail("failed", null, null, "000039");

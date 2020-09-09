@@ -56,7 +56,7 @@ public class WxLoginServiceImpl implements WxLoginService {
 	}
 
 	@Override
-	public boolean savaUser(EcmUser ecmUser, EcmUserVo ecmUserVo) {
+	public Integer savaUser(EcmUser ecmUser, EcmUserVo ecmUserVo) {
 		int ecmRow = ecmUserDao.insertSelective(ecmUser);
 		Integer userId = ecmUser.getPkUserId();
 		String openid = ecmUserVo.getOpenid();
@@ -65,7 +65,11 @@ public class WxLoginServiceImpl implements WxLoginService {
 		WxUser wxUser2 = new WxUser();
 		wxUser2.setOpenid(openid);
 		int wxRow = wxUserDao.updateByWxUser(wxUser1, wxUser2);
-		return ecmRow < 1 ? false : wxRow < 1 ? false : true;	
+		if (ecmRow < 1 ? false : wxRow < 1 ? false : true) {
+			return userId;
+		}else {
+			return null;
+		}	
 	}
 
 }

@@ -3,7 +3,6 @@ package com.mpic.evolution.chair.service;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
-import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
 
 /**
  * @author Administrator
@@ -69,8 +68,6 @@ public interface EcmArtWorkService {
 
 
     ResponseDTO getFindSortArtWorks(EcmArtWorkQuery ecmArtWorkQuery);
-
-    ResponseDTO playArtWork(EcmArtworkVo ecmArtworkVo);
 
     ResponseDTO getRankingArtWorks(EcmArtWorkQuery ecmArtWorkQuery);
 

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
-import com.mpic.evolution.chair.service.EcmArtWorkService;
+import com.mpic.evolution.chair.service.WxPlayService;
 
 /** 
 * @author 作者 SJ: 
@@ -20,7 +20,7 @@ import com.mpic.evolution.chair.service.EcmArtWorkService;
 public class WxPlayController {
 	
 	@Resource
-    EcmArtWorkService ecmArtWorkService;
+    WxPlayService wxPlayService;
 	
 	/**
 	 * @param: [ecmArtworkVo] 作品id
@@ -35,6 +35,6 @@ public class WxPlayController {
 	@RequestMapping("/playArtWork")
 	@ResponseBody
 	public ResponseDTO playArtWork(@RequestBody EcmArtworkVo ecmArtworkVo){
-		return ecmArtWorkService.playArtWork(ecmArtworkVo);
+		return wxPlayService.playArtWork(ecmArtworkVo);
 	}
 }

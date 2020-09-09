@@ -8,6 +8,6 @@ import com.mpic.evolution.chair.pojo.entity.WxUser;
 */
 public interface WxUserService {
 
-	boolean savaWxUer(WxUser wxUser);
+	Integer savaWxUer(WxUser wxUser);
 
 }

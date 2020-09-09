@@ -1,6 +1,5 @@
 package com.mpic.evolution.chair.service.impl;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +7,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
-import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,8 +21,7 @@ import com.mpic.evolution.chair.dao.EcmUserDao;
 import com.mpic.evolution.chair.dao.ProcessMediaByProcedureDao;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmArtwork;
-import com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHistory;
-import com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHot;
+import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkBroadcastHotVO;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
@@ -132,7 +129,6 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         return ResponseDTO.fail("正在保存上一个节点数据");
     }
 
-
     @Override
     @Transactional
     public ResponseDTO addArtWork(EcmArtworkNodesVo ecmArtworkNodesVo) {
@@ -197,7 +193,6 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         return ResponseDTO.ok("sucess", list);
     }
 
-
     @Override
     public ResponseDTO getFindSortArtWorks(EcmArtWorkQuery ecmArtWorkQuery) {
         List<EcmArtworkVo> list = ecmArtworkDao.selectFindSortArtWorks(ecmArtWorkQuery);
@@ -240,30 +235,6 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         ecmArtworkVo.setCode("ad");
         list.add(1, ecmArtworkVo);
         return ResponseDTO.ok("sucess", list);
-    }
-
-    @Override
-    public ResponseDTO playArtWork(EcmArtworkVo ecmArtworkVo) {
-        List<EcmArtworkNodesVo> list = ecmArtworkNodesDao.selectByArtWorkId(ecmArtworkVo.getPkArtworkId());
-        if (list.isEmpty()) {
-            return ResponseDTO.fail("查询id无子节点");
-        }
-        List<EcmArtworkNodesVo> collect = list.stream().filter(ecmArtworkNodesVo -> !"Y".equals(ecmArtworkNodesVo.getIsDeleted())).collect(Collectors.toList());
-        //筛选出根节点的pk_detailId
-        //需要添加 播放 历史表 数据
-        EcmArtworkBroadcastHistory ecmArtworkBroadcastHistory = new EcmArtworkBroadcastHistory();
-        ecmArtworkBroadcastHistory.setFkArtworkId(ecmArtworkVo.getPkArtworkId());
-        ecmArtworkBroadcastHistory.setStartTime(new Date());
-
-        EcmArtworkBroadcastHot ecmArtworkBroadcastHot = new EcmArtworkBroadcastHot();
-        ecmArtworkBroadcastHot.setFkArkworkId(ecmArtworkVo.getPkArtworkId());
-        try {
-            ecmArtworkBroadcastHotDao.playArtWorkByArtworkId(ecmArtworkVo.getPkArtworkId());
-            ecmArtworkBroadcastHistoryDao.insertSelective(ecmArtworkBroadcastHistory);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return ResponseDTO.ok("success", TreeUtil.buildTree(collect).get(0));
     }
 
     @Override

@@ -26,7 +26,7 @@ public class WxUserServiceImpl implements WxUserService {
 	EcmUserDao ecmUseDao;
 
 	@Override
-	public boolean savaWxUer(WxUser wxUser) {
+	public Integer savaWxUer(WxUser wxUser) {
 		EcmUser ecmUser = new EcmUser();
 		ecmUser.setPassword("123456");
 		ecmUser.setIsValid("N");
@@ -37,7 +37,11 @@ public class WxUserServiceImpl implements WxUserService {
 		wxUser.setCtime(new Date());
 		wxUser.setAuthorized(false);
 		int row = wxUserDao.insertSelective(wxUser);
-		return ecmRow < 1 ? false : row < 1 ? false : true;
+		if (ecmRow < 1 ? false : row < 1 ? false : true) {
+			return wxUser.getFkUserId();
+		}else {
+			return null;
+		}
 	}
 
 }

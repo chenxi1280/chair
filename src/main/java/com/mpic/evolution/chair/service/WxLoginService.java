@@ -16,6 +16,6 @@ public interface WxLoginService {
 	 */ 
 	DefaultKaptcha getConfirmCode();
 
-	boolean savaUser(EcmUser user, EcmUserVo ecmUserVo);
+	Integer savaUser(EcmUser user, EcmUserVo ecmUserVo);
 
 }
