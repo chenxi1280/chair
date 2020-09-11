@@ -19,4 +19,6 @@ public interface WxPlayService {
 	ResponseDTO playArtWork(WxPlayRecordVo wxPlayRecordVo);
 	
 	ResponseDTO savaPlayRecord(WxPlayRecordVo wxPlayRecordVo);
+
+	ResponseDTO playArtWorkByChildTree(WxPlayRecordVo wxPlayRecordVo);
 }
