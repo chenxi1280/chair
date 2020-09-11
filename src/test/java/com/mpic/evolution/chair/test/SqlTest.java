@@ -17,10 +17,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.mpic.evolution.chair.dao.EcmArtworkDao;
 import com.mpic.evolution.chair.dao.EcmArtworkNodesDao;
 import com.mpic.evolution.chair.dao.EcmInnerMessageDao;
+import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmInnerMessage;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
+import com.mpic.evolution.chair.util.TreeUtil;
 
 import net.minidev.json.JSONObject;
 
@@ -89,6 +91,17 @@ public class SqlTest {
 			EcmArtworkNodesVo ecmArtworkNodesVo = collect.get(0);
 			System.out.println(ecmArtworkNodesVo.getPkDetailId());
 		}
+	}
+	
+	/**
+	 * java8 查出作品树
+	 */
+	@Test
+	public void selectArtWorkTreeTest() {
+		List<EcmArtworkNodesVo> list = ecmArtworkNodesDao.selectByArtWorkId(113);
+        List<EcmArtworkNodesVo> collect = list.stream().filter(ecmArtworkNodesVo -> !"Y".equals(ecmArtworkNodesVo.getIsDeleted())).collect(Collectors.toList());
+        EcmArtworkNodesVo ecmArtworkNodesVo = TreeUtil.buildTreeByDetailId(collect, 888).get(0);
+        System.out.println(ecmArtworkNodesVo);
 	}
 
 }

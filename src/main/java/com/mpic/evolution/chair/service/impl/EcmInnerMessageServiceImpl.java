@@ -98,7 +98,7 @@ public class EcmInnerMessageServiceImpl implements EcmInnerMessageService{
 
 
 		if (messages == null || messages.isEmpty()) {
-			return ResponseDTO.fail("获取message失败");
+			return ResponseDTO.ok("无信息");
 		}
 
 

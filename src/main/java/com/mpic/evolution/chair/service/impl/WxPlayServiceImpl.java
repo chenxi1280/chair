@@ -74,4 +74,20 @@ public class WxPlayServiceImpl implements WxPlayService {
         }
 		return ResponseDTO.ok("保存播放记录成功");
 	}
+	
+	/**
+	 * 	根据用户传回的detailId 获取作品的树形结构
+	 * @param WxPlayRecordVo
+	 * @return ResponseDTO
+	 */
+	@Override
+	public ResponseDTO playArtWorkByChildTree(WxPlayRecordVo wxPlayRecordVo) {
+		List<EcmArtworkNodesVo> list = ecmArtworkNodesDao.selectByArtWorkId(wxPlayRecordVo.getPkArtworkId());
+        if (list.isEmpty()) {
+            return ResponseDTO.fail("查询id无子节点");
+        }
+        List<EcmArtworkNodesVo> collect = list.stream().filter(ecmArtworkNodesVo -> !"Y".equals(ecmArtworkNodesVo.getIsDeleted())).collect(Collectors.toList());
+        Integer detailId = wxPlayRecordVo.getDetailId();
+        return ResponseDTO.ok("success", TreeUtil.buildTreeByDetailId(collect, detailId).get(0));
+	}
 }
