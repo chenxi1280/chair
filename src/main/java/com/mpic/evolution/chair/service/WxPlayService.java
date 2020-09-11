@@ -1,7 +1,7 @@
 package com.mpic.evolution.chair.service;
 
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
-import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
+import com.mpic.evolution.chair.pojo.vo.WxPlayRecordVo;
 
 /** 
 * @author 作者 SJ: 
@@ -16,6 +16,7 @@ public interface WxPlayService {
      *      	 保存成功: status 200  msg "success” data "数据"
      *       	保存失败: status 500  msg "error“
      */
-	ResponseDTO playArtWork(EcmArtworkVo ecmArtworkVo);
+	ResponseDTO playArtWork(WxPlayRecordVo wxPlayRecordVo);
 	
+	ResponseDTO savaPlayRecord(WxPlayRecordVo wxPlayRecordVo);
 }

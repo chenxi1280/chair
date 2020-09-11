@@ -15,7 +15,7 @@ import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHistory;
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHot;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
-import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
+import com.mpic.evolution.chair.pojo.vo.WxPlayRecordVo;
 import com.mpic.evolution.chair.service.WxPlayService;
 import com.mpic.evolution.chair.util.TreeUtil;
 
@@ -35,29 +35,43 @@ public class WxPlayServiceImpl implements WxPlayService {
 	
     @Resource
     EcmArtworkBroadcastHotDao ecmArtworkBroadcastHotDao;
-    
+
+	/**
+	 * 	根据artworkId 来查询作品树
+	 * @param WxPlayRecordVo
+	 * @return ResponseDTO
+	 */
 	@Override
-    public ResponseDTO playArtWork(EcmArtworkVo ecmArtworkVo) {
-        List<EcmArtworkNodesVo> list = ecmArtworkNodesDao.selectByArtWorkId(ecmArtworkVo.getPkArtworkId());
+    public ResponseDTO playArtWork(WxPlayRecordVo wxPlayRecordVo) {
+        List<EcmArtworkNodesVo> list = ecmArtworkNodesDao.selectByArtWorkId(wxPlayRecordVo.getPkArtworkId());
         if (list.isEmpty()) {
             return ResponseDTO.fail("查询id无子节点");
         }
         List<EcmArtworkNodesVo> collect = list.stream().filter(ecmArtworkNodesVo -> !"Y".equals(ecmArtworkNodesVo.getIsDeleted())).collect(Collectors.toList());
-        //筛选出根节点的pk_detailId
-        //需要添加 播放 历史表 数据
-        EcmArtworkBroadcastHistory ecmArtworkBroadcastHistory = new EcmArtworkBroadcastHistory();
-        ecmArtworkBroadcastHistory.setFkArtworkId(ecmArtworkVo.getPkArtworkId());
-        ecmArtworkBroadcastHistory.setStartTime(new Date());
-
-        EcmArtworkBroadcastHot ecmArtworkBroadcastHot = new EcmArtworkBroadcastHot();
-        ecmArtworkBroadcastHot.setFkArkworkId(ecmArtworkVo.getPkArtworkId());
-        try {
-            ecmArtworkBroadcastHotDao.playArtWorkByArtworkId(ecmArtworkVo.getPkArtworkId());
-            ecmArtworkBroadcastHistoryDao.insertSelective(ecmArtworkBroadcastHistory);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         return ResponseDTO.ok("success", TreeUtil.buildTree(collect).get(0));
     }
 	
+	/**
+	 * 	每播放一次视频都要保存一次记录
+	 * @param WxPlayRecordVo
+	 * @return ResponseDTO
+	 */
+	public ResponseDTO savaPlayRecord(WxPlayRecordVo wxPlayRecordVo) {
+        EcmArtworkBroadcastHistory ecmArtworkBroadcastHistory = new EcmArtworkBroadcastHistory();
+        ecmArtworkBroadcastHistory.setFkArtworkId(wxPlayRecordVo.getPkArtworkId());
+        ecmArtworkBroadcastHistory.setStartTime(new Date());
+        ecmArtworkBroadcastHistory.setFkUserId(wxPlayRecordVo.getUserId());
+        ecmArtworkBroadcastHistory.setFkArtworkDetailId(wxPlayRecordVo.getDetailId());
+        
+        EcmArtworkBroadcastHot ecmArtworkBroadcastHot = new EcmArtworkBroadcastHot();
+        ecmArtworkBroadcastHot.setFkArkworkId(wxPlayRecordVo.getPkArtworkId());
+        try {
+            ecmArtworkBroadcastHotDao.playArtWorkByArtworkId(wxPlayRecordVo.getPkArtworkId());
+            ecmArtworkBroadcastHistoryDao.insertSelective(ecmArtworkBroadcastHistory);
+        } catch (Exception e) {
+        	e.printStackTrace();
+        	return ResponseDTO.fail("保存播放记录失败");
+        }
+		return ResponseDTO.ok("保存播放记录成功");
+	}
 }
