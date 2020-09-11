@@ -9,6 +9,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.mpic.evolution.chair.dao.EcmUserFlowDao;
+import com.mpic.evolution.chair.pojo.entity.EcmUserFlow;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -45,8 +47,7 @@ public class ProcessMediaByProcedure {
     ProcessMediaByProcedureDao processMediaByProcedureDao;
 
     @Resource
-    private
-    RedisUtil redisUtil;
+    private RedisUtil redisUtil;
 
     /**
       * 方法名:getUnHandeledVideo
@@ -112,4 +113,8 @@ public class ProcessMediaByProcedure {
             System.out.println(e.toString());
         }
     }
+
+
+
+
 }

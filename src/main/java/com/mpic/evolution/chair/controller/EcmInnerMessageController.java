@@ -11,6 +11,7 @@ import com.mpic.evolution.chair.util.JWTUtil;
 import com.mpic.evolution.chair.util.StringUtils;
 import com.qcloud.vod.common.StringUtil;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -50,8 +51,13 @@ public class EcmInnerMessageController {
 		if (StringUtil.isEmpty(ecmInnerMessageQurey.getToken())){
 			return ResponseDTO.fail("非法访问");
 		}
+		if (CollectionUtils.isEmpty(ecmInnerMessageQurey.getMessageIds()) ){
+			return ResponseDTO.ok("无新消息可操作！");
+		}
 		String userId = JWTUtil.getUserId(ecmInnerMessageQurey.getToken());
 		ecmInnerMessageQurey.setPkUserId(Integer.valueOf(userId));
+
+
 		return ecmInnerMessageService.batchDelete(ecmInnerMessageQurey);
     }
     
