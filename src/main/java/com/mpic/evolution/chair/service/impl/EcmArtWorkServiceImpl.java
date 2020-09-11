@@ -128,7 +128,9 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             return ResponseDTO.ok("成功", ecmArtworkNodes);
         }
         //默认图片地址
-        ecmArtworkNodes.setItemsBakText("https://sike-1259692143.cos.ap-chongqing.myqcloud.com/baseImg/1599646010668nodeImgUrl.png");
+        if( !ecmArtworkNodes.getALevel().equals(1)) {
+            ecmArtworkNodes.setItemsBakText("https://sike-1259692143.cos.ap-chongqing.myqcloud.com/baseImg/1599646010668nodeImgUrl.png");
+        }
         if (1 == ecmArtworkNodesDao.insert(ecmArtworkNodes)) {
             return ResponseDTO.ok("success", ecmArtworkNodes);
         }
