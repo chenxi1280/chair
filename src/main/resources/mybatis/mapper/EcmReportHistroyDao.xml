@@ -2,32 +2,43 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mpic.evolution.chair.dao.EcmReportHistroyDao">
   <resultMap id="BaseResultMap" type="com.mpic.evolution.chair.pojo.entity.EcmReportHistroy">
-    <id column="reportId" jdbcType="INTEGER" property="reportid" />
+    <id column="report_id" jdbcType="INTEGER" property="reportId" />
     <result column="fk_artwork_Id" jdbcType="INTEGER" property="fkArtworkId" />
     <result column="fk_userId" jdbcType="INTEGER" property="fkUserid" />
-    <result column="comtemt" jdbcType="VARCHAR" property="comtemt" />
-    <result column="datetime" jdbcType="TIMESTAMP" property="datetime" />
+    <result column="fk_artWork_node_id" jdbcType="INTEGER" property="fkArtworkNodeId" />
+    <result column="fk_ch_userId" jdbcType="INTEGER" property="fkChUserid" />
+    <result column="re_state" jdbcType="SMALLINT" property="reState" />
+    <result column="report_statue" jdbcType="SMALLINT" property="reportStatue" />
+    <result column="img_url" jdbcType="VARCHAR" property="imgUrl" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="updata_time" jdbcType="TIMESTAMP" property="updataTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    reportId, fk_artwork_Id, fk_userId, comtemt, `datetime`
+    report_id, fk_artwork_Id, fk_userId, fk_artWork_node_id, fk_ch_userId, re_state, 
+    report_statue, img_url, content, createtime, updata_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from ecm_report_histroy
-    where reportId = #{reportid,jdbcType=INTEGER}
+    where report_id = #{reportId,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from ecm_report_histroy
-    where reportId = #{reportid,jdbcType=INTEGER}
+    where report_id = #{reportId,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" keyColumn="reportId" keyProperty="reportid" parameterType="com.mpic.evolution.chair.pojo.entity.EcmReportHistroy" useGeneratedKeys="true">
-    insert into ecm_report_histroy (fk_artwork_Id, fk_userId, comtemt, 
-      `datetime`)
-    values (#{fkArtworkId,jdbcType=INTEGER}, #{fkUserid,jdbcType=INTEGER}, #{comtemt,jdbcType=VARCHAR}, 
-      #{datetime,jdbcType=TIMESTAMP})
+  <insert id="insert" keyColumn="report_id" keyProperty="reportId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmReportHistroy" useGeneratedKeys="true">
+    insert into ecm_report_histroy (fk_artwork_Id, fk_userId, fk_artWork_node_id, 
+      fk_ch_userId, re_state, report_statue, 
+      img_url, content, createtime, 
+      updata_time)
+    values (#{fkArtworkId,jdbcType=INTEGER}, #{fkUserid,jdbcType=INTEGER}, #{fkArtworkNodeId,jdbcType=INTEGER}, 
+      #{fkChUserid,jdbcType=INTEGER}, #{reState,jdbcType=SMALLINT}, #{reportStatue,jdbcType=SMALLINT}, 
+      #{imgUrl,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{updataTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" keyColumn="reportId" keyProperty="reportid" parameterType="com.mpic.evolution.chair.pojo.entity.EcmReportHistroy" useGeneratedKeys="true">
+  <insert id="insertSelective" keyColumn="report_id" keyProperty="reportId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmReportHistroy" useGeneratedKeys="true">
     insert into ecm_report_histroy
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="fkArtworkId != null">
@@ -36,11 +47,29 @@
       <if test="fkUserid != null">
         fk_userId,
       </if>
-      <if test="comtemt != null">
-        comtemt,
+      <if test="fkArtworkNodeId != null">
+        fk_artWork_node_id,
       </if>
-      <if test="datetime != null">
-        `datetime`,
+      <if test="fkChUserid != null">
+        fk_ch_userId,
+      </if>
+      <if test="reState != null">
+        re_state,
+      </if>
+      <if test="reportStatue != null">
+        report_statue,
+      </if>
+      <if test="imgUrl != null">
+        img_url,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="createtime != null">
+        createtime,
+      </if>
+      <if test="updataTime != null">
+        updata_time,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -50,11 +79,29 @@
       <if test="fkUserid != null">
         #{fkUserid,jdbcType=INTEGER},
       </if>
-      <if test="comtemt != null">
-        #{comtemt,jdbcType=VARCHAR},
+      <if test="fkArtworkNodeId != null">
+        #{fkArtworkNodeId,jdbcType=INTEGER},
       </if>
-      <if test="datetime != null">
-        #{datetime,jdbcType=TIMESTAMP},
+      <if test="fkChUserid != null">
+        #{fkChUserid,jdbcType=INTEGER},
+      </if>
+      <if test="reState != null">
+        #{reState,jdbcType=SMALLINT},
+      </if>
+      <if test="reportStatue != null">
+        #{reportStatue,jdbcType=SMALLINT},
+      </if>
+      <if test="imgUrl != null">
+        #{imgUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updataTime != null">
+        #{updataTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -67,21 +114,45 @@
       <if test="fkUserid != null">
         fk_userId = #{fkUserid,jdbcType=INTEGER},
       </if>
-      <if test="comtemt != null">
-        comtemt = #{comtemt,jdbcType=VARCHAR},
+      <if test="fkArtworkNodeId != null">
+        fk_artWork_node_id = #{fkArtworkNodeId,jdbcType=INTEGER},
       </if>
-      <if test="datetime != null">
-        `datetime` = #{datetime,jdbcType=TIMESTAMP},
+      <if test="fkChUserid != null">
+        fk_ch_userId = #{fkChUserid,jdbcType=INTEGER},
+      </if>
+      <if test="reState != null">
+        re_state = #{reState,jdbcType=SMALLINT},
+      </if>
+      <if test="reportStatue != null">
+        report_statue = #{reportStatue,jdbcType=SMALLINT},
+      </if>
+      <if test="imgUrl != null">
+        img_url = #{imgUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null">
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updataTime != null">
+        updata_time = #{updataTime,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where reportId = #{reportid,jdbcType=INTEGER}
+    where report_id = #{reportId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmReportHistroy">
     update ecm_report_histroy
     set fk_artwork_Id = #{fkArtworkId,jdbcType=INTEGER},
       fk_userId = #{fkUserid,jdbcType=INTEGER},
-      comtemt = #{comtemt,jdbcType=VARCHAR},
-      `datetime` = #{datetime,jdbcType=TIMESTAMP}
-    where reportId = #{reportid,jdbcType=INTEGER}
+      fk_artWork_node_id = #{fkArtworkNodeId,jdbcType=INTEGER},
+      fk_ch_userId = #{fkChUserid,jdbcType=INTEGER},
+      re_state = #{reState,jdbcType=SMALLINT},
+      report_statue = #{reportStatue,jdbcType=SMALLINT},
+      img_url = #{imgUrl,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      updata_time = #{updataTime,jdbcType=TIMESTAMP}
+    where report_id = #{reportId,jdbcType=INTEGER}
   </update>
 </mapper>

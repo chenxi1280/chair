@@ -3,13 +3,13 @@ package com.mpic.evolution.chair.dao;
 import com.mpic.evolution.chair.pojo.entity.EcmReportHistroy;
 
 public interface EcmReportHistroyDao {
-    int deleteByPrimaryKey(Integer reportid);
+    int deleteByPrimaryKey(Integer reportId);
 
     int insert(EcmReportHistroy record);
 
     int insertSelective(EcmReportHistroy record);
 
-    EcmReportHistroy selectByPrimaryKey(Integer reportid);
+    EcmReportHistroy selectByPrimaryKey(Integer reportId);
 
     int updateByPrimaryKeySelective(EcmReportHistroy record);
 
