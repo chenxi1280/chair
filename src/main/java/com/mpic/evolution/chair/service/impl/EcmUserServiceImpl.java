@@ -79,6 +79,7 @@ public class EcmUserServiceImpl implements EcmUserService {
 			userFlow.setUpdateTime( new Date());
 			userFlow.setSurplusFlow(500 * 1024);
 			userFlow.setTotalFlow(500 * 1024);
+			userFlow.setCheckFlow(500 * 1024);
 			ecmUserFlowDao.insert(userFlow);
 			ecmUserFlow = userFlow;
 		}

@@ -57,7 +57,10 @@ public class TreeUtil {
                 node.setNodesVos(sub.get(node.getPkDetailId()));
         }); 
         //返回 parentid=detailId的 子树
-        return nodes.stream().filter(node -> node.getParentId().equals(pkDetailId)).collect(Collectors.toList());
+        if (pkDetailId == null){
+            return nodes.stream().filter(node -> node.getParentId().equals(0)).collect(Collectors.toList());
+        }
+        return nodes.stream().filter(node -> node.getPkDetailId().equals(pkDetailId)).collect(Collectors.toList());
     }
 
 }

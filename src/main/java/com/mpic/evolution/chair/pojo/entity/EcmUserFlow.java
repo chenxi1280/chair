@@ -36,5 +36,10 @@ public class EcmUserFlow implements Serializable {
      */
     private Date updateTime;
 
+    /**
+     * 上一次的审核流量
+     */
+    private Integer checkFlow;
+
     private static final long serialVersionUID = 1L;
 }
