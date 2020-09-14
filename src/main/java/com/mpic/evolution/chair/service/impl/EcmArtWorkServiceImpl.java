@@ -91,8 +91,9 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                 }
             }
         }
-        List<EcmArtworkNodesVo> collect = list.stream().filter(ecmArtworkNodesVo -> !"Y".equals(ecmArtworkNodesVo.getIsDeleted())).collect(Collectors.toList());
 
+        List<EcmArtworkNodesVo> collect = list.stream().filter(ecmArtworkNodesVo -> !"Y".equals(ecmArtworkNodesVo.getIsDeleted())).collect(Collectors.toList());
+        collect.get(0).setArtWorkTips(ecmArtwork.getFourLetterTips());
         if (list.isEmpty()) {
             return ResponseDTO.fail("查询id无子节点");
         }

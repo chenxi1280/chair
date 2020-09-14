@@ -36,4 +36,7 @@ public class EcmArtworkNodesVo extends EcmArtworkNodes  {
     private EcmArtworkNodes linkNode;
 
     private List<EcmArtworkNodesVo> brotherNode;
+
+    private String artWorkTips;
+
 }
