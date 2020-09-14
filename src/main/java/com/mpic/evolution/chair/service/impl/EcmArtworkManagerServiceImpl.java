@@ -91,11 +91,11 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			ecmArtwork.setArtworkStatus(ecmArtworkVo.getArtworkStatus());
 			String artworkName = ecmArtworkVo.getArtworkName();
 			if (StringUtils.isEmpty(artworkName)) {
-				ResponseDTO.fail("作品名称不能为空");
+				return ResponseDTO.fail("作品名称不能为空");
 			}
 			String result = AIVerifyUtil.convertContent(artworkName);
 			if (!StringUtils.isEmpty(result)) {
-				ResponseDTO.fail("作品名称违规含有违禁词",result,null,510);
+				return ResponseDTO.fail("作品名称违规含有违禁词",result,null,510);
 			}
 			ecmArtwork.setArtworkName(artworkName);
 			ecmArtwork.setLogoPathStatus((short)0);
