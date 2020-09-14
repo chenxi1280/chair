@@ -62,4 +62,17 @@ public class WxPlayController {
 	public ResponseDTO playArtWorkByChildTree(@RequestBody WxPlayRecordVo wxPlayRecordVo){
 		return wxPlayService.playArtWorkByChildTree(wxPlayRecordVo);
 	}
+	
+	/**
+	 * @param: wxPlayRecordVo
+	 * @return: ResponseDTO
+	 * @author: SJ
+	 * @Date: 2020/9/9
+	 * 	描述 : 小程序端 根据作品id 查询作品树再根据pkDetailId 筛选出子树
+	 */
+	@RequestMapping("/savaReportInfo")
+	@ResponseBody
+	public ResponseDTO savaReportInfo(@RequestBody WxPlayRecordVo wxPlayRecordVo){
+		return wxPlayService.playArtWorkByChildTree(wxPlayRecordVo);
+	}
 }
