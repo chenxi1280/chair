@@ -128,7 +128,15 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             return ResponseDTO.ok("成功", ecmArtworkNodes);
         }
         //默认图片地址
-        ecmArtworkNodes.setItemsBakText("https://sike-1259692143.cos.ap-chongqing.myqcloud.com/baseImg/1599646010668nodeImgUrl.png");
+        if( !ecmArtworkNodes.getALevel().equals(1)) {
+            ecmArtworkNodes.setItemsBakText("https://sike-1259692143.cos.ap-chongqing.myqcloud.com/baseImg/1599646010668nodeImgUrl.png");
+        }
+        if (StringUtils.isEmpty(ecmArtworkNodes.getCssVo())){
+            ecmArtworkNodes.setCssVo("未命名标题就是标\n准的15字");
+        }
+        if (StringUtils.isEmpty(ecmArtworkNodes.getVideoText())){
+            ecmArtworkNodes.setVideoText("未命名选项");
+        }
         if (1 == ecmArtworkNodesDao.insert(ecmArtworkNodes)) {
             return ResponseDTO.ok("success", ecmArtworkNodes);
         }
