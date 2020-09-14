@@ -2,6 +2,7 @@ package com.mpic.evolution.chair.service;
 
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.vo.WxPlayRecordVo;
+import com.mpic.evolution.chair.pojo.vo.WxReportHistoryVo;
 
 /** 
 * @author 作者 SJ: 
@@ -21,4 +22,6 @@ public interface WxPlayService {
 	ResponseDTO savaPlayRecord(WxPlayRecordVo wxPlayRecordVo);
 
 	ResponseDTO playArtWorkByChildTree(WxPlayRecordVo wxPlayRecordVo);
+
+	ResponseDTO savaReportInfo(WxReportHistoryVo wxReportHistoryVo);
 }

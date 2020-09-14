@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.vo.WxPlayRecordVo;
+import com.mpic.evolution.chair.pojo.vo.WxReportHistoryVo;
 import com.mpic.evolution.chair.service.WxPlayService;
 
 /** 
@@ -64,15 +65,15 @@ public class WxPlayController {
 	}
 	
 	/**
-	 * @param: wxPlayRecordVo
+	 * @param: WxReportHistoryVo
 	 * @return: ResponseDTO
 	 * @author: SJ
 	 * @Date: 2020/9/9
-	 * 	描述 : 小程序端 根据作品id 查询作品树再根据pkDetailId 筛选出子树
+	 * 	描述 : 保存用户投诉内容
 	 */
 	@RequestMapping("/savaReportInfo")
 	@ResponseBody
-	public ResponseDTO savaReportInfo(@RequestBody WxPlayRecordVo wxPlayRecordVo){
-		return wxPlayService.playArtWorkByChildTree(wxPlayRecordVo);
+	public ResponseDTO savaReportInfo(@RequestBody WxReportHistoryVo wxReportHistoryVo){
+		return wxPlayService.savaReportInfo(wxReportHistoryVo);
 	}
 }
