@@ -11,11 +11,14 @@ import org.springframework.stereotype.Service;
 import com.mpic.evolution.chair.dao.EcmArtworkBroadcastHistoryDao;
 import com.mpic.evolution.chair.dao.EcmArtworkBroadcastHotDao;
 import com.mpic.evolution.chair.dao.EcmArtworkNodesDao;
+import com.mpic.evolution.chair.dao.EcmReportHistroyDao;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHistory;
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHot;
+import com.mpic.evolution.chair.pojo.entity.EcmReportHistroy;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
 import com.mpic.evolution.chair.pojo.vo.WxPlayRecordVo;
+import com.mpic.evolution.chair.pojo.vo.WxReportHistoryVo;
 import com.mpic.evolution.chair.service.WxPlayService;
 import com.mpic.evolution.chair.util.TreeUtil;
 
@@ -35,6 +38,9 @@ public class WxPlayServiceImpl implements WxPlayService {
 	
     @Resource
     EcmArtworkBroadcastHotDao ecmArtworkBroadcastHotDao;
+    
+    @Resource
+    EcmReportHistroyDao ecmReportHistroyDao;
 
 	/**
 	 * 	根据artworkId 来查询作品树
@@ -96,5 +102,30 @@ public class WxPlayServiceImpl implements WxPlayService {
 
         }
         return ResponseDTO.fail("无节点数据");
+	}
+	
+
+	/**
+	 * 	保存用户投诉内容
+	 * @param WxReportHistoryVo
+	 * @return ResponseDTO
+	 */
+	@Override
+	public ResponseDTO savaReportInfo(WxReportHistoryVo wxReportHistoryVo) {
+		EcmReportHistroy reportHistroy = new EcmReportHistroy();
+		reportHistroy.setContent(wxReportHistoryVo.getContent());
+		reportHistroy.setImgUrl(wxReportHistoryVo.getImgUrl());
+		reportHistroy.setReportStatue(wxReportHistoryVo.getReportStatue());
+		reportHistroy.setFkArtworkId(wxReportHistoryVo.getFkArtworkId());
+		reportHistroy.setFkArtworkNodeId(wxReportHistoryVo.getFkArtworkNodeId());
+		reportHistroy.setFkUserid(wxReportHistoryVo.getFkUserid());
+		reportHistroy.setCreatetime(new Date());
+		reportHistroy.setReState((short)1);
+		int row = ecmReportHistroyDao.insertSelective(reportHistroy); 
+		if (row<1) {
+			return ResponseDTO.fail("保存举报内容失败");
+		}else {
+			return ResponseDTO.ok("保存举报内容成功");
+		}
 	}
 }
