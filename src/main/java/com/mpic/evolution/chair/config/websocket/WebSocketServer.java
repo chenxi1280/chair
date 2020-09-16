@@ -58,7 +58,7 @@ public class WebSocketServer {
             //在线数加1
         }
 
-        log.info("用户连接:"+userId+",当前在线人数为:" + getOnlineCount());
+        log.info("用户:"+userId+"连接,当前在线人数为:" + getOnlineCount());
 
         try {
             sendMessage("连接成功");
