@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @SpringBootApplication
 @EnableCaching
-@EnableScheduling
+//@EnableScheduling
 public class ChairApplication  extends SpringBootServletInitializer {
     Logger logger = LoggerFactory.getLogger(ChairApplication.class);
 

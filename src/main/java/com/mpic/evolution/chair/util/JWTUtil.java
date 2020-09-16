@@ -12,6 +12,9 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.mpic.evolution.chair.common.constant.SecretKeyConstants;
 
+/**
+ * @author Administrator
+ */
 public class JWTUtil {
 
 	/** token 过期时间: 10天 */

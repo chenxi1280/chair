@@ -3,6 +3,9 @@ package com.mpic.evolution.chair.util;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.util.ByteSource;
 
+/**
+ * @author Administrator
+ */
 public class MD5Utils {
 	//干扰数据 盐 防破解
     private static final String SALT = "mar%#$@";

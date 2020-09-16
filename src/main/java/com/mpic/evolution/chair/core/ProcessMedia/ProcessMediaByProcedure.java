@@ -38,7 +38,7 @@ import lombok.extern.slf4j.Slf4j;
  * 类描述：
  */
 @Slf4j
-@Component
+//@Component
 //@EnableScheduling
 public class ProcessMediaByProcedure {
 
