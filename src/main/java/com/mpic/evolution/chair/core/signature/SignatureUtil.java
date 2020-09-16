@@ -18,7 +18,9 @@ public class SignatureUtil {
         sign.setSecretKey(key);
         sign.setCurrentTime(System.currentTimeMillis() / 1000);
         sign.setRandom(new Random().nextInt(Integer.MAX_VALUE));
-        sign.setSignValidDuration(3600 * 24 * 2);
+        sign.setSignValidDuration(60);
+        sign.setProcedure("change540mp4");
+        sign.setTaskNotifyMode("Finish");
 
         try {
             String signature = sign.getUploadSignature();
