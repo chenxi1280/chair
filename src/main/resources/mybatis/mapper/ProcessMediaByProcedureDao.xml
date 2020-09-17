@@ -24,8 +24,7 @@
         vp.fk_video_id,
         vp.finished_flag
         FROM
-        tc_video_pipeline vp,
-        ecm_artwork_nodes an
+        tc_video_pipeline vp
         WHERE vp.finished_flag = 0
     </select>
     <select id="getUnHandledVideoByVideoCode" resultMap="mediaProcedure" parameterType="com.mpic.evolution.chair.pojo.vo.MediaByProcedureVo" >
