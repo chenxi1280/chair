@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mpic.evolution.chair.dao.EcmInviteCodeDao">
+  <resultMap id="BaseResultMap" type="com.mpic.evolution.chair.pojo.entity.EcmInviteCode">
+    <id column="pk_invite_id" jdbcType="INTEGER" property="pkInviteId" />
+    <result column="fk_user_id" jdbcType="INTEGER" property="fkUserId" />
+    <result column="invite_code" jdbcType="VARCHAR" property="inviteCode" />
+    <result column="invite_code_status" jdbcType="SMALLINT" property="inviteCodeStatus" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="bind_date" jdbcType="TIMESTAMP" property="bindDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pk_invite_id, fk_user_id, invite_code, invite_code_status, create_date, bind_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from ecm_invite_code
+    where pk_invite_id = #{pkInviteId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ecm_invite_code
+    where pk_invite_id = #{pkInviteId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="pk_invite_id" keyProperty="pkInviteId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmInviteCode" useGeneratedKeys="true">
+    insert into ecm_invite_code (fk_user_id, invite_code, invite_code_status, 
+      create_date, bind_date)
+    values (#{fkUserId,jdbcType=INTEGER}, #{inviteCode,jdbcType=VARCHAR}, #{inviteCodeStatus,jdbcType=SMALLINT}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{bindDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" keyColumn="pk_invite_id" keyProperty="pkInviteId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmInviteCode" useGeneratedKeys="true">
+    insert into ecm_invite_code
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="fkUserId != null">
+        fk_user_id,
+      </if>
+      <if test="inviteCode != null">
+        invite_code,
+      </if>
+      <if test="inviteCodeStatus != null">
+        invite_code_status,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="bindDate != null">
+        bind_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="fkUserId != null">
+        #{fkUserId,jdbcType=INTEGER},
+      </if>
+      <if test="inviteCode != null">
+        #{inviteCode,jdbcType=VARCHAR},
+      </if>
+      <if test="inviteCodeStatus != null">
+        #{inviteCodeStatus,jdbcType=SMALLINT},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bindDate != null">
+        #{bindDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmInviteCode">
+    update ecm_invite_code
+    <set>
+      <if test="fkUserId != null">
+        fk_user_id = #{fkUserId,jdbcType=INTEGER},
+      </if>
+      <if test="inviteCode != null">
+        invite_code = #{inviteCode,jdbcType=VARCHAR},
+      </if>
+      <if test="inviteCodeStatus != null">
+        invite_code_status = #{inviteCodeStatus,jdbcType=SMALLINT},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bindDate != null">
+        bind_date = #{bindDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where pk_invite_id = #{pkInviteId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmInviteCode">
+    update ecm_invite_code
+    set fk_user_id = #{fkUserId,jdbcType=INTEGER},
+      invite_code = #{inviteCode,jdbcType=VARCHAR},
+      invite_code_status = #{inviteCodeStatus,jdbcType=SMALLINT},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      bind_date = #{bindDate,jdbcType=TIMESTAMP}
+    where pk_invite_id = #{pkInviteId,jdbcType=INTEGER}
+  </update>
+</mapper>
