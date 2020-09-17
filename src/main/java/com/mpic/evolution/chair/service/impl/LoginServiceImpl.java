@@ -85,7 +85,7 @@ public class LoginServiceImpl implements LoginService{
 		String[] templateParams = { code };
 		req.setTemplateParamSet(templateParams);
 		SendSmsResponse res = client.SendSms(req);
-		System.out.println(SendSmsResponse.toJsonString(res));
+//		System.out.println(SendSmsResponse.toJsonString(res));
 		SendStatus sendStatus = res.getSendStatusSet()[0];
 		return sendStatus;
 	}	
@@ -135,8 +135,8 @@ public class LoginServiceImpl implements LoginService{
 	            }
 	            String accessToken = accessTokenMap.get("access_token");
 	            String openid = accessTokenMap.get("openid");
-	            System.out.println("accessToken:"+accessToken);
-	            System.out.println("openid:"+openid);
+//	            System.out.println("accessToken:"+accessToken);
+//	            System.out.println("openid:"+openid);
 	            // 查询出微信信息
 	            Map<String, String> wxUserMap = this.getPcWeiXinUserInfo(openid, accessToken); // 获得微信用户信息
 	            res = wxUserMap;

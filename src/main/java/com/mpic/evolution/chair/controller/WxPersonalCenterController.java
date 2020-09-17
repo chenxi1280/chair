@@ -126,7 +126,6 @@ public class WxPersonalCenterController {
 				return ResponseDTO.fail("获取发布二维码失败", result.get("errmsg"),null,(Integer)result.get("errcode"));
 			}else {
 				String str = "data:image/jpg;base64," + Base64Str;
-				System.out.println(str);
 				return ResponseDTO.ok("获取发布二维码成功",str);
 			}
 		} catch (Exception e) {

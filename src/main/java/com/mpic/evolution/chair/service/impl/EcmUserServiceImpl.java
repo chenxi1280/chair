@@ -88,7 +88,12 @@ public class EcmUserServiceImpl implements EcmUserService {
 		user.setCardCode(null);
 		user.setRoles(null);
 		user.setUserLogoStatus(null);
-		user.setMobile(null);
+		try {
+			user.setMobile(EncryptUtil.aesDecrypt(  user.getMobile(), SecretKeyConstants.secretKey));
+		} catch (Exception e) {
+			user.setMobile(null);
+			e.printStackTrace();
+		}
 
 		user.setUserFlow(ecmUserFlow.getSurplusFlow());
 		user.setTotalFlow(ecmUserFlow.getTotalFlow());

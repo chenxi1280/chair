@@ -21,50 +21,54 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Date 2020/9/16 9:58
  */
 @ServerEndpoint("/imserver/{token}")
-@Component
 @Log4j
 public class WebSocketServer {
 
 //    static Log log= LogFactory.get(WebSocketServer.class);
-    /**静态变量，用来记录当前在线连接数。应该把它设计成线程安全的。*/
+    /**
+     * 静态变量，用来记录当前在线连接数。应该把它设计成线程安全的。
+     */
     private static int onlineCount = 0;
-    /**concurrent包的线程安全Set，用来存放每个客户端对应的MyWebSocket对象。*/
-    private static ConcurrentHashMap<String,WebSocketServer> webSocketMap = new ConcurrentHashMap<>();
-    /**与某个客户端的连接会话，需要通过它来给客户端发送数据*/
+    /**
+     * concurrent包的线程安全Set，用来存放每个客户端对应的MyWebSocket对象。
+     */
+    private static ConcurrentHashMap<String, WebSocketServer> webSocketMap = new ConcurrentHashMap<>();
+    /**
+     * 与某个客户端的连接会话，需要通过它来给客户端发送数据
+     */
     private Session session;
-    /**接收userId*/
-    private String userId="";
+    /**
+     * 接收userId
+     */
+    private String userId = "";
 
     /**
-     * 连接建立成功调用的方法*/
+     * 连接建立成功调用的方法
+     */
     @OnOpen
-    public void onOpen(Session session,@PathParam("token") String token) {
+    public void onOpen(Session session, @PathParam("token") String token) {
         this.session = session;
-        this.userId= token;
-
-        if (StringUtil.isEmpty(token)){
-            log.error("用户:"+userId+",网络异常!!!!!!");
+        this.userId = token;
+        if (StringUtil.isEmpty(token)) {
+            log.error("用户:" + userId + ",网络异常!!!!!!");
         }
         userId = JWTUtil.getUserId(token);
 
-        if(webSocketMap.containsKey(userId)){
+        if (webSocketMap.containsKey(userId)) {
             webSocketMap.remove(userId);
-            webSocketMap.put(userId,this);
+            webSocketMap.put(userId, this);
+
             //加入set中
-        }else{
-            webSocketMap.put(userId,this);
+        } else {
+            webSocketMap.put(userId, this);
             //加入set中
             addOnlineCount();
             //在线数加1
         }
 
-        log.info("用户:"+userId+"连接,当前在线人数为:" + getOnlineCount());
+        log.info("用户:" + userId + "连接,当前在线人数为:" + getOnlineCount());
 
-        try {
-            sendMessage("连接成功");
-        } catch (IOException e) {
-            log.error("用户:"+userId+",网络异常!!!!!!");
-        }
+        sendMessage("连接成功");
     }
 
     /**
@@ -72,71 +76,84 @@ public class WebSocketServer {
      */
     @OnClose
     public void onClose() {
-        if(webSocketMap.containsKey(userId)){
+        if (webSocketMap.containsKey(userId)) {
             webSocketMap.remove(userId);
             //从set中删除
             subOnlineCount();
         }
-        log.info("用户退出:"+userId+",当前在线人数为:" + getOnlineCount());
+        log.info("用户退出:" + userId + ",当前在线人数为:" + getOnlineCount());
     }
 
     /**
      * 收到客户端消息后调用的方法
      *
-     * @param message 客户端发送过来的消息*/
+     * @param message 客户端发送过来的消息
+     */
     @OnMessage
     public void onMessage(String message, Session session) {
-        log.info("用户消息:"+userId+",报文:"+message);
         //可以群发消息
         //消息保存到数据库、redis
-        if(StringUtils.isNotBlank(message)){
-            try {
+        try {
+            if (StringUtils.isNotBlank(message)) {
+                if (message.equals("ping")) {
+                    log.info("用户:" + userId + ",心跳");
+                }
+
+                log.info("用户消息:" + userId + ",报文:" + message);
                 //解析发送的报文
                 JSONObject jsonObject = JSON.parseObject(message);
                 //追加发送人(防止串改)
-                jsonObject.put("fromUserId",this.userId);
-                String toUserId=jsonObject.getString("toUserId");
+                jsonObject.put("fromUserId", this.userId);
+                String toUserId = jsonObject.getString("toUserId");
                 //传送给对应toUserId用户的websocket
-                if(StringUtils.isNotBlank(toUserId)&&webSocketMap.containsKey(toUserId)){
+                if (StringUtils.isNotBlank(toUserId) && webSocketMap.containsKey(toUserId)) {
                     webSocketMap.get(toUserId).sendMessage(jsonObject.toJSONString());
-                }else{
-                    log.error("请求的userId:"+toUserId+"不在该服务器上");
+                } else {
+                    log.error("请求的userId:" + toUserId + "不在该服务器上");
                     //否则不在这个服务器上，发送到mysql或者redis
                 }
-            }catch (Exception e){
-                e.printStackTrace();
+
             }
+        } catch (Exception e) {
+//            e.printStackTrace();
         }
     }
 
     /**
-     *
      * @param session
      * @param error
      */
     @OnError
     public void onError(Session session, Throwable error) {
-        log.error("用户错误:"+this.userId+",原因:"+error.getMessage());
+        log.error("用户错误:" + this.userId + ",原因:" + error.getMessage());
+        webSocketMap.remove(this.userId);
         error.printStackTrace();
     }
+
     /**
      * 实现服务器主动推送
      */
-    public void sendMessage(Object message) throws IOException {
+    public void sendMessage(Object message) {
         String s = JSON.toJSONString(message);
-        this.session.getBasicRemote().sendText(s);
+        try {
+            this.session.getBasicRemote().sendText(s);
+        } catch (IOException e) {
+            System.out.println("用户断开连接,错误");
+//            e.printStackTrace();
+        }
     }
 
 
     /**
      * 发送自定义消息
-     * */
-    public static void sendInfo(Object message,@PathParam("userId") String userId) throws IOException {
-        log.info("发送消息到:"+userId+"，报文:"+message);
-        if( StringUtils.isNotBlank(userId) && webSocketMap.containsKey(userId) ){
+     */
+    public static void sendInfo(Object message, @PathParam("userId") String userId) throws IOException {
+        log.info("发送消息到:" + userId + "，报文:" + message);
+        if (StringUtils.isNotBlank(userId) && webSocketMap.containsKey(userId)) {
             webSocketMap.get(userId).sendMessage(message);
-        }else{
-            log.error("用户"+userId+",不在线！");
+        } else {
+            webSocketMap.remove(userId);
+            log.error("用户" + userId + ",不在线！");
         }
     }
 
