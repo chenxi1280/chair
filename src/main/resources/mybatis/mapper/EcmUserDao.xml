@@ -18,11 +18,14 @@
         <result column="roles" jdbcType="VARCHAR" property="roles" />
         <result column="user_logo_url" jdbcType="VARCHAR" property="userLogoUrl" />
         <result column="user_logo_status" jdbcType="TINYINT" property="userLogoStatus" />
+        <result column="birthday" jdbcType="TIMESTAMP" property="birthday" />
+        <result column="gender" jdbcType="VARCHAR" property="gender" />
+        <result column="city" jdbcType="VARCHAR" property="city" />
     </resultMap>
     <sql id="Base_Column_List">
     pk_user_id, `password`, email_uuid, is_valid, username, mobile, email, create_time,
     update_time, `count`, last_login_time, card_code, last_check_mail, roles, user_logo_url,
-    user_logo_status
+    user_logo_status, birthday, gender, city
   </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -39,13 +42,15 @@
       username, mobile, email,
       create_time, update_time, `count`,
       last_login_time, card_code, last_check_mail,
-      roles, user_logo_url, user_logo_status
+      roles, user_logo_url, user_logo_status,
+      birthday, gender, city
       )
     values (#{password,jdbcType=VARCHAR}, #{emailUuid,jdbcType=VARCHAR}, #{isValid,jdbcType=VARCHAR},
       #{username,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{count,jdbcType=INTEGER},
       #{lastLoginTime,jdbcType=TIMESTAMP}, #{cardCode,jdbcType=VARCHAR}, #{lastCheckMail,jdbcType=TIMESTAMP},
-      #{roles,jdbcType=VARCHAR}, #{userLogoUrl,jdbcType=VARCHAR}, #{userLogoStatus,jdbcType=TINYINT}
+      #{roles,jdbcType=VARCHAR}, #{userLogoUrl,jdbcType=VARCHAR}, #{userLogoStatus,jdbcType=TINYINT},
+      #{birthday,jdbcType=TIMESTAMP}, #{gender,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}
       )
   </insert>
     <insert id="insertSelective" keyColumn="pk_user_id" keyProperty="pkUserId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUser" useGeneratedKeys="true">
@@ -96,6 +101,15 @@
             <if test="userLogoStatus != null">
                 user_logo_status,
             </if>
+            <if test="birthday != null">
+                birthday,
+            </if>
+            <if test="gender != null">
+                gender,
+            </if>
+            <if test="city != null">
+                city,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="password != null">
@@ -142,6 +156,15 @@
             </if>
             <if test="userLogoStatus != null">
                 #{userLogoStatus,jdbcType=TINYINT},
+            </if>
+            <if test="birthday != null">
+                #{birthday,jdbcType=TIMESTAMP},
+            </if>
+            <if test="gender != null">
+                #{gender,jdbcType=VARCHAR},
+            </if>
+            <if test="city != null">
+                #{city,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -193,6 +216,15 @@
             <if test="userLogoStatus != null">
                 user_logo_status = #{userLogoStatus,jdbcType=TINYINT},
             </if>
+            <if test="birthday != null">
+                birthday = #{birthday,jdbcType=TIMESTAMP},
+            </if>
+            <if test="gender != null">
+                gender = #{gender,jdbcType=VARCHAR},
+            </if>
+            <if test="city != null">
+                city = #{city,jdbcType=VARCHAR},
+            </if>
         </set>
         where pk_user_id = #{pkUserId,jdbcType=INTEGER}
     </update>
@@ -212,7 +244,10 @@
       last_check_mail = #{lastCheckMail,jdbcType=TIMESTAMP},
       roles = #{roles,jdbcType=VARCHAR},
       user_logo_url = #{userLogoUrl,jdbcType=VARCHAR},
-      user_logo_status = #{userLogoStatus,jdbcType=TINYINT}
+      user_logo_status = #{userLogoStatus,jdbcType=TINYINT},
+      birthday = #{birthday,jdbcType=TIMESTAMP},
+      gender = #{gender,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR}
     where pk_user_id = #{pkUserId,jdbcType=INTEGER}
   </update>
 

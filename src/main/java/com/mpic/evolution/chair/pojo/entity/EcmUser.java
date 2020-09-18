@@ -82,5 +82,20 @@ public class EcmUser implements Serializable {
      */
     private Byte userLogoStatus;
 
+    /**
+     * 用户生日
+     */
+    private Date birthday;
+
+    /**
+     * 性别
+     */
+    private String gender;
+
+    /**
+     * 用户所在城市
+     */
+    private String city;
+
     private static final long serialVersionUID = 1L;
 }
