@@ -23,6 +23,12 @@ public interface EcmUserDao {
 	
     EcmUser selectByRecord(EcmUser record);
     
+    /**
+     * @author SJ
+     * @param record
+     * @param ecmUserVo 更新条件
+     * @return
+     */
     int updateEcmUser(@Param("record") EcmUser record,@Param("recordVo") EcmUserVo ecmUserVo);
 
     List<EcmUserVo> selectUserByEcmArtworkList(@Param("ids") List<EcmArtworkVo> list);

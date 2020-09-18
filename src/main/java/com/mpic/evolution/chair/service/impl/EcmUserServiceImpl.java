@@ -39,7 +39,7 @@ public class EcmUserServiceImpl implements EcmUserService {
 
 	@Override
 	public boolean savaUser(EcmUser record) {
-		return ecmUserDao.insert(record) < 1 ? false : true;
+		return ecmUserDao.insertSelective(record) < 1 ? false : true;
 	}
 
 	@Override

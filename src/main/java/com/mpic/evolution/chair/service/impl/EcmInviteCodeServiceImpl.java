@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.mpic.evolution.chair.dao.EcmInviteCodeDao;
 import com.mpic.evolution.chair.pojo.entity.EcmInviteCode;
+import com.mpic.evolution.chair.pojo.vo.EcmInviteCodeVo;
 import com.mpic.evolution.chair.service.EcmInviteCodeService;
 
 /** 
@@ -19,14 +20,29 @@ public class EcmInviteCodeServiceImpl implements EcmInviteCodeService {
     EcmInviteCodeDao ecmInviteCodeDao;
 	
 	@Override
-	public boolean isInvited(EcmInviteCode ecmInviteCode) {
-		EcmInviteCode inviteCode = ecmInviteCodeDao.selectByEcmInviteCode(ecmInviteCode);
-		Integer pkInviteId = inviteCode.getPkInviteId();
-		if(pkInviteId != null) {
-			return true;
-		}else {
+	public boolean isInvited(EcmInviteCodeVo ecmInviteCodeVo) {
+		String inviteCode = ecmInviteCodeVo.getInviteCode();
+		EcmInviteCode ecmInviteCode = new EcmInviteCode();
+		ecmInviteCode.setInviteCode(inviteCode);
+		EcmInviteCode o = ecmInviteCodeDao.selectByEcmInviteCode(ecmInviteCode);
+		if(o == null || o.getPkInviteId() == null) {
 			return false;
+		}else {
+			return true;
 		}
+	}
+
+	@Override
+	public EcmInviteCode getEcmInvitedCode(String inviteCode) {
+		EcmInviteCode ecmInviteCode = new EcmInviteCode();
+		ecmInviteCode.setInviteCode(inviteCode);
+		EcmInviteCode o = ecmInviteCodeDao.selectByEcmInviteCode(ecmInviteCode);
+		return o;
+	}
+
+	@Override
+	public boolean savaEcmInvitedCode(EcmInviteCode ecmInviteCode) {
+		return ecmInviteCodeDao.insertSelective(ecmInviteCode) < 1 ? false : true;
 	}
 
 }
