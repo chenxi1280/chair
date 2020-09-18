@@ -32,4 +32,5 @@ public interface CosConstant {
 
     String TC_API = "vod.tencentcloudapi.com";
 
+    String CHANGE_PIPELINT = "change540mp4";
 }

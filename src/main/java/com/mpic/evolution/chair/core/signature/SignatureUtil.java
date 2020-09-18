@@ -2,6 +2,9 @@ package com.mpic.evolution.chair.core.signature;
 
 import java.util.Random;
 
+import static com.mpic.evolution.chair.common.constant.CosConstant.SECRET_ID;
+import static com.mpic.evolution.chair.common.constant.CosConstant.SECRET_KEY;
+
 /**
  *
  * 类名:  SignatureUtil
@@ -12,14 +15,14 @@ import java.util.Random;
 public class SignatureUtil {
 
 
-    public static String getUploadSignature(String id, String key ){
+    public static String getUploadSignature(){
         Signature sign = new Signature();
-        sign.setSecretId(id);
-        sign.setSecretKey(key);
+        sign.setSecretId(SECRET_ID);
+        sign.setSecretKey(SECRET_KEY);
         sign.setCurrentTime(System.currentTimeMillis() / 1000);
         sign.setRandom(new Random().nextInt(Integer.MAX_VALUE));
         sign.setSignValidDuration(60);
-        sign.setProcedure("change540mp4");
+        // sign.setProcedure("change540mp4"); 暂时不在上传之后立即开始任务流
         sign.setTaskNotifyMode("Finish");
 
         try {
@@ -33,13 +36,4 @@ public class SignatureUtil {
         return "";
     }
 
-    /**
-     * 通过子账户的id和key获取云点播签名，这个签名是有时效的，也是每个账户不同的，也是全平台公用的
-     * @return 签名
-     */
-    public static String getUploadSignature(){
-
-        return getUploadSignature("AKIDebOJ4yeOIiuc5HRmIXKqY3KK2YmtxDUT",
-                "EIBqMaWCnOjHdhPu4zfGXcXCfz0qQimY");
-    }
 }

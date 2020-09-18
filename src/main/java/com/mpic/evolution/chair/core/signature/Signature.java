@@ -6,6 +6,9 @@ import java.util.Base64;
 import java.util.Base64.Encoder;
 import java.util.Random;
 
+import static com.mpic.evolution.chair.common.constant.CosConstant.SECRET_ID;
+import static com.mpic.evolution.chair.common.constant.CosConstant.SECRET_KEY;
+
 /**
  *
  * 类名:  Signature
@@ -108,8 +111,8 @@ public class Signature {
    
     public  static void test() {
         Signature sign = new Signature();
-        sign.setSecretId("AKIDebOJ4yeOIiuc5HRmIXKqY3KK2YmtxDUT");
-        sign.setSecretKey("EIBqMaWCnOjHdhPu4zfGXcXCfz0qQimY");
+        sign.setSecretId(SECRET_ID);
+        sign.setSecretKey(SECRET_KEY);
         sign.setCurrentTime(System.currentTimeMillis() / 1000);
         sign.setRandom(new Random().nextInt(Integer.MAX_VALUE));
         sign.setSignValidDuration(60);
