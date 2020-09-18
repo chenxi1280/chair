@@ -3,6 +3,7 @@ package com.mpic.evolution.chair.controller;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,8 +29,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import com.mpic.evolution.chair.common.constant.SecretKeyConstants;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
+import com.mpic.evolution.chair.pojo.entity.EcmInviteCode;
 import com.mpic.evolution.chair.pojo.entity.EcmUser;
 import com.mpic.evolution.chair.pojo.vo.EcmUserVo;
+import com.mpic.evolution.chair.service.EcmInviteCodeService;
 import com.mpic.evolution.chair.service.EcmUserService;
 import com.mpic.evolution.chair.service.LoginService;
 import com.mpic.evolution.chair.util.AIVerifyUtil;
@@ -58,6 +61,9 @@ public class LoginController extends BaseController {
 
 	@Resource
 	EcmUserService ecmUserService;
+	
+	@Resource
+	EcmInviteCodeService ecmInviteCodeService;
 
 	@Resource
 	RedisUtil redisUtil;
@@ -420,6 +426,38 @@ public class LoginController extends BaseController {
 			if (!regionCode.equals(confirmCode)) {
 				return ResponseDTO.fail("请正确输入验证码", null, null, 501);
 			}
+		}
+		return ResponseDTO.ok();
+	}
+	
+	/**
+	 * 邀请码校验
+	 * 
+	 * @param ecmUserVo
+	 * @return
+	 */
+	@RequestMapping("/validateInviteCode")
+	@ResponseBody
+	public ResponseDTO validateInviteCode(@RequestBody EcmUserVo ecmUserVo) {
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime dateTime = LocalDateTime.of(2020, 10, 17, 0, 0);
+		if(now.isBefore(dateTime)) {
+			// 验证码验证
+			String regionCode = String.valueOf(redisUtil.lPop(ecmUserVo.getImageCodeKey()));
+			if (StringUtils.isNullOrEmpty(regionCode)) {
+				return ResponseDTO.fail("点击刷新，重新获取验证码", null, null, 501);
+			} else {
+				String confirmCode = ecmUserVo.getConfirmCode();
+				if (!regionCode.equals(confirmCode)) {
+					return ResponseDTO.fail("请正确输入验证码", null, null, 501);
+				}
+			}
+			//此处用token代替邀请码inviteCode
+			String token = ecmUserVo.getToken();
+			EcmInviteCode ecmInviteCode = new EcmInviteCode();
+			ecmInviteCode.setInviteCode(token);
+			ecmInviteCodeService.isInvited(ecmInviteCode);
+			return ResponseDTO.ok();
 		}
 		return ResponseDTO.ok();
 	}

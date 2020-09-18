@@ -17,8 +17,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.mpic.evolution.chair.dao.EcmArtworkDao;
 import com.mpic.evolution.chair.dao.EcmArtworkNodesDao;
 import com.mpic.evolution.chair.dao.EcmInnerMessageDao;
+import com.mpic.evolution.chair.dao.EcmInviteCodeDao;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmInnerMessage;
+import com.mpic.evolution.chair.pojo.entity.EcmInviteCode;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
@@ -42,6 +44,9 @@ public class SqlTest {
 	
 	@Resource
 	EcmArtworkNodesDao ecmArtworkNodesDao;
+	
+	@Resource
+    EcmInviteCodeDao ecmInviteCodeDao;
 	
 	/**
 	 * java8 流排序和分组 遍历
@@ -102,6 +107,17 @@ public class SqlTest {
         List<EcmArtworkNodesVo> collect = list.stream().filter(ecmArtworkNodesVo -> !"Y".equals(ecmArtworkNodesVo.getIsDeleted())).collect(Collectors.toList());
         EcmArtworkNodesVo ecmArtworkNodesVo = TreeUtil.buildTreeByDetailId(collect, 888).get(0);
         System.out.println(ecmArtworkNodesVo);
+	}
+	
+	/**
+	 * java8 查出作品树
+	 */
+	@Test
+	public void selectByEcmInviteCode() {
+		EcmInviteCode inviteCode = new EcmInviteCode();
+		inviteCode.setInviteCode("123qwe");
+		EcmInviteCode ecmInviteCode = ecmInviteCodeDao.selectByEcmInviteCode(inviteCode);
+		System.out.println(ecmInviteCode);
 	}
 
 }

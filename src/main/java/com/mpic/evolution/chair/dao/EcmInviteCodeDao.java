@@ -10,6 +10,8 @@ public interface EcmInviteCodeDao {
     int insertSelective(EcmInviteCode record);
 
     EcmInviteCode selectByPrimaryKey(Integer pkInviteId);
+    
+    EcmInviteCode selectByEcmInviteCode(EcmInviteCode record);
 
     int updateByPrimaryKeySelective(EcmInviteCode record);
 

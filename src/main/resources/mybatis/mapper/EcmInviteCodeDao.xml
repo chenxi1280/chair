@@ -95,4 +95,28 @@
       bind_date = #{bindDate,jdbcType=TIMESTAMP}
     where pk_invite_id = #{pkInviteId,jdbcType=INTEGER}
   </update>
+  
+  <select id="selectByEcmInviteCode" parameterType="com.mpic.evolution.chair.pojo.entity.EcmInviteCode" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from ecm_invite_code
+   <where>
+      <if test="pkInviteId != null">
+        and  pk_invite_id = #{pkInviteId}
+      </if>
+
+      <if test="fkUserId != null">
+        and  fk_user_id = #{fkUserId}
+      </if>
+
+      <if test="inviteCode != null and inviteCode != ''">
+        and invite_code = #{inviteCode}
+      </if>
+
+      <if test="inviteCodeStatus != null">
+        and invite_code_status = #{inviteCodeStatus}
+      </if>
+
+    </where>
+  </select>
 </mapper>
