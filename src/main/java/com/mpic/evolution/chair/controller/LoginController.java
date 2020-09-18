@@ -31,6 +31,7 @@ import com.mpic.evolution.chair.common.constant.SecretKeyConstants;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmInviteCode;
 import com.mpic.evolution.chair.pojo.entity.EcmUser;
+import com.mpic.evolution.chair.pojo.vo.EcmInviteCodeVo;
 import com.mpic.evolution.chair.pojo.vo.EcmUserVo;
 import com.mpic.evolution.chair.service.EcmInviteCodeService;
 import com.mpic.evolution.chair.service.EcmUserService;
@@ -184,12 +185,54 @@ public class LoginController extends BaseController {
 	@ResponseBody
 	public ResponseDTO registerByUserInfos(@RequestBody EcmUserVo ecmUserVo) {
 		EcmUser user = new EcmUser();
-		// 短信验证码验证
+		String username = ecmUserVo.getUsername();
+		String inputPhoneConfirmCode = ecmUserVo.getPhoneConfirmCode();
+		//邀请码所需条件 过期跳过邀请码检测
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime dateTime = LocalDateTime.of(2020, 10, 17, 0, 0);
+		EcmInviteCode ecmInviteCode = new EcmInviteCode();
 		try {
-			String inputPhoneConfirmCode = ecmUserVo.getPhoneConfirmCode();
-			String mobile = ecmUserVo.getMobile();
-			String phoneKey = EncryptUtil.aesEncrypt(mobile, SecretKeyConstants.secretKey);
-			String phoneConfirmCode = String.valueOf(redisUtil.get(phoneKey));
+			//邀请码检测
+			if(now.isBefore(dateTime)) {
+				String inviteCode = ecmUserVo.getInviteCode();
+				ecmInviteCode = ecmInviteCodeService.getEcmInvitedCode(inviteCode);
+				if (ecmInviteCode == null || ecmInviteCode.getFkUserId() != null) {
+					return ResponseDTO.fail("请向管理员获取邀请码", null, null, 515);
+				}
+			}
+			//昵称检测
+			if (StringUtils.isNullOrBlank(username)) {
+				return ResponseDTO.fail("昵称已被使用", null, null, 504);
+			}
+			String result = AIVerifyUtil.convertContent(username);
+			if (!StringUtils.isNullOrBlank(result)) {
+				return ResponseDTO.fail("昵称存在违禁词汇", result, null, 510);
+			}
+			user.setUsername(username);
+			user = ecmUserService.getUserInfos(user);
+			// 用户昵称是否存在
+			if (user != null && !StringUtils.isNullOrBlank(String.valueOf(user.getUsername()))) {
+				return ResponseDTO.fail("昵称已被使用", null, null, 504);
+			}
+			//手机号检测
+			String mobile = EncryptUtil.aesEncrypt(ecmUserVo.getMobile(), SecretKeyConstants.secretKey);
+			user.setMobile(mobile);
+			user = ecmUserService.getUserInfos(user);
+			if (user != null && !StringUtils.isNullOrBlank(String.valueOf(user.getMobile()))) {
+				return ResponseDTO.fail("账号已被注册，请直接登陆", null, null, 505);
+			}
+			// 图形验证码验证
+			String regionCode = String.valueOf(redisUtil.lPop(ecmUserVo.getImageCodeKey()));
+			if (StringUtils.isNullOrEmpty(regionCode)) {
+				return ResponseDTO.fail("点击刷新，重新获取验证码", null, null, 501);
+			} else {
+				String confirmCode = ecmUserVo.getConfirmCode();
+				if (!regionCode.equals(confirmCode)) {
+					return ResponseDTO.fail("请正确输入验证码", null, null, 501);
+				}
+			}
+			// 短信验证码验证
+			String phoneConfirmCode = String.valueOf(redisUtil.get(mobile));
 			if (StringUtils.isNullOrEmpty(phoneConfirmCode)) {
 				return ResponseDTO.fail("请重新获取验证码", null, null, 507);
 			} else {
@@ -206,9 +249,17 @@ public class LoginController extends BaseController {
 			user.setCreateTime(new Date());
 			user.setUpdateTime(new Date());
 			// 用户敏感信息需要加密 可反解
-			user.setMobile(phoneKey);
+			user.setMobile(mobile);
 			user.setPassword(MD5Utils.encrypt(ecmUserVo.getPassword()));
-			ecmUserService.savaUser(user);
+			boolean savaUserFlag = ecmUserService.savaUser(user);
+			if(now.isBefore(dateTime)) {
+				if (savaUserFlag) {
+					Integer pkUserId = user.getPkUserId();
+					ecmInviteCode.setBindDate(new Date());
+					ecmInviteCode.setFkUserId(pkUserId);
+					ecmInviteCodeService.savaEcmInvitedCode(ecmInviteCode);
+				}
+			}
 			return ResponseDTO.ok("注册成功");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -438,26 +489,26 @@ public class LoginController extends BaseController {
 	 */
 	@RequestMapping("/validateInviteCode")
 	@ResponseBody
-	public ResponseDTO validateInviteCode(@RequestBody EcmUserVo ecmUserVo) {
+	public ResponseDTO validateInviteCode(@RequestBody EcmInviteCodeVo ecmInviteCodeVo) {
 		LocalDateTime now = LocalDateTime.now();
 		LocalDateTime dateTime = LocalDateTime.of(2020, 10, 17, 0, 0);
 		if(now.isBefore(dateTime)) {
 			// 验证码验证
-			String regionCode = String.valueOf(redisUtil.lPop(ecmUserVo.getImageCodeKey()));
+			String regionCode = String.valueOf(redisUtil.lPop(ecmInviteCodeVo.getImageCodeKey()));
 			if (StringUtils.isNullOrEmpty(regionCode)) {
 				return ResponseDTO.fail("点击刷新，重新获取验证码", null, null, 501);
 			} else {
-				String confirmCode = ecmUserVo.getConfirmCode();
+				String confirmCode = ecmInviteCodeVo.getConfirmCode();
 				if (!regionCode.equals(confirmCode)) {
 					return ResponseDTO.fail("请正确输入验证码", null, null, 501);
 				}
 			}
-			//此处用token代替邀请码inviteCode
-			String token = ecmUserVo.getToken();
-			EcmInviteCode ecmInviteCode = new EcmInviteCode();
-			ecmInviteCode.setInviteCode(token);
-			ecmInviteCodeService.isInvited(ecmInviteCode);
-			return ResponseDTO.ok();
+			boolean flag = ecmInviteCodeService.isInvited(ecmInviteCodeVo);
+			if (flag) {
+				return ResponseDTO.ok();
+			}else {
+				return ResponseDTO.fail("请向管理员获取邀请码", null, null, 515);
+			}
 		}
 		return ResponseDTO.ok();
 	}

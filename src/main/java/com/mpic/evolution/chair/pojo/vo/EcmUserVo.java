@@ -22,7 +22,14 @@ public class EcmUserVo extends EcmUser {
 	private String openid;
 
 	private int userFlow;
+	
+	//用户新密码
+	private String newPwd;
 
+	 /**
+     * 	邀请码
+     */
+    private String inviteCode;
 	/**
 	 * 总流量
 	 */

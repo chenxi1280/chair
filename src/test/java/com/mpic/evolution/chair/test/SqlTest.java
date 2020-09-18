@@ -2,9 +2,7 @@ package com.mpic.evolution.chair.test;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.annotation.Resource;
 
@@ -18,7 +16,6 @@ import com.mpic.evolution.chair.dao.EcmArtworkDao;
 import com.mpic.evolution.chair.dao.EcmArtworkNodesDao;
 import com.mpic.evolution.chair.dao.EcmInnerMessageDao;
 import com.mpic.evolution.chair.dao.EcmInviteCodeDao;
-import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmInnerMessage;
 import com.mpic.evolution.chair.pojo.entity.EcmInviteCode;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
@@ -33,7 +30,7 @@ import net.minidev.json.JSONObject;
 * @date 创建时间：2020-8-20 10:17:08 
 */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class SqlTest {
 	
 	@Autowired
@@ -110,7 +107,7 @@ public class SqlTest {
 	}
 	
 	/**
-	 * java8 查出作品树
+	 * 测试邀请码查询sql
 	 */
 	@Test
 	public void selectByEcmInviteCode() {

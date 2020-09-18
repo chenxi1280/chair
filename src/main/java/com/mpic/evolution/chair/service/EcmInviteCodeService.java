@@ -1,6 +1,7 @@
 package com.mpic.evolution.chair.service;
 
 import com.mpic.evolution.chair.pojo.entity.EcmInviteCode;
+import com.mpic.evolution.chair.pojo.vo.EcmInviteCodeVo;
 
 /** 
 * @author 作者 SJ: 
@@ -8,6 +9,9 @@ import com.mpic.evolution.chair.pojo.entity.EcmInviteCode;
 */
 public interface EcmInviteCodeService {
 
-	boolean isInvited(EcmInviteCode ecmInviteCode);
-
+	boolean isInvited( EcmInviteCodeVo ecmInviteCodeVo);
+	
+	EcmInviteCode getEcmInvitedCode(String inviteCode);
+	
+	boolean savaEcmInvitedCode(EcmInviteCode ecmInviteCode);
 }
