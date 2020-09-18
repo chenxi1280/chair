@@ -145,6 +145,13 @@
 		on m.fk_template_id = t.pk_template_id
 		where fk_user_id = #{fkUserId}
 	</select>
+    <select id="getUserMsgByMsgId" resultType="com.mpic.evolution.chair.pojo.vo.EcmInnerMessageVo">
+        select fk_user_id, reviewer_id, message_status,send_date, m.content, fk_template_id,template_name,pk_message_id
+		from ecm_template t
+		inner join  ecm_inner_message m
+		on m.fk_template_id = t.pk_template_id
+		where pk_message_id = #{pkMessageId}
+    </select>
 
     <update id="batchUpdate">
         update

@@ -2,6 +2,9 @@ package com.mpic.evolution.chair.util;
 
 import java.util.Random;
 
+/**
+ * @author Administrator
+ */
 public class RandomUtil {
 	public static String getCode() {
 		String phoneConfirmCode = "";

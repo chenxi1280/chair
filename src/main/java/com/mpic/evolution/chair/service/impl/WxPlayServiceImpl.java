@@ -62,7 +62,8 @@ public class WxPlayServiceImpl implements WxPlayService {
 	 * @param WxPlayRecordVo
 	 * @return ResponseDTO
 	 */
-	public ResponseDTO savaPlayRecord(WxPlayRecordVo wxPlayRecordVo) {
+	@Override
+    public ResponseDTO savaPlayRecord(WxPlayRecordVo wxPlayRecordVo) {
         EcmArtworkBroadcastHistory ecmArtworkBroadcastHistory = new EcmArtworkBroadcastHistory();
         ecmArtworkBroadcastHistory.setFkArtworkId(wxPlayRecordVo.getPkArtworkId());
         ecmArtworkBroadcastHistory.setStartTime(new Date());
@@ -94,7 +95,13 @@ public class WxPlayServiceImpl implements WxPlayService {
         }
         List<EcmArtworkNodesVo> collect = list.stream().filter(ecmArtworkNodesVo -> !"Y".equals(ecmArtworkNodesVo.getIsDeleted())).collect(Collectors.toList());
         Integer detailId = wxPlayRecordVo.getDetailId();
-        return ResponseDTO.ok("success", TreeUtil.buildTreeByDetailId(collect, detailId).get(0));
+        try {
+            EcmArtworkNodesVo ecmArtworkNodesVo = TreeUtil.buildTreeByDetailId(collect, detailId).get(0);
+            return ResponseDTO.ok("success", ecmArtworkNodesVo);
+        }catch (IndexOutOfBoundsException e){
+
+        }
+        return ResponseDTO.fail("无节点数据");
 	}
 	
 

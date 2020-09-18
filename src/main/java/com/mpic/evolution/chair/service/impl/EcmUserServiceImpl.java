@@ -79,6 +79,7 @@ public class EcmUserServiceImpl implements EcmUserService {
 			userFlow.setUpdateTime( new Date());
 			userFlow.setSurplusFlow(500 * 1024);
 			userFlow.setTotalFlow(500 * 1024);
+			userFlow.setCheckFlow(500 * 1024);
 			ecmUserFlowDao.insert(userFlow);
 			ecmUserFlow = userFlow;
 		}
@@ -87,7 +88,12 @@ public class EcmUserServiceImpl implements EcmUserService {
 		user.setCardCode(null);
 		user.setRoles(null);
 		user.setUserLogoStatus(null);
-		user.setMobile(null);
+		try {
+			user.setMobile(EncryptUtil.aesDecrypt(  user.getMobile(), SecretKeyConstants.secretKey));
+		} catch (Exception e) {
+			user.setMobile(null);
+			e.printStackTrace();
+		}
 
 		user.setUserFlow(ecmUserFlow.getSurplusFlow());
 		user.setTotalFlow(ecmUserFlow.getTotalFlow());

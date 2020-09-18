@@ -32,4 +32,6 @@ public interface EcmInnerMessageDao {
     Integer updateRedaMsg(@Param("ids") List<Integer> messageIds, @Param("uid") Integer pkUserId);
 
     Integer updateDelMsg(@Param("ids") List<Integer> messageIds, @Param("uid") Integer pkUserId);
+
+    EcmInnerMessageVo getUserMsgByMsgId(Integer pkMessageId);
 }

@@ -21,4 +21,6 @@ public interface EcmInnerMessageService {
 	ResponseDTO batchModifyRead(EcmInnerMessageQurey ecmInnerMessageQurey);
 
 	ResponseDTO getMsg(EcmUserVo user);
+
+	EcmInnerMessageVo getUserMsgByMsgId(Integer pkMessageId);
 }

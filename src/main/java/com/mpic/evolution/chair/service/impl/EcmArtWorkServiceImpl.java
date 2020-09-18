@@ -93,6 +93,10 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         }
 
         List<EcmArtworkNodesVo> collect = list.stream().filter(ecmArtworkNodesVo -> !"Y".equals(ecmArtworkNodesVo.getIsDeleted())).collect(Collectors.toList());
+
+        if (CollectionUtils.isEmpty(collect)){
+            return ResponseDTO.ok("无数据");
+        }
         collect.get(0).setArtWorkTips(ecmArtwork.getFourLetterTips());
         if (list.isEmpty()) {
             return ResponseDTO.fail("查询id无子节点");
@@ -329,7 +333,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
         List<EcmArtworkNodesVo> list = ecmArtworkNodesDao.selectByArtWorkId(ecmArtWorkQuery.getPkArtworkId());
 
-        Map<Integer, List<EcmArtworkNodesVo>> collect = list.stream().collect(Collectors.groupingBy(EcmArtworkNodes::getParentId));
+        Map<Integer, List<EcmArtworkNodesVo>> collect = list.stream().filter(ecmArtworkNodesVo -> !"Y".equals(ecmArtworkNodesVo.getIsDeleted())).collect(Collectors.groupingBy(EcmArtworkNodes::getParentId));
 
         List<EcmArtworkNodesDTO> artworkNodesDTOS = new ArrayList<>();
 

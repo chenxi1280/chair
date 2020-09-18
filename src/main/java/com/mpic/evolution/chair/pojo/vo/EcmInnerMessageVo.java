@@ -22,4 +22,5 @@ public class EcmInnerMessageVo extends EcmInnerMessage {
 	 */
 	private String templateName;
 
+
 }

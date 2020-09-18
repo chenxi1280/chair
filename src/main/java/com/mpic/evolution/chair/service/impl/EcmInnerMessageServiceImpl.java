@@ -112,4 +112,9 @@ public class EcmInnerMessageServiceImpl implements EcmInnerMessageService{
 		return ResponseDTO.ok("获取成功", data);
 	}
 
+	@Override
+	public EcmInnerMessageVo getUserMsgByMsgId(Integer pkMessageId) {
+		return ecmInnerMessageDao.getUserMsgByMsgId(pkMessageId);
+	}
+
 }

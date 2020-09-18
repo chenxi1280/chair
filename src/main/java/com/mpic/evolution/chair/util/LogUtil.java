@@ -3,6 +3,9 @@ package com.mpic.evolution.chair.util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * @author Administrator
+ */
 public class LogUtil {
 
     private static Logger logger = LogManager.getLogger(LogUtil.class);

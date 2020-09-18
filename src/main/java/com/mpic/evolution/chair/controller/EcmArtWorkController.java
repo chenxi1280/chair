@@ -165,33 +165,33 @@ public class EcmArtWorkController extends BaseController{
     @ResponseBody
     public ResponseDTO getWxcode (@RequestBody EcmArtWorkQuery ecmArtWorkQuery) {
     	String token = ecmArtWorkQuery.getToken();
-		if (StringUtil.isEmpty(token)){
+    	String userId = JWTUtil.getUserId(token);
+    	if (StringUtil.isEmpty(userId)){
 			return ResponseDTO.fail("非法访问");
 		}
-    	String userId = JWTUtil.getUserId(token);
     	//如果是null返回false
-    	boolean hasKey = redisUtil.hasKey(userId);
+    	boolean hasKey = redisUtil.hasKey("QRCode");
     	String accessToken = "";
     	try {
 	    	if (hasKey) {
-	    		accessToken = String.valueOf(redisUtil.get(userId));
+	    		accessToken = String.valueOf(redisUtil.get("QRCode"));
 			}else {
-				accessToken = getAccessToken(userId);
+				accessToken = getAccessToken();
 			}
-	        String url = String.format("https://api.weixin.qq.com/wxa/getwxacodeunlimit?"
-	        		+ "access_token=%s", accessToken);
-	        JSONObject param = new JSONObject();
-	        param.put("page","pages/play/play");
-	        String artWorkId = ecmArtWorkQuery.getArtWorkId();
-	        //scene的value 是 videoId
-	        param.put("scene",artWorkId);
-			String Base64Str = HttpMpicUtil.sendPostForBase64(url, param);
-			if (HttpMpicUtil.isJsonObject(Base64Str)) {
+	    	String qrCodeStr = this.getQRCode(accessToken,ecmArtWorkQuery);
+			if (HttpMpicUtil.isJsonObject(qrCodeStr)) {
 				//返回的结果是：{"errcode":40001,"errmsg":"invalid credential, access_token is invalid or not latest rid: 5f364b21-395edb8d-336ae042"}
-				JSONObject result = JSONObject.parseObject(Base64Str);
-				return ResponseDTO.fail("获取发布二维码失败", result.get("errmsg"),null,(Integer)result.get("errcode"));
+				JSONObject result = JSONObject.parseObject(qrCodeStr);
+				if(result.get("errcode").equals("40001")) {
+					accessToken = getAccessToken();
+					qrCodeStr = this.getQRCode(accessToken,ecmArtWorkQuery);
+					String str = "data:image/jpg;base64," + qrCodeStr;
+					return ResponseDTO.ok("获取发布二维码成功",str);
+				}else {
+					return ResponseDTO.fail("获取发布二维码失败", result.get("errmsg"),null,(Integer)result.get("errcode"));
+				}
 			}else {
-				String str = "data:image/jpg;base64," + Base64Str;
+				String str = "data:image/jpg;base64," + qrCodeStr;
 				System.out.println(str);
 				return ResponseDTO.ok("获取发布二维码成功",str);
 			}
@@ -200,6 +200,18 @@ public class EcmArtWorkController extends BaseController{
 			return ResponseDTO.fail("获取二维码图片失败");
 		}
     } 
+    
+    private String getQRCode(String accessToken,EcmArtWorkQuery ecmArtWorkQuery) {
+    	String url = String.format("https://api.weixin.qq.com/wxa/getwxacodeunlimit?"
+        		+ "access_token=%s", accessToken);
+        JSONObject param = new JSONObject();
+        param.put("page","pages/play/play");
+        String artWorkId = ecmArtWorkQuery.getArtWorkId();
+        //scene的value 是 videoId
+        param.put("scene",artWorkId);
+		String Base64Str = HttpMpicUtil.sendPostForBase64(url, param);
+		return Base64Str;
+    }
 
 	/**
      * 	通过请求获取accessToken
@@ -207,14 +219,14 @@ public class EcmArtWorkController extends BaseController{
      * 	此处要根据过期时间，存redis，有人请求，先从redis里面拿token，没有再请求
      *
      */
-    private String getAccessToken(String userId) {
+    private String getAccessToken() {
     	String requestUrl = String.format("https://api.weixin.qq.com/cgi-bin/token?"
     			+ "grant_type=client_credential&appid=%s&secret=%s", publishConstants.appid,publishConstants.secret);
         //将返回的access_token 存入redis 过期时间3000秒
     	String jsonStr = HttpKit.get(requestUrl);
     	JSONObject result = JSONObject.parseObject(jsonStr);
     	String accessToken = result.getString("access_token");
-    	redisUtil.set(userId, accessToken, 3000L);
+    	redisUtil.set("QRCode", accessToken, 3000L);
         return accessToken;
     }
 
