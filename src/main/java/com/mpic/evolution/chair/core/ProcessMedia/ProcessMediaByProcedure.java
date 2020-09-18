@@ -61,6 +61,8 @@ public class ProcessMediaByProcedure {
     private void getUnHandledVideo(){
           
         List<MediaByProcedureVo> res = processMediaByProcedureDao.getUnHandledVideo();
+        return;
+        /*
         for( MediaByProcedureVo vo : res){
             String videoCode = vo.getVideoCode();
             if(StringUtils.isBlank(videoCode)){
@@ -75,7 +77,7 @@ public class ProcessMediaByProcedure {
             redisUtil.set(vo.getVideoCode(), "value", 60*60);
             handleOneMedia(videoCode, null);
         }
-
+*/
     }
 
 
