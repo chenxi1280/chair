@@ -296,6 +296,21 @@
             <if test="record.roles != null">
                 roles = #{record.roles,jdbcType=VARCHAR},
             </if>
+            <if test="record.userLogoUrl != null">
+                user_logo_url = #{record.userLogoUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="record.userLogoStatus != null">
+                user_logo_status = #{record.userLogoStatus,jdbcType=SMALLINT},
+            </if>
+            <if test="record.birthday != null">
+                birthday = #{record.birthday,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.gender != null">
+                gender = #{record.gender,jdbcType=VARCHAR},
+            </if>
+            <if test="record.city != null">
+                city = #{record.city,jdbcType=VARCHAR},
+            </if>
         </set>
         where 1=1
         <if test="recordVo.pkUserId != null">

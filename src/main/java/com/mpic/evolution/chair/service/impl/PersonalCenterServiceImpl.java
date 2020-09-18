@@ -1,5 +1,7 @@
 package com.mpic.evolution.chair.service.impl;
 
+import java.util.Date;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -27,8 +29,15 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 		ecmUser.setBirthday(ecmUserVo.getBirthday());
 		ecmUser.setCity(ecmUserVo.getCity());
 		ecmUser.setUserLogoUrl(ecmUserVo.getUserLogoUrl());
-		ecmUserDao.updateEcmUser(ecmUser, ecmUserVo);
-		return null;
+		ecmUser.setUserLogoStatus((short)0);
+		ecmUser.setUsername(ecmUserVo.getUsername());
+		ecmUser.setUpdateTime(new Date());
+		int row = ecmUserDao.updateEcmUser(ecmUser, ecmUserVo);
+		if (row<1) {
+			return ResponseDTO.fail("保存信息失败", null, null, "000039");
+		}else {
+			return ResponseDTO.ok("保存信息成功");
+		}
 	}
 
 }
