@@ -23,6 +23,11 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 	@Override
 	public ResponseDTO savaUserInfo(EcmUserVo ecmUserVo) {
 		EcmUser ecmUser = new EcmUser();
+		ecmUser.setGender(ecmUserVo.getGender());
+		ecmUser.setBirthday(ecmUserVo.getBirthday());
+		ecmUser.setCity(ecmUserVo.getCity());
+		ecmUser.setUserLogoUrl(ecmUserVo.getUserLogoUrl());
+		ecmUserDao.updateEcmUser(ecmUser, ecmUserVo);
 		return null;
 	}
 
