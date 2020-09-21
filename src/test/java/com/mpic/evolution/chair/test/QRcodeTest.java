@@ -10,6 +10,10 @@ import java.net.URL;
 
 import com.alibaba.fastjson.JSONObject;
 import com.mpic.evolution.chair.common.constant.publishConstants;
+import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
+import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes;
+import org.apache.commons.lang.StringUtils;
+import org.junit.Test;
 
 
 /**
@@ -101,6 +105,16 @@ public class QRcodeTest {
             e.printStackTrace();
         }
     }
-    
-
+    @Test
+    public void testxx() {
+        testXXX();
+    }
+    private void testXXX() {
+        EcmArtworkNodes ecmArtworkNodes = new EcmArtworkNodes();
+        // ecmArtworkNodes.setRevolutionId("x12351231231412232");
+        if (StringUtils.isNotBlank(ecmArtworkNodes.getRevolutionId()) && ecmArtworkNodes.getRevolutionId().length() > 20) {
+            System.out.println(ecmArtworkNodes.getRevolutionId().length());
+            System.out.println(10);
+        }
+    }
 }
