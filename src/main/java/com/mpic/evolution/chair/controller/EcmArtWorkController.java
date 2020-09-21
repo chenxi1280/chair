@@ -108,7 +108,7 @@ public class EcmArtWorkController extends BaseController{
 		if (StringUtils.isNotBlank(ecmArtworkNodes.getRevolutionId()) && ecmArtworkNodes.getRevolutionId().length() > maxCount) {
 			return ResponseDTO.fail("视频最多编排50层");
 		}
-		ecmArtworkNodes.setFkUserId(Integer.valueOf(userId));
+		ecmArtworkNodes.setFkUserId(userId);
 
         return ecmArtWorkService.saveArtWorkNode(ecmArtworkNodes);
     }

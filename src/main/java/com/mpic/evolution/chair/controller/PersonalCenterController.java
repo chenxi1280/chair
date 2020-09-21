@@ -31,7 +31,7 @@ import lombok.extern.log4j.Log4j;
 @Controller
 @Log4j
 @RequestMapping("/personalCenter")
-public class PersonalCenterController {
+public class PersonalCenterController extends BaseController {
 	
 	@Resource
 	EcmUserService ecmUserService;
@@ -65,6 +65,7 @@ public class PersonalCenterController {
 			if (user != null && !StringUtils.isNullOrBlank(String.valueOf(user.getUsername()))) {
 				return ResponseDTO.fail("昵称已被使用", null, null, 504);
 			}
+			ecmUserVo.setPkUserId(getUserIdByHandToken());
 			return pcService.savaUserInfo(ecmUserVo);
 		} catch (MyBatisSystemException e) {
 			log.error("账号在数据库中有多条记录");
@@ -84,26 +85,24 @@ public class PersonalCenterController {
 	@RequestMapping("/changePwd")
 	@ResponseBody
 	public ResponseDTO forgetPassword(@RequestBody EcmUserVo ecmUserVo) {
-		EcmUserVo userVo = new EcmUserVo();
 		EcmUser user = new EcmUser();
 		try {
 			// 确认密码验证;
-			String mobile = ecmUserVo.getMobile();
-			String mobileKey = EncryptUtil.aesEncrypt(mobile, SecretKeyConstants.secretKey);
-			userVo.setMobile(mobileKey);
-			EcmUser userInfos = ecmUserService.getUserInfos(userVo);
+			Integer userIdByHandToken = getUserIdByHandToken();
+			user.setPkUserId(userIdByHandToken);
+			ecmUserVo.setPkUserId(userIdByHandToken);
+			EcmUser userInfos = ecmUserService.getUserInfosByUserId(userIdByHandToken);
 			//校验原始密码
-			String inputPwd = ecmUserVo.getPassword();
-			if (!userInfos.getPassword().equals(inputPwd)) {
+			if (!userInfos.getPassword().equals(MD5Utils.encrypt(ecmUserVo.getPassword()))) {
 				return ResponseDTO.fail("请正确输入原密码", null, null, 506);
 			}
 			String newPwd = ecmUserVo.getNewPwd();
 			if (!newPwd.equals(ecmUserVo.getConfirmPwd())) {
 				return ResponseDTO.fail("确认密码错误", null, null, 503);
 			}
-			user.setPassword(MD5Utils.encrypt(inputPwd));// 修改后的密码以MD5加密入库
+			user.setPassword(MD5Utils.encrypt(ecmUserVo.getNewPwd()));// 修改后的密码以MD5加密入库
 			user.setUpdateTime(new Date());// 修改updateTime字段
-			boolean flag = ecmUserService.updatePwdByToken(user, userVo);
+			boolean flag = ecmUserService.updatePwdByUserId(user);
 			if (!flag) {
 				return ResponseDTO.fail("failed", null, null, "000039");
 			}

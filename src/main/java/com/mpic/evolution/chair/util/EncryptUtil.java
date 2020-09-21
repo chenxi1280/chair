@@ -140,7 +140,7 @@ public class EncryptUtil {
     /**
      * 
       * 方法名：  aesBase 
-      * 描述：  aesBase加密解密基础
+      * 描述：  aesBase 加密解密基础
      * @author  wusc   
       * 创建时间：2018年11月23日 下午8:47:20
      * @param content
@@ -372,5 +372,6 @@ public class EncryptUtil {
     	String aesDecrypt = EncryptUtil.aesDecrypt("C1F293236B49949322DBA88C2EE2B429", SecretKeyConstants.secretKey);
     	System.out.println(aesEncrypt);
     	System.out.println(aesDecrypt);
+        System.out.println(EncryptUtil.aesEncrypt("15213064486", SecretKeyConstants.secretKey));
 	}
 }

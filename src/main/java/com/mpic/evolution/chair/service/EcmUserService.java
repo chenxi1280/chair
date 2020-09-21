@@ -31,4 +31,9 @@ public interface EcmUserService {
     ResponseDTO inspectFlow(EcmUserFlowQuery ecmUserFlowQuery);
 
 	ResponseDTO reduceFlow(EcmUserHistoryFlowVO ecmUserHistoryFlowVO);
+
+	EcmUser getUserInfosByUserId(Integer userIdByHandToken);
+
+	boolean updatePwdByUserId(EcmUser user);
+
 }

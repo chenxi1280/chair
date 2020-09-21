@@ -101,6 +101,7 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			ecmArtwork.setLogoPathStatus((short)0);
 			ecmArtwork.setLogoPath(ecmArtworkVo.getLogoPath());
 			ecmArtwork.setLastModifyDate(new Date());
+			ecmArtwork.setFourLetterTips(ecmArtworkVo.getFourLetterTips());
  			ecmArtworkDao.updateByPrimaryKey(ecmArtwork);
 			return ResponseDTO.ok("作品名称修改成功");
 		} catch (Exception e) {

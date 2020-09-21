@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.annotation.Resource;
 
+import com.mpic.evolution.chair.common.constant.SecretKeyConstants;
+import com.mpic.evolution.chair.util.EncryptUtil;
 import org.springframework.stereotype.Service;
 
 import com.mpic.evolution.chair.dao.EcmUserDao;
@@ -32,7 +34,16 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 		ecmUser.setUserLogoStatus((short)0);
 		ecmUser.setUsername(ecmUserVo.getUsername());
 		ecmUser.setUpdateTime(new Date());
-		int row = ecmUserDao.updateEcmUser(ecmUser, ecmUserVo);
+
+		try {
+			ecmUserVo.setMobile(EncryptUtil.aesEncrypt(ecmUserVo.getMobile(), SecretKeyConstants.secretKey));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		ecmUserVo.setUserLogoStatus((short)0);
+		ecmUserVo.setUpdateTime(new Date());
+//		int row = ecmUserDao.updateEcmUser(ecmUser, ecmUserVo);
+		int row = ecmUserDao.updateByPrimaryKeySelective(ecmUserVo);
 		if (row<1) {
 			return ResponseDTO.fail("保存信息失败", null, null, "000039");
 		}else {

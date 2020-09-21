@@ -132,4 +132,16 @@ public class EcmUserServiceImpl implements EcmUserService {
 		return ResponseDTO.ok("success");
 	}
 
+	@Override
+	public EcmUser getUserInfosByUserId(Integer userIdByHandToken) {
+		return ecmUserDao.selectByPrimaryKey(userIdByHandToken);
+	}
+
+	@Override
+	public boolean updatePwdByUserId(EcmUser user) {
+		int flag = ecmUserDao.updateByPrimaryKeySelective(user);
+		if (flag<0) return false;
+		return true;
+	}
+
 }
