@@ -74,6 +74,7 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			ecmArtworkNodes.setIsleaf("N");
 			ecmArtworkNodes.setRevolutionId("x");
 			ecmArtworkNodes.setALevel(0);
+			ecmArtworkNodes.setItemsBakText("https://sike-1259692143.cos.ap-chongqing.myqcloud.com/baseImg/1599646010668nodeImgUrl.png");
 			ecmArtworkNodesDao.insertSelective(ecmArtworkNodes);
 			return ResponseDTO.ok("新建成功");
 		} catch (Exception e) {

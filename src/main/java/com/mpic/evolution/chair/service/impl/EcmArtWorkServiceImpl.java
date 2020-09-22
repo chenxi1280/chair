@@ -73,19 +73,18 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         for (EcmArtworkNodesVo node : list) {
             if (!StringUtils.isEmpty(node.getItems()) && node.getALevel() != null) {
                 if (node.getALevel().equals(1)) {
-                    //优化！ 跳转
                     for (EcmArtworkNodesVo ecmArtworkNodesVo : list) {
-
-                        if (ecmArtworkNodesVo.getPkDetailId().equals(Integer.valueOf(node.getItems()))) {
-                            EcmArtworkNodes ecm = new EcmArtworkNodes();
-                            //深克隆
-                            // ecm = ecmArtworkNodesVo.clone();
-                            ecm.setPkDetailId(ecmArtworkNodesVo.getPkDetailId());
-                            ecm.setVideoText(ecmArtworkNodesVo.getVideoText());
-                            ecm.setCssVo(ecmArtworkNodesVo.getCssVo());
-                            ecm.setFkArtworkId(ecmArtwork.getPkArtworkId());
-                            ecm.setItemsBakText(ecmArtworkNodesVo.getItemsBakText());
-                            node.setLinkNode(ecm);
+                        if (!"Y".equals(ecmArtworkNodesVo.getIsDeleted())) {
+                            if (ecmArtworkNodesVo.getPkDetailId().equals(Integer.valueOf(node.getItems())) ) {
+                                if ( "Y".equals(ecmArtworkNodesVo.getIsDeleted()) ){
+                                    node.setItems(null);
+                                }else {
+                                    EcmArtworkNodesDTO ecmArtworkNodesDTO = new EcmArtworkNodesDTO();
+                                    BeanUtils.copyProperties(ecmArtworkNodesVo, ecmArtworkNodesDTO);
+                                    ecmArtworkNodesDTO.setFkArtworkId(ecmArtwork.getPkArtworkId());
+                                    node.setLinkNode(ecmArtworkNodesDTO);
+                                }
+                            }
                         }
                     }
                 }
@@ -128,7 +127,10 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             // 跳转节点的数据
             if (!StringUtils.isEmpty(ecmArtworkNodes.getItems())) {
                 EcmArtworkNodes ecmArtworkNode = ecmArtworkNodesDao.selectByPrimaryKey(Integer.valueOf(ecmArtworkNodes.getItems()));
-                ecmArtworkNodes.setLinkNode(ecmArtworkNode);
+                EcmArtworkNodesDTO ecmArtworkNodesDTO = new EcmArtworkNodesDTO();
+
+                BeanUtils.copyProperties(ecmArtworkNode,ecmArtworkNodesDTO);
+                ecmArtworkNodes.setLinkNode(ecmArtworkNodesDTO);
             }
             return ResponseDTO.ok("成功", ecmArtworkNodes);
         }

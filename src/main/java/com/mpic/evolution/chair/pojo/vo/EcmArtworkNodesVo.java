@@ -2,6 +2,7 @@ package com.mpic.evolution.chair.pojo.vo;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.mpic.evolution.chair.pojo.dto.EcmArtworkNodesDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes;
 import lombok.Data;
 
@@ -33,7 +34,7 @@ public class EcmArtworkNodesVo extends EcmArtworkNodes  {
 
     private Integer fkUserId;
 
-    private EcmArtworkNodes linkNode;
+    private EcmArtworkNodesDTO linkNode;
 
     private List<EcmArtworkNodesVo> brotherNode;
 
