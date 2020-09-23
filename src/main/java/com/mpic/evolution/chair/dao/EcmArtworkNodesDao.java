@@ -24,4 +24,6 @@ public interface EcmArtworkNodesDao {
     Integer insertList(@Param("list") List<EcmArtworkNodes> addlist);
 
     int removeByPrimaryKey(Integer pkDetailId);
+
+    EcmArtworkNodesVo selectByVideoCode(String fileId);
 }

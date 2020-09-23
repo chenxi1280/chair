@@ -1,6 +1,11 @@
 package com.mpic.evolution.chair.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.mpic.evolution.chair.dao.EcmArtworkNodesDao;
+import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
+import com.mpic.evolution.chair.pojo.tencent.video.AiContentReviewResultSet;
+import com.mpic.evolution.chair.pojo.tencent.video.TencentVideoResult;
+import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
 import com.mpic.evolution.chair.service.VideoHandleConsumerService;
 import com.tencentcloudapi.common.Credential;
 import com.tencentcloudapi.common.exception.TencentCloudSDKException;
@@ -10,6 +15,10 @@ import com.tencentcloudapi.vod.v20180717.VodClient;
 import com.tencentcloudapi.vod.v20180717.models.ProcessMediaByProcedureRequest;
 import com.tencentcloudapi.vod.v20180717.models.ProcessMediaByProcedureResponse;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+
+import java.util.List;
 
 import static com.mpic.evolution.chair.common.constant.CosConstant.*;
 
@@ -22,6 +31,11 @@ import static com.mpic.evolution.chair.common.constant.CosConstant.*;
  */
 @Service
 public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerService {
+
+
+    @Resource
+    EcmArtworkNodesDao ecmArtworkNodesDao;
+
 
     /**
       * 方法名:
@@ -57,5 +71,25 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
         } catch (TencentCloudSDKException e) {
             System.out.println(e.toString());
         }
+    }
+
+
+
+
+    @Override
+    public ResponseDTO videoHandleConsumer(TencentVideoResult tencentVideoResult) {
+        System.out.println("腾讯视频审核回调接口开始工作了");
+        System.out.println("jsonParam.toJSONString() :  " + tencentVideoResult.toString());
+        if (tencentVideoResult.getProcedureStateChangeEvent().getErrCode() == 0 && "SUCCESS".equals(tencentVideoResult.getProcedureStateChangeEvent().getMessage())){
+            EcmArtworkNodesVo ecmArtworkNodesVo = ecmArtworkNodesDao.selectByVideoCode(tencentVideoResult.getProcedureStateChangeEvent().getFileId());
+            ecmArtworkNodesVo.setVideoUrl(tencentVideoResult.getProcedureStateChangeEvent().getMediaProcessResultSet().get(0).getTranscodeTask().getOutput().getUrl());
+            List<AiContentReviewResultSet> aiContentReviewResultSet = tencentVideoResult.getProcedureStateChangeEvent().getAiContentReviewResultSet();
+            aiContentReviewResultSet.forEach( aiContentReviewResult -> {
+
+            });
+
+        }
+
+        return null;
     }
 }
