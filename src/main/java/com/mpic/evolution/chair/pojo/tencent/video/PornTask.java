@@ -11,13 +11,6 @@ import lombok.Data;
  * @author cxd
  */
 @Data
-public class PornTask {
-
-    private int ErrCode;
-    private String Message;
-    private String Status;
-    private int Progress;
-    private Input Input;
-    private Output Output;
+public class PornTask extends BaseTask {
 
 }

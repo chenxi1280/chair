@@ -69,6 +69,7 @@ public class EcmArtworkNodes implements Serializable  {
 
 
     private Integer fkAchievementId;
+
     @JsonIgnore
     private Integer fkEndingId;
 

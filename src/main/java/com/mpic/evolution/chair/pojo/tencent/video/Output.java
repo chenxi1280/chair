@@ -14,6 +14,11 @@ import java.util.List;
 @Data
 public class Output {
 
+
+    private int Confidence;
+    private String Suggestion;
+    private String Label;
+    private List<SegmentSet> SegmentSet;
     private String Url;
     private long Size;
     private String Container;

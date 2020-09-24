@@ -1,16 +1,15 @@
 package com.mpic.evolution.chair.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-
+import com.mpic.evolution.chair.dao.*;
 import com.mpic.evolution.chair.pojo.dto.EcmArtworkNodesDTO;
-import com.mpic.evolution.chair.pojo.entity.*;
-
+import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
+import com.mpic.evolution.chair.pojo.entity.EcmArtwork;
+import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes;
+import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
+import com.mpic.evolution.chair.pojo.vo.*;
+import com.mpic.evolution.chair.service.EcmArtWorkService;
+import com.mpic.evolution.chair.util.RandomUtil;
+import com.mpic.evolution.chair.util.TreeUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -18,23 +17,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.util.CollectionUtils;
 
-import com.mpic.evolution.chair.dao.EcmArtworkBroadcastHistoryDao;
-import com.mpic.evolution.chair.dao.EcmArtworkBroadcastHotDao;
-import com.mpic.evolution.chair.dao.EcmArtworkDao;
-import com.mpic.evolution.chair.dao.EcmArtworkNodesDao;
-import com.mpic.evolution.chair.dao.EcmUserDao;
-import com.mpic.evolution.chair.dao.ProcessMediaByProcedureDao;
-import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
-import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes;
-import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
-import com.mpic.evolution.chair.pojo.vo.EcmArtworkBroadcastHotVO;
-import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
-import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
-import com.mpic.evolution.chair.pojo.vo.EcmUserVo;
-import com.mpic.evolution.chair.pojo.vo.MediaByProcedureVo;
-import com.mpic.evolution.chair.service.EcmArtWorkService;
-import com.mpic.evolution.chair.util.RandomUtil;
-import com.mpic.evolution.chair.util.TreeUtil;
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 /**
@@ -66,6 +53,9 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         EcmArtwork ecmArtwork = ecmArtworkDao.selectByPrimaryKey(ecmArtWorkQuery.getPkArtworkId());
         if (ecmArtwork == null) {
             return ResponseDTO.fail("查询id为空");
+        }
+        if (!ecmArtWorkQuery.getFkUserid().equals(ecmArtwork.getFkUserid()) ) {
+            return ResponseDTO.fail("非法访问");
         }
 
         List<EcmArtworkNodesVo> list = ecmArtworkNodesDao.selectByArtWorkId(ecmArtWorkQuery.getPkArtworkId());

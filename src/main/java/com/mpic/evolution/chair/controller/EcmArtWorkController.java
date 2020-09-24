@@ -73,11 +73,11 @@ public class EcmArtWorkController extends BaseController{
     @ResponseBody
     public ResponseDTO getArtWork(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
 
-		String token = getRequest().getHeader("Authorization");
-		if (StringUtil.isEmpty(token)){
+		Integer userIdByHandToken = getUserIdByHandToken();
+		if (userIdByHandToken == null){
 			return ResponseDTO.fail("非法访问");
 		}
-
+		ecmArtWorkQuery.setFkUserid(userIdByHandToken);
 		return ecmArtWorkService.getArtWork(ecmArtWorkQuery);
     }
 

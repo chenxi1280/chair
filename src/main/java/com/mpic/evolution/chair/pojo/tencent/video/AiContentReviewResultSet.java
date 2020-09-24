@@ -15,7 +15,17 @@ public class AiContentReviewResultSet {
 
     private String Type;
     private int Progress;
-    private PornTask PornTask;
+
+    private BaseTask PornTask;
+    private BaseTask TerrorismTask;
+    private BaseTask PoliticalTask;;
+    private BaseTask PoliticalOcrTask;
+    private BaseTask PornOcrTask;
+    private BaseTask PornAsrTask;
+    private BaseTask PoliticalAsrTask;
+
+
+
 
 
 }

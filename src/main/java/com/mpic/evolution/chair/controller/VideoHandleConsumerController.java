@@ -1,6 +1,6 @@
 package com.mpic.evolution.chair.controller;
 
-import com.alibaba.fastjson.JSON;
+
 import com.mpic.evolution.chair.pojo.tencent.video.TencentVideoResult;
 import com.mpic.evolution.chair.service.VideoHandleConsumerService;
 import org.springframework.stereotype.Controller;
@@ -30,7 +30,7 @@ public class VideoHandleConsumerController {
     @RequestMapping("/videoHandleConsumer")
     @ResponseBody
     public ResponseDTO videoHandleConsumer ( @RequestBody  JSONObject jsonParam ) {
-        TencentVideoResult tencentVideoResult = JSON.parseObject(jsonParam.toJSONString(), TencentVideoResult.class);
+        TencentVideoResult tencentVideoResult =  JSONObject.parseObject(jsonParam.toJSONString(), TencentVideoResult.class);
         return videoHandleConsumerService.videoHandleConsumer(tencentVideoResult);
     }
 }
