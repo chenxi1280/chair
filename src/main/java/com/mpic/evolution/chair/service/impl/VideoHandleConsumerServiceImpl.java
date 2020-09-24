@@ -88,9 +88,8 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
             ecmArtworkNodesVo.setVideoUrl(tencentVideoResult.getProcedureStateChangeEvent().getMediaProcessResultSet().get(0).getTranscodeTask().getOutput().getUrl());
             List<AiContentReviewResultSet> aiContentReviewResultSet = tencentVideoResult.getProcedureStateChangeEvent().getAiContentReviewResultSet();
             for (AiContentReviewResultSet aiContentReviewResult : aiContentReviewResultSet) {
-                Class<? extends AiContentReviewResultSet> aClass = aiContentReviewResult.getClass();
                 try {
-                    Method method = aClass.getMethod("get" + aiContentReviewResult.getType().replace(".", "") + "Task");
+                    Method method = aiContentReviewResult.getClass().getMethod("get" + aiContentReviewResult.getType().replace(".", "") + "Task");
                     BaseTask invoke = (BaseTask) method.invoke(aiContentReviewResult);
                     ecmArtworkNodesVo.setFkEndingId(1);
                     if (invoke != null) {
