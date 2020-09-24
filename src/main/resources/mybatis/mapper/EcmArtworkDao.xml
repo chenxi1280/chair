@@ -191,11 +191,10 @@
   <select id="selectFindArtWorks" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkVo">
     select <include refid="Base_Column_List" />
     from ecm_artwork
-    where pk_artwork_id in
+    where artwork_status = 4 and  pk_artwork_id in
     <foreach collection="ids" separator="," open="(" item="id" close=")">
         #{ id.fkArkworkId}
     </foreach>
-
 
     order by field(
     pk_artwork_id,
@@ -237,7 +236,7 @@
   <select id="selectFindSortArtWorks" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkVo">
     select <include refid="Base_Column_List" />
     from ecm_artwork
-    where four_letter_tips like CONCAT('%',#{queryType},'%')
+    where four_letter_tips like CONCAT('%',#{queryType},'%') and  artwork_status = 4
     limit #{start},#{limit}
 
   </select>
@@ -245,7 +244,7 @@
     <select id="selectSearchArtworkName" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkVo">
       select <include refid="Base_Column_List" />
       from ecm_artwork
-      where artwork_name like CONCAT('%',#{searchText},'%')
+      where artwork_name like CONCAT('%',#{searchText},'%') and  artwork_status = 4
       limit #{start},#{limit}
 
     </select>
