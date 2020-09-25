@@ -2,6 +2,8 @@ package com.mpic.evolution.chair.controller;
 
 import javax.annotation.Resource;
 
+import com.mpic.evolution.chair.pojo.entity.EcmArtwork;
+import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -75,5 +77,14 @@ public class WxPlayController {
 	@ResponseBody
 	public ResponseDTO savaReportInfo(@RequestBody WxReportHistoryVo wxReportHistoryVo){
 		return wxPlayService.savaReportInfo(wxReportHistoryVo);
+	}
+
+	@RequestMapping("/getUserIdByArtwordId")
+	@ResponseBody
+	public ResponseDTO getUserIdByArtwordId(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
+		if (ecmArtWorkQuery.getPkArtworkId() == null){
+			return ResponseDTO.fail("作品id为空");
+		}
+		return wxPlayService.getUserIdByArtwordId(ecmArtWorkQuery);
 	}
 }
