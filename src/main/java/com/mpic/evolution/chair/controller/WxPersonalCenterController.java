@@ -164,16 +164,5 @@ public class WxPersonalCenterController {
 		String Base64Str = HttpMpicUtil.sendPostForBase64(url, param);
 		return Base64Str;
     }
-    
-    /**
-	 * @author: sunjie
-	 *	测试二维码接口
-	 * @Date: 2020/9/25
-	 */
-	@RequestMapping("codeTest")
-	@ResponseBody
-	public void test(@RequestBody TestVo testVo){
-		System.out.println("测试scene是否被传入"+ testVo.getScene());
-	}
 	
 }
