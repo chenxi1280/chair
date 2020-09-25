@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @ServerEndpoint("/imserver/{token}")
 @Log4j
-@Component
+//@Component
 public class WebSocketServer {
 
 //    static Log log= LogFactory.get(WebSocketServer.class);
