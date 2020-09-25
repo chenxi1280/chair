@@ -338,6 +338,29 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
             artworkNodesDTOS.add(ecmArtworkNodesDTO);
         });
+        artworkNodesDTOS.forEach( v -> {
+            for (EcmArtworkNodesDTO ecmArtworkNodesDTO : artworkNodesDTOS) {
+                if (!StringUtils.isEmpty(ecmArtworkNodesDTO.getItems()) ){
+                    if (v.getPkDetailId().equals(Integer.valueOf(ecmArtworkNodesDTO.getItems()))){
+
+//                        EcmArtworkNodesDTO ecmArtworkNodesDTOCopy = new EcmArtworkNodesDTO();
+//                        BeanUtils.copyProperties(v,ecmArtworkNodesDTOCopy);
+//                        ecmArtworkNodesDTOCopy.setPkDetailId(ecmArtworkNodesDTO.getPkDetailId());
+//                        ecmArtworkNodesDTOCopy.setALevel(ecmArtworkNodesDTO.getALevel());
+//                        ecmArtworkNodesDTOCopy.setItems(ecmArtworkNodesDTO.getItems());
+//                        ecmArtworkNodesDTOCopy.setBrotherNode(ecmArtworkNodesDTO.getBrotherNode());
+//                        ecmArtworkNodesDTO = ecmArtworkNodesDTOCopy;
+////                        BeanUtils.copyProperties(ecmArtworkNodesDTOCopy,ecmArtworkNodesDTO);
+                        ecmArtworkNodesDTO.setVideoUrl(v.getVideoUrl());
+                        ecmArtworkNodesDTO.setItemsBakText(v.getItemsBakText());
+//                        ecmArtworkNodesDTO.setItemsBakText
+
+
+                    }
+                }
+            }
+        });
+
 
         return ResponseDTO.ok("",artworkNodesDTOS);
     }
