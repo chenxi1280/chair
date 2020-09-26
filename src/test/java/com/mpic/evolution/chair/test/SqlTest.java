@@ -16,8 +16,10 @@ import com.mpic.evolution.chair.dao.EcmArtworkDao;
 import com.mpic.evolution.chair.dao.EcmArtworkNodesDao;
 import com.mpic.evolution.chair.dao.EcmInnerMessageDao;
 import com.mpic.evolution.chair.dao.EcmInviteCodeDao;
+import com.mpic.evolution.chair.dao.WxUserDao;
 import com.mpic.evolution.chair.pojo.entity.EcmInnerMessage;
 import com.mpic.evolution.chair.pojo.entity.EcmInviteCode;
+import com.mpic.evolution.chair.pojo.entity.WxUser;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
@@ -44,6 +46,9 @@ public class SqlTest {
 	
 	@Resource
     EcmInviteCodeDao ecmInviteCodeDao;
+	
+	@Resource
+    WxUserDao wxUserDao;
 	
 	/**
 	 * java8 流排序和分组 遍历
@@ -115,6 +120,17 @@ public class SqlTest {
 		inviteCode.setInviteCode("123qwe");
 		EcmInviteCode ecmInviteCode = ecmInviteCodeDao.selectByEcmInviteCode(inviteCode);
 		System.out.println(ecmInviteCode);
+	}
+	
+	/**
+	 * 测试openid 查询wxUser sql
+	 */
+	@Test
+	public void selectByWxUser() {
+		WxUser user = new WxUser();
+		user.setOpenid("opcBH49QSwLe-R5mfVVz4Ilb35DY");
+		WxUser selectByWxUser = wxUserDao.selectByWxUser(user);
+		System.out.println(selectByWxUser);
 	}
 
 }

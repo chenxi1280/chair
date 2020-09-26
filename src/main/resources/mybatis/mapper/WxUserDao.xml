@@ -258,5 +258,46 @@
 	        and authorized = #{w2.authorized,jdbcType=BOOLEAN}
 	      </if>
 	</update>
-	
+	<select id="selectByWxUser" parameterType="com.mpic.evolution.chair.pojo.entity.WxUser" resultMap="BaseResultMap">
+	    select 
+	    <include refid="Base_Column_List" />
+	    from wx_user
+	    where 1=1
+		<if test="fkUserId != null">
+	        and fk_user_id = #{fkUserId,jdbcType=INTEGER}
+	      </if>
+	      <if test="openid != null">
+	        and openid = #{openid,jdbcType=VARCHAR}
+	      </if>
+	      <if test="nickname != null">
+	        and nickname = #{nickname,jdbcType=VARCHAR}
+	      </if>
+	      <if test="avatarurl != null">
+	        and avatarurl = #{avatarurl,jdbcType=VARCHAR}
+	      </if>
+	      <if test="gender != null">
+	        and gender = #{gender,jdbcType=BOOLEAN}
+	      </if>
+	      <if test="country != null">
+	        and country = #{country,jdbcType=VARCHAR}
+	      </if>
+	      <if test="province != null">
+	        and province = #{province,jdbcType=VARCHAR}
+	      </if>
+	      <if test="city != null">
+	        and city = #{city,jdbcType=VARCHAR}
+	      </if>
+	      <if test="language != null">
+	        and `language` = #{language,jdbcType=VARCHAR}
+	      </if>
+	      <if test="ctime != null">
+	        and ctime = #{ctime,jdbcType=TIMESTAMP}
+	      </if>
+	      <if test="mobile != null">
+	        and mobile = #{mobile,jdbcType=VARCHAR}
+	      </if>
+	      <if test="authorized != null">
+	        and authorized = #{authorized,jdbcType=BOOLEAN}
+	      </if>
+  	</select>
 </mapper>
