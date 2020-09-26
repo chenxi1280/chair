@@ -49,13 +49,11 @@ public class EcmArtWorkController extends BaseController{
     @RequestMapping("/getArtWorks")
     @ResponseBody
     public ResponseDTO getArtWorks(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
-    	String token = ecmArtWorkQuery.getToken();
-    	String userIdStr = JWTUtil.getUserId(token);
-    	if(StringUtils.isBlank(userIdStr) || !NumberUtils.isParsable(userIdStr)){
-    		return ResponseDTO.fail("获取作品失败");
-    	}
-    	Integer userId = Integer.parseInt(userIdStr);
-    	ecmArtWorkQuery.setFkUserid(userId);
+		Integer userIdByHandToken = getUserIdByHandToken();
+		if (userIdByHandToken == null){
+			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+		}
+		ecmArtWorkQuery.setFkUserid(userIdByHandToken);
         return ecmArtWorkService.getArtWorks(ecmArtWorkQuery);
     }
 
@@ -155,8 +153,6 @@ public class EcmArtWorkController extends BaseController{
 		return ecmArtWorkService.removeNode(ecmArtworkNodesVo);
 	}
 
-
-    
     /**
      * 	获取发布微信二维码
      * 	这里面的 scene 参数是前台要传过来的videoId
@@ -246,7 +242,7 @@ public class EcmArtWorkController extends BaseController{
 	 * @Date: 2020/8/26
 	 * 描述 :  小程序端
 	 * 			获取发现页面的热门数据 按照热门 HOT表中热度进行排序
-	 *       成功: status 200  msg "success” data "EcmArtWorkVO"
+	 *       成功: status 200  msg "success” data List<EcmartWorkVO>
 	 *       失败: status 500  msg "error“
 	 */
 	@RequestMapping("/getFindArtWorks")
@@ -262,7 +258,7 @@ public class EcmArtWorkController extends BaseController{
 	 * @Date: 2020/9/7
 	 * 描述 : 小程序端
 	 * 		获取发现页面的分类数据 按照热门 HOT表中热度进行排序
-	 *       成功: status 200  msg "success” data "EcmArtWorkVO"
+	 *       成功: status 200  msg "success” data List<EcmartWorkVO>
 	 *       失败: status 500  msg "error“
 	 */
 	@RequestMapping("/getFindSortArtWorks")
@@ -307,7 +303,7 @@ public class EcmArtWorkController extends BaseController{
 	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
 	 * @author: cxd
 	 * @Date: 2020/9/26
-	 * 描述 : 故事线获取接口 ，
+	 * 描述 : 故事线获取接口，通过作品id查询 整个 作品节点，并找到兄弟节点
 	 *       成功: status 200  msg "success”   date:
 	 *       失败: status 500  msg "error“
 	 */
