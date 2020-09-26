@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.mpic.evolution.chair.common.constant.JudgeConstant.SUCCESS;
+
 
 /**
  * @author cxd
@@ -194,13 +196,15 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
     @Override
     public ResponseDTO getFindArtWorks(EcmArtWorkQuery ecmArtWorkQuery) {
-
+        // 热度表中获取 热度前世
         List<EcmArtworkBroadcastHotVO> ecmArtworkBroadcastHotVOS = ecmArtworkBroadcastHotDao.selectFindAll(ecmArtWorkQuery);
         if (CollectionUtils.isEmpty(ecmArtworkBroadcastHotVOS)) {
             return ResponseDTO.fail(ErrorEnum.ERR_601.getText());
         }
+        // 查询对应的 作品信息 和作者信息
         List<EcmArtworkVo> list = ecmArtworkDao.selectFindArtWorks(ecmArtworkBroadcastHotVOS);
         List<EcmUserVo> userVoList = ecmUserDao.selectUserByEcmArtworkList(list);
+        // 赋值对应信息
         list.forEach(ecmArtworkVo -> {
             userVoList.forEach(ecmUserVo -> {
                 if (ecmUserVo.getPkUserId().equals(ecmArtworkVo.getFkUserid())) {
@@ -228,12 +232,15 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
     @Override
     public ResponseDTO getFindSortArtWorks(EcmArtWorkQuery ecmArtWorkQuery) {
+        // 查询对应的 作品
         List<EcmArtworkVo> list = ecmArtworkDao.selectFindSortArtWorks(ecmArtWorkQuery);
         if (CollectionUtils.isEmpty(list)) {
             return ResponseDTO.fail(ErrorEnum.ERR_601.getText());
         }
         List<EcmUserVo> userVoList = ecmUserDao.selectUserByEcmArtworkList(list);
+        // 查询对应的 作品 的 热度
         List<EcmArtworkBroadcastHotVO> ecmArtworkBroadcastHotVOS = ecmArtworkBroadcastHotDao.selectEcmArtworkList(list);
+        // 赋值对应的 热度信息
         list.forEach(ecmArtworkVo -> {
             userVoList.forEach(ecmUserVo -> {
                 // 设置作者名字
@@ -260,6 +267,8 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
             });
         });
+        // 可以做分类热度排序？
+
         //插入广告
 //        EcmArtworkVo ecmArtworkVo = new EcmArtworkVo();
 //        ecmArtworkVo.setUserName("ad");
@@ -344,45 +353,31 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         }
 
         List<EcmArtworkNodesVo> list = ecmArtworkNodesDao.selectByArtWorkId(ecmArtWorkQuery.getPkArtworkId());
-
+        //过滤 分组
         Map<Integer, List<EcmArtworkNodesVo>> collect = list.stream().filter(ecmArtworkNodesVo -> !JudgeConstant.Y.equals(ecmArtworkNodesVo.getIsDeleted())).collect(Collectors.groupingBy(EcmArtworkNodes::getParentId));
 
         List<EcmArtworkNodesDTO> artworkNodesDTOS = new ArrayList<>();
-
         list.forEach( node -> {
+            //复制兄弟节点并设置到自己上
             EcmArtworkNodesDTO ecmArtworkNodesDTO = new EcmArtworkNodesDTO();
-
             BeanUtils.copyProperties(node,ecmArtworkNodesDTO);
-
             ecmArtworkNodesDTO.setBrotherNode(collect.get(node.getParentId()));
-
             artworkNodesDTOS.add(ecmArtworkNodesDTO);
         });
+        // 设置 跳转节点信息
         artworkNodesDTOS.forEach( v -> {
             for (EcmArtworkNodesDTO ecmArtworkNodesDTO : artworkNodesDTOS) {
                 if (!StringUtils.isEmpty(ecmArtworkNodesDTO.getItems()) ){
                     if (v.getPkDetailId().equals(Integer.valueOf(ecmArtworkNodesDTO.getItems()))){
-
-//                        EcmArtworkNodesDTO ecmArtworkNodesDTOCopy = new EcmArtworkNodesDTO();
-//                        BeanUtils.copyProperties(v,ecmArtworkNodesDTOCopy);
-//                        ecmArtworkNodesDTOCopy.setPkDetailId(ecmArtworkNodesDTO.getPkDetailId());
-//                        ecmArtworkNodesDTOCopy.setALevel(ecmArtworkNodesDTO.getALevel());
-//                        ecmArtworkNodesDTOCopy.setItems(ecmArtworkNodesDTO.getItems());
-//                        ecmArtworkNodesDTOCopy.setBrotherNode(ecmArtworkNodesDTO.getBrotherNode());
-//                        ecmArtworkNodesDTO = ecmArtworkNodesDTOCopy;
-////                        BeanUtils.copyProperties(ecmArtworkNodesDTOCopy,ecmArtworkNodesDTO);
                         ecmArtworkNodesDTO.setVideoUrl(v.getVideoUrl());
                         ecmArtworkNodesDTO.setItemsBakText(v.getItemsBakText());
-//                        ecmArtworkNodesDTO.setItemsBakText
-
-
                     }
                 }
             }
         });
 
 
-        return ResponseDTO.ok("",artworkNodesDTOS);
+        return ResponseDTO.ok(SUCCESS,artworkNodesDTOS);
     }
 
 

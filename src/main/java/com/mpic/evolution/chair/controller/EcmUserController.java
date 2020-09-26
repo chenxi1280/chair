@@ -70,6 +70,15 @@ public class EcmUserController extends BaseController{
     }
 
 
+    /**
+     * @param: [ecmUserHistoryFlowVO]
+     * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+     * @author: cxd
+     * @Date: 2020/9/26
+     * 描述 : 流量审核接口 ，比较 当前视频和剩余流量关系
+     *       成功: status 200  msg "success”
+     *       失败: status 500  msg "error“
+     */
     @ResponseBody
     @RequestMapping("reduceFlow")
     ResponseDTO reduceFlow(@RequestBody EcmUserHistoryFlowVO ecmUserHistoryFlowVO){

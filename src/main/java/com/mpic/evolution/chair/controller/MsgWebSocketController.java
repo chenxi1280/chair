@@ -23,6 +23,15 @@ import java.util.List;
 public class MsgWebSocketController {
 
 
+    /**
+     * @param: [ecmInnerMessageVOS]
+     * @return: org.springframework.http.ResponseEntity<java.lang.String>
+     * @author: cxd
+     * @Date: 2020/9/26
+     * 描述 : webSocket 后台推送接口
+     *       成功: status 200  msg "success”   date:
+     *       失败: status 500  msg "error“
+     */
     @RequestMapping("/pushMsg")
     @ResponseBody
     public ResponseEntity<String> pushMsg(@RequestBody List<EcmInnerMessageVo> ecmInnerMessageVOS) {
@@ -34,7 +43,6 @@ public class MsgWebSocketController {
                     e.printStackTrace();
                 }
             });
-
             return ResponseEntity.ok("MSG SEND SUCCESS");
         }
         return ResponseEntity.ok("MSG SEND ERROR");

@@ -53,6 +53,15 @@ public interface EcmArtWorkService {
      */
     ResponseDTO addArtWork(EcmArtworkNodesVo ecmArtworkNodesVo);
 
+    /**
+     * @param: [ecmArtworkNodesVo]
+     * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+     * @author: cxd
+     * @Date: 2020/9/26
+     * 描述 : 删除节点 ，需要作品id 和节点id
+     *       成功: status 200  msg "success”
+     *       失败: status 500  msg "error“
+     */
     ResponseDTO removeNode(EcmArtworkNodesVo ecmArtworkNodesVo);
 
     /**
@@ -66,12 +75,47 @@ public interface EcmArtWorkService {
      */
     ResponseDTO getFindArtWorks(EcmArtWorkQuery ecmArtWorkQuery);
 
-
+    /**
+     * @param: [ecmArtWorkQuery]
+     * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+     * @author: cxd
+     * @Date: 2020/9/26
+     * 描述 :  发现 分类 页面获取 作品信息接口
+     *       成功: status 200  msg "success”   date: List<EcmArtworkVo>
+     *       失败: status 500  msg "error“
+     */
     ResponseDTO getFindSortArtWorks(EcmArtWorkQuery ecmArtWorkQuery);
 
+    /**
+     * @param: [ecmArtWorkQuery]
+     * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+     * @author: cxd
+     * @Date: 2020/9/26
+     * 描述 :  小程序 获取排行榜单的 数据
+     *       成功: status 200  msg "success”   date: List<EcmArtworkVo>
+     *       失败: status 500  msg "error“
+     */
     ResponseDTO getRankingArtWorks(EcmArtWorkQuery ecmArtWorkQuery);
 
+    /**
+     * @param: [ecmArtWorkQuery]
+     * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+     * @author: cxd
+     * @Date: 2020/9/26
+     * 描述 : 小程序端 搜索接口
+     *       成功: status 200  msg "success”   date: List<EcmArtworkVo>
+     *       失败: status 500  msg "error“
+     */
     ResponseDTO search(EcmArtWorkQuery ecmArtWorkQuery);
 
+    /**
+     * @param: [ecmArtWorkQuery]
+     * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+     * @author: cxd
+     * @Date: 2020/9/26
+     * 描述 : 小程序端 故事线 获取数据接口
+     *       成功: status 200  msg "success”   date:List<EcmArtworkVo>
+     *       失败: status 500  msg "error“
+     */
     ResponseDTO getArtWorkNodes(EcmArtWorkQuery ecmArtWorkQuery);
 }
