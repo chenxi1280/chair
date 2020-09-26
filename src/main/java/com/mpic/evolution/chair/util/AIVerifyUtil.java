@@ -53,7 +53,7 @@ public class AIVerifyUtil {
                 if(array!=null && !array.isEmpty()){
                     for(Object o : array){
                         JSONArray oArray = (JSONArray)((JSONObject)o).get("Keywords");
-                        if(!oArray.isEmpty()){
+                        if(oArray != null && !oArray.isEmpty()){
                             for(int i = 0; i < oArray.size(); i++){
                                 res.add(oArray.getString(i));
                             }
@@ -78,9 +78,9 @@ public class AIVerifyUtil {
         System.out.println(res);
         res = convertContent("的，操你妈，草拟吗，草泥马，白花花的奶子");
         System.out.println(res);
-        res = convertContent("刘真？呵呵，我是文明人，我讲文明化");
+        res = convertContent("大哈哈傻哈哈逼");
         System.out.println(res);
-        res = convertContent(""); 
+        res = convertContent("11111111111222");
         System.out.println(res);
 
     }
