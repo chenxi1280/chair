@@ -57,24 +57,32 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			EcmArtwork ecmArtwork = ecmArtworkDao.selectByPrimaryKey(ecmArtworkVo.getPkArtworkId());
 			ecmArtworkVo.setLastModifyDate(new Date());
 			//  作品通过审核发布
+			Boolean sendFail = false ;
 			if ( "publish".equals(ecmArtworkVo.getCode()) ){
-				if (ecmArtwork.getArtworkStatus() != 4 ){
-					return ResponseDTO.fail("请先审核作品");
-				}
-				EcmArtworkBroadcastHotVO ecmArtworkBroadcastHotVO = ecmArtworkBroadcastHotDao.selectByArtworkId(ecmArtworkVo.getPkArtworkId());
-				if (ecmArtworkBroadcastHotVO == null){
-					ecmArtworkBroadcastHotVO  = new EcmArtworkBroadcastHotVO();
-					ecmArtworkBroadcastHotVO.setWaitCount(0);
-					ecmArtworkBroadcastHotVO.setBroadcastCount(0);
-					ecmArtworkBroadcastHotVO.setFkArkworkId(ecmArtworkVo.getPkArtworkId());
-					ecmArtworkBroadcastHotDao.insertSelective(ecmArtworkBroadcastHotVO);
+				if (ecmArtwork.getArtworkStatus() == 2  ||  ecmArtwork.getArtworkStatus() == 3 ){
+					EcmArtworkBroadcastHotVO ecmArtworkBroadcastHotVO = ecmArtworkBroadcastHotDao.selectByArtworkId(ecmArtworkVo.getPkArtworkId());
+					if (ecmArtworkBroadcastHotVO == null){
+						ecmArtworkBroadcastHotVO  = new EcmArtworkBroadcastHotVO();
+						ecmArtworkBroadcastHotVO.setWaitCount(0);
+						ecmArtworkBroadcastHotVO.setBroadcastCount(0);
+						ecmArtworkBroadcastHotVO.setFkArkworkId(ecmArtworkVo.getPkArtworkId());
+						ecmArtworkBroadcastHotDao.insertSelective(ecmArtworkBroadcastHotVO);
+					}
 					ecmArtworkVo.setArtworkStatus((short)4);
+				}else {
+					return ResponseDTO.fail(JudgeConstant.FAIL);
 				}
 			}
+
 			//  作品请求审核
 			if ( "verify".equals(ecmArtworkVo.getCode())){
 				// 重点优化需要 线程优化
-				new Thread(() -> videoHandleConsumerService.handleArtwork(ecmArtworkVo.getPkArtworkId())).start();
+				try {
+					new Thread(() -> videoHandleConsumerService.handleArtwork(ecmArtworkVo.getPkArtworkId())).start();
+				}catch (Exception e){
+					e.printStackTrace();
+				}
+
 				ecmArtworkVo.setArtworkStatus((short)1);
 			}
 			if ( "cancel".equals(ecmArtworkVo.getCode() )){
