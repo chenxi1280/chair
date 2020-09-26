@@ -159,8 +159,9 @@ public class WxPersonalCenterController {
         		+ "access_token=%s", accessToken);
         JSONObject param = new JSONObject();
         param.put("page","pages/play/play");
-        String artWorkId = ecmArtWorkQuery.getArtWorkId();
-        param.put("scene",artWorkId);
+        Integer artWorkId = ecmArtWorkQuery.getPkArtworkId();
+        String string = "artWorkId="+artWorkId+"=status=4";
+        param.put("scene",string);
 		String Base64Str = HttpMpicUtil.sendPostForBase64(url, param);
 		return Base64Str;
     }

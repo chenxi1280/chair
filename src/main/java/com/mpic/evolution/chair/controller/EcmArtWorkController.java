@@ -212,7 +212,8 @@ public class EcmArtWorkController extends BaseController{
         param.put("page","pages/play/play");
         String artWorkId = ecmArtWorkQuery.getArtWorkId();
         //scene的value 是 videoId
-        param.put("scene",artWorkId);
+        String string = "artWorkId="+artWorkId+"=status=1";
+        param.put("scene",string);
 		String Base64Str = HttpMpicUtil.sendPostForBase64(url, param);
 		return Base64Str;
     }
