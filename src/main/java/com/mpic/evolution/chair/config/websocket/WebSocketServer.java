@@ -97,10 +97,10 @@ public class WebSocketServer {
         //消息保存到数据库、redis
         try {
             if (StringUtils.isNotBlank(message)) {
-                if (message.equals("ping")) {
+                String ping = "ping";
+                if (message.equals(ping)) {
                     log.info("用户:" + userId + ",心跳");
                 }
-
                 log.info("用户消息:" + userId + ",报文:" + message);
                 //解析发送的报文
                 JSONObject jsonObject = JSON.parseObject(message);

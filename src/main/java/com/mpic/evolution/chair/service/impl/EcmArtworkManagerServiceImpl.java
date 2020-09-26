@@ -4,9 +4,12 @@ import java.util.Date;
 
 import javax.annotation.Resource;
 
+import com.mpic.evolution.chair.common.constant.JudgeConstant;
 import com.mpic.evolution.chair.dao.EcmArtworkBroadcastHotDao;
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHot;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkBroadcastHotVO;
+import com.mpic.evolution.chair.service.VideoHandleConsumerService;
+import com.qcloud.vod.common.StringUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Service;
@@ -38,32 +41,49 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 
 	@Resource
 	EcmArtworkBroadcastHotDao ecmArtworkBroadcastHotDao;
+
+	@Resource
+	VideoHandleConsumerService videoHandleConsumerService;
 	
 	@Override
 	public ResponseDTO modifyArtWorkStatus(EcmArtworkVo ecmArtworkVo) {
 		JSONObject message = this.getMessage();
+//		delete 删除 publish发布 cancel撤销审核 verify 提交审核
 		try {
+			if (StringUtil.isEmpty(ecmArtworkVo.getCode())) {
+				return ResponseDTO.fail(JudgeConstant.FAIL);
+			}
 			JSONObject condition = this.getCondition();
-			EcmArtwork ecmArtwork = new EcmArtwork();
-			ecmArtwork.setPkArtworkId(ecmArtworkVo.getPkArtworkId());
-			ecmArtwork.setArtworkStatus(condition.getShort(ecmArtworkVo.getCode()));
-			Integer userId = this.getIdByToken(ecmArtworkVo.getToken());
-			ecmArtwork.setFkUserid(userId);
-			ecmArtwork.setArtworkName(ecmArtworkVo.getArtworkName());
-			ecmArtwork.setLastModifyDate(new Date());
-			// 4 作品通过审核
-			int artWork = 4;
-			if (ecmArtwork.getArtworkStatus() == artWork){
-				EcmArtworkBroadcastHotVO ecmArtworkBroadcastHotVO = ecmArtworkBroadcastHotDao.selectByArtworkId(ecmArtwork.getPkArtworkId());
-				if ( ecmArtworkBroadcastHotVO == null){
+			EcmArtwork ecmArtwork = ecmArtworkDao.selectByPrimaryKey(ecmArtworkVo.getPkArtworkId());
+			ecmArtworkVo.setLastModifyDate(new Date());
+			//  作品通过审核发布
+			if ( "publish".equals(ecmArtworkVo.getCode()) ){
+				if (ecmArtwork.getArtworkStatus() != 4 ){
+					return ResponseDTO.fail("请先审核作品");
+				}
+				EcmArtworkBroadcastHotVO ecmArtworkBroadcastHotVO = ecmArtworkBroadcastHotDao.selectByArtworkId(ecmArtworkVo.getPkArtworkId());
+				if (ecmArtworkBroadcastHotVO == null){
 					ecmArtworkBroadcastHotVO  = new EcmArtworkBroadcastHotVO();
 					ecmArtworkBroadcastHotVO.setWaitCount(0);
 					ecmArtworkBroadcastHotVO.setBroadcastCount(0);
-					ecmArtworkBroadcastHotVO.setFkArkworkId(ecmArtwork.getPkArtworkId());
+					ecmArtworkBroadcastHotVO.setFkArkworkId(ecmArtworkVo.getPkArtworkId());
 					ecmArtworkBroadcastHotDao.insertSelective(ecmArtworkBroadcastHotVO);
+					ecmArtworkVo.setArtworkStatus((short)4);
 				}
 			}
-			ecmArtworkDao.updateByPrimaryKeySelective(ecmArtwork);
+			//  作品请求审核
+			if ( "verify".equals(ecmArtworkVo.getCode())){
+				// 重点优化需要 线程优化
+				new Thread(() -> videoHandleConsumerService.handleArtwork(ecmArtworkVo.getPkArtworkId())).start();
+				ecmArtworkVo.setArtworkStatus((short)1);
+			}
+			if ( "cancel".equals(ecmArtworkVo.getCode() )){
+				ecmArtworkVo.setArtworkStatus((short)0);
+			}
+			if ( "delete".equals(ecmArtworkVo.getCode() )){
+				ecmArtworkVo.setArtworkStatus((short)5);
+			}
+			ecmArtworkDao.updateByPrimaryKeySelective(ecmArtworkVo);
 			return ResponseDTO.ok(message.getString(ecmArtworkVo.getCode())+"成功");
 		} catch (Exception e) {
 			return ResponseDTO.fail(message.getString(ecmArtworkVo.getCode())+"失败");

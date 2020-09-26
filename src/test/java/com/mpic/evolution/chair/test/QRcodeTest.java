@@ -9,8 +9,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import com.alibaba.fastjson.JSONObject;
-import com.mpic.evolution.chair.common.constant.publishConstants;
-import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
+import com.mpic.evolution.chair.common.constant.PublishConstants;
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
@@ -61,7 +60,7 @@ public class QRcodeTest {
      */
     public void test2() {
 
-        String accessToken = getAccessToken(publishConstants.appid,publishConstants.secret);
+        String accessToken = getAccessToken(PublishConstants.appid, PublishConstants.secret);
         String url = String.format("https://api.weixin.qq.com/wxa/getwxacodeunlimit?"
         		+ "access_token=%s", accessToken);
         JSONObject param = new JSONObject();

@@ -5,7 +5,6 @@ import javax.annotation.Resource;
 
 import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.HttpKit;
-import com.mpic.evolution.chair.common.constant.publishConstants;
+import com.mpic.evolution.chair.common.constant.PublishConstants;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
@@ -221,7 +220,7 @@ public class EcmArtWorkController extends BaseController{
      */
     private String getAccessToken() {
     	String requestUrl = String.format("https://api.weixin.qq.com/cgi-bin/token?"
-    			+ "grant_type=client_credential&appid=%s&secret=%s", publishConstants.appid,publishConstants.secret);
+    			+ "grant_type=client_credential&appid=%s&secret=%s", PublishConstants.appid, PublishConstants.secret);
         //将返回的access_token 存入redis 过期时间3000秒
     	String jsonStr = HttpKit.get(requestUrl);
     	JSONObject result = JSONObject.parseObject(jsonStr);

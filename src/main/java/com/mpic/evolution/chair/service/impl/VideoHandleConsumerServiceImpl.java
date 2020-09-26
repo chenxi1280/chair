@@ -17,12 +17,15 @@ import com.tencentcloudapi.vod.v20180717.VodClient;
 import com.tencentcloudapi.vod.v20180717.models.ProcessMediaByProcedureRequest;
 import com.tencentcloudapi.vod.v20180717.models.ProcessMediaByProcedureResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 
 import javax.annotation.Resource;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Date;
 import java.util.List;
 
 import static com.mpic.evolution.chair.common.constant.CosConstant.*;
@@ -107,5 +110,19 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
         }
 
         return null;
+    }
+
+    @Override
+    public void handleArtwork(Integer pkArtworkId) {
+        List<EcmArtworkNodesVo> ecmArtworkNodesVos = ecmArtworkNodesDao.selectByArtWorkId(pkArtworkId);
+        if (!CollectionUtils.isEmpty(ecmArtworkNodesVos)){
+            ecmArtworkNodesVos.forEach( ecmArtworkNodesVo ->  {
+                if (!StringUtils.isEmpty(ecmArtworkNodesVo.getVideoCode())){
+                    this.handleOneVideo(ecmArtworkNodesVo.getVideoCode());
+                    System.out.println(ecmArtworkNodesVo.getVideoCode() + "已发送审核");
+                }
+            });
+        }
+
     }
 }
