@@ -1,6 +1,7 @@
 package com.mpic.evolution.chair.service;
 
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
+import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
 import com.mpic.evolution.chair.pojo.vo.WxPlayRecordVo;
 import com.mpic.evolution.chair.pojo.vo.WxReportHistoryVo;
 
@@ -24,4 +25,6 @@ public interface WxPlayService {
 	ResponseDTO playArtWorkByChildTree(WxPlayRecordVo wxPlayRecordVo);
 
 	ResponseDTO savaReportInfo(WxReportHistoryVo wxReportHistoryVo);
+
+    ResponseDTO getUserIdByArtwordId(EcmArtWorkQuery ecmArtWorkQuery);
 }

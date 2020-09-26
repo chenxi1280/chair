@@ -6,12 +6,11 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import com.mpic.evolution.chair.dao.*;
+import com.mpic.evolution.chair.pojo.entity.EcmArtwork;
+import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
 import org.springframework.stereotype.Service;
 
-import com.mpic.evolution.chair.dao.EcmArtworkBroadcastHistoryDao;
-import com.mpic.evolution.chair.dao.EcmArtworkBroadcastHotDao;
-import com.mpic.evolution.chair.dao.EcmArtworkNodesDao;
-import com.mpic.evolution.chair.dao.EcmReportHistroyDao;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHistory;
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHot;
@@ -42,6 +41,8 @@ public class WxPlayServiceImpl implements WxPlayService {
     @Resource
     EcmReportHistroyDao ecmReportHistroyDao;
 
+	@Resource
+	EcmArtworkDao ecmArtworkDao;
 	/**
 	 * 	根据artworkId 来查询作品树
 	 * @param WxPlayRecordVo
@@ -128,4 +129,10 @@ public class WxPlayServiceImpl implements WxPlayService {
 			return ResponseDTO.ok("保存举报内容成功");
 		}
 	}
+
+    @Override
+    public ResponseDTO getUserIdByArtwordId(EcmArtWorkQuery ecmArtWorkQuery) {
+		EcmArtwork ecmArtwork = ecmArtworkDao.selectByPrimaryKey(ecmArtWorkQuery.getPkArtworkId());
+		return ResponseDTO.ok("success",ecmArtwork.getFkUserid());
+    }
 }

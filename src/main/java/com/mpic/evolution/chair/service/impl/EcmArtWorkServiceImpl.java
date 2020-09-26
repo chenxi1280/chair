@@ -196,12 +196,12 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                 }
             });
         });
-        EcmArtworkVo ecmArtworkVo = new EcmArtworkVo();
-        ecmArtworkVo.setUserName("ad");
-        ecmArtworkVo.setLogoPath("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1599039415911&di=41f622b164548552e3e407e5e955b940&imgtype=0&src=http%3A%2F%2Fa4.att.hudong.com%2F52%2F52%2F01200000169026136208529565374.jpg");
-        ecmArtworkVo.setArtworkName("好产品XXX造");
-        ecmArtworkVo.setCode("ad");
-        list.add(1, ecmArtworkVo);
+//        EcmArtworkVo ecmArtworkVo = new EcmArtworkVo();
+//        ecmArtworkVo.setUserName("ad");
+//        ecmArtworkVo.setLogoPath("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1599039415911&di=41f622b164548552e3e407e5e955b940&imgtype=0&src=http%3A%2F%2Fa4.att.hudong.com%2F52%2F52%2F01200000169026136208529565374.jpg");
+//        ecmArtworkVo.setArtworkName("好产品XXX造");
+//        ecmArtworkVo.setCode("ad");
+//        list.add(1, ecmArtworkVo);
         return ResponseDTO.ok("sucess", list);
     }
 
@@ -241,12 +241,12 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             });
         });
         //插入广告
-        EcmArtworkVo ecmArtworkVo = new EcmArtworkVo();
-        ecmArtworkVo.setUserName("ad");
-        ecmArtworkVo.setLogoPath("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1599039415911&di=41f622b164548552e3e407e5e955b940&imgtype=0&src=http%3A%2F%2Fa4.att.hudong.com%2F52%2F52%2F01200000169026136208529565374.jpg");
-        ecmArtworkVo.setArtworkName("好产品XXX造");
-        ecmArtworkVo.setCode("ad");
-        list.add(1, ecmArtworkVo);
+//        EcmArtworkVo ecmArtworkVo = new EcmArtworkVo();
+//        ecmArtworkVo.setUserName("ad");
+//        ecmArtworkVo.setLogoPath("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1599039415911&di=41f622b164548552e3e407e5e955b940&imgtype=0&src=http%3A%2F%2Fa4.att.hudong.com%2F52%2F52%2F01200000169026136208529565374.jpg");
+//        ecmArtworkVo.setArtworkName("好产品XXX造");
+//        ecmArtworkVo.setCode("ad");
+//        list.add(1, ecmArtworkVo);
         return ResponseDTO.ok("sucess", list);
     }
 
