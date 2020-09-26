@@ -160,6 +160,7 @@ public class WxLoginController {
 	@ResponseBody
 	public ResponseDTO loginByToken(@RequestBody EcmUserVo ecmUserVo) {
 		JSONArray data = new JSONArray();
+		JSONObject object = new JSONObject();
 		EcmUser ecmUser = new EcmUser();
 		EcmUser user = new EcmUser();
 		EcmUserVo userVo = new EcmUserVo();
@@ -203,7 +204,10 @@ public class WxLoginController {
 			user.setLastLoginTime(new Date());
 			user.setUpdateTime(new Date());
 			ecmUserService.updateEcmUserById(user, userVo);
-			return ResponseDTO.ok("登陆成功", token);
+			wxLoginService.updateBindUserId(ecmUserVo,ecmUser);
+			object.put("token", token);
+			object.put("userId", ecmUser.getPkUserId());
+			return ResponseDTO.ok("登陆成功", object);
 		} catch (MyBatisSystemException e) {
 			log.error("账号在数据库中有多条记录");
 			e.printStackTrace();

@@ -1,26 +1,27 @@
 package com.mpic.evolution.chair.service.impl;
 
+import java.util.Date;
+
 import javax.annotation.Resource;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+
 import com.mpic.evolution.chair.common.constant.SecretKeyConstants;
+import com.mpic.evolution.chair.dao.EcmUserDao;
 import com.mpic.evolution.chair.dao.EcmUserFlowDao;
 import com.mpic.evolution.chair.dao.EcmUserHistoryFlowDao;
+import com.mpic.evolution.chair.dao.WxUserDao;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
+import com.mpic.evolution.chair.pojo.entity.EcmUser;
 import com.mpic.evolution.chair.pojo.entity.EcmUserFlow;
 import com.mpic.evolution.chair.pojo.query.EcmUserFlowQuery;
 import com.mpic.evolution.chair.pojo.vo.EcmUserFlowVO;
 import com.mpic.evolution.chair.pojo.vo.EcmUserHistoryFlowVO;
-import com.mpic.evolution.chair.util.EncryptUtil;
-import org.springframework.stereotype.Service;
-
-import com.mpic.evolution.chair.dao.EcmUserDao;
-import com.mpic.evolution.chair.pojo.entity.EcmUser;
 import com.mpic.evolution.chair.pojo.vo.EcmUserVo;
 import com.mpic.evolution.chair.service.EcmUserService;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
-
-import java.util.Date;
+import com.mpic.evolution.chair.util.EncryptUtil;
 
 @Service
 public class EcmUserServiceImpl implements EcmUserService {
@@ -31,6 +32,8 @@ public class EcmUserServiceImpl implements EcmUserService {
 	EcmUserFlowDao ecmUserFlowDao;
 	@Resource
 	EcmUserHistoryFlowDao ecmUserHistoryFlowDao;
+	@Resource
+	WxUserDao wxUserDao;
 
 	@Override
 	public EcmUser getUserInfos(EcmUser record) {

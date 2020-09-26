@@ -15,7 +15,6 @@ import com.mpic.evolution.chair.common.constant.publishConstants;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmUser;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
-import com.mpic.evolution.chair.pojo.vo.TestVo;
 import com.mpic.evolution.chair.service.EcmUserService;
 import com.mpic.evolution.chair.service.WxPersonalCenterService;
 import com.mpic.evolution.chair.util.HttpMpicUtil;

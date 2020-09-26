@@ -72,4 +72,15 @@ public class WxLoginServiceImpl implements WxLoginService {
 		}	
 	}
 
+	@Override
+	public void updateBindUserId(EcmUserVo ecmUserVo, EcmUser ecmUser) {
+		Integer userId = ecmUser.getPkUserId();
+		String openid = ecmUserVo.getOpenid();
+		WxUser wxUser1 = new WxUser();
+		wxUser1.setFkUserId(userId);
+		WxUser wxUser2 = new WxUser();
+		wxUser2.setOpenid(openid);
+		wxUserDao.updateByWxUser(wxUser1, wxUser2);
+	}
+
 }

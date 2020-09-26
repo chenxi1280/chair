@@ -18,4 +18,6 @@ public interface WxLoginService {
 
 	Integer savaUser(EcmUser user, EcmUserVo ecmUserVo);
 
+	void updateBindUserId(EcmUserVo ecmUserVo, EcmUser ecmUser);
+
 }
