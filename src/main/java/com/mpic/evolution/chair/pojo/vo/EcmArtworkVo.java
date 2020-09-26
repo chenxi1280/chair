@@ -4,6 +4,7 @@ import com.mpic.evolution.chair.pojo.entity.EcmArtwork;
 import lombok.Data;
 
 /**
+ * @author Administrator
  * @Classname EcmArtworkVo
  * @Description TODO
  * @Date 2020/8/3 17:58

@@ -3,6 +3,7 @@ package com.mpic.evolution.chair.controller;
 
 import javax.annotation.Resource;
 
+import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Controller;
@@ -75,7 +76,7 @@ public class EcmArtWorkController extends BaseController{
 
 		Integer userIdByHandToken = getUserIdByHandToken();
 		if (userIdByHandToken == null){
-			return ResponseDTO.fail("非法访问");
+			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
 		}
 		ecmArtWorkQuery.setFkUserid(userIdByHandToken);
 		return ecmArtWorkService.getArtWork(ecmArtWorkQuery);
@@ -96,7 +97,7 @@ public class EcmArtWorkController extends BaseController{
 		Integer userId = getUserIdByHandToken();
 
 		if (userId== null){
-			return ResponseDTO.fail("非法访问");
+			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
 		}
 		if (ecmArtworkNodes.getParentId() == null){
             return ResponseDTO.fail("父节点id为空");
@@ -128,7 +129,7 @@ public class EcmArtWorkController extends BaseController{
     public ResponseDTO addArtWork(@RequestBody EcmArtworkNodesVo ecmArtworkNodesVo){
 		String token = getRequest().getHeader("Authorization");
 		if (StringUtil.isEmpty(token)){
-			return ResponseDTO.fail("非法访问");
+			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
 		}
         return ecmArtWorkService.addArtWork(ecmArtworkNodesVo);
     }
@@ -147,7 +148,7 @@ public class EcmArtWorkController extends BaseController{
 	public ResponseDTO removeNode(@RequestBody EcmArtworkNodesVo ecmArtworkNodesVo){
 		Integer userId = getUserIdByHandToken();
 		if (userId == null){
-			return ResponseDTO.fail("非法访问");
+			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
 		}
 		ecmArtworkNodesVo.setFkUserId(userId);
 
@@ -170,7 +171,7 @@ public class EcmArtWorkController extends BaseController{
     	String token = ecmArtWorkQuery.getToken();
     	String userId = JWTUtil.getUserId(token);
     	if (StringUtil.isEmpty(userId)){
-			return ResponseDTO.fail("非法访问");
+			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
 		}
     	//如果是null返回false
     	boolean hasKey = redisUtil.hasKey("QRCode");
@@ -301,7 +302,15 @@ public class EcmArtWorkController extends BaseController{
 		return ecmArtWorkService.search(ecmArtWorkQuery);
 	}
 
-
+	/**
+	 * @param: [ecmArtWorkQuery]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2020/9/26
+	 * 描述 : 故事线获取接口 ，
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
 	@RequestMapping("/getArtWorkNodes")
 	@ResponseBody
 	public ResponseDTO getArtWorkNodes(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){

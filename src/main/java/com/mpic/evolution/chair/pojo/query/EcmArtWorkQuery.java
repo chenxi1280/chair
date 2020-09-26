@@ -3,6 +3,7 @@ package com.mpic.evolution.chair.pojo.query;
 import lombok.Data;
 
 /**
+ * @author Administrator
  * @Classname EcmArtWorkQuery
  * @Description TODO
  * @Date 2020/8/3 17:32

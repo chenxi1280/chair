@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
 import com.mpic.evolution.chair.pojo.query.EcmInnerMessageQurey;
 import com.mpic.evolution.chair.util.JWTUtil;
 import com.mpic.evolution.chair.util.StringUtils;
@@ -49,7 +50,7 @@ public class EcmInnerMessageController {
     @ResponseBody
 	public ResponseDTO batchDelete(@RequestBody EcmInnerMessageQurey ecmInnerMessageQurey) {
 		if (StringUtil.isEmpty(ecmInnerMessageQurey.getToken())){
-			return ResponseDTO.fail("非法访问");
+			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
 		}
 		if (CollectionUtils.isEmpty(ecmInnerMessageQurey.getMessageIds()) ){
 			return ResponseDTO.ok("无新消息可操作！");
@@ -66,7 +67,7 @@ public class EcmInnerMessageController {
     @ResponseBody
 	public ResponseDTO batchModifyRead(@RequestBody EcmInnerMessageQurey ecmInnerMessageQurey) {
     	if (StringUtil.isEmpty(ecmInnerMessageQurey.getToken())){
-    		return ResponseDTO.fail("非法访问");
+    		return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
 		}
 		String userId = JWTUtil.getUserId(ecmInnerMessageQurey.getToken());
 		ecmInnerMessageQurey.setPkUserId(Integer.valueOf(userId));

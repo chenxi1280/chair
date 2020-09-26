@@ -45,8 +45,12 @@ public enum ErrorEnum {
     ERR_401("401", "评论插入失败！"),
 
     //5开头为举报等相关
-    ERR_500("500", "相同作品只能举报一次哦！");
+    ERR_500("500", "相同作品只能举报一次哦！"),
 
+
+    //用户相关的
+    ERR_603("603", "非法访问"),
+    ERR_601("601", "无数据");
 
     private String value;
     private String text;

@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import com.mpic.evolution.chair.common.constant.JudgeConstant;
 import com.mpic.evolution.chair.dao.*;
 import com.mpic.evolution.chair.pojo.entity.EcmArtwork;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
@@ -54,7 +55,7 @@ public class WxPlayServiceImpl implements WxPlayService {
         if (list.isEmpty()) {
             return ResponseDTO.fail("查询id无子节点");
         }
-        List<EcmArtworkNodesVo> collect = list.stream().filter(ecmArtworkNodesVo -> !"Y".equals(ecmArtworkNodesVo.getIsDeleted())).collect(Collectors.toList());
+        List<EcmArtworkNodesVo> collect = list.stream().filter(ecmArtworkNodesVo -> !JudgeConstant.Y.equals(ecmArtworkNodesVo.getIsDeleted())).collect(Collectors.toList());
         return ResponseDTO.ok("success", TreeUtil.buildTree(collect).get(0));
     }
 	
@@ -94,7 +95,7 @@ public class WxPlayServiceImpl implements WxPlayService {
         if (list.isEmpty()) {
             return ResponseDTO.fail("查询id无子节点");
         }
-        List<EcmArtworkNodesVo> collect = list.stream().filter(ecmArtworkNodesVo -> !"Y".equals(ecmArtworkNodesVo.getIsDeleted())).collect(Collectors.toList());
+        List<EcmArtworkNodesVo> collect = list.stream().filter(ecmArtworkNodesVo -> !JudgeConstant.Y.equals(ecmArtworkNodesVo.getIsDeleted())).collect(Collectors.toList());
         Integer detailId = wxPlayRecordVo.getDetailId();
         try {
             EcmArtworkNodesVo ecmArtworkNodesVo = TreeUtil.buildTreeByDetailId(collect, detailId).get(0);

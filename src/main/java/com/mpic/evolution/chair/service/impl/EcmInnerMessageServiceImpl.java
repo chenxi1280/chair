@@ -63,7 +63,7 @@ public class EcmInnerMessageServiceImpl implements EcmInnerMessageService{
 			return ResponseDTO.fail("网络错误");
 		}
 	}
-	@Transactional
+	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public ResponseDTO batchModifyRead(EcmInnerMessageQurey ecmInnerMessageQurey) {
 		try {

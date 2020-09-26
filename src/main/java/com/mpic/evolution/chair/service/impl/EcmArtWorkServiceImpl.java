@@ -1,5 +1,7 @@
 package com.mpic.evolution.chair.service.impl;
 
+import com.mpic.evolution.chair.common.constant.JudgeConstant;
+import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
 import com.mpic.evolution.chair.dao.*;
 import com.mpic.evolution.chair.pojo.dto.EcmArtworkNodesDTO;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
@@ -44,18 +46,35 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
     @Override
     public ResponseDTO getArtWorks(EcmArtWorkQuery ecmArtWorkQuery) {
+        List<EcmArtworkVo> ecmArtworkVoList = ecmArtworkDao.selectArtWorks(ecmArtWorkQuery);
+        List<EcmArtworkVo> collect = ecmArtworkVoList.stream().filter(ecmArtworkVo -> ecmArtworkVo.getArtworkStatus() == 4).collect(Collectors.toList());
 
-        return ResponseDTO.ok("success", ecmArtworkDao.selectArtWorks(ecmArtWorkQuery));
+        if (!CollectionUtils.isEmpty(collect)){
+            List<EcmArtworkBroadcastHotVO> ecmArtworkBroadcastHotVOS = ecmArtworkBroadcastHotDao.selectEcmArtworkList(collect);
+
+            ecmArtworkVoList.forEach( ecmArtworkVo ->  {
+                ecmArtworkBroadcastHotVOS.forEach( ecmArtworkBroadcastHotVO ->  {
+                    if (ecmArtworkBroadcastHotVO.getFkArkworkId().equals(ecmArtworkVo.getPkArtworkId())){
+                        ecmArtworkVo.setHotCount(ecmArtworkBroadcastHotVO.getBroadcastCount());
+                    }
+                });
+                if (ecmArtworkVo.getHotCount()==null){
+                    ecmArtworkVo.setHotCount(0);
+                }
+            });
+        }
+
+        return ResponseDTO.ok("success",ecmArtworkVoList);
     }
 
     @Override
     public ResponseDTO getArtWork(EcmArtWorkQuery ecmArtWorkQuery) {
         EcmArtwork ecmArtwork = ecmArtworkDao.selectByPrimaryKey(ecmArtWorkQuery.getPkArtworkId());
         if (ecmArtwork == null) {
-            return ResponseDTO.fail("查询id为空");
+            return ResponseDTO.fail(ErrorEnum.ERR_003.getText());
         }
         if (!ecmArtWorkQuery.getFkUserid().equals(ecmArtwork.getFkUserid()) ) {
-            return ResponseDTO.fail("非法访问");
+            return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
         }
 
         List<EcmArtworkNodesVo> list = ecmArtworkNodesDao.selectByArtWorkId(ecmArtWorkQuery.getPkArtworkId());
@@ -64,9 +83,9 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             if (!StringUtils.isEmpty(node.getItems()) && node.getALevel() != null) {
                 if (node.getALevel().equals(1)) {
                     for (EcmArtworkNodesVo ecmArtworkNodesVo : list) {
-                        if (!"Y".equals(ecmArtworkNodesVo.getIsDeleted())) {
+                        if (!JudgeConstant.Y.equals(ecmArtworkNodesVo.getIsDeleted())) {
                             if (ecmArtworkNodesVo.getPkDetailId().equals(Integer.valueOf(node.getItems())) ) {
-                                if ( "Y".equals(ecmArtworkNodesVo.getIsDeleted()) ){
+                                if ( JudgeConstant.Y.equals(ecmArtworkNodesVo.getIsDeleted()) ){
                                     node.setItems(null);
                                 }else {
                                     EcmArtworkNodesDTO ecmArtworkNodesDTO = new EcmArtworkNodesDTO();
@@ -81,14 +100,14 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             }
         }
 
-        List<EcmArtworkNodesVo> collect = list.stream().filter(ecmArtworkNodesVo -> !"Y".equals(ecmArtworkNodesVo.getIsDeleted())).collect(Collectors.toList());
+        List<EcmArtworkNodesVo> collect = list.stream().filter(ecmArtworkNodesVo -> !JudgeConstant.Y.equals(ecmArtworkNodesVo.getIsDeleted())).collect(Collectors.toList());
 
         if (CollectionUtils.isEmpty(collect)){
-            return ResponseDTO.ok("无数据");
+            return ResponseDTO.ok(ErrorEnum.ERR_601.getText());
         }
         collect.get(0).setArtWorkTips(ecmArtwork.getFourLetterTips());
         if (list.isEmpty()) {
-            return ResponseDTO.fail("查询id无子节点");
+            return ResponseDTO.fail(ErrorEnum.ERR_200.getText());
         }
         return ResponseDTO.ok("success", TreeUtil.buildTree(collect).get(0));
     }
@@ -98,7 +117,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
         EcmArtwork ecmArtwork = ecmArtworkDao.selectByPrimaryKey(ecmArtworkNodes.getFkArtworkId());
         if (!ecmArtwork.getFkUserid().equals(ecmArtworkNodes.getFkUserId())) {
-            return ResponseDTO.fail("非法访问");
+            return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
         }
         String videoCode = ecmArtworkNodes.getVideoCode();
         if (StringUtils.isNotBlank(videoCode)) {
@@ -111,7 +130,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                 processMediaByProcedureDao.insertUnHandledVideo(vo);
             }
         }
-        if ("Y".equals(ecmArtworkNodes.getIsleaf())) {
+        if (JudgeConstant.Y.equals(ecmArtworkNodes.getIsleaf())) {
             ecmArtworkNodes.setIsleaf("");
             ecmArtworkNodesDao.updateByPrimaryKeySelective(ecmArtworkNodes);
             // 跳转节点的数据
@@ -142,12 +161,13 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ResponseDTO addArtWork(EcmArtworkNodesVo ecmArtworkNodesVo) {
         // 在 saveArtwork 中 出现 异常后 进行事务回滚操作 并返回错误
         try {
             saveArtwork(ecmArtworkNodesVo);
         } catch (Exception e) {
+            e.printStackTrace();
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return ResponseDTO.fail("error");
         }
@@ -162,7 +182,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         }
         EcmArtwork ecmArtwork = ecmArtworkDao.selectByPrimaryKey(ecmArtworkNodesVo.getFkArtworkId());
         if (!ecmArtwork.getFkUserid().equals(ecmArtworkNodesVo.getFkUserId())) {
-            return ResponseDTO.fail("非法访问");
+            return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
         }
 
         if (ecmArtworkNodesVo.getPkDetailId() != null) {
@@ -177,7 +197,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
         List<EcmArtworkBroadcastHotVO> ecmArtworkBroadcastHotVOS = ecmArtworkBroadcastHotDao.selectFindAll(ecmArtWorkQuery);
         if (CollectionUtils.isEmpty(ecmArtworkBroadcastHotVOS)) {
-            return ResponseDTO.fail("无数据");
+            return ResponseDTO.fail(ErrorEnum.ERR_601.getText());
         }
         List<EcmArtworkVo> list = ecmArtworkDao.selectFindArtWorks(ecmArtworkBroadcastHotVOS);
         List<EcmUserVo> userVoList = ecmUserDao.selectUserByEcmArtworkList(list);
@@ -210,7 +230,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
     public ResponseDTO getFindSortArtWorks(EcmArtWorkQuery ecmArtWorkQuery) {
         List<EcmArtworkVo> list = ecmArtworkDao.selectFindSortArtWorks(ecmArtWorkQuery);
         if (CollectionUtils.isEmpty(list)) {
-            return ResponseDTO.fail("无数据");
+            return ResponseDTO.fail(ErrorEnum.ERR_601.getText());
         }
         List<EcmUserVo> userVoList = ecmUserDao.selectUserByEcmArtworkList(list);
         List<EcmArtworkBroadcastHotVO> ecmArtworkBroadcastHotVOS = ecmArtworkBroadcastHotDao.selectEcmArtworkList(list);
@@ -256,7 +276,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
     public ResponseDTO getRankingArtWorks(EcmArtWorkQuery ecmArtWorkQuery) {
         List<EcmArtworkBroadcastHotVO> ecmArtworkBroadcastHotVOS = ecmArtworkBroadcastHotDao.selectFindAll(ecmArtWorkQuery);
         if (CollectionUtils.isEmpty(ecmArtworkBroadcastHotVOS)) {
-            return ResponseDTO.fail("无数据");
+            return ResponseDTO.fail(ErrorEnum.ERR_601.getText());
         }
         List<EcmArtworkVo> list = ecmArtworkDao.selectFindArtWorks(ecmArtworkBroadcastHotVOS);
         List<EcmUserVo> userVoList = ecmUserDao.selectUserByEcmArtworkList(list);
@@ -320,12 +340,12 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
         EcmArtwork ecmArtwork = ecmArtworkDao.selectByPrimaryKey(ecmArtWorkQuery.getPkArtworkId());
         if (ecmArtwork == null) {
-            return ResponseDTO.fail("查询id为空");
+            return ResponseDTO.fail(ErrorEnum.ERR_003.getText());
         }
 
         List<EcmArtworkNodesVo> list = ecmArtworkNodesDao.selectByArtWorkId(ecmArtWorkQuery.getPkArtworkId());
 
-        Map<Integer, List<EcmArtworkNodesVo>> collect = list.stream().filter(ecmArtworkNodesVo -> !"Y".equals(ecmArtworkNodesVo.getIsDeleted())).collect(Collectors.groupingBy(EcmArtworkNodes::getParentId));
+        Map<Integer, List<EcmArtworkNodesVo>> collect = list.stream().filter(ecmArtworkNodesVo -> !JudgeConstant.Y.equals(ecmArtworkNodesVo.getIsDeleted())).collect(Collectors.groupingBy(EcmArtworkNodes::getParentId));
 
         List<EcmArtworkNodesDTO> artworkNodesDTOS = new ArrayList<>();
 

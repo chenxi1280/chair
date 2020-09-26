@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 
+import com.mpic.evolution.chair.common.constant.JudgeConstant;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -244,7 +245,7 @@ public class LoginController extends BaseController {
 			user.setUsername(ecmUserVo.getUsername());
 			// count 初始时没有count 在注册时设置为0
 			user.setCount(0);
-			user.setIsValid("Y");
+			user.setIsValid(JudgeConstant.Y);
 			user.setRoles("1");
 			user.setCreateTime(new Date());
 			user.setUpdateTime(new Date());

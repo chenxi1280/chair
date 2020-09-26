@@ -167,7 +167,7 @@
     from ecm_artwork
     where 
     	<!-- 查询作品是不包括删除作品5 和审核不通过3 -->
-    	1=1 and artwork_status in (0,1,2,4)
+    	1=1 and artwork_status in (0,1,2,4,3)
       <if test="pkArtworkId != null">
         and pk_artwork_id = #{pkArtworkId}
       </if>

@@ -1,6 +1,7 @@
 package com.mpic.evolution.chair.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.mpic.evolution.chair.common.constant.JudgeConstant;
 import com.mpic.evolution.chair.dao.EcmArtworkNodesDao;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.tencent.video.AiContentReviewResultSet;
@@ -83,7 +84,7 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
     public ResponseDTO videoHandleConsumer(TencentVideoResult tencentVideoResult) {
         System.out.println("腾讯视频审核回调接口开始工作了");
 
-        if (tencentVideoResult.getProcedureStateChangeEvent().getErrCode() == 0 && "SUCCESS".equals(tencentVideoResult.getProcedureStateChangeEvent().getMessage())){
+        if (tencentVideoResult.getProcedureStateChangeEvent().getErrCode() == 0 && JudgeConstant.SUCCESS.toUpperCase().equals(tencentVideoResult.getProcedureStateChangeEvent().getMessage())){
             EcmArtworkNodesVo ecmArtworkNodesVo = ecmArtworkNodesDao.selectByVideoCode(tencentVideoResult.getProcedureStateChangeEvent().getFileId());
             ecmArtworkNodesVo.setVideoUrl(tencentVideoResult.getProcedureStateChangeEvent().getMediaProcessResultSet().get(0).getTranscodeTask().getOutput().getUrl());
             List<AiContentReviewResultSet> aiContentReviewResultSet = tencentVideoResult.getProcedureStateChangeEvent().getAiContentReviewResultSet();

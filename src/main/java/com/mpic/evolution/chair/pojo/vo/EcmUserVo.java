@@ -5,6 +5,9 @@ import com.mpic.evolution.chair.pojo.entity.EcmUser;
 
 import lombok.Data;
 
+/**
+ * @author cxd
+ */
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class EcmUserVo extends EcmUser {
@@ -34,5 +37,7 @@ public class EcmUserVo extends EcmUser {
 	 * 总流量
 	 */
 	private Integer totalFlow;
+
+	private Boolean logoChange;
 
 }

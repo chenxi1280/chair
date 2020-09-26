@@ -4,6 +4,9 @@ import java.util.Date;
 
 import javax.annotation.Resource;
 
+import com.mpic.evolution.chair.dao.EcmArtworkBroadcastHotDao;
+import com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHot;
+import com.mpic.evolution.chair.pojo.vo.EcmArtworkBroadcastHotVO;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Service;
@@ -32,6 +35,9 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 	
 	@Resource
 	EcmArtworkNodesDao ecmArtworkNodesDao;
+
+	@Resource
+	EcmArtworkBroadcastHotDao ecmArtworkBroadcastHotDao;
 	
 	@Override
 	public ResponseDTO modifyArtWorkStatus(EcmArtworkVo ecmArtworkVo) {
@@ -45,6 +51,18 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			ecmArtwork.setFkUserid(userId);
 			ecmArtwork.setArtworkName(ecmArtworkVo.getArtworkName());
 			ecmArtwork.setLastModifyDate(new Date());
+			// 4 作品通过审核
+			int artWork = 4;
+			if (ecmArtwork.getArtworkStatus() == artWork){
+				EcmArtworkBroadcastHotVO ecmArtworkBroadcastHotVO = ecmArtworkBroadcastHotDao.selectByArtworkId(ecmArtwork.getPkArtworkId());
+				if ( ecmArtworkBroadcastHotVO == null){
+					ecmArtworkBroadcastHotVO  = new EcmArtworkBroadcastHotVO();
+					ecmArtworkBroadcastHotVO.setWaitCount(0);
+					ecmArtworkBroadcastHotVO.setBroadcastCount(0);
+					ecmArtworkBroadcastHotVO.setFkArkworkId(ecmArtwork.getPkArtworkId());
+					ecmArtworkBroadcastHotDao.insertSelective(ecmArtworkBroadcastHotVO);
+				}
+			}
 			ecmArtworkDao.updateByPrimaryKeySelective(ecmArtwork);
 			return ResponseDTO.ok(message.getString(ecmArtworkVo.getCode())+"成功");
 		} catch (Exception e) {
@@ -75,6 +93,7 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			ecmArtworkNodes.setRevolutionId("x");
 			ecmArtworkNodes.setALevel(0);
 			ecmArtworkNodes.setItemsBakText("https://sike-1259692143.cos.ap-chongqing.myqcloud.com/baseImg/1599646010668nodeImgUrl.png");
+			ecmArtworkNodes.setVideoText("开场");
 			ecmArtworkNodesDao.insertSelective(ecmArtworkNodes);
 			return ResponseDTO.ok("新建成功");
 		} catch (Exception e) {

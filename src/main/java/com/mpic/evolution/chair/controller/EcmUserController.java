@@ -1,5 +1,6 @@
 package com.mpic.evolution.chair.controller;
 
+import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmUser;
 import com.mpic.evolution.chair.pojo.query.EcmUserFlowQuery;
@@ -41,7 +42,7 @@ public class EcmUserController extends BaseController{
 
            Integer userId = getUserIdByHandToken();
            if ( userId == null){
-               return ResponseDTO.fail("非法访问");
+               return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
            }
            ecmUser.setPkUserId(Integer.valueOf(userId));
 
@@ -62,7 +63,7 @@ public class EcmUserController extends BaseController{
     ResponseDTO inspectFlow(@RequestBody EcmUserFlowQuery ecmUserFlowQuery){
         Integer userId = getUserIdByHandToken();
         if ( userId == null){
-            return ResponseDTO.fail("非法访问");
+            return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
         }
         ecmUserFlowQuery.setPkUserId(Integer.valueOf(userId));
         return ecmUserService.inspectFlow(ecmUserFlowQuery);
@@ -74,7 +75,7 @@ public class EcmUserController extends BaseController{
     ResponseDTO reduceFlow(@RequestBody EcmUserHistoryFlowVO ecmUserHistoryFlowVO){
         Integer userId = getUserIdByHandToken();
         if ( userId == null){
-            return ResponseDTO.fail("非法访问");
+            return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
         }
         ecmUserHistoryFlowVO.setUserId(userId);
         return ecmUserService.reduceFlow(ecmUserHistoryFlowVO);

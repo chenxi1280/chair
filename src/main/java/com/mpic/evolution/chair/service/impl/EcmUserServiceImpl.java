@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.annotation.Resource;
 
+import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -23,6 +24,12 @@ import com.mpic.evolution.chair.pojo.vo.EcmUserVo;
 import com.mpic.evolution.chair.service.EcmUserService;
 import com.mpic.evolution.chair.util.EncryptUtil;
 
+import static com.mpic.evolution.chair.common.constant.JudgeConstant.SUCCESS;
+import static com.mpic.evolution.chair.common.constant.JudgeConstant.flowMax;
+
+/**
+ * @author Administrator
+ */
 @Service
 public class EcmUserServiceImpl implements EcmUserService {
 	
@@ -72,7 +79,7 @@ public class EcmUserServiceImpl implements EcmUserService {
 	public ResponseDTO webGetUserInfo(EcmUser ecmUser) {
 		EcmUserVo user = ecmUserDao.selectByPkUserId(ecmUser.getPkUserId());
 		if (user == null ){
-			return ResponseDTO.fail("用户不存在");
+			return ResponseDTO.fail(ErrorEnum.ERR_003.getText());
 		}
 		EcmUserFlowVO ecmUserFlow = ecmUserFlowDao.selectByPkUserId(ecmUser.getPkUserId());
 		//如果ecmUserFlow 为空，插入用户的新flow信息
@@ -101,13 +108,13 @@ public class EcmUserServiceImpl implements EcmUserService {
 		user.setUserFlow(ecmUserFlow.getSurplusFlow());
 		user.setTotalFlow(ecmUserFlow.getTotalFlow());
 
-		return ResponseDTO.ok("成功",user);
+		return ResponseDTO.ok(SUCCESS,user);
 	}
 
 	@Override
 	public ResponseDTO inspectFlow(EcmUserFlowQuery ecmUserFlowQuery) {
 		EcmUserFlowVO userFlow = ecmUserFlowDao.selectByPkUserId(ecmUserFlowQuery.getPkUserId());
-		if (Integer.valueOf(ecmUserFlowQuery.getVideoFlow()) > 1024 * 500 ){
+		if (Integer.valueOf(ecmUserFlowQuery.getVideoFlow()) > flowMax ){
 			return ResponseDTO.fail("视频大于500M，请减小视频大小");
 		}
 		if (userFlow.getSurplusFlow() >= Integer.valueOf(ecmUserFlowQuery.getVideoFlow())){
@@ -117,7 +124,7 @@ public class EcmUserServiceImpl implements EcmUserService {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(rollbackFor = Exception.class)
 	public ResponseDTO reduceFlow(EcmUserHistoryFlowVO ecmUserHistoryFlowVO) {
 		ecmUserHistoryFlowVO.setCreatTime(new Date());
 		EcmUserFlow userFlow = new EcmUserFlow();

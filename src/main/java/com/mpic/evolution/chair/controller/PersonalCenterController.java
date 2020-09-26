@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.annotation.Resource;
 
+import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
+import com.qcloud.vod.common.StringUtil;
 import org.mybatis.spring.MyBatisSystemException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,21 +51,23 @@ public class PersonalCenterController extends BaseController {
 	@RequestMapping("/savaUserInfo")
 	@ResponseBody
 	public ResponseDTO savaUserInfo(@RequestBody EcmUserVo ecmUserVo){
-		EcmUser user = new EcmUser();
+		Integer userIdByHandToken = getUserIdByHandToken();
+		if (userIdByHandToken == null){
+			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+		}
+		ecmUserVo.setPkUserId(userIdByHandToken);
+		EcmUser userInfos = ecmUserService.getUserInfosByUserId(userIdByHandToken);
+
 		String username = ecmUserVo.getUsername();
 		try {
-			if (StringUtils.isNullOrBlank(username)) {
-				return ResponseDTO.fail("昵称已被使用", null, null, 504);
-			}
-			String result = AIVerifyUtil.convertContent(username);
-			if (!StringUtils.isNullOrBlank(result)) {
-				return ResponseDTO.fail("昵称使用了违禁词汇", result, null, 510);
-			}
-			user.setUsername(username);
-			user = ecmUserService.getUserInfos(user);
-			// 用户昵称是否存在
-			if (user != null && !StringUtils.isNullOrBlank(String.valueOf(user.getUsername()))) {
-				return ResponseDTO.fail("昵称已被使用", null, null, 504);
+			if (!StringUtil.isEmpty(ecmUserVo.getUsername())) {
+				if (ecmUserVo.getUsername().equals(userInfos.getUsername())) {
+					return ResponseDTO.fail("昵称已被使用", null, null, 504);
+				}
+				String result = AIVerifyUtil.convertContent(username);
+				if (!StringUtils.isNullOrBlank(result)) {
+					return ResponseDTO.fail("昵称使用了违禁词汇", result, null, 510);
+				}
 			}
 			ecmUserVo.setPkUserId(getUserIdByHandToken());
 			return pcService.savaUserInfo(ecmUserVo);

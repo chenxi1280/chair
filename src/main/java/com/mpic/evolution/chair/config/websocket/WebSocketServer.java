@@ -19,6 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Classname WebSocketServer
  * @Description TODO
  * @Date 2020/9/16 9:58
+ *  WebSocket 服务类
  */
 @ServerEndpoint("/imserver/{token}")
 @Log4j

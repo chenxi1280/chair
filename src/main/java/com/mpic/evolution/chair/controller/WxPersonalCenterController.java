@@ -2,6 +2,7 @@ package com.mpic.evolution.chair.controller;
 
 import javax.annotation.Resource;
 
+import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Controller;
@@ -102,7 +103,7 @@ public class WxPersonalCenterController {
     	String token = ecmArtWorkQuery.getToken();
     	String userId = JWTUtil.getUserId(token);
     	if (StringUtil.isEmpty(userId)){
-			return ResponseDTO.fail("非法访问");
+			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
 		}
     	//如果是null返回false
     	boolean hasKey = redisUtil.hasKey("QRCode");
