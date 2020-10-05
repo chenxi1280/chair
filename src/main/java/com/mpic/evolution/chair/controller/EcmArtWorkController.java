@@ -192,7 +192,6 @@ public class EcmArtWorkController extends BaseController{
 				}
 			}else {
 				String str = "data:image/jpg;base64," + qrCodeStr;
-				System.out.println(str);
 				return ResponseDTO.ok("获取发布二维码成功",str);
 			}
 		} catch (Exception e) {
