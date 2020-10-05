@@ -20,4 +20,6 @@ public interface VideoHandleConsumerService {
      *       失败: status 500  msg "error“
      */
     ResponseDTO videoHandleConsumer(TencentVideoResult tencentVideoResult);
+
+    void handleArtwork(Integer pkArtworkId);
 }

@@ -5,7 +5,7 @@ package com.mpic.evolution.chair.common.constant;
 * @date 创建时间：2020-8-13 17:02:45 
 */
 
-public interface publishConstants {
+public interface PublishConstants {
 	
 	String appid = "wxa001a9842ad0f851";
 	
