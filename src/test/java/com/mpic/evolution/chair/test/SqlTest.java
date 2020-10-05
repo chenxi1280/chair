@@ -2,6 +2,7 @@ package com.mpic.evolution.chair.test;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
@@ -132,6 +133,45 @@ public class SqlTest {
 		user.setOpenid("opcBH49QSwLe-R5mfVVz4Ilb35DY");
 		WxUser selectByWxUser = wxUserDao.selectByWxUser(user);
 		System.out.println(selectByWxUser);
+	}
+	
+	/**
+	 * 获取随机邀请码
+	 */
+	@Test
+	public void getRandom (){
+		for (int i = 0; i < 8; i++) {
+			String genRandomNum = this.genRandomNum();
+			System.out.println(genRandomNum);
+		}
+	}
+	
+	private String genRandomNum(){
+		int  maxNum = 26;
+		int  minNum = 10;
+		int i;
+		int j;
+		int count = 0;
+		char[] str = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
+		    'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W',
+		    'X', 'Y', 'Z'};	
+		char[] num = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};	
+		StringBuffer pwd1 = new StringBuffer("");
+		StringBuffer pwd2 = new StringBuffer("");
+		Random r = new Random();
+		while(count < 8){
+			i = Math.abs(r.nextInt(maxNum));   
+			if (i >= 0 && i < str.length) {
+				pwd1.append(str[i]);
+				count ++;
+			}
+			j = Math.abs(r.nextInt(minNum));   
+			if (j >= 0 && j < num.length) {
+				pwd1.append(num[j]);
+				count ++;
+			}
+		}
+		return pwd1.toString()+pwd2.toString();
 	}
 
 }
