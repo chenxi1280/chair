@@ -42,7 +42,7 @@ public class EcmInviteCodeServiceImpl implements EcmInviteCodeService {
 
 	@Override
 	public boolean savaEcmInvitedCode(EcmInviteCode ecmInviteCode) {
-		return ecmInviteCodeDao.insertSelective(ecmInviteCode) < 1 ? false : true;
+		return ecmInviteCodeDao.updateByPrimaryKey(ecmInviteCode) < 1 ? false : true;
 	}
 
 }
