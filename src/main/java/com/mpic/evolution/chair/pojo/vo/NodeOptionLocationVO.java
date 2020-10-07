@@ -10,7 +10,7 @@ import lombok.Data;
  */
 @Data
 public class NodeOptionLocationVO {
-    private double xRatio;
-    private double yRatio;
+    private Double xRatio;
+    private Double yRatio;
     private String  isHide;
 }
