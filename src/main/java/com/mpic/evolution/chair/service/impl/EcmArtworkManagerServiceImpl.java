@@ -106,7 +106,15 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			ecmArtwork.setPkArtworkId(ecmArtworkVo.getPkArtworkId());
 			Integer userId = this.getIdByToken(ecmArtworkVo.getToken());
 			ecmArtwork.setFkUserid(userId);
-			ecmArtwork.setArtworkName(ecmArtworkVo.getArtworkName());
+			String artworkName = ecmArtworkVo.getArtworkName();
+			if (StringUtils.isEmpty(artworkName)) {
+				return ResponseDTO.fail("作品名称不能为空");
+			}
+			String result = AIVerifyUtil.convertContent(artworkName);
+			if (!StringUtils.isEmpty(result)) {
+				return ResponseDTO.fail("作品名称违规含有违禁词",result,null,510);
+			}
+			ecmArtwork.setArtworkName(artworkName);
 			ecmArtwork.setArtworkStatus((short)0);
 			ecmArtwork.setArtworkDescribe(ecmArtworkVo.getArtworkDescribe());
 			ecmArtwork.setFourLetterTips(ecmArtworkVo.getFourLetterTips());

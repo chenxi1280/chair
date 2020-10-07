@@ -200,6 +200,8 @@ public class LoginController extends BaseController {
 				ecmInviteCode = ecmInviteCodeService.getEcmInvitedCode(inviteCode);
 				if (ecmInviteCode == null || ecmInviteCode.getFkUserId() != null) {
 					return ResponseDTO.fail("请向管理员获取邀请码", null, null, 515);
+				}else {
+					
 				}
 			}
 			//昵称检测
