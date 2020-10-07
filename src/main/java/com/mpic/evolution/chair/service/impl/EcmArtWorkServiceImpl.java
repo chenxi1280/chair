@@ -1,5 +1,7 @@
 package com.mpic.evolution.chair.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.mpic.evolution.chair.common.constant.JudgeConstant;
 import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
 import com.mpic.evolution.chair.dao.*;
@@ -80,11 +82,12 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         }
 
         List<EcmArtworkNodesVo> list = ecmArtworkNodesDao.selectByArtWorkId(ecmArtWorkQuery.getPkArtworkId());
-
+        //2次循环寻找 对应的  跳转节点
         for (EcmArtworkNodesVo node : list) {
             if (!StringUtils.isEmpty(node.getItems()) && node.getALevel() != null) {
                 if (node.getALevel().equals(1)) {
                     for (EcmArtworkNodesVo ecmArtworkNodesVo : list) {
+                        //需要优化代码
                         if (!JudgeConstant.Y.equals(ecmArtworkNodesVo.getIsDeleted())) {
                             if (ecmArtworkNodesVo.getPkDetailId().equals(Integer.valueOf(node.getItems())) ) {
                                 if ( JudgeConstant.Y.equals(ecmArtworkNodesVo.getIsDeleted()) ){
@@ -99,6 +102,10 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                         }
                     }
                 }
+            }
+            if (!StringUtils.isEmpty(node.getItemsText())) {
+                List<NodeOptionLocationVO> nodeOptionLocationVOS = JSON.parseArray(node.getItemsText(), NodeOptionLocationVO.class);
+                node.setNodeLocationList(nodeOptionLocationVOS);
             }
         }
 

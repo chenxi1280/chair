@@ -40,4 +40,6 @@ public class EcmArtworkNodesVo extends EcmArtworkNodes  {
 
     private String artWorkTips;
 
+    private List<NodeOptionLocationVO> nodeLocationList;
+
 }
