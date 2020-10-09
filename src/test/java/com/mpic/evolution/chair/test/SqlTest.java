@@ -7,13 +7,13 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
-import com.mpic.evolution.chair.common.constant.JudgeConstant;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.mpic.evolution.chair.common.constant.JudgeConstant;
 import com.mpic.evolution.chair.dao.EcmArtworkDao;
 import com.mpic.evolution.chair.dao.EcmArtworkNodesDao;
 import com.mpic.evolution.chair.dao.EcmInnerMessageDao;
