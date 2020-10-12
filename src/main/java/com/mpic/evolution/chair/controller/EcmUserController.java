@@ -75,7 +75,7 @@ public class EcmUserController extends BaseController{
      * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
      * @author: cxd
      * @Date: 2020/9/26
-     * 描述 : 流量审核接口 ，比较 当前视频和剩余流量关系
+     * 描述 : 减去当前当前上传视频的流量大小
      *       成功: status 200  msg "success”
      *       失败: status 500  msg "error“
      */
