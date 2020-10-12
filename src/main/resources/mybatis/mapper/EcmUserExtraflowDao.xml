@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mpic.evolution.chair.dao.EcmUserExtraflowDao">
+  <resultMap id="BaseResultMap" type="com.mpic.evolution.chair.pojo.entity.EcmUserExtraflow">
+    <id column="extraflow_id" jdbcType="INTEGER" property="extraflowId" />
+    <result column="fk_user_id" jdbcType="INTEGER" property="fkUserId" />
+    <result column="extraflow_start_time" jdbcType="TIMESTAMP" property="extraflowStartTime" />
+    <result column="extraflow_end_time" jdbcType="TIMESTAMP" property="extraflowEndTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    extraflow_id, fk_user_id, extraflow_start_time, extraflow_end_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from ecm_user_extraflow
+    where extraflow_id = #{extraflowId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ecm_user_extraflow
+    where extraflow_id = #{extraflowId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="extraflow_id" keyProperty="extraflowId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUserExtraflow" useGeneratedKeys="true">
+    insert into ecm_user_extraflow (fk_user_id, extraflow_start_time, extraflow_end_time
+      )
+    values (#{fkUserId,jdbcType=INTEGER}, #{extraflowStartTime,jdbcType=TIMESTAMP}, #{extraflowEndTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="extraflow_id" keyProperty="extraflowId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUserExtraflow" useGeneratedKeys="true">
+    insert into ecm_user_extraflow
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="fkUserId != null">
+        fk_user_id,
+      </if>
+      <if test="extraflowStartTime != null">
+        extraflow_start_time,
+      </if>
+      <if test="extraflowEndTime != null">
+        extraflow_end_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="fkUserId != null">
+        #{fkUserId,jdbcType=INTEGER},
+      </if>
+      <if test="extraflowStartTime != null">
+        #{extraflowStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="extraflowEndTime != null">
+        #{extraflowEndTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUserExtraflow">
+    update ecm_user_extraflow
+    <set>
+      <if test="fkUserId != null">
+        fk_user_id = #{fkUserId,jdbcType=INTEGER},
+      </if>
+      <if test="extraflowStartTime != null">
+        extraflow_start_time = #{extraflowStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="extraflowEndTime != null">
+        extraflow_end_time = #{extraflowEndTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where extraflow_id = #{extraflowId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUserExtraflow">
+    update ecm_user_extraflow
+    set fk_user_id = #{fkUserId,jdbcType=INTEGER},
+      extraflow_start_time = #{extraflowStartTime,jdbcType=TIMESTAMP},
+      extraflow_end_time = #{extraflowEndTime,jdbcType=TIMESTAMP}
+    where extraflow_id = #{extraflowId,jdbcType=INTEGER}
+  </update>
+</mapper>
