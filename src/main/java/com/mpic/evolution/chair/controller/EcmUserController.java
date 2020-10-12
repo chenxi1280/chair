@@ -33,7 +33,7 @@ public class EcmUserController extends BaseController{
      * @Date: 2020/9/7
      * 描述 :  调用请求头中的 token获取 userId 查询用户信息和流量信息
      *       成功: status 200  msg "success”  data: ecmUserVo信息
-     *       失败: status 500  msg "error“
+     *       失败: status 500  msg "error"
      */
        @ResponseBody
     @RequestMapping("webGetUserInfo")

@@ -10,6 +10,11 @@ import lombok.Data;
  */
 @Data
 public class EcmUserFlowQuery {
+	
     private Integer pkUserId;
+    
+    /**
+     * 	上传视频的大小
+     */
     private String videoFlow;
 }
