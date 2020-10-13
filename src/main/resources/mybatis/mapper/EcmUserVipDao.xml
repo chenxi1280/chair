@@ -5,14 +5,12 @@
     <id column="vip_id" jdbcType="INTEGER" property="vipId" />
     <result column="fk_user_id" jdbcType="INTEGER" property="fkUserId" />
     <result column="vip_status" jdbcType="SMALLINT" property="vipStatus" />
-    <result column="vip_create_time" jdbcType="TIMESTAMP" property="vipCreateTime" />
     <result column="vip_update_time" jdbcType="TIMESTAMP" property="vipUpdateTime" />
     <result column="vip_start_time" jdbcType="TIMESTAMP" property="vipStartTime" />
     <result column="vip_end_time" jdbcType="TIMESTAMP" property="vipEndTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    vip_id, fk_user_id, vip_status, vip_create_time, vip_update_time, vip_start_time, 
-    vip_end_time
+    vip_id, fk_user_id, vip_status, vip_update_time, vip_start_time, vip_end_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -25,12 +23,10 @@
     where vip_id = #{vipId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyColumn="vip_id" keyProperty="vipId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUserVip" useGeneratedKeys="true">
-    insert into ecm_user_vip (fk_user_id, vip_status, vip_create_time, 
-      vip_update_time, vip_start_time, vip_end_time
-      )
-    values (#{fkUserId,jdbcType=INTEGER}, #{vipStatus,jdbcType=SMALLINT}, #{vipCreateTime,jdbcType=TIMESTAMP}, 
-      #{vipUpdateTime,jdbcType=TIMESTAMP}, #{vipStartTime,jdbcType=TIMESTAMP}, #{vipEndTime,jdbcType=TIMESTAMP}
-      )
+    insert into ecm_user_vip (fk_user_id, vip_status, vip_update_time, 
+      vip_start_time, vip_end_time)
+    values (#{fkUserId,jdbcType=INTEGER}, #{vipStatus,jdbcType=SMALLINT}, #{vipUpdateTime,jdbcType=TIMESTAMP}, 
+      #{vipStartTime,jdbcType=TIMESTAMP}, #{vipEndTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" keyColumn="vip_id" keyProperty="vipId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUserVip" useGeneratedKeys="true">
     insert into ecm_user_vip
@@ -40,9 +36,6 @@
       </if>
       <if test="vipStatus != null">
         vip_status,
-      </if>
-      <if test="vipCreateTime != null">
-        vip_create_time,
       </if>
       <if test="vipUpdateTime != null">
         vip_update_time,
@@ -60,9 +53,6 @@
       </if>
       <if test="vipStatus != null">
         #{vipStatus,jdbcType=SMALLINT},
-      </if>
-      <if test="vipCreateTime != null">
-        #{vipCreateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="vipUpdateTime != null">
         #{vipUpdateTime,jdbcType=TIMESTAMP},
@@ -84,9 +74,6 @@
       <if test="vipStatus != null">
         vip_status = #{vipStatus,jdbcType=SMALLINT},
       </if>
-      <if test="vipCreateTime != null">
-        vip_create_time = #{vipCreateTime,jdbcType=TIMESTAMP},
-      </if>
       <if test="vipUpdateTime != null">
         vip_update_time = #{vipUpdateTime,jdbcType=TIMESTAMP},
       </if>
@@ -103,7 +90,6 @@
     update ecm_user_vip
     set fk_user_id = #{fkUserId,jdbcType=INTEGER},
       vip_status = #{vipStatus,jdbcType=SMALLINT},
-      vip_create_time = #{vipCreateTime,jdbcType=TIMESTAMP},
       vip_update_time = #{vipUpdateTime,jdbcType=TIMESTAMP},
       vip_start_time = #{vipStartTime,jdbcType=TIMESTAMP},
       vip_end_time = #{vipEndTime,jdbcType=TIMESTAMP}

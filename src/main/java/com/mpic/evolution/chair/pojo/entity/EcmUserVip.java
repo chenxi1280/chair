@@ -24,11 +24,6 @@ public class EcmUserVip implements Serializable {
     private Short vipStatus;
 
     /**
-     * vip购买时间
-     */
-    private Date vipCreateTime;
-
-    /**
      * vip记录更新时间
      */
     private Date vipUpdateTime;
