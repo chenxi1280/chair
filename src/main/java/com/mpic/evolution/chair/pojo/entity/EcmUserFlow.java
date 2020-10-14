@@ -22,12 +22,12 @@ public class EcmUserFlow implements Serializable {
     private Integer userId;
 
     /**
-     * 剩余流量
+     * 剩余流量（单位KB）
      */
     private Integer surplusFlow;
 
     /**
-     * 总流量
+     * 总流量（单位KB）
      */
     private Integer totalFlow;
 
@@ -37,9 +37,14 @@ public class EcmUserFlow implements Serializable {
     private Date updateTime;
 
     /**
-     * 上一次的审核流量
+     * 用户使用的总流量（单位KB）
      */
     private Integer checkFlow;
+
+    /**
+     * 用户已使用流量
+     */
+    private Integer usedFlow;
 
     private static final long serialVersionUID = 1L;
 }
