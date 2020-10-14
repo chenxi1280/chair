@@ -1,31 +1,40 @@
 package com.mpic.evolution.chair.service.impl;
 
+import static com.mpic.evolution.chair.common.constant.JudgeConstant.SUCCESS;
+import static com.mpic.evolution.chair.common.constant.JudgeConstant.flowMax;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.mpic.evolution.chair.common.constant.SecretKeyConstants;
+import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
 import com.mpic.evolution.chair.dao.EcmUserDao;
+import com.mpic.evolution.chair.dao.EcmUserExtraflowDao;
 import com.mpic.evolution.chair.dao.EcmUserFlowDao;
 import com.mpic.evolution.chair.dao.EcmUserHistoryFlowDao;
+import com.mpic.evolution.chair.dao.EcmUserVipDao;
 import com.mpic.evolution.chair.dao.WxUserDao;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmUser;
+import com.mpic.evolution.chair.pojo.entity.EcmUserExtraflow;
 import com.mpic.evolution.chair.pojo.entity.EcmUserFlow;
+import com.mpic.evolution.chair.pojo.entity.EcmUserVip;
+import com.mpic.evolution.chair.pojo.query.EcmUserExtraflowQuery;
 import com.mpic.evolution.chair.pojo.query.EcmUserFlowQuery;
+import com.mpic.evolution.chair.pojo.query.EcmUserVipQuery;
 import com.mpic.evolution.chair.pojo.vo.EcmUserFlowVO;
 import com.mpic.evolution.chair.pojo.vo.EcmUserHistoryFlowVO;
 import com.mpic.evolution.chair.pojo.vo.EcmUserVo;
 import com.mpic.evolution.chair.service.EcmUserService;
 import com.mpic.evolution.chair.util.EncryptUtil;
-
-import static com.mpic.evolution.chair.common.constant.JudgeConstant.SUCCESS;
-import static com.mpic.evolution.chair.common.constant.JudgeConstant.flowMax;
 
 /**
  * @author Administrator
@@ -41,6 +50,10 @@ public class EcmUserServiceImpl implements EcmUserService {
 	EcmUserHistoryFlowDao ecmUserHistoryFlowDao;
 	@Resource
 	WxUserDao wxUserDao;
+	@Resource
+    EcmUserVipDao ecmUserVipDao;
+	@Resource
+    EcmUserExtraflowDao ecmUserExtraflowDao;
 
 	@Override
 	public EcmUser getUserInfos(EcmUser record) {
@@ -74,9 +87,17 @@ public class EcmUserServiceImpl implements EcmUserService {
 		ecmUserDao.updateEcmUser(user,userVo);
 		
 	}
-
+	
+	/**
+	 * @param: [ecmUser] 用户身份信息
+     * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+     * @author: SJ
+     * @Date: 2020/10/13
+     * 	描述 :   流量的查询
+	 */
 	@Override
 	public ResponseDTO webGetUserInfo(EcmUser ecmUser) {
+		int totalflow = 500 * 1024;
 		EcmUserVo user = ecmUserDao.selectByPkUserId(ecmUser.getPkUserId());
 		if (user == null ){
 			return ResponseDTO.fail(ErrorEnum.ERR_003.getText());
@@ -87,9 +108,9 @@ public class EcmUserServiceImpl implements EcmUserService {
 			EcmUserFlowVO userFlow= new EcmUserFlowVO();
 			userFlow.setUserId(user.getPkUserId());
 			userFlow.setUpdateTime( new Date());
-			userFlow.setSurplusFlow(500 * 1024);
-			userFlow.setTotalFlow(500 * 1024);
-			userFlow.setCheckFlow(500 * 1024);
+			userFlow.setSurplusFlow(totalflow);
+			userFlow.setTotalFlow(totalflow);
+			userFlow.setCheckFlow(totalflow);
 			ecmUserFlowDao.insert(userFlow);
 			ecmUserFlow = userFlow;
 		}
@@ -104,13 +125,36 @@ public class EcmUserServiceImpl implements EcmUserService {
 			user.setMobile(null);
 			e.printStackTrace();
 		}
-
+		//查询本次请求的时间点用户是否还有未使用的流量包
+		EcmUserExtraflowQuery extraflow = new EcmUserExtraflowQuery();
+		LocalDateTime now = LocalDateTime.now();
+		DateTimeFormatter pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
+		extraflow.setCurrentDateTime(pattern.format(now));
+		extraflow.setFkUserId(ecmUser.getPkUserId());
+		List<EcmUserExtraflow> selectByExtraflow = ecmUserExtraflowDao.selectByExtraflow(extraflow);
+		if (selectByExtraflow != null && !selectByExtraflow.isEmpty()) {
+			totalflow += selectByExtraflow.size()*5*1024*1024;
+		}
+		EcmUserVipQuery vip = new EcmUserVipQuery();
+		vip.setFkUserId(ecmUser.getPkUserId());
+		vip.setCurrentDateTime(pattern.format(now));
+		EcmUserVip vipInfo = ecmUserVipDao.selectByVipUser(vip);
+		if (selectByExtraflow != null && vipInfo.getVipId() != null) {
+			totalflow += 10*1024*1024;
+		}
 		user.setUserFlow(ecmUserFlow.getSurplusFlow());
-		user.setTotalFlow(ecmUserFlow.getTotalFlow());
+		user.setTotalFlow(totalflow);
 
 		return ResponseDTO.ok(SUCCESS,user);
 	}
-
+	
+	/**
+	 * @param: [EcmUserHistoryFlowVO] 用户上传的视频的历史信息
+     * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+     * @author: SJ
+     * @Date: 2020/10/13
+     * 	描述 :   流量的查询和剩余流量的计算 并判断用户是否可以上传当前视频
+	 */
 	@Override
 	public ResponseDTO inspectFlow(EcmUserFlowQuery ecmUserFlowQuery) {
 		EcmUserFlowVO userFlow = ecmUserFlowDao.selectByPkUserId(ecmUserFlowQuery.getPkUserId());
@@ -122,7 +166,14 @@ public class EcmUserServiceImpl implements EcmUserService {
 		}
 		return ResponseDTO.fail("流量不足，请充值");
 	}
-
+	
+	/**
+	 * @param: [EcmUserHistoryFlowVO] 用户上传的视频的历史信息
+     * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+     * @author: SJ
+     * @Date: 2020/10/13
+     * 	描述 :   流量的查询和剩余流量的计算
+	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public ResponseDTO reduceFlow(EcmUserHistoryFlowVO ecmUserHistoryFlowVO) {

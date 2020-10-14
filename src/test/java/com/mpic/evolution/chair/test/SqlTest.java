@@ -1,5 +1,7 @@
 package com.mpic.evolution.chair.test;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -18,11 +20,17 @@ import com.mpic.evolution.chair.dao.EcmArtworkDao;
 import com.mpic.evolution.chair.dao.EcmArtworkNodesDao;
 import com.mpic.evolution.chair.dao.EcmInnerMessageDao;
 import com.mpic.evolution.chair.dao.EcmInviteCodeDao;
+import com.mpic.evolution.chair.dao.EcmUserExtraflowDao;
+import com.mpic.evolution.chair.dao.EcmUserVipDao;
 import com.mpic.evolution.chair.dao.WxUserDao;
 import com.mpic.evolution.chair.pojo.entity.EcmInnerMessage;
 import com.mpic.evolution.chair.pojo.entity.EcmInviteCode;
+import com.mpic.evolution.chair.pojo.entity.EcmUserExtraflow;
+import com.mpic.evolution.chair.pojo.entity.EcmUserVip;
 import com.mpic.evolution.chair.pojo.entity.WxUser;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
+import com.mpic.evolution.chair.pojo.query.EcmUserExtraflowQuery;
+import com.mpic.evolution.chair.pojo.query.EcmUserVipQuery;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
 import com.mpic.evolution.chair.util.TreeUtil;
@@ -51,6 +59,12 @@ public class SqlTest {
 	
 	@Resource
     WxUserDao wxUserDao;
+	
+	@Resource
+    EcmUserVipDao ecmUserVipDao;
+	
+	@Resource
+    EcmUserExtraflowDao ecmUserExtraflowDao;
 	
 	/**
 	 * java8 流排序和分组 遍历
@@ -133,6 +147,36 @@ public class SqlTest {
 		user.setOpenid("opcBH49QSwLe-R5mfVVz4Ilb35DY");
 		WxUser selectByWxUser = wxUserDao.selectByWxUser(user);
 		System.out.println(selectByWxUser);
+	}
+	
+	/**
+	 * 测试vip信息查询sql
+	 */
+	@Test
+	public void selectByVipUser() {
+		EcmUserVipQuery vip = new EcmUserVipQuery();
+		vip.setFkUserId(1591);
+		LocalDateTime now = LocalDateTime.now();
+		DateTimeFormatter pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
+		vip.setCurrentDateTime(pattern.format(now));
+		EcmUserVip vipInfo = ecmUserVipDao.selectByVipUser(vip);
+		System.out.println(vipInfo);
+	}
+	
+	/**
+	 * 测试加油包信息查询sql
+	 */
+	@Test
+	public void selectByExtraflow() {
+		EcmUserExtraflowQuery extraflow = new EcmUserExtraflowQuery();
+		LocalDateTime now = LocalDateTime.now();
+		DateTimeFormatter pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
+		extraflow.setCurrentDateTime(pattern.format(now));
+		extraflow.setFkUserId(1591);
+		List<EcmUserExtraflow> selectByExtraflow = ecmUserExtraflowDao.selectByExtraflow(extraflow);
+		selectByExtraflow.forEach(item->{
+			System.out.println(item);
+		});
 	}
 	
 	/**

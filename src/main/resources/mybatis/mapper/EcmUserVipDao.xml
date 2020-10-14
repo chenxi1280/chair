@@ -95,4 +95,23 @@
       vip_end_time = #{vipEndTime,jdbcType=TIMESTAMP}
     where vip_id = #{vipId,jdbcType=INTEGER}
   </update>
+  
+  <select id="selectByVipUser" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUserVip" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from ecm_user_vip
+    where 1 = 1 and vip_status = 1
+    	<if test="vipId != null">
+	   		and vip_id = #{vipId,jdbcType=INTEGER}
+	    </if>
+	    <if test="fkUserId != null">
+	   		and fk_user_id = #{fkUserId,jdbcType=INTEGER}
+	    </if>
+	    <if test="vipUpdateTime != null">
+	    	and vip_update_time = #{vipUpdateTime,jdbcType=TIMESTAMP}
+	    </if>
+	    <if test="currentDateTime != null">
+	    	and #{currentDateTime} between vip_start_time and vip_end_time
+	    </if>
+  </select>
 </mapper>
