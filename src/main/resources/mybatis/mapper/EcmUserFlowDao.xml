@@ -9,9 +9,11 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="check_flow" jdbcType="INTEGER" property="checkFlow" />
     <result column="used_flow" jdbcType="INTEGER" property="usedFlow" />
+    <result column="permanent_flow" jdbcType="INTEGER" property="permanentFlow" />
   </resultMap>
   <sql id="Base_Column_List">
-    user_flow_id, user_id, surplus_flow, total_flow, update_time, check_flow, used_flow
+    user_flow_id, user_id, surplus_flow, total_flow, update_time, check_flow, used_flow,
+    permanent_flow
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
@@ -25,11 +27,11 @@
   </delete>
   <insert id="insert" keyColumn="user_flow_id" keyProperty="userFlowId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUserFlow" useGeneratedKeys="true">
     insert into ecm_user_flow (user_id, surplus_flow, total_flow,
-      update_time, check_flow, used_flow
-      )
+      update_time, check_flow, used_flow,
+      permanent_flow)
     values (#{userId,jdbcType=INTEGER}, #{surplusFlow,jdbcType=INTEGER}, #{totalFlow,jdbcType=INTEGER},
-      #{updateTime,jdbcType=TIMESTAMP}, #{checkFlow,jdbcType=INTEGER}, #{usedFlow,jdbcType=INTEGER}
-      )
+      #{updateTime,jdbcType=TIMESTAMP}, #{checkFlow,jdbcType=INTEGER}, #{usedFlow,jdbcType=INTEGER},
+      #{permanentFlow,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" keyColumn="user_flow_id" keyProperty="userFlowId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUserFlow" useGeneratedKeys="true">
     insert into ecm_user_flow
@@ -52,6 +54,9 @@
       <if test="usedFlow != null">
         used_flow,
       </if>
+      <if test="permanentFlow != null">
+        permanent_flow,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="userId != null">
@@ -71,6 +76,9 @@
       </if>
       <if test="usedFlow != null">
         #{usedFlow,jdbcType=INTEGER},
+      </if>
+      <if test="permanentFlow != null">
+        #{permanentFlow,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -95,6 +103,9 @@
       <if test="usedFlow != null">
         used_flow = #{usedFlow,jdbcType=INTEGER},
       </if>
+      <if test="permanentFlow != null">
+        permanent_flow = #{permanentFlow,jdbcType=INTEGER},
+      </if>
     </set>
     where user_flow_id = #{userFlowId,jdbcType=INTEGER}
   </update>
@@ -105,7 +116,8 @@
       total_flow = #{totalFlow,jdbcType=INTEGER},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       check_flow = #{checkFlow,jdbcType=INTEGER},
-      used_flow = #{usedFlow,jdbcType=INTEGER}
+      used_flow = #{usedFlow,jdbcType=INTEGER},
+      permanent_flow = #{permanentFlow,jdbcType=INTEGER}
     where user_flow_id = #{userFlowId,jdbcType=INTEGER}
   </update>
 

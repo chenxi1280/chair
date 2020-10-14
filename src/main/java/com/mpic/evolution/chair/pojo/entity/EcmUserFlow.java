@@ -46,5 +46,10 @@ public class EcmUserFlow implements Serializable {
      */
     private Integer usedFlow;
 
+    /**
+     * 用户的永久使用流量
+     */
+    private Integer permanentFlow;
+
     private static final long serialVersionUID = 1L;
 }
