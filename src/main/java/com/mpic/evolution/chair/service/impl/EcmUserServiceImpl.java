@@ -97,10 +97,28 @@ public class EcmUserServiceImpl implements EcmUserService {
 	 */
 	@Override
 	public ResponseDTO webGetUserInfo(EcmUser ecmUser) {
-		int totalflow = 500 * 1024;
 		EcmUserVo user = ecmUserDao.selectByPkUserId(ecmUser.getPkUserId());
 		if (user == null ){
 			return ResponseDTO.fail(ErrorEnum.ERR_003.getText());
+		}
+		int vipflow = 0;
+		int premanentflow = 512000;
+		//查询本次请求的时间点用户是否还有未使用的流量包
+		EcmUserExtraflowQuery extraflow = new EcmUserExtraflowQuery();
+		LocalDateTime now = LocalDateTime.now();
+		DateTimeFormatter pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
+		extraflow.setCurrentDateTime(pattern.format(now));
+		extraflow.setFkUserId(ecmUser.getPkUserId());
+		List<EcmUserExtraflow> selectByExtraflow = ecmUserExtraflowDao.selectByExtraflow(extraflow);
+		if (selectByExtraflow != null && !selectByExtraflow.isEmpty()) {
+			premanentflow += selectByExtraflow.size()*5*1024*1024;
+		}
+		EcmUserVipQuery vip = new EcmUserVipQuery();
+		vip.setFkUserId(ecmUser.getPkUserId());
+		vip.setCurrentDateTime(pattern.format(now));
+		EcmUserVip vipInfo = ecmUserVipDao.selectByVipUser(vip);
+		if (selectByExtraflow != null && vipInfo.getVipId() != null) {
+			vipflow += 10*1024*1024;
 		}
 		EcmUserFlowVO ecmUserFlow = ecmUserFlowDao.selectByPkUserId(ecmUser.getPkUserId());
 		//如果ecmUserFlow 为空，插入用户的新flow信息
@@ -108,9 +126,9 @@ public class EcmUserServiceImpl implements EcmUserService {
 			EcmUserFlowVO userFlow= new EcmUserFlowVO();
 			userFlow.setUserId(user.getPkUserId());
 			userFlow.setUpdateTime( new Date());
-			userFlow.setSurplusFlow(totalflow);
-			userFlow.setTotalFlow(totalflow);
-			userFlow.setCheckFlow(totalflow);
+			userFlow.setTotalFlow(vipflow+premanentflow);
+			userFlow.setCheckFlow(0);
+			userFlow.setUsedFlow(0);
 			ecmUserFlowDao.insert(userFlow);
 			ecmUserFlow = userFlow;
 		}
@@ -125,25 +143,8 @@ public class EcmUserServiceImpl implements EcmUserService {
 			user.setMobile(null);
 			e.printStackTrace();
 		}
-		//查询本次请求的时间点用户是否还有未使用的流量包
-		EcmUserExtraflowQuery extraflow = new EcmUserExtraflowQuery();
-		LocalDateTime now = LocalDateTime.now();
-		DateTimeFormatter pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
-		extraflow.setCurrentDateTime(pattern.format(now));
-		extraflow.setFkUserId(ecmUser.getPkUserId());
-		List<EcmUserExtraflow> selectByExtraflow = ecmUserExtraflowDao.selectByExtraflow(extraflow);
-		if (selectByExtraflow != null && !selectByExtraflow.isEmpty()) {
-			totalflow += selectByExtraflow.size()*5*1024*1024;
-		}
-		EcmUserVipQuery vip = new EcmUserVipQuery();
-		vip.setFkUserId(ecmUser.getPkUserId());
-		vip.setCurrentDateTime(pattern.format(now));
-		EcmUserVip vipInfo = ecmUserVipDao.selectByVipUser(vip);
-		if (selectByExtraflow != null && vipInfo.getVipId() != null) {
-			totalflow += 10*1024*1024;
-		}
 		user.setUserFlow(ecmUserFlow.getSurplusFlow());
-		user.setTotalFlow(totalflow);
+		user.setTotalFlow(premanentflow+vipflow);
 
 		return ResponseDTO.ok(SUCCESS,user);
 	}
