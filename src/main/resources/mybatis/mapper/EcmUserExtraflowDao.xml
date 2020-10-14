@@ -98,4 +98,23 @@
       extraflow_update_time = #{extraflowUpdateTime,jdbcType=TIMESTAMP}
     where extraflow_id = #{extraflowId,jdbcType=INTEGER}
   </update>
+  
+  <select id="selectByExtraflow" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUserExtraflow" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from ecm_user_extraflow
+    where 1=1 and  extraflow_status = 1
+    	<if test="extraflowId != null">
+	   		and extraflow_id = #{extraflowId,jdbcType=INTEGER}
+	    </if>
+	    <if test="fkUserId != null">
+	   		and fk_user_id = #{fkUserId,jdbcType=INTEGER}
+	    </if>
+	    <if test="currentDateTime != null">
+	    	and #{currentDateTime} between extraflow_start_time and extraflow_end_time
+	    </if>
+	    <if test="extraflowUpdateTime != null">
+	    	and extraflow_update_time = #{extraflowUpdateTime,jdbcType=TIMESTAMP}
+	    </if>
+  </select>
 </mapper>
