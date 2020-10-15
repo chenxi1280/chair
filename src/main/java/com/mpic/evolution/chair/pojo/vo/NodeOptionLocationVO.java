@@ -11,6 +11,8 @@ import lombok.Data;
 @Data
 public class NodeOptionLocationVO {
 
+    private Integer pkDetailId;
+
     private Double circleX;
     private Double circleY;
 
