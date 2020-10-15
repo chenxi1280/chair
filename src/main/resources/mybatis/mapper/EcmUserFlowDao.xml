@@ -135,9 +135,29 @@
 
   <update id="updateReduceFlow">
     update ecm_user_flow
-    set
-      surplus_flow = surplus_flow - #{surplusFlow},
-      update_time = #{updateTime}
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="surplusFlow != null">
+        surplus_flow = #{surplusFlow,jdbcType=INTEGER},
+      </if>
+      <if test="totalFlow != null">
+        total_flow = #{totalFlow,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="checkFlow != null">
+        check_flow = #{checkFlow,jdbcType=INTEGER},
+      </if>
+      <if test="usedFlow != null">
+        used_flow = #{usedFlow,jdbcType=INTEGER},
+      </if>
+      <if test="permanentFlow != null">
+        permanent_flow = #{permanentFlow,jdbcType=INTEGER},
+      </if>
+    </set>
     where user_id = #{userId}
 
   </update>

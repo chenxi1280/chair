@@ -32,22 +32,22 @@ public class EcmUserFlow implements Serializable {
     private Integer totalFlow;
 
     /**
-     * 更新时间
+     * 	更新时间
      */
     private Date updateTime;
 
     /**
-     * 用户使用的总流量（单位KB）
+     * 	用户使用的总流量（单位KB）
      */
     private Integer checkFlow;
 
     /**
-     * 用户已使用流量
+     * 	用户已使用流量（单位KB）
      */
     private Integer usedFlow;
 
     /**
-     * 用户的永久使用流量
+     * 	用户的永久使用流量（单位KB）
      */
     private Integer permanentFlow;
 
