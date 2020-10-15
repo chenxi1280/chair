@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.ObjectUtils.Null;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -101,38 +102,39 @@ public class EcmUserServiceImpl implements EcmUserService {
 		if (user == null ){
 			return ResponseDTO.fail(ErrorEnum.ERR_003.getText());
 		}
-		int vipflow = 0;
-		int premanentflow = 512000;
-		//查询本次请求的时间点用户是否还有未使用的流量包
-		EcmUserExtraflowQuery extraflow = new EcmUserExtraflowQuery();
-		LocalDateTime now = LocalDateTime.now();
-		DateTimeFormatter pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
-		extraflow.setCurrentDateTime(pattern.format(now));
-		extraflow.setFkUserId(ecmUser.getPkUserId());
-		List<EcmUserExtraflow> selectByExtraflow = ecmUserExtraflowDao.selectByExtraflow(extraflow);
-		if (selectByExtraflow != null && !selectByExtraflow.isEmpty()) {
-			premanentflow += selectByExtraflow.size()*5*1024*1024;
-		}
-		EcmUserVipQuery vip = new EcmUserVipQuery();
-		vip.setFkUserId(ecmUser.getPkUserId());
-		vip.setCurrentDateTime(pattern.format(now));
-		EcmUserVip vipInfo = ecmUserVipDao.selectByVipUser(vip);
-		if (selectByExtraflow != null && vipInfo.getVipId() != null) {
-			vipflow += 10*1024*1024;
-		}
 		EcmUserFlowVO ecmUserFlow = ecmUserFlowDao.selectByPkUserId(ecmUser.getPkUserId());
 		//如果ecmUserFlow 为空，插入用户的新flow信息
-		if (ecmUserFlow == null){
+		if (ecmUserFlow == null || ecmUserFlow.getUserFlowId() == null){
+			int vipflow = 0;
+			int permanentFlow = 512000;
+			//查询本次请求的时间点用户是否还有未使用的流量包
+			EcmUserExtraflowQuery extraflow = new EcmUserExtraflowQuery();
+			LocalDateTime now = LocalDateTime.now();
+			DateTimeFormatter pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
+			extraflow.setCurrentDateTime(pattern.format(now));
+			extraflow.setFkUserId(ecmUser.getPkUserId());
+			List<EcmUserExtraflow> selectByExtraflow = ecmUserExtraflowDao.selectByExtraflow(extraflow);
+			if (selectByExtraflow != null && !selectByExtraflow.isEmpty()) {
+				permanentFlow += selectByExtraflow.size()*5*1024*1024;
+			}
+			//查询本次请求的时间点用户是否是vip
+			EcmUserVipQuery vip = new EcmUserVipQuery();
+			vip.setFkUserId(ecmUser.getPkUserId());
+			vip.setCurrentDateTime(pattern.format(now));
+			EcmUserVip vipInfo = ecmUserVipDao.selectByVipUser(vip);
+			if (selectByExtraflow != null && vipInfo.getVipId() != null) {
+				vipflow += 10*1024*1024;
+			}
 			EcmUserFlowVO userFlow= new EcmUserFlowVO();
 			userFlow.setUserId(user.getPkUserId());
 			userFlow.setUpdateTime( new Date());
-			userFlow.setTotalFlow(vipflow+premanentflow);
+			userFlow.setTotalFlow(vipflow + permanentFlow);
 			userFlow.setCheckFlow(0);
 			userFlow.setUsedFlow(0);
+			userFlow.setPermanentFlow(permanentFlow);
 			ecmUserFlowDao.insert(userFlow);
 			ecmUserFlow = userFlow;
 		}
-
 		user.setPassword(null);
 		user.setCardCode(null);
 		user.setRoles(null);
@@ -143,8 +145,8 @@ public class EcmUserServiceImpl implements EcmUserService {
 			user.setMobile(null);
 			e.printStackTrace();
 		}
-		user.setUserFlow(ecmUserFlow.getSurplusFlow());
-		user.setTotalFlow(premanentflow+vipflow);
+		user.setUserFlow(ecmUserFlow.getTotalFlow() - ecmUserFlow.getUsedFlow());
+		user.setTotalFlow(ecmUserFlow.getTotalFlow());
 
 		return ResponseDTO.ok(SUCCESS,user);
 	}
@@ -162,7 +164,8 @@ public class EcmUserServiceImpl implements EcmUserService {
 		if (Integer.valueOf(ecmUserFlowQuery.getVideoFlow()) > flowMax ){
 			return ResponseDTO.fail("视频大于500M，请减小视频大小");
 		}
-		if (userFlow.getSurplusFlow() >= Integer.valueOf(ecmUserFlowQuery.getVideoFlow())){
+		int surplusFlow = userFlow.getTotalFlow() - userFlow.getUsedFlow();
+		if (surplusFlow >= Integer.valueOf(ecmUserFlowQuery.getVideoFlow())){
 			return ResponseDTO.ok("流量足够，可以上传");
 		}
 		return ResponseDTO.fail("流量不足，请充值");
@@ -178,14 +181,47 @@ public class EcmUserServiceImpl implements EcmUserService {
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public ResponseDTO reduceFlow(EcmUserHistoryFlowVO ecmUserHistoryFlowVO) {
+		EcmUserVo user = ecmUserDao.selectByPkUserId(ecmUserHistoryFlowVO.getUserId());
+		if (user == null ){
+			return ResponseDTO.fail(ErrorEnum.ERR_003.getText());
+		}
+		int vipflow = 0;
+		int permanentFlow = 512000;
+		//校验 总流量和永久使用流量的值
+		//查询本次请求的时间点用户是否还有未使用的流量包
+		EcmUserExtraflowQuery extraflow = new EcmUserExtraflowQuery();
+		LocalDateTime now = LocalDateTime.now();
+		DateTimeFormatter pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
+		extraflow.setCurrentDateTime(pattern.format(now));
+		extraflow.setFkUserId(ecmUserHistoryFlowVO.getUserId());
+		List<EcmUserExtraflow> selectByExtraflow = ecmUserExtraflowDao.selectByExtraflow(extraflow);
+		if (selectByExtraflow != null && !selectByExtraflow.isEmpty()) {
+			permanentFlow += selectByExtraflow.size()*5*1024*1024;
+		}
+		//查询本次请求的时间点用户是否是vip
+		EcmUserVipQuery vip = new EcmUserVipQuery();
+		vip.setFkUserId(ecmUserHistoryFlowVO.getUserId());
+		vip.setCurrentDateTime(pattern.format(now));
+		EcmUserVip vipInfo = ecmUserVipDao.selectByVipUser(vip);
+		if (selectByExtraflow != null && vipInfo.getVipId() != null) {
+			vipflow += 10*1024*1024;
+		}
+		EcmUserFlowVO ecmUserFlow = ecmUserFlowDao.selectByPkUserId(ecmUserHistoryFlowVO.getUserId());
+		if (ecmUserFlow != null && ecmUserFlow.getUserFlowId() != null) {
+			if (ecmUserFlow.getPermanentFlow() != permanentFlow) {
+				ecmUserFlow.setPermanentFlow(permanentFlow);
+			}
+			if (ecmUserFlow.getTotalFlow() != vipflow + permanentFlow) {
+				ecmUserFlow.setTotalFlow( vipflow + permanentFlow);
+			}
+		}
+		
 		ecmUserHistoryFlowVO.setCreatTime(new Date());
-		EcmUserFlow userFlow = new EcmUserFlow();
-		userFlow.setUserId(ecmUserHistoryFlowVO.getUserId());
-		userFlow.setUpdateTime(new Date());
-		userFlow.setSurplusFlow(ecmUserHistoryFlowVO.getVideoFlow());
+		ecmUserFlow.setUpdateTime(new Date());
+		ecmUserFlow.setUsedFlow(ecmUserFlow.getUsedFlow()+ecmUserHistoryFlowVO.getVideoFlow());
 		try {
 			ecmUserHistoryFlowDao.insertSelective(ecmUserHistoryFlowVO);
-			ecmUserFlowDao.updateReduceFlow(userFlow);
+			ecmUserFlowDao.updateReduceFlow(ecmUserFlow);
 		}catch (Exception e){
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
