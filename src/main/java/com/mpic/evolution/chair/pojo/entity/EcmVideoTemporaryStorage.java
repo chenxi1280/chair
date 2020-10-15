@@ -40,5 +40,10 @@ public class EcmVideoTemporaryStorage implements Serializable {
      */
     private Short videoStatus;
 
+    /**
+     * 节点id
+     */
+    private Integer fkNodeId;
+
     private static final long serialVersionUID = 1L;
 }

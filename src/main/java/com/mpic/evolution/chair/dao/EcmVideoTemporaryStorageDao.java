@@ -1,6 +1,9 @@
 package com.mpic.evolution.chair.dao;
 
 import com.mpic.evolution.chair.pojo.entity.EcmVideoTemporaryStorage;
+import com.mpic.evolution.chair.pojo.vo.EcmVideoTemporaryStorageVO;
+
+import java.util.List;
 
 public interface EcmVideoTemporaryStorageDao {
     int deleteByPrimaryKey(Integer pkVideoId);
@@ -14,4 +17,6 @@ public interface EcmVideoTemporaryStorageDao {
     int updateByPrimaryKeySelective(EcmVideoTemporaryStorage record);
 
     int updateByPrimaryKey(EcmVideoTemporaryStorage record);
+
+    List<EcmVideoTemporaryStorageVO> selectByFkArtworkId(Integer fkArtworkId);
 }

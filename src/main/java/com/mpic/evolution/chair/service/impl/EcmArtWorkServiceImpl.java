@@ -1,7 +1,6 @@
 package com.mpic.evolution.chair.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.mpic.evolution.chair.common.constant.JudgeConstant;
 import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
 import com.mpic.evolution.chair.dao.*;
@@ -18,7 +17,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
@@ -177,7 +175,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             saveArtwork(ecmArtworkNodesVo);
         } catch (Exception e) {
             e.printStackTrace();
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+//            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return ResponseDTO.fail("error");
         }
 
