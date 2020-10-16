@@ -12,11 +12,11 @@
     <result column="permanent_flow" jdbcType="INTEGER" property="permanentFlow" />
   </resultMap>
   <sql id="Base_Column_List">
-    user_flow_id, user_id, surplus_flow, total_flow, update_time, check_flow, used_flow,
+    user_flow_id, user_id, surplus_flow, total_flow, update_time, check_flow, used_flow, 
     permanent_flow
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select
+    select 
     <include refid="Base_Column_List" />
     from ecm_user_flow
     where user_flow_id = #{userFlowId,jdbcType=INTEGER}
@@ -26,11 +26,11 @@
     where user_flow_id = #{userFlowId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyColumn="user_flow_id" keyProperty="userFlowId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUserFlow" useGeneratedKeys="true">
-    insert into ecm_user_flow (user_id, surplus_flow, total_flow,
-      update_time, check_flow, used_flow,
+    insert into ecm_user_flow (user_id, surplus_flow, total_flow, 
+      update_time, check_flow, used_flow, 
       permanent_flow)
-    values (#{userId,jdbcType=INTEGER}, #{surplusFlow,jdbcType=INTEGER}, #{totalFlow,jdbcType=INTEGER},
-      #{updateTime,jdbcType=TIMESTAMP}, #{checkFlow,jdbcType=INTEGER}, #{usedFlow,jdbcType=INTEGER},
+    values (#{userId,jdbcType=INTEGER}, #{surplusFlow,jdbcType=INTEGER}, #{totalFlow,jdbcType=INTEGER}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{checkFlow,jdbcType=INTEGER}, #{usedFlow,jdbcType=INTEGER}, 
       #{permanentFlow,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" keyColumn="user_flow_id" keyProperty="userFlowId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUserFlow" useGeneratedKeys="true">
@@ -120,12 +120,9 @@
       permanent_flow = #{permanentFlow,jdbcType=INTEGER}
     where user_flow_id = #{userFlowId,jdbcType=INTEGER}
   </update>
-
-
-  <!--  sql-->
-
-
-
+  
+   <!--  sql-->
+	
   <select id="selectByPkUserId" resultType="com.mpic.evolution.chair.pojo.vo.EcmUserFlowVO">
     select <include refid="Base_Column_List" />
     from ecm_user_flow
@@ -161,5 +158,6 @@
     where user_id = #{userId}
 
   </update>
-
 </mapper>
+
+

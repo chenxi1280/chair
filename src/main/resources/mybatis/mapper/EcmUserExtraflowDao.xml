@@ -110,9 +110,6 @@
 	    <if test="fkUserId != null">
 	   		and fk_user_id = #{fkUserId,jdbcType=INTEGER}
 	    </if>
-	    <if test="currentDateTime != null">
-	    	and #{currentDateTime} between extraflow_start_time and extraflow_end_time
-	    </if>
 	    <if test="extraflowUpdateTime != null">
 	    	and extraflow_update_time = #{extraflowUpdateTime,jdbcType=TIMESTAMP}
 	    </if>

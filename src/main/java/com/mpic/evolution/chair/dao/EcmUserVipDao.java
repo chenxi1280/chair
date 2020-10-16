@@ -1,7 +1,6 @@
 package com.mpic.evolution.chair.dao;
 
 import com.mpic.evolution.chair.pojo.entity.EcmUserVip;
-import com.mpic.evolution.chair.pojo.query.EcmUserVipQuery;
 
 public interface EcmUserVipDao {
     int deleteByPrimaryKey(Integer vipId);
@@ -12,7 +11,7 @@ public interface EcmUserVipDao {
 
     EcmUserVip selectByPrimaryKey(Integer vipId);
     
-    EcmUserVip selectByVipUser(EcmUserVipQuery record);
+    EcmUserVip selectByVipUser(EcmUserVip record);
 
     int updateByPrimaryKeySelective(EcmUserVip record);
 
