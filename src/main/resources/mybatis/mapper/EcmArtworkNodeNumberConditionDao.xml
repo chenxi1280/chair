@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mpic.evolution.chair.dao.EcmArtworkNodeNumberConditionDao">
+  <resultMap id="BaseResultMap" type="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeNumberCondition">
+    <id column="pk_detailId" jdbcType="INTEGER" property="pkDetailid" />
+    <result column="appear_condition0" jdbcType="VARCHAR" property="appearCondition0" />
+    <result column="change_condition0" jdbcType="VARCHAR" property="changeCondition0" />
+    <result column="appear_condition1" jdbcType="VARCHAR" property="appearCondition1" />
+    <result column="change_condition1" jdbcType="VARCHAR" property="changeCondition1" />
+    <result column="appear_condition2" jdbcType="VARCHAR" property="appearCondition2" />
+    <result column="change_condition2" jdbcType="VARCHAR" property="changeCondition2" />
+    <result column="appear_condition3" jdbcType="VARCHAR" property="appearCondition3" />
+    <result column="change_condition3" jdbcType="VARCHAR" property="changeCondition3" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pk_detailId, appear_condition0, change_condition0, appear_condition1, change_condition1, 
+    appear_condition2, change_condition2, appear_condition3, change_condition3
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from ecm_artwork_node_number_condition
+    where pk_detailId = #{pkDetailid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ecm_artwork_node_number_condition
+    where pk_detailId = #{pkDetailid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="pk_detailId" keyProperty="pkDetailid" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeNumberCondition" useGeneratedKeys="true">
+    insert into ecm_artwork_node_number_condition (appear_condition0, change_condition0, 
+      appear_condition1, change_condition1, appear_condition2, 
+      change_condition2, appear_condition3, change_condition3
+      )
+    values (#{appearCondition0,jdbcType=VARCHAR}, #{changeCondition0,jdbcType=VARCHAR}, 
+      #{appearCondition1,jdbcType=VARCHAR}, #{changeCondition1,jdbcType=VARCHAR}, #{appearCondition2,jdbcType=VARCHAR}, 
+      #{changeCondition2,jdbcType=VARCHAR}, #{appearCondition3,jdbcType=VARCHAR}, #{changeCondition3,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="pk_detailId" keyProperty="pkDetailid" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeNumberCondition" useGeneratedKeys="true">
+    insert into ecm_artwork_node_number_condition
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="appearCondition0 != null">
+        appear_condition0,
+      </if>
+      <if test="changeCondition0 != null">
+        change_condition0,
+      </if>
+      <if test="appearCondition1 != null">
+        appear_condition1,
+      </if>
+      <if test="changeCondition1 != null">
+        change_condition1,
+      </if>
+      <if test="appearCondition2 != null">
+        appear_condition2,
+      </if>
+      <if test="changeCondition2 != null">
+        change_condition2,
+      </if>
+      <if test="appearCondition3 != null">
+        appear_condition3,
+      </if>
+      <if test="changeCondition3 != null">
+        change_condition3,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="appearCondition0 != null">
+        #{appearCondition0,jdbcType=VARCHAR},
+      </if>
+      <if test="changeCondition0 != null">
+        #{changeCondition0,jdbcType=VARCHAR},
+      </if>
+      <if test="appearCondition1 != null">
+        #{appearCondition1,jdbcType=VARCHAR},
+      </if>
+      <if test="changeCondition1 != null">
+        #{changeCondition1,jdbcType=VARCHAR},
+      </if>
+      <if test="appearCondition2 != null">
+        #{appearCondition2,jdbcType=VARCHAR},
+      </if>
+      <if test="changeCondition2 != null">
+        #{changeCondition2,jdbcType=VARCHAR},
+      </if>
+      <if test="appearCondition3 != null">
+        #{appearCondition3,jdbcType=VARCHAR},
+      </if>
+      <if test="changeCondition3 != null">
+        #{changeCondition3,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeNumberCondition">
+    update ecm_artwork_node_number_condition
+    <set>
+      <if test="appearCondition0 != null">
+        appear_condition0 = #{appearCondition0,jdbcType=VARCHAR},
+      </if>
+      <if test="changeCondition0 != null">
+        change_condition0 = #{changeCondition0,jdbcType=VARCHAR},
+      </if>
+      <if test="appearCondition1 != null">
+        appear_condition1 = #{appearCondition1,jdbcType=VARCHAR},
+      </if>
+      <if test="changeCondition1 != null">
+        change_condition1 = #{changeCondition1,jdbcType=VARCHAR},
+      </if>
+      <if test="appearCondition2 != null">
+        appear_condition2 = #{appearCondition2,jdbcType=VARCHAR},
+      </if>
+      <if test="changeCondition2 != null">
+        change_condition2 = #{changeCondition2,jdbcType=VARCHAR},
+      </if>
+      <if test="appearCondition3 != null">
+        appear_condition3 = #{appearCondition3,jdbcType=VARCHAR},
+      </if>
+      <if test="changeCondition3 != null">
+        change_condition3 = #{changeCondition3,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where pk_detailId = #{pkDetailid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeNumberCondition">
+    update ecm_artwork_node_number_condition
+    set appear_condition0 = #{appearCondition0,jdbcType=VARCHAR},
+      change_condition0 = #{changeCondition0,jdbcType=VARCHAR},
+      appear_condition1 = #{appearCondition1,jdbcType=VARCHAR},
+      change_condition1 = #{changeCondition1,jdbcType=VARCHAR},
+      appear_condition2 = #{appearCondition2,jdbcType=VARCHAR},
+      change_condition2 = #{changeCondition2,jdbcType=VARCHAR},
+      appear_condition3 = #{appearCondition3,jdbcType=VARCHAR},
+      change_condition3 = #{changeCondition3,jdbcType=VARCHAR}
+    where pk_detailId = #{pkDetailid,jdbcType=INTEGER}
+  </update>
+</mapper>
