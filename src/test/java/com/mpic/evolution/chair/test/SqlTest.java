@@ -161,6 +161,12 @@ public class SqlTest {
 		vip.setCurrentDateTime(pattern.format(now));
 		EcmUserVip vipInfo = ecmUserVipDao.selectByVipUser(vip);
 		System.out.println(vipInfo);
+		System.out.println(vipInfo.getVipStartTime());
+//		Date vipStartTime = vipInfo.getVipStartTime();
+//		Instant instant = vipStartTime.toInstant();
+//		ZoneId zoneId = ZoneId.systemDefault();
+//		LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
+//		String format = localDateTime.format(pattern);
 	}
 	
 	/**

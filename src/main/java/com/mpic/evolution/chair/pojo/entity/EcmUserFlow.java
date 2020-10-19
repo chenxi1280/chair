@@ -1,9 +1,8 @@
 package com.mpic.evolution.chair.pojo.entity;
 
-import lombok.Data;
-
 import java.io.Serializable;
 import java.util.Date;
+import lombok.Data;
 
 /**
  * ecm_user_flow
@@ -32,22 +31,22 @@ public class EcmUserFlow implements Serializable {
     private Integer totalFlow;
 
     /**
-     * 	更新时间
+     * 更新时间
      */
     private Date updateTime;
 
     /**
-     * 	用户使用的总流量（单位KB）
+     * 上一次的审核流量（单位KB）
      */
     private Integer checkFlow;
 
     /**
-     * 	用户已使用流量（单位KB）
+     * 用户已使用的普通流量（单位KB）
      */
     private Integer usedFlow;
 
     /**
-     * 	用户的永久使用流量（单位KB）
+     * 用户的永久使用流量（单位KB）
      */
     private Integer permanentFlow;
 

@@ -110,8 +110,5 @@
 	    <if test="vipUpdateTime != null">
 	    	and vip_update_time = #{vipUpdateTime,jdbcType=TIMESTAMP}
 	    </if>
-	    <if test="currentDateTime != null">
-	    	and #{currentDateTime} between vip_start_time and vip_end_time
-	    </if>
   </select>
 </mapper>
