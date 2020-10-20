@@ -19,12 +19,7 @@ public class EcmUserFlow implements Serializable {
      * 用户id
      */
     private Integer userId;
-
-    /**
-     * 剩余流量（单位KB）
-     */
-    private Integer surplusFlow;
-
+    
     /**
      * 总流量（单位KB）
      */

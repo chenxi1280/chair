@@ -5,13 +5,11 @@
     <id column="extraflow_id" jdbcType="INTEGER" property="extraflowId" />
     <result column="fk_user_id" jdbcType="INTEGER" property="fkUserId" />
     <result column="extraflow_status" jdbcType="SMALLINT" property="extraflowStatus" />
-    <result column="extraflow_start_time" jdbcType="TIMESTAMP" property="extraflowStartTime" />
-    <result column="extraflow_end_time" jdbcType="TIMESTAMP" property="extraflowEndTime" />
+    <result column="extraflow_create_time" jdbcType="TIMESTAMP" property="extraflowCreateTime" />
     <result column="extraflow_update_time" jdbcType="TIMESTAMP" property="extraflowUpdateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    extraflow_id, fk_user_id, extraflow_status, extraflow_start_time, extraflow_end_time, 
-    extraflow_update_time
+    extraflow_id, fk_user_id, extraflow_status, extraflow_create_time, extraflow_update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -24,12 +22,10 @@
     where extraflow_id = #{extraflowId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyColumn="extraflow_id" keyProperty="extraflowId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUserExtraflow" useGeneratedKeys="true">
-    insert into ecm_user_extraflow (fk_user_id, extraflow_status, extraflow_start_time, 
-      extraflow_end_time, extraflow_update_time
-      )
-    values (#{fkUserId,jdbcType=INTEGER}, #{extraflowStatus,jdbcType=SMALLINT}, #{extraflowStartTime,jdbcType=TIMESTAMP}, 
-      #{extraflowEndTime,jdbcType=TIMESTAMP}, #{extraflowUpdateTime,jdbcType=TIMESTAMP}
-      )
+    insert into ecm_user_extraflow (fk_user_id, extraflow_status, extraflow_create_time, 
+      extraflow_update_time)
+    values (#{fkUserId,jdbcType=INTEGER}, #{extraflowStatus,jdbcType=SMALLINT}, #{extraflowCreateTime,jdbcType=TIMESTAMP}, 
+      #{extraflowUpdateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" keyColumn="extraflow_id" keyProperty="extraflowId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUserExtraflow" useGeneratedKeys="true">
     insert into ecm_user_extraflow
@@ -40,11 +36,8 @@
       <if test="extraflowStatus != null">
         extraflow_status,
       </if>
-      <if test="extraflowStartTime != null">
-        extraflow_start_time,
-      </if>
-      <if test="extraflowEndTime != null">
-        extraflow_end_time,
+      <if test="extraflowCreateTime != null">
+        extraflow_create_time,
       </if>
       <if test="extraflowUpdateTime != null">
         extraflow_update_time,
@@ -57,11 +50,8 @@
       <if test="extraflowStatus != null">
         #{extraflowStatus,jdbcType=SMALLINT},
       </if>
-      <if test="extraflowStartTime != null">
-        #{extraflowStartTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="extraflowEndTime != null">
-        #{extraflowEndTime,jdbcType=TIMESTAMP},
+      <if test="extraflowCreateTime != null">
+        #{extraflowCreateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="extraflowUpdateTime != null">
         #{extraflowUpdateTime,jdbcType=TIMESTAMP},
@@ -77,11 +67,8 @@
       <if test="extraflowStatus != null">
         extraflow_status = #{extraflowStatus,jdbcType=SMALLINT},
       </if>
-      <if test="extraflowStartTime != null">
-        extraflow_start_time = #{extraflowStartTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="extraflowEndTime != null">
-        extraflow_end_time = #{extraflowEndTime,jdbcType=TIMESTAMP},
+      <if test="extraflowCreateTime != null">
+        extraflow_create_time = #{extraflowCreateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="extraflowUpdateTime != null">
         extraflow_update_time = #{extraflowUpdateTime,jdbcType=TIMESTAMP},
@@ -93,8 +80,7 @@
     update ecm_user_extraflow
     set fk_user_id = #{fkUserId,jdbcType=INTEGER},
       extraflow_status = #{extraflowStatus,jdbcType=SMALLINT},
-      extraflow_start_time = #{extraflowStartTime,jdbcType=TIMESTAMP},
-      extraflow_end_time = #{extraflowEndTime,jdbcType=TIMESTAMP},
+      extraflow_create_time = #{extraflowCreateTime,jdbcType=TIMESTAMP},
       extraflow_update_time = #{extraflowUpdateTime,jdbcType=TIMESTAMP}
     where extraflow_id = #{extraflowId,jdbcType=INTEGER}
   </update>
@@ -115,3 +101,4 @@
 	    </if>
   </select>
 </mapper>
+
