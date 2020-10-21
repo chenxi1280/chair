@@ -3,6 +3,7 @@
 <mapper namespace="com.mpic.evolution.chair.dao.EcmVideoTemporaryStorageDao">
   <resultMap id="BaseResultMap" type="com.mpic.evolution.chair.pojo.entity.EcmVideoTemporaryStorage">
     <id column="pk_video_id" jdbcType="INTEGER" property="pkVideoId" />
+    <result column="video_name" jdbcType="VARCHAR" property="videoName" />
     <result column="video_code" jdbcType="VARCHAR" property="videoCode" />
     <result column="video_url" jdbcType="VARCHAR" property="videoUrl" />
     <result column="fk_artwork_id" jdbcType="INTEGER" property="fkArtworkId" />
@@ -14,8 +15,8 @@
     <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
   </resultMap>
   <sql id="Base_Column_List">
-    pk_video_id, video_code, video_url, fk_artwork_id, fk_user_id, video_status, fk_node_id,
-    node_img_url, create_date, update_date
+    pk_video_id, video_name, video_code, video_url, fk_artwork_id, fk_user_id, video_status,
+    fk_node_id, node_img_url, create_date, update_date
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
@@ -28,18 +29,21 @@
     where pk_video_id = #{pkVideoId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyColumn="pk_video_id" keyProperty="pkVideoId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmVideoTemporaryStorage" useGeneratedKeys="true">
-    insert into ecm_video_temporary_storage (video_code, video_url, fk_artwork_id,
-      fk_user_id, video_status, fk_node_id,
-      node_img_url, create_date, update_date
-      )
-    values (#{videoCode,jdbcType=VARCHAR}, #{videoUrl,jdbcType=VARCHAR}, #{fkArtworkId,jdbcType=INTEGER},
-      #{fkUserId,jdbcType=INTEGER}, #{videoStatus,jdbcType=SMALLINT}, #{fkNodeId,jdbcType=INTEGER},
-      #{nodeImgUrl,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}
-      )
+    insert into ecm_video_temporary_storage (video_name, video_code, video_url,
+      fk_artwork_id, fk_user_id, video_status,
+      fk_node_id, node_img_url, create_date,
+      update_date)
+    values (#{videoName,jdbcType=VARCHAR}, #{videoCode,jdbcType=VARCHAR}, #{videoUrl,jdbcType=VARCHAR},
+      #{fkArtworkId,jdbcType=INTEGER}, #{fkUserId,jdbcType=INTEGER}, #{videoStatus,jdbcType=SMALLINT},
+      #{fkNodeId,jdbcType=INTEGER}, #{nodeImgUrl,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP},
+      #{updateDate,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" keyColumn="pk_video_id" keyProperty="pkVideoId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmVideoTemporaryStorage" useGeneratedKeys="true">
     insert into ecm_video_temporary_storage
     <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="videoName != null">
+        video_name,
+      </if>
       <if test="videoCode != null">
         video_code,
       </if>
@@ -69,6 +73,9 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="videoName != null">
+        #{videoName,jdbcType=VARCHAR},
+      </if>
       <if test="videoCode != null">
         #{videoCode,jdbcType=VARCHAR},
       </if>
@@ -101,6 +108,9 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmVideoTemporaryStorage">
     update ecm_video_temporary_storage
     <set>
+      <if test="videoName != null">
+        video_name = #{videoName,jdbcType=VARCHAR},
+      </if>
       <if test="videoCode != null">
         video_code = #{videoCode,jdbcType=VARCHAR},
       </if>
@@ -133,7 +143,8 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmVideoTemporaryStorage">
     update ecm_video_temporary_storage
-    set video_code = #{videoCode,jdbcType=VARCHAR},
+    set video_name = #{videoName,jdbcType=VARCHAR},
+      video_code = #{videoCode,jdbcType=VARCHAR},
       video_url = #{videoUrl,jdbcType=VARCHAR},
       fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER},
       fk_user_id = #{fkUserId,jdbcType=INTEGER},

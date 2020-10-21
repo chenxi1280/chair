@@ -10,12 +10,10 @@ import com.mpic.evolution.chair.pojo.entity.EcmArtwork;
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeNumberCondition;
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
-import com.mpic.evolution.chair.pojo.tencent.video.BaseTask;
 import com.mpic.evolution.chair.pojo.vo.*;
 import com.mpic.evolution.chair.service.EcmArtWorkService;
 import com.mpic.evolution.chair.util.RandomUtil;
 import com.mpic.evolution.chair.util.TreeUtil;
-import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -24,9 +22,8 @@ import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -250,6 +247,12 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         if (!ecmArtwork.getFkUserid().equals(ecmArtworkNodeNumberConditionVO.getFkUserId())) {
             return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
         }
+        EcmArtworkNodeNumberCondition ecmArtworkNodeNumberCondition = ecmArtworkNodeNumberConditionDao.selectByPrimaryKey(ecmArtworkNodeNumberConditionVO.getPkDetailid());
+        if (ecmArtworkNodeNumberCondition != null ){
+            ecmArtworkNodeNumberConditionVO.setUpdataDate(new Date());
+            return ResponseDTO.get(1 == ecmArtworkNodeNumberConditionDao.updateByPrimaryKeySelective(ecmArtworkNodeNumberConditionVO));
+        }
+        ecmArtworkNodeNumberConditionVO.setCreateDate(new Date());
         return ResponseDTO.get(1 == ecmArtworkNodeNumberConditionDao.insertSelective(ecmArtworkNodeNumberConditionVO));
     }
 

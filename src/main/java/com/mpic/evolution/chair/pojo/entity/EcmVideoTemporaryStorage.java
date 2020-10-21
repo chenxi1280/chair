@@ -17,6 +17,11 @@ public class EcmVideoTemporaryStorage implements Serializable {
     private Integer pkVideoId;
 
     /**
+     * 视频名字
+     */
+    private String videoName;
+
+    /**
      * 视频验证code
      */
     private String videoCode;
@@ -50,7 +55,6 @@ public class EcmVideoTemporaryStorage implements Serializable {
      * 作品图片url
      */
     private String nodeImgUrl;
-
 
     /**
      * 创建时间

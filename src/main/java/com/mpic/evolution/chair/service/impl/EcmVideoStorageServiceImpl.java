@@ -40,7 +40,7 @@ public class EcmVideoStorageServiceImpl implements EcmVideoStorageService {
     public ResponseDTO videoTemporaryStorage(EcmVideoTemporaryStorage ecmVideoTemporaryStorage) {
         ecmVideoTemporaryStorage.setVideoStatus((short) 0);
         ecmVideoTemporaryStorage.setCreateDate(new Date());
-        return ResponseDTO.get(1 == ecmVideoTemporaryStorageDao.insertSelective(ecmVideoTemporaryStorage));
+        return ResponseDTO.get(1 == ecmVideoTemporaryStorageDao.insertSelective(ecmVideoTemporaryStorage),ecmVideoTemporaryStorage);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class EcmVideoStorageServiceImpl implements EcmVideoStorageService {
             ResponseDTO.fail(ErrorEnum.ERR_601.getText());
         }
 
-        return ResponseDTO.ok();
+        return ResponseDTO.ok("success",ecmVideoTemporaryStorage);
     }
 
     @Override
