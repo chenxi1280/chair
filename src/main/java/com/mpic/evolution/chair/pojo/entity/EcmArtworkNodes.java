@@ -28,7 +28,10 @@ public class EcmArtworkNodes implements Serializable  {
     // 是否为 定位
     @JsonProperty(value = "isPosition" )
     @JSONField(name = "isPosition ")
-    private Boolean branchPre;
+    /**
+     * 选项类型 0普通选项 1定位选项 2数值选项
+     */
+    private Byte branchPre;
 
     /**
      * 前台id

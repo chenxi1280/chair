@@ -4,12 +4,14 @@ import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmVideoTemporaryStorage;
 import com.mpic.evolution.chair.pojo.query.EcmVideoTemporaryStorageQurey;
+import com.mpic.evolution.chair.pojo.vo.EcmVideoTemporaryStorageVO;
 import com.mpic.evolution.chair.service.EcmVideoStorageService;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.Date;
 
 /**
  * @author by cxd
@@ -39,6 +41,7 @@ public class EcmVideoStorageController extends BaseController {
             return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
         }
         ecmVideoTemporaryStorage.setFkUserId(userIdByHandToken);
+
         return ecmVideoStorageService.videoTemporaryStorage(ecmVideoTemporaryStorage);
     }
 
@@ -52,12 +55,13 @@ public class EcmVideoStorageController extends BaseController {
      *       失败: status 500  msg "error“
      */
     @RequestMapping("/updataVideoTemporaryStorage")
-    ResponseDTO updataVideoTemporaryStorage(@RequestBody EcmVideoTemporaryStorage ecmVideoTemporaryStorage) {
+    ResponseDTO updataVideoTemporaryStorage(@RequestBody EcmVideoTemporaryStorageVO ecmVideoTemporaryStorage) {
         Integer userIdByHandToken = getUserIdByHandToken();
         if (userIdByHandToken == null){
             return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
         }
         ecmVideoTemporaryStorage.setFkUserId(userIdByHandToken);
+
         return ecmVideoStorageService.updataVideoTemporaryStorage(ecmVideoTemporaryStorage);
     }
 

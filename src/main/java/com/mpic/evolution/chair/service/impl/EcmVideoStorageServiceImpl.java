@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,13 +39,14 @@ public class EcmVideoStorageServiceImpl implements EcmVideoStorageService {
     @Override
     public ResponseDTO videoTemporaryStorage(EcmVideoTemporaryStorage ecmVideoTemporaryStorage) {
         ecmVideoTemporaryStorage.setVideoStatus((short) 0);
+        ecmVideoTemporaryStorage.setCreateDate(new Date());
         return ResponseDTO.get(1 == ecmVideoTemporaryStorageDao.insertSelective(ecmVideoTemporaryStorage));
     }
 
     @Override
-//    @Transactional(rollbackFor = Exception.class)
     @Transactional
-    public ResponseDTO updataVideoTemporaryStorage(EcmVideoTemporaryStorage ecmVideoTemporaryStorage) {
+    //    @Transactional(rollbackFor = Exception.class)
+    public ResponseDTO updataVideoTemporaryStorage(EcmVideoTemporaryStorageVO ecmVideoTemporaryStorage) {
         EcmArtwork ecmArtwork = ecmArtworkDao.selectByPrimaryKey(ecmVideoTemporaryStorage.getFkUserId());
         if (ecmArtwork == null ) {
             ResponseDTO.fail(ErrorEnum.ERR_011.getText());
@@ -59,7 +61,9 @@ public class EcmVideoStorageServiceImpl implements EcmVideoStorageService {
         }
         ecmArtworkNodes.setVideoUrl(ecmVideoTemporaryStorage.getVideoUrl());
         ecmArtworkNodes.setVideoCode(ecmVideoTemporaryStorage.getVideoCode());
+        ecmArtworkNodes.setItemsBakText(ecmVideoTemporaryStorage.getNodeImgUrl());
         ecmVideoTemporaryStorage.setVideoStatus((short) 1);
+        ecmVideoTemporaryStorage.setUpdateDate(new Date());
         try{
             ecmVideoTemporaryStorageDao.updateByPrimaryKeySelective(ecmVideoTemporaryStorage);
             ecmArtworkNodesDao.updateByPrimaryKeySelective(ecmArtworkNodes);

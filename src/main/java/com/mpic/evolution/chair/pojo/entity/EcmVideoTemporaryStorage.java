@@ -3,6 +3,7 @@ package com.mpic.evolution.chair.pojo.entity;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * ecm_video_temporary_storage
@@ -44,6 +45,22 @@ public class EcmVideoTemporaryStorage implements Serializable {
      * 节点id
      */
     private Integer fkNodeId;
+
+    /**
+     * 作品图片url
+     */
+    private String nodeImgUrl;
+
+
+    /**
+     * 创建时间
+     */
+    private Date createDate;
+
+    /**
+     * 修改时间
+     */
+    private Date updateDate;
 
     private static final long serialVersionUID = 1L;
 }

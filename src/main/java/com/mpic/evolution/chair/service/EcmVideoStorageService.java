@@ -3,6 +3,7 @@ package com.mpic.evolution.chair.service;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmVideoTemporaryStorage;
 import com.mpic.evolution.chair.pojo.query.EcmVideoTemporaryStorageQurey;
+import com.mpic.evolution.chair.pojo.vo.EcmVideoTemporaryStorageVO;
 
 /**
  * @author by cxd
@@ -13,7 +14,7 @@ import com.mpic.evolution.chair.pojo.query.EcmVideoTemporaryStorageQurey;
 public interface EcmVideoStorageService {
     ResponseDTO videoTemporaryStorage(EcmVideoTemporaryStorage ecmVideoTemporaryStorage);
 
-    ResponseDTO updataVideoTemporaryStorage(EcmVideoTemporaryStorage ecmVideoTemporaryStorage);
+    ResponseDTO updataVideoTemporaryStorage(EcmVideoTemporaryStorageVO ecmVideoTemporaryStorage);
 
     ResponseDTO getVideoTemporaryStorages(EcmVideoTemporaryStorageQurey ecmVideoTemporaryStorageQurey);
 }

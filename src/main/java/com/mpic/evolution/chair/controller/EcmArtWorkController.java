@@ -1,26 +1,26 @@
 package com.mpic.evolution.chair.controller;
 
 
-import javax.annotation.Resource;
-
-import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.HttpKit;
 import com.mpic.evolution.chair.common.constant.PublishConstants;
+import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
+import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodeNumberConditionVO;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
 import com.mpic.evolution.chair.service.EcmArtWorkService;
 import com.mpic.evolution.chair.util.HttpMpicUtil;
 import com.mpic.evolution.chair.util.JWTUtil;
 import com.mpic.evolution.chair.util.RedisUtil;
 import com.qcloud.vod.common.StringUtil;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.annotation.Resource;
 
 /**
  * @author cxd
@@ -150,6 +150,18 @@ public class EcmArtWorkController extends BaseController{
 		ecmArtworkNodesVo.setFkUserId(userId);
 
 		return ecmArtWorkService.removeNode(ecmArtworkNodesVo);
+	}
+
+	@RequestMapping("/saveArtworkNodeNumberCondition")
+	@ResponseBody
+	public ResponseDTO saveArtworkNodeNumberCondition(@RequestBody EcmArtworkNodeNumberConditionVO ecmArtworkNodeNumberConditionVO){
+		Integer userId = getUserIdByHandToken();
+		if (userId == null){
+			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+		}
+		ecmArtworkNodeNumberConditionVO.setFkUserId(userId);
+
+		return ecmArtWorkService.saveArtworkNodeNumberCondition(ecmArtworkNodeNumberConditionVO);
 	}
 
     /**

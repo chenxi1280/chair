@@ -3,6 +3,7 @@ package com.mpic.evolution.chair.pojo.entity;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * ecm_artwork_node_number_condition
@@ -54,6 +55,21 @@ public class EcmArtworkNodeNumberCondition implements Serializable {
      * 数值3发生怎样的改变
      */
     private String changeCondition3;
+
+    /**
+     * 作品id
+     */
+    private Integer fkArtworkId;
+
+    /**
+     * 创建时间
+     */
+    private Date createDate;
+
+    /**
+     * 更新时间
+     */
+    private Date updataDate;
 
     private static final long serialVersionUID = 1L;
 }
