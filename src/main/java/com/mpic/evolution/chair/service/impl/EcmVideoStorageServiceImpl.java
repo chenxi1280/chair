@@ -15,6 +15,7 @@ import com.mpic.evolution.chair.service.EcmVideoStorageService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -47,17 +48,16 @@ public class EcmVideoStorageServiceImpl implements EcmVideoStorageService {
     @Transactional
     //    @Transactional(rollbackFor = Exception.class)
     public ResponseDTO updataVideoTemporaryStorage(EcmVideoTemporaryStorageVO ecmVideoTemporaryStorage) {
-        EcmArtwork ecmArtwork = ecmArtworkDao.selectByPrimaryKey(ecmVideoTemporaryStorage.getFkUserId());
+        EcmArtwork ecmArtwork = ecmArtworkDao.selectByPrimaryKey(ecmVideoTemporaryStorage.getFkArtworkId());
         if (ecmArtwork == null ) {
-            ResponseDTO.fail(ErrorEnum.ERR_011.getText());
+            return ResponseDTO.fail(ErrorEnum.ERR_011.getText());
         }
-
         if (!ecmArtwork.getFkUserid().equals(ecmVideoTemporaryStorage.getFkUserId())  ) {
-            ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+            return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
         }
         EcmArtworkNodes ecmArtworkNodes = ecmArtworkNodesDao.selectByPrimaryKey(ecmVideoTemporaryStorage.getFkNodeId());
-        if (ecmArtworkNodes!=null){
-            ResponseDTO.fail(ErrorEnum.ERR_007.getText());
+        if (ecmArtworkNodes == null){
+            return ResponseDTO.fail(ErrorEnum.ERR_007.getText());
         }
         ecmArtworkNodes.setVideoUrl(ecmVideoTemporaryStorage.getVideoUrl());
         ecmArtworkNodes.setVideoCode(ecmVideoTemporaryStorage.getVideoCode());
@@ -72,17 +72,32 @@ public class EcmVideoStorageServiceImpl implements EcmVideoStorageService {
             ResponseDTO.fail(ErrorEnum.ERR_601.getText());
         }
 
-        return ResponseDTO.ok("success",ecmVideoTemporaryStorage);
+        return ResponseDTO.ok("success",ecmArtworkNodes);
     }
 
     @Override
     public ResponseDTO getVideoTemporaryStorages(EcmVideoTemporaryStorageQurey ecmVideoTemporaryStorageQurey) {
         List<EcmVideoTemporaryStorageVO> vos = ecmVideoTemporaryStorageDao.selectByFkArtworkId(ecmVideoTemporaryStorageQurey.getFkArtworkId());
+        if (CollectionUtils.isEmpty(vos)){
+            return ResponseDTO.fail(ErrorEnum.ERR_201.getText());
+        }
         for (EcmVideoTemporaryStorageVO vo : vos) {
             if (!vo.getFkUserId().equals(ecmVideoTemporaryStorageQurey.getFkUserId())){
                 return  ResponseDTO.fail(ErrorEnum.ERR_603.getText());
             }
         }
         return ResponseDTO.ok(JudgeConstant.SUCCESS,vos);
+    }
+
+    @Override
+    public ResponseDTO delVideoTemporaryStorages(EcmVideoTemporaryStorageQurey ecmVideoTemporaryStorageQurey) {
+        EcmVideoTemporaryStorage ecmVideoTemporaryStorage = ecmVideoTemporaryStorageDao.selectByPrimaryKey(ecmVideoTemporaryStorageQurey.getPkVideoId());
+        if (ecmVideoTemporaryStorage ==null ){
+            return ResponseDTO.fail(ErrorEnum.ERR_201.getText());
+        }
+        if (!ecmVideoTemporaryStorage.getFkUserId().equals(ecmVideoTemporaryStorageQurey.getFkUserId())){
+            return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+        }
+        return ResponseDTO.get(1==ecmVideoTemporaryStorageDao.deleteByPrimaryKey(ecmVideoTemporaryStorageQurey.getPkVideoId()));
     }
 }

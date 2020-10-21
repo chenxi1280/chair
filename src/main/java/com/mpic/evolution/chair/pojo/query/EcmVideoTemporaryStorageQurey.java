@@ -16,6 +16,12 @@ public class EcmVideoTemporaryStorageQurey {
     private Integer fkArtworkId;
 
     /**
+     * 视频暂存表id
+     */
+    private Integer pkVideoId;
+
+
+    /**
      * 用户id
      */
     private Integer fkUserId;
