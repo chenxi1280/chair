@@ -1,9 +1,8 @@
 package com.mpic.evolution.chair.pojo.entity;
 
-import lombok.Data;
-
 import java.io.Serializable;
 import java.util.Date;
+import lombok.Data;
 
 /**
  * ecm_user_extraflow
@@ -24,14 +23,9 @@ public class EcmUserExtraflow implements Serializable {
     private Short extraflowStatus;
 
     /**
-     * 加油包起始时间
+     * 加油包购买时间
      */
-    private Date extraflowStartTime;
-
-    /**
-     * 加油包截止时间
-     */
-    private Date extraflowEndTime;
+    private Date extraflowCreateTime;
 
     /**
      * 记录更新时间

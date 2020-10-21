@@ -4,7 +4,6 @@
   <resultMap id="BaseResultMap" type="com.mpic.evolution.chair.pojo.entity.EcmUserFlow">
     <id column="user_flow_id" jdbcType="INTEGER" property="userFlowId" />
     <result column="user_id" jdbcType="INTEGER" property="userId" />
-    <result column="surplus_flow" jdbcType="INTEGER" property="surplusFlow" />
     <result column="total_flow" jdbcType="INTEGER" property="totalFlow" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="check_flow" jdbcType="INTEGER" property="checkFlow" />
@@ -12,8 +11,7 @@
     <result column="permanent_flow" jdbcType="INTEGER" property="permanentFlow" />
   </resultMap>
   <sql id="Base_Column_List">
-    user_flow_id, user_id, surplus_flow, total_flow, update_time, check_flow, used_flow, 
-    permanent_flow
+    user_flow_id, user_id, total_flow, update_time, check_flow, used_flow, permanent_flow
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -26,21 +24,18 @@
     where user_flow_id = #{userFlowId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyColumn="user_flow_id" keyProperty="userFlowId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUserFlow" useGeneratedKeys="true">
-    insert into ecm_user_flow (user_id, surplus_flow, total_flow, 
-      update_time, check_flow, used_flow, 
-      permanent_flow)
-    values (#{userId,jdbcType=INTEGER}, #{surplusFlow,jdbcType=INTEGER}, #{totalFlow,jdbcType=INTEGER}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{checkFlow,jdbcType=INTEGER}, #{usedFlow,jdbcType=INTEGER}, 
-      #{permanentFlow,jdbcType=INTEGER})
+    insert into ecm_user_flow (user_id, total_flow, update_time, 
+      check_flow, used_flow, permanent_flow
+      )
+    values (#{userId,jdbcType=INTEGER}, #{totalFlow,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{checkFlow,jdbcType=INTEGER}, #{usedFlow,jdbcType=INTEGER}, #{permanentFlow,jdbcType=INTEGER}
+      )
   </insert>
   <insert id="insertSelective" keyColumn="user_flow_id" keyProperty="userFlowId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUserFlow" useGeneratedKeys="true">
     insert into ecm_user_flow
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="userId != null">
         user_id,
-      </if>
-      <if test="surplusFlow != null">
-        surplus_flow,
       </if>
       <if test="totalFlow != null">
         total_flow,
@@ -61,9 +56,6 @@
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="userId != null">
         #{userId,jdbcType=INTEGER},
-      </if>
-      <if test="surplusFlow != null">
-        #{surplusFlow,jdbcType=INTEGER},
       </if>
       <if test="totalFlow != null">
         #{totalFlow,jdbcType=INTEGER},
@@ -88,9 +80,6 @@
       <if test="userId != null">
         user_id = #{userId,jdbcType=INTEGER},
       </if>
-      <if test="surplusFlow != null">
-        surplus_flow = #{surplusFlow,jdbcType=INTEGER},
-      </if>
       <if test="totalFlow != null">
         total_flow = #{totalFlow,jdbcType=INTEGER},
       </if>
@@ -112,7 +101,6 @@
   <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUserFlow">
     update ecm_user_flow
     set user_id = #{userId,jdbcType=INTEGER},
-      surplus_flow = #{surplusFlow,jdbcType=INTEGER},
       total_flow = #{totalFlow,jdbcType=INTEGER},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       check_flow = #{checkFlow,jdbcType=INTEGER},
@@ -121,7 +109,7 @@
     where user_flow_id = #{userFlowId,jdbcType=INTEGER}
   </update>
   
-   <!--  sql-->
+  <!--  sql-->
 	
   <select id="selectByPkUserId" resultType="com.mpic.evolution.chair.pojo.vo.EcmUserFlowVO">
     select <include refid="Base_Column_List" />
@@ -135,9 +123,6 @@
     <set>
       <if test="userId != null">
         user_id = #{userId,jdbcType=INTEGER},
-      </if>
-      <if test="surplusFlow != null">
-        surplus_flow = #{surplusFlow,jdbcType=INTEGER},
       </if>
       <if test="totalFlow != null">
         total_flow = #{totalFlow,jdbcType=INTEGER},
@@ -158,6 +143,6 @@
     where user_id = #{userId}
 
   </update>
+  
 </mapper>
-
 
