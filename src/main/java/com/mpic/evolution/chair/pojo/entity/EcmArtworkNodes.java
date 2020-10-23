@@ -101,6 +101,8 @@ public class EcmArtworkNodes implements Serializable  {
     /**
      * （未使用）被选择的选项文本，与父亲的items_text[i]相同
      */
+    @JsonProperty(value = "isNUmberSelect" )
+    @JSONField(name = "isNUmberSelect" )
     private String chosenText;
 
     private static final long serialVersionUID = 1L;

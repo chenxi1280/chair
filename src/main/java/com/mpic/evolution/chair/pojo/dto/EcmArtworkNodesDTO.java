@@ -32,7 +32,10 @@ public class EcmArtworkNodesDTO implements Serializable {
     // 是否为 定位
     @JsonProperty(value = "isPosition" )
     @JSONField(name = "isPosition ")
-    private Boolean branchPre;
+    /**
+     * 选项类型 0普通选项 1定位选项 2数值选项
+     */
+    private Byte branchPre;
 
     /**
      * 前台id
@@ -73,6 +76,7 @@ public class EcmArtworkNodesDTO implements Serializable {
 
 
     private Integer fkAchievementId;
+
     @JsonIgnore
     private Integer fkEndingId;
 
@@ -101,7 +105,11 @@ public class EcmArtworkNodesDTO implements Serializable {
     /**
      * （未使用）被选择的选项文本，与父亲的items_text[i]相同
      */
+    @JsonProperty(value = "isNUmberSelect" )
+    @JSONField(name = "isNUmberSelect" )
     private String chosenText;
+
+
 
     /**
      * 	用户token

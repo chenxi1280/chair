@@ -1,26 +1,27 @@
 package com.mpic.evolution.chair.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import com.alibaba.fastjson.JSON;
 import com.mpic.evolution.chair.common.constant.JudgeConstant;
 import com.mpic.evolution.chair.dao.*;
-import com.mpic.evolution.chair.pojo.entity.EcmArtwork;
+import com.mpic.evolution.chair.pojo.entity.*;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
+import com.mpic.evolution.chair.pojo.vo.*;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
-import com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHistory;
-import com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHot;
-import com.mpic.evolution.chair.pojo.entity.EcmReportHistroy;
-import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
-import com.mpic.evolution.chair.pojo.vo.WxPlayRecordVo;
-import com.mpic.evolution.chair.pojo.vo.WxReportHistoryVo;
 import com.mpic.evolution.chair.service.WxPlayService;
 import com.mpic.evolution.chair.util.TreeUtil;
+import org.springframework.util.CollectionUtils;
+
+import static com.mpic.evolution.chair.util.VOUtils.setNodeNumberConditionFieldValue;
 
 /** 
 * @author 作者 SJ: 
@@ -41,6 +42,9 @@ public class WxPlayServiceImpl implements WxPlayService {
     
     @Resource
     EcmReportHistroyDao ecmReportHistroyDao;
+
+	@Resource
+	EcmArtworkNodeNumberConditionDao ecmArtworkNodeNumberConditionDao;
 
 	@Resource
 	EcmArtworkDao ecmArtworkDao;
@@ -96,6 +100,35 @@ public class WxPlayServiceImpl implements WxPlayService {
             return ResponseDTO.fail("查询id无子节点");
         }
         List<EcmArtworkNodesVo> collect = list.stream().filter(ecmArtworkNodesVo -> !JudgeConstant.Y.equals(ecmArtworkNodesVo.getIsDeleted())).collect(Collectors.toList());
+		List<EcmArtworkNodeNumberCondition> ecmArtworkNodeNumberConditionS = ecmArtworkNodeNumberConditionDao.selectByArtWorkId(wxPlayRecordVo.getPkArtworkId());
+		collect.forEach( v -> {
+			// 还原定位数组方法
+			if (!StringUtils.isEmpty( v.getItemsText())) {
+				v.setNodeLocationList( JSON.parseArray( v.getItemsText(), NodeOptionLocationVO.class));
+			}
+
+			// 还原数值数组方法
+			if (!CollectionUtils.isEmpty(ecmArtworkNodeNumberConditionS)) {
+				for (EcmArtworkNodeNumberCondition ecmArtworkNodeNumberCondition : ecmArtworkNodeNumberConditionS) {
+					if (ecmArtworkNodeNumberCondition.getPkDetailid().equals(v.getPkDetailId())) {
+						// ecmArtworkNodeNumberCondition中数值0 1 2 3，并改成 前端对应的 list<NodeNumberConditionVO
+						List<NodeNumberConditionVO> numberCondition = new ArrayList<>(4);
+						Class<EcmArtworkNodeNumberCondition> ecmArtworkNodeNumberConditionClass = EcmArtworkNodeNumberCondition.class;
+						String appearCondition = "appearCondition";
+						String changeCondition = "changeCondition";
+						for (int i = 0; i < 4; i++) {
+							NodeNumberConditionVO nodeNumberConditionVO = new NodeNumberConditionVO();
+							setNodeNumberConditionFieldValue(ecmArtworkNodeNumberCondition,appearCondition ,i,ecmArtworkNodeNumberConditionClass,nodeNumberConditionVO);
+							setNodeNumberConditionFieldValue(ecmArtworkNodeNumberCondition,changeCondition ,i,ecmArtworkNodeNumberConditionClass,nodeNumberConditionVO);
+							numberCondition.add(i,nodeNumberConditionVO);
+						}
+						v.setOnAdvancedList(numberCondition);
+						v.setEcmArtworkNodeNumberCondition(ecmArtworkNodeNumberCondition);
+
+					}
+				}
+			}
+		});
         Integer detailId = wxPlayRecordVo.getDetailId();
         try {
             EcmArtworkNodesVo ecmArtworkNodesVo = TreeUtil.buildTreeByDetailId(collect, detailId).get(0);

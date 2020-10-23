@@ -19,4 +19,7 @@ public interface EcmArtworkNodeNumberConditionDao {
     int updateByPrimaryKey(EcmArtworkNodeNumberCondition record);
 
     List<EcmArtworkNodeNumberCondition> selectByArtWorkId(Integer pkArtworkId);
+
+    int insertNode(EcmArtworkNodeNumberConditionVO ecmArtworkNodeNumberConditionVO);
+
 }

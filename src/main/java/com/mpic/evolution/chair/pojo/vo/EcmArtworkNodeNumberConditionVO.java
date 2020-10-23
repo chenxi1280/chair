@@ -12,4 +12,5 @@ import lombok.Data;
 @Data
 public class EcmArtworkNodeNumberConditionVO extends EcmArtworkNodeNumberCondition {
     private int fkUserId;
+    private String chosenText;
 }

@@ -16,12 +16,12 @@
     <result column="updata_date" jdbcType="TIMESTAMP" property="updataDate" />
   </resultMap>
   <sql id="Base_Column_List">
-    pk_detailId, appear_condition0, change_condition0, appear_condition1, change_condition1, 
-    appear_condition2, change_condition2, appear_condition3, change_condition3, fk_artwork_id, 
+    pk_detailId, appear_condition0, change_condition0, appear_condition1, change_condition1,
+    appear_condition2, change_condition2, appear_condition3, change_condition3, fk_artwork_id,
     create_date, updata_date
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from ecm_artwork_node_number_condition
     where pk_detailId = #{pkDetailid,jdbcType=INTEGER}
@@ -31,14 +31,14 @@
     where pk_detailId = #{pkDetailid,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyColumn="pk_detailId" keyProperty="pkDetailid" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeNumberCondition" useGeneratedKeys="true">
-    insert into ecm_artwork_node_number_condition (appear_condition0, change_condition0, 
-      appear_condition1, change_condition1, appear_condition2, 
-      change_condition2, appear_condition3, change_condition3, 
+    insert into ecm_artwork_node_number_condition (appear_condition0, change_condition0,
+      appear_condition1, change_condition1, appear_condition2,
+      change_condition2, appear_condition3, change_condition3,
       fk_artwork_id, create_date, updata_date
       )
-    values (#{appearCondition0,jdbcType=VARCHAR}, #{changeCondition0,jdbcType=VARCHAR}, 
-      #{appearCondition1,jdbcType=VARCHAR}, #{changeCondition1,jdbcType=VARCHAR}, #{appearCondition2,jdbcType=VARCHAR}, 
-      #{changeCondition2,jdbcType=VARCHAR}, #{appearCondition3,jdbcType=VARCHAR}, #{changeCondition3,jdbcType=VARCHAR}, 
+    values (#{appearCondition0,jdbcType=VARCHAR}, #{changeCondition0,jdbcType=VARCHAR},
+      #{appearCondition1,jdbcType=VARCHAR}, #{changeCondition1,jdbcType=VARCHAR}, #{appearCondition2,jdbcType=VARCHAR},
+      #{changeCondition2,jdbcType=VARCHAR}, #{appearCondition3,jdbcType=VARCHAR}, #{changeCondition3,jdbcType=VARCHAR},
       #{fkArtworkId,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, #{updataDate,jdbcType=TIMESTAMP}
       )
   </insert>
@@ -169,7 +169,6 @@
       updata_date = #{updataDate,jdbcType=TIMESTAMP}
     where pk_detailId = #{pkDetailid,jdbcType=INTEGER}
   </update>
-
 <!--  sql-->
   <select id="selectByArtWorkId" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkNodeNumberConditionVO">
     select <include refid="Base_Column_List" />
@@ -177,5 +176,21 @@
     where fk_artwork_id =#{pkArtworkId}
 
   </select>
+
+  <insert id="insertNode">
+
+     insert into ecm_artwork_node_number_condition (pk_detailId,appear_condition0, change_condition0,
+      appear_condition1, change_condition1, appear_condition2,
+      change_condition2, appear_condition3, change_condition3,
+      fk_artwork_id, create_date
+      )
+    values ( #{pkDetailid,jdbcType=INTEGER},#{appearCondition0,jdbcType=VARCHAR}, #{changeCondition0,jdbcType=VARCHAR},
+      #{appearCondition1,jdbcType=VARCHAR}, #{changeCondition1,jdbcType=VARCHAR}, #{appearCondition2,jdbcType=VARCHAR},
+      #{changeCondition2,jdbcType=VARCHAR}, #{appearCondition3,jdbcType=VARCHAR}, #{changeCondition3,jdbcType=VARCHAR},
+      #{fkArtworkId,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}
+      )
+
+  </insert>
+
 
 </mapper>

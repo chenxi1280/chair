@@ -14,6 +14,7 @@ import com.mpic.evolution.chair.pojo.vo.*;
 import com.mpic.evolution.chair.service.EcmArtWorkService;
 import com.mpic.evolution.chair.util.RandomUtil;
 import com.mpic.evolution.chair.util.TreeUtil;
+import com.mpic.evolution.chair.util.VOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -123,8 +124,8 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                         String changeCondition = "changeCondition";
                         for (int i = 0; i < 4; i++) {
                             NodeNumberConditionVO nodeNumberConditionVO = new NodeNumberConditionVO();
-                            setNodeNumberConditionFieldValue(ecmArtworkNodeNumberCondition,appearCondition ,i,ecmArtworkNodeNumberConditionClass,nodeNumberConditionVO);
-                            setNodeNumberConditionFieldValue(ecmArtworkNodeNumberCondition,changeCondition ,i,ecmArtworkNodeNumberConditionClass,nodeNumberConditionVO);
+                            VOUtils.setNodeNumberConditionFieldValue(ecmArtworkNodeNumberCondition,appearCondition ,i,ecmArtworkNodeNumberConditionClass,nodeNumberConditionVO);
+                            VOUtils.setNodeNumberConditionFieldValue(ecmArtworkNodeNumberCondition,changeCondition ,i,ecmArtworkNodeNumberConditionClass,nodeNumberConditionVO);
                             numberCondition.add(i,nodeNumberConditionVO);
                         }
                         node.setOnAdvancedList(numberCondition);
@@ -248,12 +249,19 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
         }
         EcmArtworkNodeNumberCondition ecmArtworkNodeNumberCondition = ecmArtworkNodeNumberConditionDao.selectByPrimaryKey(ecmArtworkNodeNumberConditionVO.getPkDetailid());
+        ecmArtworkNodes.setChosenText("1");
+        ecmArtworkNodeNumberConditionVO.setUpdataDate(new Date());
         if (ecmArtworkNodeNumberCondition != null ){
-            ecmArtworkNodeNumberConditionVO.setUpdataDate(new Date());
+
+            ecmArtworkNodesDao.updateByPrimaryKeySelective(ecmArtworkNodes);
             return ResponseDTO.get(1 == ecmArtworkNodeNumberConditionDao.updateByPrimaryKeySelective(ecmArtworkNodeNumberConditionVO));
         }
         ecmArtworkNodeNumberConditionVO.setCreateDate(new Date());
-        return ResponseDTO.get(1 == ecmArtworkNodeNumberConditionDao.insertSelective(ecmArtworkNodeNumberConditionVO));
+        //更新是 为数值选项
+
+        ecmArtworkNodesDao.updateByPrimaryKeySelective(ecmArtworkNodes);
+        ecmArtworkNodeNumberConditionDao.insertNode(ecmArtworkNodeNumberConditionVO);
+        return ResponseDTO.ok();
     }
 
 
@@ -473,37 +481,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         }
 
     }
-    /**
-     * @param: [ecmArtworkNodeNumberCondition 被获取的对象, fieldName 获取的属性名, index 索引,
-     *                  ecmArtworkNodeNumberConditionClass 被获取的类的class对象, nodeNumberCondition 赋值对象]
-     * @return: void
-     * @author: cxd
-     * @Date: 2020/10/20
-     * 描述 :  通过属性名赋值对应 对象属性
-     *          主要返回前端使用
-     */
-    private void setNodeNumberConditionFieldValue(EcmArtworkNodeNumberCondition ecmArtworkNodeNumberCondition,
-            String fieldName ,int index,Class<EcmArtworkNodeNumberCondition> ecmArtworkNodeNumberConditionClass,NodeNumberConditionVO nodeNumberCondition )  {
 
-        try {
-            Field declaredField = ecmArtworkNodeNumberConditionClass.getDeclaredField(fieldName + index);
-            declaredField.setAccessible(true); // 私有属性必须设置访问权限
-            String resultValue = (String) declaredField.get(ecmArtworkNodeNumberCondition);
-            String appear = resultValue.substring(0, 1);
-            String appearValue = resultValue.substring(1);
-
-            if ("appearCondition".equals(fieldName)) {
-                nodeNumberCondition.setAppear(appear);
-                nodeNumberCondition.setAppearValue(appearValue);
-            }
-            if ("changeCondition".equals(fieldName)) {
-                nodeNumberCondition.setChange(appear);
-                nodeNumberCondition.setChangeValue(appearValue);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
 }
 
