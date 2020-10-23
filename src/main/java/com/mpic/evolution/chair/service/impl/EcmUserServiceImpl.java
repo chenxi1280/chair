@@ -254,7 +254,7 @@ public class EcmUserServiceImpl implements EcmUserService {
 		}
 		//有会员信息，未到当月截止期，去掉已使用流量
 		if (symbol == 0) {
-			userFlow.setTotalFlow(vipflow + userFlow.getPermanentFlow());
+			userFlow.setTotalFlow(vipflow + userFlow.getPermanentFlow()-userFlow.getUsedFlow());
 		}
 		//有会员过了当前月的截止期 重置已使用流量为0
 		if (symbol == 1) {
@@ -263,6 +263,8 @@ public class EcmUserServiceImpl implements EcmUserService {
 		//有会员但是会员到期了
 		if (symbol == 2) {
 			userFlow.setTotalFlow(0);
+			userFlow.setPermanentFlow(0);
+			userFlow.setUsedFlow(0);
 		}
 		//无会员信息 不是会员就无法购买加油包 只有默认流量 此流量加在永久流量中
 		if (symbol == 3) {
