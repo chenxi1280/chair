@@ -42,6 +42,7 @@ public class EcmArtworkNodesVo extends EcmArtworkNodes  {
     private String artWorkTips;
     // 定位选项 （前端还原使用）
     private List<NodeOptionLocationVO> nodeLocationList;
+
     // 数值选项（前端还原使用）
     private List<NodeNumberConditionVO> onAdvancedList;
     private EcmArtworkNodeNumberCondition ecmArtworkNodeNumberCondition;

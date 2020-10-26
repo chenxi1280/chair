@@ -3,6 +3,8 @@ package com.mpic.evolution.chair.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
@@ -107,9 +109,11 @@ public class WxPlayServiceImpl implements WxPlayService {
 				v.setNodeLocationList( JSON.parseArray( v.getItemsText(), NodeOptionLocationVO.class));
 			}
 
+			// 可优化
 			// 还原数值数组方法
 			if (!CollectionUtils.isEmpty(ecmArtworkNodeNumberConditionS)) {
 				for (EcmArtworkNodeNumberCondition ecmArtworkNodeNumberCondition : ecmArtworkNodeNumberConditionS) {
+
 					if (ecmArtworkNodeNumberCondition.getPkDetailid().equals(v.getPkDetailId())) {
 						// ecmArtworkNodeNumberCondition中数值0 1 2 3，并改成 前端对应的 list<NodeNumberConditionVO
 						List<NodeNumberConditionVO> numberCondition = new ArrayList<>(4);
@@ -124,12 +128,24 @@ public class WxPlayServiceImpl implements WxPlayService {
 						}
 						v.setOnAdvancedList(numberCondition);
 						v.setEcmArtworkNodeNumberCondition(ecmArtworkNodeNumberCondition);
-
+						v.setChosenText(null);
+						collect.forEach( vs -> {
+							if (vs.getPkDetailId().equals(v.getParentId())) {
+								vs.setChosenText("1");
+							}
+						});
 					}
 				}
 			}
+
+
+
 		});
-        Integer detailId = wxPlayRecordVo.getDetailId();
+
+//		collect(Collectors.toMap(Account::getId, Account::getUsername));
+		Map<Integer, List<EcmArtworkNodeNumberCondition>> collect1 = ecmArtworkNodeNumberConditionS.stream().collect(Collectors.toMap(EcmArtworkNodeNumberCondition::getPkDetailid, ecmArtworkNodeNumberCondition -> ecmArtworkNodeNumberConditionS  ));
+
+		Integer detailId = wxPlayRecordVo.getDetailId();
         try {
             EcmArtworkNodesVo ecmArtworkNodesVo = TreeUtil.buildTreeByDetailId(collect, detailId).get(0);
             return ResponseDTO.ok("success", ecmArtworkNodesVo);
