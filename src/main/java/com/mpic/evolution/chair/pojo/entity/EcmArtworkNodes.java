@@ -2,6 +2,7 @@ package com.mpic.evolution.chair.pojo.entity;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
@@ -12,6 +13,7 @@ import java.io.Serializable;
  * @author 
  */
 @Data
+//@JsonInclude(JsonInclude.Include.NON_NULL)
 public class EcmArtworkNodes implements Serializable  {
 
 
@@ -101,8 +103,8 @@ public class EcmArtworkNodes implements Serializable  {
     /**
      * （未使用）被选择的选项文本，与父亲的items_text[i]相同
      */
-    @JsonProperty(value = "isNUmberSelect" )
-    @JSONField(name = "isNUmberSelect" )
+    @JsonProperty(value = "isNumberSelect" )
+    @JSONField(name = "isNumberSelect" )
     private String chosenText;
 
     private static final long serialVersionUID = 1L;

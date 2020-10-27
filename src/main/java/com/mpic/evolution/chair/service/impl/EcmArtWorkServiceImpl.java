@@ -87,7 +87,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         }
 
         List<EcmArtworkNodesVo> list = ecmArtworkNodesDao.selectByArtWorkId(ecmArtWorkQuery.getPkArtworkId());
-        List<EcmArtworkNodeNumberCondition> ecmArtworkNodeNumberConditionS = ecmArtworkNodeNumberConditionDao.selectByArtWorkId(ecmArtWorkQuery.getPkArtworkId());
+        List<EcmArtworkNodeNumberConditionVO> ecmArtworkNodeNumberConditionS = ecmArtworkNodeNumberConditionDao.selectByArtWorkId(ecmArtWorkQuery.getPkArtworkId());
         //2次循环寻找 对应的  跳转节点
         for (EcmArtworkNodesVo node : list) {
             if (!StringUtils.isEmpty(node.getItems()) && node.getALevel() != null) {

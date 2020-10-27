@@ -105,8 +105,8 @@ public class EcmArtworkNodesDTO implements Serializable {
     /**
      * （未使用）被选择的选项文本，与父亲的items_text[i]相同
      */
-    @JsonProperty(value = "isNUmberSelect" )
-    @JSONField(name = "isNUmberSelect" )
+    @JsonProperty(value = "isNumberSelect" )
+    @JSONField(name = "isNumberSelect" )
     private String chosenText;
 
 

@@ -1,5 +1,7 @@
 package com.mpic.evolution.chair.pojo.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -10,6 +12,7 @@ import java.util.Date;
  * @author 
  */
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class EcmArtworkNodeNumberCondition implements Serializable {
     /**
      * nodeId

@@ -1,6 +1,7 @@
 package com.mpic.evolution.chair.pojo.vo;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mpic.evolution.chair.pojo.dto.EcmArtworkNodesDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeNumberCondition;
@@ -8,6 +9,7 @@ import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Administrator
@@ -47,4 +49,5 @@ public class EcmArtworkNodesVo extends EcmArtworkNodes  {
     private List<NodeNumberConditionVO> onAdvancedList;
     private EcmArtworkNodeNumberCondition ecmArtworkNodeNumberCondition;
 
+    private Map<Integer, List<EcmArtworkNodeNumberConditionVO>> appearConditionMap ;
 }
