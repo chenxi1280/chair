@@ -131,37 +131,32 @@ public class WxPlayServiceImpl implements WxPlayService {
                             EcmArtworkNodeNumberConditionVO ecmArtworkNodeNumberConditionVO = new EcmArtworkNodeNumberConditionVO();
                             setNodeNumberConditionFieldValue(ecmArtworkNodeNumberCondition, appearCondition, i, ecmArtworkNodeNumberConditionClass, nodeNumberConditionVO);
                             setNodeNumberConditionFieldValue(ecmArtworkNodeNumberCondition, changeCondition, i, ecmArtworkNodeNumberConditionClass, nodeNumberConditionVO);
-//                            setNodeNumberConditionValueFieldValue(ecmArtworkNodeNumberCondition, ecmArtworkNodeNumberConditionClass, ecmArtworkNodeNumberConditionVOClass, changeCondition, changeConditionValue, i);
+//                          setNodeNumberConditionValueFieldValue(ecmArtworkNodeNumberCondition, ecmArtworkNodeNumberConditionClass, ecmArtworkNodeNumberConditionVOClass, changeCondition, changeConditionValue, i);
                             ecmArtworkNodeNumberConditionVO.setChangeConditionValue(Integer.valueOf(nodeNumberConditionVO.getChange() + nodeNumberConditionVO.getChangeValue()));
+                            ecmArtworkNodeNumberConditionVO.setChangeFlag(ecmArtworkNodeNumberCondition.getChangeFlag());
+                            ecmArtworkNodeNumberConditionVO.setAppearFlag(ecmArtworkNodeNumberCondition.getAppearFlag());
+//                            ecmArtworkNodeNumberConditionVO.setChangeFlag();
                             numberCondition.add(i, nodeNumberConditionVO);
                             ecmArtworkNodeNumberConditionList.add(i,ecmArtworkNodeNumberConditionVO);
                         }
                         appearConditionMap.put(v.getPkDetailId(),ecmArtworkNodeNumberConditionList);
                         v.setOnAdvancedList(numberCondition);
+                        v.setChangeFlag(ecmArtworkNodeNumberCondition.getChangeFlag());
+                        v.setAppearFlag(ecmArtworkNodeNumberCondition.getAppearFlag());
 //                        v.setEcmArtworkNodeNumberCondition(ecmArtworkNodeNumberCondition);
-                        v.setChosenText(null);
-                        collect.forEach(vs -> {
-                            if (vs.getPkDetailId().equals(v.getParentId())) {
-                                vs.setChosenText("1");
-                            }
-                        });
+//                        v.setChosenText(null);
+
+//                        collect.forEach(vs -> {
+//                            if (vs.getPkDetailId().equals(v.getParentId())) {
+//                                vs.setChosenText("1");
+//                            }
+//                        });
                     }
                 }
             }
 
         });
 
-//        Map<Integer, List<EcmArtworkNodeNumberConditionVO>> appearConditionMap = ecmArtworkNodeNumberConditionS.stream().collect(Collectors.toMap(EcmArtworkNodeNumberCondition::getPkDetailid,
-//                ecmArtworkNodeNumberConditionVO -> {
-//
-//                    collect.forEach(v -> {
-//
-//                    });
-//
-//                    return ecmArtworkNodeNumberConditionList;
-//                }));
-
-//		collect(Collectors.toMap(Account::getId, Account::getUsername));
 
         Integer detailId = wxPlayRecordVo.getDetailId();
         try {

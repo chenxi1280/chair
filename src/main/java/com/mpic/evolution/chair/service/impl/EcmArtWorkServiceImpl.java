@@ -424,10 +424,11 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
         List<EcmArtworkNodesVo> list = ecmArtworkNodesDao.selectByArtWorkId(ecmArtWorkQuery.getPkArtworkId());
         //过滤 分组
-        Map<Integer, List<EcmArtworkNodesVo>> collect = list.stream().filter(ecmArtworkNodesVo -> !JudgeConstant.Y.equals(ecmArtworkNodesVo.getIsDeleted())).collect(Collectors.groupingBy(EcmArtworkNodes::getParentId));
+        List<EcmArtworkNodesVo> lists = list.stream().filter(ecmArtworkNodesVo -> !JudgeConstant.Y.equals(ecmArtworkNodesVo.getIsDeleted())).collect(Collectors.toList());
+        Map<Integer, List<EcmArtworkNodesVo>> collect = lists.stream().filter(ecmArtworkNodesVo -> !JudgeConstant.Y.equals(ecmArtworkNodesVo.getIsDeleted())).collect(Collectors.groupingBy(EcmArtworkNodes::getParentId));
 
         List<EcmArtworkNodesDTO> artworkNodesDTOS = new ArrayList<>();
-        list.forEach(node -> {
+        lists.forEach(node -> {
             //复制兄弟节点并设置到自己上
             EcmArtworkNodesDTO ecmArtworkNodesDTO = new EcmArtworkNodesDTO();
             BeanUtils.copyProperties(node, ecmArtworkNodesDTO);
