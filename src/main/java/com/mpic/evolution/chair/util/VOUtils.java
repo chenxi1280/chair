@@ -30,16 +30,17 @@ public class VOUtils {
             // 私有属性必须设置访问权限
             declaredField.setAccessible(true);
             String resultValue = (String) declaredField.get(ecmArtworkNodeNumberCondition);
-            String appear = resultValue.substring(0, 1);
-            String appearValue = resultValue.substring(1);
 
             if ("appearCondition".equals(fieldName)) {
-                nodeNumberCondition.setAppear(appear);
-                nodeNumberCondition.setAppearValue(appearValue);
+                String[] split = resultValue.split(",");
+                nodeNumberCondition.setAppearValueMin(split[0]);
+                nodeNumberCondition.setAppearValueMax(split[1]);
             }
             if ("changeCondition".equals(fieldName)) {
-                nodeNumberCondition.setChange(appear);
-                nodeNumberCondition.setChangeValue(appearValue);
+                String change = resultValue.substring(0, 1);
+                String changeValue = resultValue.substring(1);
+                nodeNumberCondition.setChange(change);
+                nodeNumberCondition.setChangeValue(changeValue);
             }
         } catch (Exception e) {
             e.printStackTrace();

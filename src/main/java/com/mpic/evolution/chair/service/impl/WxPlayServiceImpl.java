@@ -134,8 +134,10 @@ public class WxPlayServiceImpl implements WxPlayService {
 //                          setNodeNumberConditionValueFieldValue(ecmArtworkNodeNumberCondition, ecmArtworkNodeNumberConditionClass, ecmArtworkNodeNumberConditionVOClass, changeCondition, changeConditionValue, i);
                             ecmArtworkNodeNumberConditionVO.setChangeConditionValue(Integer.valueOf(nodeNumberConditionVO.getChange() + nodeNumberConditionVO.getChangeValue()));
                             ecmArtworkNodeNumberConditionVO.setChangeFlag(ecmArtworkNodeNumberCondition.getChangeFlag());
-                            ecmArtworkNodeNumberConditionVO.setAppearFlag(ecmArtworkNodeNumberCondition.getAppearFlag());
+//                            ecmArtworkNodeNumberConditionVO.setAppearFlag(ecmArtworkNodeNumberCondition.getAppearFlag());
 //                            ecmArtworkNodeNumberConditionVO.setChangeFlag();
+                            nodeNumberConditionVO.setChangeFlag(ecmArtworkNodeNumberCondition.getChangeFlag());
+                            nodeNumberConditionVO.setAppearFlag(ecmArtworkNodeNumberCondition.getAppearFlag());
                             numberCondition.add(i, nodeNumberConditionVO);
                             ecmArtworkNodeNumberConditionList.add(i,ecmArtworkNodeNumberConditionVO);
                         }
@@ -168,22 +170,7 @@ public class WxPlayServiceImpl implements WxPlayService {
         }
         return ResponseDTO.fail("无节点数据");
     }
-
-    private void setEcmArtworkNodeNumberConditionVONull(EcmArtworkNodeNumberConditionVO ecmArtworkNodeNumberConditionVO) {
-        ecmArtworkNodeNumberConditionVO.setAppearCondition0(null);
-        ecmArtworkNodeNumberConditionVO.setAppearCondition1(null);
-        ecmArtworkNodeNumberConditionVO.setAppearCondition2(null);
-        ecmArtworkNodeNumberConditionVO.setAppearCondition3(null);
-        ecmArtworkNodeNumberConditionVO.setChangeCondition0(null);
-        ecmArtworkNodeNumberConditionVO.setChangeCondition1(null);
-        ecmArtworkNodeNumberConditionVO.setChangeCondition2(null);
-        ecmArtworkNodeNumberConditionVO.setChangeCondition3(null);
-        ecmArtworkNodeNumberConditionVO.setUpdataDate(null);
-        ecmArtworkNodeNumberConditionVO.setCreateDate(null);
-        ecmArtworkNodeNumberConditionVO.setFkArtworkId(null);
-        ecmArtworkNodeNumberConditionVO.setPkDetailid(null);
-    }
-
+    
 
     /**
      * 保存用户投诉内容

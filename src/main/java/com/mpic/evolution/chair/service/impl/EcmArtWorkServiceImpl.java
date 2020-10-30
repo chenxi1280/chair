@@ -131,6 +131,8 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                         node.setOnAdvancedList(numberCondition);
                         node.setEcmArtworkNodeNumberCondition(ecmArtworkNodeNumberCondition);
 
+//                        node.setChangeFlag(ecmArtworkNodeNumberCondition.getChangeFlag());
+//                        node.setAppearFlag(ecmArtworkNodeNumberCondition.getAppearFlag());
                     }
                 }
             }
