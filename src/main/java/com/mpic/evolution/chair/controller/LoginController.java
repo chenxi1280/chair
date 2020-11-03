@@ -485,7 +485,7 @@ public class LoginController extends BaseController {
 	@ResponseBody
 	public ResponseDTO validateInviteCode(@RequestBody EcmInviteCodeVo ecmInviteCodeVo) {
 		LocalDateTime now = LocalDateTime.now();
-		LocalDateTime dateTime = LocalDateTime.of(2020, 10, 17, 0, 0);
+		LocalDateTime dateTime = LocalDateTime.of(2020, 12, 31, 0, 0);
 		if(now.isBefore(dateTime)) {
 			// 验证码验证
 			String regionCode = String.valueOf(redisUtil.lPop(ecmInviteCodeVo.getImageCodeKey()));
