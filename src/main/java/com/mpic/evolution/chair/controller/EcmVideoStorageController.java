@@ -61,7 +61,6 @@ public class EcmVideoStorageController extends BaseController {
             return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
         }
         ecmVideoTemporaryStorage.setFkUserId(userIdByHandToken);
-
         return ecmVideoStorageService.updataVideoTemporaryStorage(ecmVideoTemporaryStorage);
     }
 
@@ -83,5 +82,26 @@ public class EcmVideoStorageController extends BaseController {
         ecmVideoTemporaryStorageQurey.setFkUserId(userIdByHandToken);
         return ecmVideoStorageService.getVideoTemporaryStorages(ecmVideoTemporaryStorageQurey);
     }
+
+    /**
+     * @param: [ecmVideoTemporaryStorageQurey]暂存视频id
+     * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+     * @author: cxd
+     * @Date: 2020/10/21
+     * 描述 :  删除暂存视频接口
+     *       成功: status 200  msg "success”   date:
+     *       失败: status 500  msg "error“
+     */
+    @RequestMapping("/delVideoTemporaryStorages")
+    ResponseDTO delVideoTemporaryStorages(@RequestBody EcmVideoTemporaryStorageQurey ecmVideoTemporaryStorageQurey) {
+        Integer userIdByHandToken = getUserIdByHandToken();
+        if (userIdByHandToken == null){
+            return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+        }
+        ecmVideoTemporaryStorageQurey.setFkUserId(userIdByHandToken);
+        return ecmVideoStorageService.delVideoTemporaryStorages(ecmVideoTemporaryStorageQurey);
+    }
+
+
 
 }
