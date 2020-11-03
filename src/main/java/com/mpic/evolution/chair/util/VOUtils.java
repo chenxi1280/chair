@@ -43,7 +43,7 @@ public class VOUtils {
                 nodeNumberCondition.setChangeValue(changeValue);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 
@@ -66,7 +66,7 @@ public class VOUtils {
             vDeclaredField.setAccessible(true);
             vDeclaredField.set(ecmArtworkNodeNumberCondition,Integer.valueOf(resultValue));
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 }
