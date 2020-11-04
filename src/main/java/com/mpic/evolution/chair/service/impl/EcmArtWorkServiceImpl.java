@@ -250,10 +250,13 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
         }
         EcmArtworkNodeNumberCondition ecmArtworkNodeNumberCondition = ecmArtworkNodeNumberConditionDao.selectByPrimaryKey(ecmArtworkNodeNumberConditionVO.getPkDetailid());
-        ecmArtworkNodes.setChosenText("1");
+        if (ecmArtworkNodeNumberConditionVO.getAppearFlag() == 1 || ecmArtworkNodeNumberConditionVO.getChangeFlag() == 1) {
+            ecmArtworkNodes.setChosenText("1");
+        }else {
+            ecmArtworkNodes.setChosenText("0");
+        }
         ecmArtworkNodeNumberConditionVO.setUpdataDate(new Date());
         if (ecmArtworkNodeNumberCondition != null ){
-
             ecmArtworkNodesDao.updateByPrimaryKeySelective(ecmArtworkNodes);
             return ResponseDTO.get(1 == ecmArtworkNodeNumberConditionDao.updateByPrimaryKeySelective(ecmArtworkNodeNumberConditionVO));
         }
