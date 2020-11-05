@@ -25,5 +25,7 @@ public interface EcmArtworkNodesDao {
 
     int removeByPrimaryKey(Integer pkDetailId);
 
-    EcmArtworkNodesVo selectByVideoCode(String fileId);
+    List<EcmArtworkNodesVo> selectByVideoCode(String fileId);
+
+    int updateByEcmArtworkNodesList(List<EcmArtworkNodesVo> ecmArtworkNodesList);
 }

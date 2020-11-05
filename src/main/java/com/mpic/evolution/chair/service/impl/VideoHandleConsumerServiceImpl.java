@@ -25,6 +25,7 @@ import javax.annotation.Resource;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -88,25 +89,37 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
         System.out.println("腾讯视频审核回调接口开始工作了");
 
         if (tencentVideoResult.getProcedureStateChangeEvent().getErrCode() == 0 && JudgeConstant.SUCCESS.toUpperCase().equals(tencentVideoResult.getProcedureStateChangeEvent().getMessage())){
-            EcmArtworkNodesVo ecmArtworkNodesVo = ecmArtworkNodesDao.selectByVideoCode(tencentVideoResult.getProcedureStateChangeEvent().getFileId());
-            ecmArtworkNodesVo.setVideoUrl(tencentVideoResult.getProcedureStateChangeEvent().getMediaProcessResultSet().get(0).getTranscodeTask().getOutput().getUrl());
-            List<AiContentReviewResultSet> aiContentReviewResultSet = tencentVideoResult.getProcedureStateChangeEvent().getAiContentReviewResultSet();
-            for (AiContentReviewResultSet aiContentReviewResult : aiContentReviewResultSet) {
-                try {
-                    Method method = aiContentReviewResult.getClass().getMethod("get" + aiContentReviewResult.getType().replace(".", "") + "Task");
-                    BaseTask invoke = (BaseTask) method.invoke(aiContentReviewResult);
-                    ecmArtworkNodesVo.setFkEndingId(1);
-                    if (invoke != null) {
-                        if (!"pass".equals(invoke.getOutput().getSuggestion())) {
-                            ecmArtworkNodesVo.setFkEndingId(2);
-                            break;
+
+            List<EcmArtworkNodesVo> ecmArtworkNodesVoList = ecmArtworkNodesDao.selectByVideoCode(tencentVideoResult.getProcedureStateChangeEvent().getFileId());
+            List<EcmArtworkNodesVo> ecmArtworkNodesList = new ArrayList<>();
+            for (EcmArtworkNodesVo ecmArtworkNodesVo : ecmArtworkNodesVoList) {
+                EcmArtworkNodesVo ecmArtworkNode = new EcmArtworkNodesVo();
+                ecmArtworkNodesVo.setVideoUrl(tencentVideoResult.getProcedureStateChangeEvent().getMediaProcessResultSet().get(0).getTranscodeTask().getOutput().getUrl());
+                List<AiContentReviewResultSet> aiContentReviewResultSet = tencentVideoResult.getProcedureStateChangeEvent().getAiContentReviewResultSet();
+                for (AiContentReviewResultSet aiContentReviewResult : aiContentReviewResultSet) {
+                    try {
+                        Method method = aiContentReviewResult.getClass().getMethod("get" + aiContentReviewResult.getType().replace(".", "") + "Task");
+                        BaseTask invoke = (BaseTask) method.invoke(aiContentReviewResult);
+                        ecmArtworkNodesVo.setFkEndingId(1);
+                        if (invoke != null) {
+                            if (!"pass".equals(invoke.getOutput().getSuggestion())) {
+                                ecmArtworkNodesVo.setFkEndingId(2);
+                                break;
+                            }
                         }
+                    } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                        e.printStackTrace();
                     }
-                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                    e.printStackTrace();
                 }
+                ecmArtworkNode.setPkDetailId(ecmArtworkNodesVo.getPkDetailId());
+                ecmArtworkNode.setFkEndingId(ecmArtworkNodesVo.getFkEndingId());
+                ecmArtworkNode.setVideoUrl(ecmArtworkNodesVo.getVideoUrl());
+                ecmArtworkNodesList.add(ecmArtworkNode);
+
             }
-            ecmArtworkNodesDao.updateByPrimaryKeySelective(ecmArtworkNodesVo);
+            ecmArtworkNodesDao.updateByEcmArtworkNodesList(ecmArtworkNodesList);
+//            ecmArtworkNodesDao.updateByPrimaryKeySelective(ecmArtworkNodesVo);
+
         }
 
         return null;

@@ -356,6 +356,36 @@
     where pk_detail_id = #{pkDetailId}
   </update>
 
+  <update id="updateByEcmArtworkNodesList">
+    update ecm_artwork_nodes
+
+      <trim prefix="set" suffixOverrides=",">
+
+        <trim prefix="fk_ending_id =case" suffix="end,">
+          <foreach collection="list" item="item" index="index">
+            <if test="item.fkEndingId!=null">
+              when pk_detail_id=#{item.pkDetailId}
+              then #{item.fkEndingId}
+            </if>
+          </foreach>
+        </trim>
+
+        <trim prefix="video_url =case" suffix="end,">
+          <foreach collection="list" item="item" index="index">
+            <if test="item.videoUrl!=null">
+              when pk_detail_id=#{item.pkDetailId}
+              then #{item.videoUrl}
+            </if>
+          </foreach>
+        </trim>
+
+      </trim>
+      where pk_detail_id in
+      <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+        #{item.pkDetailId}
+      </foreach>
+
+    </update>
 
 
 </mapper>
