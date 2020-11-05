@@ -2,6 +2,7 @@ package com.mpic.evolution.chair.test;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -190,8 +191,13 @@ public class SqlTest {
 	 */
 	@Test
 	public void getRandom (){
-		for (int i = 0; i < 8; i++) {
+		for (int i = 0; i < 50; i++) {
 			String genRandomNum = this.genRandomNum();
+			EcmInviteCode record = new EcmInviteCode();
+			record.setInviteCode(genRandomNum);
+			record.setCreateDate(new Date());
+			record.setInviteCodeStatus((short)0);
+			ecmInviteCodeDao.insertSelective(record);
 			System.out.println(genRandomNum);
 		}
 	}

@@ -236,7 +236,7 @@ public class EcmUserServiceImpl implements EcmUserService {
 			//永久流量够扣那就先扣永久流量
 			userFlow.setPermanentFlow(userFlow.getPermanentFlow() - ecmUserHistoryFlowVO.getVideoFlow());
 		}
-		userFlow.setUsedFlow(usedFlow);
+		userFlow.setUsedFlow(usedFlow+userFlow.getUsedFlow());
 		ecmUserHistoryFlowVO.setCreatTime(new Date());
 		userFlow.setUpdateTime(new Date());
 		//查询本次请求的时间点用户是否是vip
