@@ -20,6 +20,7 @@ import java.util.Map;
  */
 
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class EcmArtworkNodesVo extends EcmArtworkNodes  {
 
     /**
@@ -48,6 +49,17 @@ public class EcmArtworkNodesVo extends EcmArtworkNodes  {
     // 数值选项（前端还原使用）
     private List<NodeNumberConditionVO> onAdvancedList;
     private EcmArtworkNodeNumberCondition ecmArtworkNodeNumberCondition;
+
+
+    /**
+     * 是否启用改变数值
+     */
+    private Byte changeFlag;
+
+    /**
+     * 是否启用判断出现数值
+     */
+    private Byte appearFlag;
 
     private Map<Integer, List<EcmArtworkNodeNumberConditionVO>> appearConditionMap ;
 }

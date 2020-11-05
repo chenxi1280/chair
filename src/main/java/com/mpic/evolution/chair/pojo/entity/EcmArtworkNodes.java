@@ -74,7 +74,9 @@ public class EcmArtworkNodes implements Serializable  {
 
 
     private Integer fkAchievementId;
-
+    /**
+     *  1:ai审核通过，2ai审核不通过，3ai审核有相似的，4，后台人员通过，5后台人员不通过 6投诉节点
+     */
     @JsonIgnore
     private Integer fkEndingId;
 

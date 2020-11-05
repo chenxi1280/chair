@@ -14,7 +14,24 @@ public class NodeNumberConditionVO {
 
     private String changeValue;
 
-    private String appear;
+    /**
+     * 前端最小值
+     */
+    private String appearValueMin;
 
-    private String appearValue;
+    /**
+     * 前端最大值
+     */
+    private String appearValueMax;
+
+    /**
+     * 是否启用改变数值
+     */
+    private Byte changeFlag;
+
+    /**
+     * 是否启用判断出现数值
+     */
+    private Byte appearFlag;
+
 }
