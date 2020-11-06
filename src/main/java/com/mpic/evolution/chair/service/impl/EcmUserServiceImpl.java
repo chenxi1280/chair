@@ -136,13 +136,13 @@ public class EcmUserServiceImpl implements EcmUserService {
 		}
 		//有会员信息，未到当月截止期，去掉已使用流量
 		if (symbol == 0) {
-			user.setUserFlow(vipflow + ecmUserFlow.getPermanentFlow() - ecmUserFlow.getUsedFlow());
-			user.setTotalFlow(vipflow + ecmUserFlow.getPermanentFlow());
+			user.setUserFlow(ecmUserFlow.getPermanentFlow());
+			user.setTotalFlow(vipflow - ecmUserFlow.getUsedFlow());
 		}
 		//有会员过了当前月的截止期 重置已使用流量为0
 		if (symbol == 1) {
-			user.setUserFlow(vipflow + ecmUserFlow.getPermanentFlow());
-			user.setTotalFlow(vipflow + ecmUserFlow.getPermanentFlow());
+			user.setUserFlow(ecmUserFlow.getPermanentFlow());
+			user.setTotalFlow(vipflow);
 		}
 		//有会员但是会员到期了
 		if (symbol == 2) {
@@ -152,8 +152,9 @@ public class EcmUserServiceImpl implements EcmUserService {
 		//无会员信息 不是会员就无法购买加油包 只有默认流量 此流量加在永久流量中
 		if (symbol == 3) {
 			user.setUserFlow(ecmUserFlow.getPermanentFlow());
-			user.setTotalFlow(ecmUserFlow.getPermanentFlow());
+			user.setTotalFlow(0);
 		}
+		//与前端约定 totalFlow是用户会员的剩余流量 userFlow是用户永久流量的剩余流量
 		return ResponseDTO.ok(SUCCESS,user);
 	}
 	
