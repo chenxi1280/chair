@@ -24,6 +24,7 @@ public class EcmInviteCodeServiceImpl implements EcmInviteCodeService {
 		String inviteCode = ecmInviteCodeVo.getInviteCode();
 		EcmInviteCode ecmInviteCode = new EcmInviteCode();
 		ecmInviteCode.setInviteCode(inviteCode);
+		ecmInviteCode.setInviteCodeStatus((short)0);
 		EcmInviteCode o = ecmInviteCodeDao.selectByEcmInviteCode(ecmInviteCode);
 		if(o == null || o.getPkInviteId() == null) {
 			return false;

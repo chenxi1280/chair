@@ -191,7 +191,7 @@ public class LoginController extends BaseController {
 		String inputPhoneConfirmCode = ecmUserVo.getPhoneConfirmCode();
 		//邀请码所需条件 过期跳过邀请码检测
 		LocalDateTime now = LocalDateTime.now();
-		LocalDateTime dateTime = LocalDateTime.of(2020, 10, 17, 0, 0);
+		LocalDateTime dateTime = LocalDateTime.of(2020, 12, 31, 0, 0);
 		EcmInviteCode ecmInviteCode = new EcmInviteCode();
 		try {
 			//邀请码检测
@@ -251,6 +251,7 @@ public class LoginController extends BaseController {
 					Integer pkUserId = userInfo.getPkUserId();
 					ecmInviteCode.setBindDate(new Date());
 					ecmInviteCode.setFkUserId(pkUserId);
+					ecmInviteCode.setInviteCodeStatus((short)1);
 					ecmInviteCodeService.savaEcmInvitedCode(ecmInviteCode);
 				}
 			}
