@@ -56,6 +56,8 @@ public class Signature {
         contextStr += "&expireTime=" + endTime;
         contextStr += "&random=" + random;
         contextStr += "&procedure=" + procedure;
+        // 真实环境使用子任务id
+        contextStr += "&vodSubAppId=" + "1500001548";
         contextStr += "&taskNotifyMode=" + taskNotifyMode;
 
         try {
