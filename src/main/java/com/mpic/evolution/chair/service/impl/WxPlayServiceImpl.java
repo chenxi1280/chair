@@ -195,7 +195,7 @@ public class WxPlayServiceImpl implements WxPlayService {
             EcmArtworkNodes ecmArtworkNodes = new EcmArtworkNodes();
             ecmArtworkNodes.setPkDetailId(reportHistroy.getFkArtworkNodeId());
             ecmArtworkNodes.setFkEndingId(6);
-            row += ecmArtworkNodesDao.updateByPrimaryKey(ecmArtworkNodes);
+            row += ecmArtworkNodesDao.updateByPrimaryKeySelective(ecmArtworkNodes);
 
         }catch (Exception e){
 
