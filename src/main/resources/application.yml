@@ -1,7 +1,7 @@
 spring:
   redis:
 # Redis服务器地址  
-    host: 10.66.102.77
+    host: 172.30.0.2
 # Redis数据库索引（默认为0）
     database: 0
 # Redis服务器连接端口 
