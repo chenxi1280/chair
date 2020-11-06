@@ -56,6 +56,7 @@ public class Signature {
         contextStr += "&expireTime=" + endTime;
         contextStr += "&random=" + random;
         contextStr += "&procedure=" + procedure;
+        contextStr += "&vodSubAppId=" + "1500001548";
         contextStr += "&taskNotifyMode=" + taskNotifyMode;
 
         try {
@@ -130,4 +131,5 @@ public class Signature {
     	Signature.test();
 	}   
 }
+
 
