@@ -189,8 +189,18 @@ public class WxPlayServiceImpl implements WxPlayService {
         reportHistroy.setFkUserid(wxReportHistoryVo.getFkUserid());
         reportHistroy.setCreatetime(new Date());
         reportHistroy.setReState((short) 1);
-        int row = ecmReportHistroyDao.insertSelective(reportHistroy);
-        if (row < 1) {
+        int row = 0;
+        try{
+            row +=  ecmReportHistroyDao.insertSelective(reportHistroy);
+            EcmArtworkNodes ecmArtworkNodes = new EcmArtworkNodes();
+            ecmArtworkNodes.setPkDetailId(reportHistroy.getFkArtworkNodeId());
+            ecmArtworkNodes.setFkEndingId(6);
+            row += ecmArtworkNodesDao.updateByPrimaryKey(ecmArtworkNodes);
+
+        }catch (Exception e){
+
+        }
+        if (row < 2) {
             return ResponseDTO.fail("保存举报内容失败");
         } else {
             return ResponseDTO.ok("保存举报内容成功");
