@@ -62,11 +62,13 @@ public class EcmVideoStorageServiceImpl implements EcmVideoStorageService {
         ecmArtworkNodes.setVideoUrl(ecmVideoTemporaryStorage.getVideoUrl());
         ecmArtworkNodes.setVideoCode(ecmVideoTemporaryStorage.getVideoCode());
         ecmArtworkNodes.setItemsBakText(ecmVideoTemporaryStorage.getNodeImgUrl());
+        ecmArtworkNodes.setParentList(null);
         ecmVideoTemporaryStorage.setVideoStatus((short) 1);
         ecmVideoTemporaryStorage.setUpdateDate(new Date());
         try{
             ecmVideoTemporaryStorageDao.updateByPrimaryKeySelective(ecmVideoTemporaryStorage);
-            ecmArtworkNodesDao.updateByPrimaryKeySelective(ecmArtworkNodes);
+//            ecmArtworkNodesDao.updateByPrimaryKeySelective(ecmArtworkNodes);
+            ecmArtworkNodesDao.updateVideoUrlPrimaryEcmArtworkNode(ecmArtworkNodes);
         }catch (Exception e){
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             ResponseDTO.fail(ErrorEnum.ERR_601.getText());

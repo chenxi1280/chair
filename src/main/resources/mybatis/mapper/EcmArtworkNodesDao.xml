@@ -386,6 +386,71 @@
       </foreach>
 
     </update>
+    <update id="updateVideoUrlPrimaryEcmArtworkNode">
+
+      update ecm_artwork_nodes
+      <set>
+        <if test="parentId != null">
+          parent_id = #{parentId,jdbcType=INTEGER},
+        </if>
+        <if test="videoCode != null">
+          video_code = #{videoCode,jdbcType=VARCHAR},
+        </if>
+        <if test="parentCode != null">
+          parent_code = #{parentCode,jdbcType=VARCHAR},
+        </if>
+        <if test="videoUrl != null">
+          video_url = #{videoUrl,jdbcType=VARCHAR},
+        </if>
+        <if test="branchPre != null">
+          branch_pre = #{branchPre,jdbcType=TINYINT},
+        </if>
+        <if test="revolutionId != null">
+          revolution_id = #{revolutionId,jdbcType=VARCHAR},
+        </if>
+        <if test="videoText != null">
+          video_text = #{videoText,jdbcType=VARCHAR},
+        </if>
+        <if test="fkArtworkId != null">
+          fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER},
+        </if>
+        <if test="items != null">
+          items = #{items,jdbcType=VARCHAR},
+        </if>
+        <if test="itemsText != null">
+          items_text = #{itemsText,jdbcType=VARCHAR},
+        </if>
+        <if test="itemsBakText != null">
+          items_bak_text = #{itemsBakText,jdbcType=VARCHAR},
+        </if>
+        <if test="cssVo != null">
+          css_vo = #{cssVo,jdbcType=VARCHAR},
+        </if>
+        <if test="fkAchievementId != null">
+          fk_achievement_id = #{fkAchievementId,jdbcType=INTEGER},
+        </if>
+        <if test="fkEndingId != null">
+          fk_ending_id = #{fkEndingId,jdbcType=INTEGER},
+        </if>
+        <if test="isleaf != null">
+          isleaf = #{isleaf,jdbcType=VARCHAR},
+        </if>
+        <if test="aLevel != null">
+          a_level = #{aLevel,jdbcType=INTEGER},
+        </if>
+        <if test="isDeleted != null">
+          is_deleted = #{isDeleted,jdbcType=VARCHAR},
+        </if>
+        <if test="parentList == null">
+          parent_list = null,
+        </if>
+        <if test="chosenText != null">
+          chosen_text = #{chosenText,jdbcType=VARCHAR},
+        </if>
+      </set>
+      where pk_detail_id = #{pkDetailId,jdbcType=INTEGER}
+
+    </update>
 
 
 </mapper>

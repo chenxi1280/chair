@@ -10,7 +10,7 @@ import java.io.Serializable;
 
 /**
  * ecm_artwork_nodes
- * @author 
+ * @author
  */
 @Data
 //@JsonInclude(JsonInclude.Include.NON_NULL)
@@ -98,8 +98,10 @@ public class EcmArtworkNodes implements Serializable  {
     private String isDeleted;
 
     /**
-     * （未使用）祖先数组，以逗号分隔，以0开头，以自己的父亲结尾
+     * （使用）视频最后一帧
      */
+    @JsonProperty(value = "nodeLastImgUrl" )
+    @JSONField(name = "nodeLastImgUrl" )
     private String parentList;
 
     /**

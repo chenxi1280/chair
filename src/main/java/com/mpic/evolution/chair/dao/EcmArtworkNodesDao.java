@@ -28,4 +28,6 @@ public interface EcmArtworkNodesDao {
     List<EcmArtworkNodesVo> selectByVideoCode(String fileId);
 
     int updateByEcmArtworkNodesList(List<EcmArtworkNodesVo> ecmArtworkNodesList);
+
+    int updateVideoUrlPrimaryEcmArtworkNode(EcmArtworkNodes ecmArtworkNodes);
 }

@@ -23,4 +23,8 @@ public class NodeOptionLocationVO {
     private Double textRectY;
     // 是否为隐藏选项
     private String  isHide;
+    //文本框的高度
+    private Double hideHeightScale;
+    //文本框的宽度
+    private Double hideWidthScale;
 }
