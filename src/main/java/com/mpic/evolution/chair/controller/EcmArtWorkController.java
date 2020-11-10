@@ -177,6 +177,7 @@ public class EcmArtWorkController extends BaseController{
     public ResponseDTO getWxcode (@RequestBody EcmArtWorkQuery ecmArtWorkQuery) {
     	String token = ecmArtWorkQuery.getToken();
     	String userId = JWTUtil.getUserId(token);
+    	JSONObject data = new JSONObject();
     	if (StringUtil.isEmpty(userId)){
 			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
 		}
@@ -189,21 +190,23 @@ public class EcmArtWorkController extends BaseController{
 			}else {
 				accessToken = getAccessToken();
 			}
-	    	String qrCodeStr = this.getQRCode(accessToken,ecmArtWorkQuery);
+	    	String qrCodeStr = this.getQRCode(accessToken,ecmArtWorkQuery,data);
 			if (HttpMpicUtil.isJsonObject(qrCodeStr)) {
 				//返回的结果是：{"errcode":40001,"errmsg":"invalid credential, access_token is invalid or not latest rid: 5f364b21-395edb8d-336ae042"}
 				JSONObject result = JSONObject.parseObject(qrCodeStr);
 				if(result.get("errcode").equals("40001")) {
 					accessToken = getAccessToken();
-					qrCodeStr = this.getQRCode(accessToken,ecmArtWorkQuery);
+					qrCodeStr = this.getQRCode(accessToken,ecmArtWorkQuery,data);
 					String str = "data:image/jpg;base64," + qrCodeStr;
-					return ResponseDTO.ok("获取发布二维码成功",str);
+					data.put("qrCodeStr", str);
+					return ResponseDTO.ok("获取发布二维码成功",data);
 				}else {
 					return ResponseDTO.fail("获取发布二维码失败", result.get("errmsg"),null,(Integer)result.get("errcode"));
 				}
 			}else {
 				String str = "data:image/jpg;base64," + qrCodeStr;
-				return ResponseDTO.ok("获取发布二维码成功",str);
+				data.put("qrCodeStr", str);
+				return ResponseDTO.ok("获取发布二维码成功",data);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -211,7 +214,7 @@ public class EcmArtWorkController extends BaseController{
 		}
     } 
     
-    private String getQRCode(String accessToken,EcmArtWorkQuery ecmArtWorkQuery) {
+    private String getQRCode(String accessToken,EcmArtWorkQuery ecmArtWorkQuery,JSONObject data) {
     	String url = String.format("https://api.weixin.qq.com/wxa/getwxacodeunlimit?"
         		+ "access_token=%s", accessToken);
         JSONObject param = new JSONObject();
@@ -224,6 +227,7 @@ public class EcmArtWorkController extends BaseController{
         	string = "artWorkId="+artWorkId+"=status=1";
 		}else {
 			string = "artWorkId="+artWorkId+"=status=4";
+	        data.put("path","pages/play/play?"+"artWorkId="+artWorkId);
 		}
         param.put("scene",string);
 		String Base64Str = HttpMpicUtil.sendPostForBase64(url, param);
