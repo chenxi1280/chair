@@ -77,10 +77,10 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
     public ResponseDTO getArtWork(EcmArtWorkQuery ecmArtWorkQuery) {
         EcmArtwork ecmArtwork = ecmArtworkDao.selectByPrimaryKey(ecmArtWorkQuery.getPkArtworkId());
         if (ecmArtwork == null) {
-//            return ResponseDTO.fail(ErrorEnum.ERR_003.getText());
+            return ResponseDTO.fail(ErrorEnum.ERR_003.getText());
         }
         if (!ecmArtWorkQuery.getFkUserid().equals(ecmArtwork.getFkUserid())) {
-//            return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+            return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
         }
 
         List<EcmArtworkNodesVo> list = ecmArtworkNodesDao.selectByArtWorkId(ecmArtWorkQuery.getPkArtworkId());
@@ -119,12 +119,17 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                         Class<EcmArtworkNodeNumberCondition> ecmArtworkNodeNumberConditionClass = EcmArtworkNodeNumberCondition.class;
                         String appearCondition = "appearCondition";
                         String changeCondition = "changeCondition";
+                        String nameCondition = "nameCondition";
+                        String nameDisplay = "nameDisplay";
                         for (int i = 0; i < 4; i++) {
                             NodeNumberConditionVO nodeNumberConditionVO = new NodeNumberConditionVO();
                             VOUtils.setNodeNumberConditionFieldValue(ecmArtworkNodeNumberCondition,appearCondition ,i,ecmArtworkNodeNumberConditionClass,nodeNumberConditionVO);
                             VOUtils.setNodeNumberConditionFieldValue(ecmArtworkNodeNumberCondition,changeCondition ,i,ecmArtworkNodeNumberConditionClass,nodeNumberConditionVO);
+                            VOUtils.setNodeNumberConditionFieldValue(ecmArtworkNodeNumberCondition,nameCondition ,i,ecmArtworkNodeNumberConditionClass,nodeNumberConditionVO);
+                            VOUtils.setNodeNumberConditionFieldValue(ecmArtworkNodeNumberCondition,nameDisplay ,i,ecmArtworkNodeNumberConditionClass,nodeNumberConditionVO);
                             nodeNumberConditionVO.setChangeFlag(ecmArtworkNodeNumberCondition.getChangeFlag());
                             nodeNumberConditionVO.setAppearFlag(ecmArtworkNodeNumberCondition.getAppearFlag());
+                            nodeNumberConditionVO.setNameFlag(ecmArtworkNodeNumberCondition.getNameFlag());
                             numberCondition.add(i,nodeNumberConditionVO);
                         }
                         node.setOnAdvancedList(numberCondition);

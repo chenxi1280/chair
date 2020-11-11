@@ -7,7 +7,7 @@ import java.util.Date;
 
 /**
  * ecm_artwork
- * @author 
+ * @author
  */
 @Data
 public class EcmArtwork implements Serializable {
@@ -39,7 +39,7 @@ public class EcmArtwork implements Serializable {
     private String logoPath;
 
     /**
-     * 图片审核状态 0 未审核  1 通过 2 不通过 
+     * 图片审核状态 0 未审核  1 通过 2 不通过
      */
     private Short logoPathStatus;
 
@@ -50,6 +50,7 @@ public class EcmArtwork implements Serializable {
     /**
      * 四字标签
      */
+
     private String fourLetterTips;
 
     /**

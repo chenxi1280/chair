@@ -34,4 +34,18 @@ public class NodeNumberConditionVO {
      */
     private Byte appearFlag;
 
+    /**
+     * 是否启用判断出现名字
+     */
+    private Byte nameFlag;
+
+    /**
+     * 是否启用判断出现名字
+     */
+    private Byte nameDisplay;
+
+    /**
+     *  文字选项设置
+     */
+    private String nameCondition;
 }

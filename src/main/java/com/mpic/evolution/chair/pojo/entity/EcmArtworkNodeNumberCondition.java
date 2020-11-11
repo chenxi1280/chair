@@ -64,7 +64,7 @@ public class EcmArtworkNodeNumberCondition implements Serializable {
     /**
      * 条件0的 名字是否在前端展示
      */
-    private Byte naneDisplay0;
+    private Byte nameDisplay0;
 
     /**
      * 条件1的名字
@@ -74,7 +74,7 @@ public class EcmArtworkNodeNumberCondition implements Serializable {
     /**
      * 条件1的 名字是否在前端展示
      */
-    private Byte naneDisplay1;
+    private Byte nameDisplay1;
 
     /**
      * 条件2的名字
@@ -84,7 +84,7 @@ public class EcmArtworkNodeNumberCondition implements Serializable {
     /**
      * 条件2的 名字是否在前端展示
      */
-    private Byte naneDisplay2;
+    private Byte nameDisplay2;
 
     /**
      * 条件3 的名字
@@ -94,7 +94,7 @@ public class EcmArtworkNodeNumberCondition implements Serializable {
     /**
      * 条件3的 名字是否在前端展示
      */
-    private Byte naneDisplay3;
+    private Byte nameDisplay3;
 
     /**
      * 作品id
