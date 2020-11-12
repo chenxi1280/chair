@@ -123,10 +123,12 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                         String nameDisplay = "nameDisplay";
                         for (int i = 0; i < 4; i++) {
                             NodeNumberConditionVO nodeNumberConditionVO = new NodeNumberConditionVO();
+                            //反射还原前端对象
                             VOUtils.setNodeNumberConditionFieldValue(ecmArtworkNodeNumberCondition,appearCondition ,i,ecmArtworkNodeNumberConditionClass,nodeNumberConditionVO);
                             VOUtils.setNodeNumberConditionFieldValue(ecmArtworkNodeNumberCondition,changeCondition ,i,ecmArtworkNodeNumberConditionClass,nodeNumberConditionVO);
                             VOUtils.setNodeNumberConditionFieldValue(ecmArtworkNodeNumberCondition,nameCondition ,i,ecmArtworkNodeNumberConditionClass,nodeNumberConditionVO);
                             VOUtils.setNodeNumberConditionFieldValue(ecmArtworkNodeNumberCondition,nameDisplay ,i,ecmArtworkNodeNumberConditionClass,nodeNumberConditionVO);
+                            //设置 对应的flag
                             nodeNumberConditionVO.setChangeFlag(ecmArtworkNodeNumberCondition.getChangeFlag());
                             nodeNumberConditionVO.setAppearFlag(ecmArtworkNodeNumberCondition.getAppearFlag());
                             nodeNumberConditionVO.setNameFlag(ecmArtworkNodeNumberCondition.getNameFlag());
