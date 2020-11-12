@@ -61,5 +61,10 @@ public class EcmArtworkNodesVo extends EcmArtworkNodes  {
      */
     private Byte appearFlag;
 
+    /**
+     * 前端数值名字list
+     */
+    private List<String> onNameConditionList;
+
     private Map<Integer, List<EcmArtworkNodeNumberConditionVO>> appearConditionMap ;
 }

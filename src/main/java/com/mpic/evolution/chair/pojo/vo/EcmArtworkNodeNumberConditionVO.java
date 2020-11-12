@@ -42,4 +42,10 @@ public class EcmArtworkNodeNumberConditionVO extends EcmArtworkNodeNumberConditi
      * 数值3发生怎样的改变
      */
     private Integer changeConditionValue3;
+
+
+    /**
+     * 数值3发生怎样的改变
+     */
+    private Boolean saveNameFlag;
 }

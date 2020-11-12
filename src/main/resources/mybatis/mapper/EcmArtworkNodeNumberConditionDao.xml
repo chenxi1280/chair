@@ -298,7 +298,7 @@
     where pk_detailId = #{pkDetailid,jdbcType=INTEGER}
   </update>
 
-<!--  sql-->
+  <!--  sql-->
   <select id="selectByArtWorkId" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkNodeNumberConditionVO">
     select <include refid="Base_Column_List" />
     from ecm_artwork_node_number_condition
@@ -320,6 +320,61 @@
       )
 
   </insert>
+  <update id="updateByEcmArtworkNodeNumberConditionVOS">
+    update ecm_artwork_node_number_condition
+    <trim prefix="set" suffixOverrides=",">
+
+      <trim prefix="name_condition0 =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.nameDisplay0!=null">
+            when pk_detailId=#{item.pkDetailid}
+            then #{item.nameDisplay0}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="name_condition1 =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.nameDisplay1!=null">
+            when pk_detailId=#{item.pkDetailid}
+            then #{item.nameDisplay1}
+          </if>
+        </foreach>
+      </trim>
 
 
+      <trim prefix="name_condition2 =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.nameDisplay2!=null">
+            when pk_detailId=#{item.pkDetailid}
+            then #{item.nameDisplay2}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="name_condition3 =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.nameDisplay3!=null">
+            when pk_detailId=#{item.pkDetailid}
+            then #{item.nameDisplay3}
+          </if>
+        </foreach>
+      </trim>
+
+    </trim>
+    where pk_detailId in
+    <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+      #{item.pkDetailid}
+    </foreach>
+  </update>
+  <update id="updateNameConditionByArtworkID">
+    update ecm_artwork_node_number_condition
+    set
+      name_condition0 = #{nameCondition0,jdbcType=VARCHAR},
+      name_condition1 = #{nameCondition1,jdbcType=VARCHAR},
+      name_condition2 = #{nameCondition2,jdbcType=VARCHAR},
+      name_condition3 = #{nameCondition3,jdbcType=VARCHAR},
+      updata_date = #{updataDate,jdbcType=TIMESTAMP}
+    where fk_artwork_id = #{fkArtworkId}
+  </update>
 </mapper>
