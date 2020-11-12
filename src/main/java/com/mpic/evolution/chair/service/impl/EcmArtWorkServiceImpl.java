@@ -265,13 +265,15 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             ecmArtworkNodes.setChosenText("0");
         }
         ecmArtworkNodeNumberConditionVO.setUpdataDate(new Date());
-        if (ecmArtworkNodeNumberConditionVO.getSaveNameFlag()) {
-            ecmArtworkNodeNumberConditionDao.updateNameConditionByArtworkID(ecmArtworkNodeNumberConditionVO);
-        }
+//
+//        if (ecmArtworkNodeNumberConditionVO.getSaveNameFlag()) {
+//            ecmArtworkNodeNumberConditionDao.updateNameConditionByArtworkID(ecmArtworkNodeNumberConditionVO);
+//        }
 
         if (ecmArtworkNodeNumberCondition != null ){
             ecmArtworkNodesDao.updateByPrimaryKeySelective(ecmArtworkNodes);
             ecmArtworkNodeNumberConditionDao.updateByPrimaryKeySelective(ecmArtworkNodeNumberConditionVO);
+            ecmArtworkNodeNumberConditionDao.updateNameConditionByArtworkID(ecmArtworkNodeNumberConditionVO);
             return ResponseDTO.ok();
         }
         ecmArtworkNodeNumberConditionVO.setCreateDate(new Date());
@@ -279,6 +281,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
         ecmArtworkNodesDao.updateByPrimaryKeySelective(ecmArtworkNodes);
         ecmArtworkNodeNumberConditionDao.insertNode(ecmArtworkNodeNumberConditionVO);
+        ecmArtworkNodeNumberConditionDao.updateNameConditionByArtworkID(ecmArtworkNodeNumberConditionVO);
         return ResponseDTO.ok();
     }
 
