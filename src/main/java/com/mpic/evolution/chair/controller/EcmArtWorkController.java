@@ -31,7 +31,7 @@ public class EcmArtWorkController extends BaseController{
 
     @Resource
     EcmArtWorkService ecmArtWorkService;
-    
+
     @Resource
 	RedisUtil redisUtil;
 
@@ -43,7 +43,7 @@ public class EcmArtWorkController extends BaseController{
      * 	描述 : 按照条件查询作品
      *  	保存成功: status 200  msg "success” data: 数据
      *     	保存失败: status 500  msg "error“
-     *      
+     *
      */
     @RequestMapping("/getArtWorks")
     @ResponseBody
@@ -53,6 +53,8 @@ public class EcmArtWorkController extends BaseController{
 			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
 		}
 		ecmArtWorkQuery.setFkUserid(userIdByHandToken);
+//		ecmArtWorkQuery.setPage();
+//		ecmArtWorkQuery.setLimit(20);
         return ecmArtWorkService.getArtWorks(ecmArtWorkQuery);
     }
 
@@ -167,7 +169,7 @@ public class EcmArtWorkController extends BaseController{
     /**
      * 	获取发布微信二维码
      * 	这里面的 scene 参数是前台要传过来的videoId
-     * 	
+     *
      * @author: SJ
      * @Date: 2020/8/14
      * @param ecmArtWorkQuery token
@@ -212,8 +214,8 @@ public class EcmArtWorkController extends BaseController{
 			e.printStackTrace();
 			return ResponseDTO.fail("获取二维码图片失败");
 		}
-    } 
-    
+    }
+
     private String getQRCode(String accessToken,EcmArtWorkQuery ecmArtWorkQuery,JSONObject data) {
     	String url = String.format("https://api.weixin.qq.com/wxa/getwxacodeunlimit?"
         		+ "access_token=%s", accessToken);
@@ -271,7 +273,7 @@ public class EcmArtWorkController extends BaseController{
 	public ResponseDTO getFindArtWorks(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
 		return ecmArtWorkService.getFindArtWorks(ecmArtWorkQuery);
 	}
-	
+
 	/**
 	 * @param: [ecmArtWorkQuery] 自带分页
 	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO

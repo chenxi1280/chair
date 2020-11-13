@@ -52,12 +52,12 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
     @Override
     public ResponseDTO getArtWorks(EcmArtWorkQuery ecmArtWorkQuery) {
-        List<EcmArtworkVo> ecmArtworkVoList = ecmArtworkDao.selectArtWorks(ecmArtWorkQuery);
+//        List<EcmArtworkVo> ecmArtworkVoList = ecmArtworkDao.selectArtWorks(ecmArtWorkQuery);
+        List<EcmArtworkVo> ecmArtworkVoList = ecmArtworkDao.selectArtWorkListByEcmArtWorkQuery(ecmArtWorkQuery);
+        Integer count = ecmArtworkDao.selectArtWorkCountByEcmArtWorkQuery(ecmArtWorkQuery);
         List<EcmArtworkVo> collect = ecmArtworkVoList.stream().filter(ecmArtworkVo -> ecmArtworkVo.getArtworkStatus() == 4).collect(Collectors.toList());
-
         if (!CollectionUtils.isEmpty(collect)) {
             List<EcmArtworkBroadcastHotVO> ecmArtworkBroadcastHotVOS = ecmArtworkBroadcastHotDao.selectEcmArtworkList(collect);
-
             ecmArtworkVoList.forEach(ecmArtworkVo -> {
                 ecmArtworkBroadcastHotVOS.forEach(ecmArtworkBroadcastHotVO -> {
                     if (ecmArtworkBroadcastHotVO.getFkArkworkId().equals(ecmArtworkVo.getPkArtworkId())) {
@@ -69,8 +69,10 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                 }
             });
         }
-
-        return ResponseDTO.ok("success", ecmArtworkVoList);
+        Map<String,Object> map = new HashMap<>(2);
+        map.put("list",ecmArtworkVoList);
+        map.put("count",count);
+        return ResponseDTO.ok("success", map);
     }
 
     @Override

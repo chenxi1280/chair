@@ -25,17 +25,17 @@ import com.mpic.evolution.chair.service.EcmArtworkManagerService;
 import com.mpic.evolution.chair.util.AIVerifyUtil;
 import com.mpic.evolution.chair.util.JWTUtil;
 
-/** 
-* @author 作者 SJ: 
-* @date 创建时间：2020-9-4 10:16:31 
+/**
+* @author 作者 SJ:
+* @date 创建时间：2020-9-4 10:16:31
 */
 
 @Service
 public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
-	
+
 	@Resource
     EcmArtworkDao ecmArtworkDao;
-	
+
 	@Resource
 	EcmArtworkNodesDao ecmArtworkNodesDao;
 
@@ -44,7 +44,7 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 
 	@Resource
 	VideoHandleConsumerService videoHandleConsumerService;
-	
+
 	@Override
 	public ResponseDTO modifyArtWorkStatus(EcmArtworkVo ecmArtworkVo) {
 		JSONObject message = this.getMessage();
@@ -98,7 +98,7 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 		}
 
 	}
-	
+
 	@Override
 	public ResponseDTO addArtWorks(EcmArtworkVo ecmArtworkVo) {
 		try {
@@ -136,7 +136,7 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			return ResponseDTO.fail("新建失败");
 		}
 	}
-	
+
 	@Override
 	public ResponseDTO modifyArtWork(EcmArtworkVo ecmArtworkVo) {
 		try {
@@ -158,13 +158,14 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			ecmArtwork.setLogoPath(ecmArtworkVo.getLogoPath());
 			ecmArtwork.setLastModifyDate(new Date());
 			ecmArtwork.setFourLetterTips(ecmArtworkVo.getFourLetterTips());
+//			ecmArtwork.setLogoPath(ecmArtworkVo.getLogoPath());
  			ecmArtworkDao.updateByPrimaryKey(ecmArtwork);
 			return ResponseDTO.ok("作品名称修改成功");
 		} catch (Exception e) {
 			return ResponseDTO.fail("修改失败");
 		}
 	}
-	
+
 	private JSONObject getCondition() {
 		JSONObject condition = new JSONObject();
 		condition.put("delete", 5);
@@ -182,7 +183,7 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 		message.put("verify", "提交审核");
 		return message;
 	}
-	
+
 	private Integer getIdByToken(String token) {
 		if (!StringUtils.isNotBlank(token)) {
 			return null;

@@ -165,7 +165,7 @@
   <select id="selectArtWorks" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkVo">
     select <include refid="Base_Column_List" />
     from ecm_artwork
-    where 
+    where
     	<!-- 查询作品是不包括删除作品5 和审核不通过3 -->
     	1=1 and artwork_status in (0,1,2,4,3)
       <if test="pkArtworkId != null">
@@ -203,14 +203,14 @@
     </foreach>
     )
   </select>
-	
+
 	<select id="selectArtWorksByWxUser" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkVo">
-    select 
+    select
     	<include refid="WxuserEcmArtwork_Column_List" />
     from
     	 ecm_artwork a
     left join
-    	ecm_artwork_broadcast_hot b 
+    	ecm_artwork_broadcast_hot b
     on
     	a.pk_artwork_id = b.fk_arkwork_id
     where 1=1
@@ -232,7 +232,7 @@
       order by a.last_modify_date desc
 	  limit #{start},#{limit}
   </select>
-	
+
   <select id="selectFindSortArtWorks" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkVo">
     select <include refid="Base_Column_List" />
     from ecm_artwork
@@ -248,6 +248,51 @@
       limit #{start},#{limit}
 
     </select>
+  <select id="selectArtWorkListByEcmArtWorkQuery" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkVo">
+    select <include refid="Base_Column_List" />
+    from ecm_artwork
+    where
+        artwork_status != 5
+      <if test="pkArtworkId != null and pkArtworkId!=''">
+        and pk_artwork_id = #{pkArtworkId}
+      </if>
+
+      <if test="fkUserid != null">
+        and fk_userId = #{fkUserid}
+      </if>
+
+      <if test="artworkName != null and artworkName!=''">
+        and artwork_name like CONCAT('%',#{artworkName},'%')
+      </if>
+
+      <if test="artworkStatus != null ">
+        and artwork_status = #{artworkStatus}
+      </if>
+
+      <if test="artworkName != null and artworkName!=''">
+        and artwork_name like CONCAT('%',#{artworkName},'%')
+      </if>
+
+      <if test="fourLetterTips != null and fourLetterTips!=''">
+        and four_letter_tips like CONCAT('%',#{fourLetterTips},'%')
+      </if>
+    order by last_create_date desc
+    limit #{start},#{limit}
+
+  </select>
+  <select id="selectArtWorkCountByEcmArtWorkQuery" resultType="java.lang.Integer">
+    select count(*)
+    from ecm_artwork
+    where
+      artwork_status != 5
+      <if test="fkUserid != null">
+        and fk_userId = #{fkUserid}
+      </if>
+      <if test="artworkStatus != null ">
+        and artwork_status = #{artworkStatus}
+      </if>
+
+  </select>
 
 
 </mapper>
