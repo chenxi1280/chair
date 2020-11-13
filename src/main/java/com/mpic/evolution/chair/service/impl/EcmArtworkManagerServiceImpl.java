@@ -121,7 +121,7 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			ecmArtwork.setLastCreateDate(new Date());
 			ecmArtwork.setLastModifyDate(new Date());
 			ecmArtwork.setLogoPath(ecmArtworkVo.getLogoPath());
-			ecmArtworkDao.insert(ecmArtwork);
+			ecmArtworkDao.insertSelective(ecmArtwork);
 			EcmArtworkNodes ecmArtworkNodes = new EcmArtworkNodes();
 			ecmArtworkNodes.setFkArtworkId(ecmArtwork.getPkArtworkId());
 			ecmArtworkNodes.setParentId(0);
@@ -159,7 +159,7 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			ecmArtwork.setLastModifyDate(new Date());
 			ecmArtwork.setFourLetterTips(ecmArtworkVo.getFourLetterTips());
 //			ecmArtwork.setLogoPath(ecmArtworkVo.getLogoPath());
- 			ecmArtworkDao.updateByPrimaryKey(ecmArtwork);
+ 			ecmArtworkDao.updateByPrimaryKeySelective(ecmArtwork);
 			return ResponseDTO.ok("作品名称修改成功");
 		} catch (Exception e) {
 			return ResponseDTO.fail("修改失败");

@@ -276,7 +276,8 @@
       <if test="fourLetterTips != null and fourLetterTips!=''">
         and four_letter_tips like CONCAT('%',#{fourLetterTips},'%')
       </if>
-    order by last_create_date desc
+
+    order by  last_create_date desc
     limit #{start},#{limit}
 
   </select>
