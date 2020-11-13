@@ -31,4 +31,7 @@ public interface EcmArtworkDao {
 
     List<EcmArtworkVo> selectSearchArtworkName(EcmArtWorkQuery ecmArtWorkQuery);
 
+    List<EcmArtworkVo> selectArtWorkListByEcmArtWorkQuery(EcmArtWorkQuery ecmArtWorkQuery);
+
+    Integer selectArtWorkCountByEcmArtWorkQuery(EcmArtWorkQuery ecmArtWorkQuery);
 }

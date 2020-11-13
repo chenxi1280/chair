@@ -9,6 +9,7 @@ import java.io.Serializable;
 /**
  * creator：cxd
  * date:2020/8/3
+ * @author cxd
  */
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -105,9 +106,24 @@ public class ResponseDTO implements Serializable {
             return ResponseDTO.fail(errorMsg);
         }
     }
+    /**
+     * 调用成功的时候，返回成功的状态
+     *
+     * @return
+     */
+    public static ResponseDTO get(boolean res,Object data) {
+        if (res) {
+            return ResponseDTO.ok(successMsg,data);
+        } else {
+            return ResponseDTO.fail(errorMsg);
+        }
+    }
 
     public static ResponseDTO ok(String msg) {
         return new ResponseDTO(msg, null);
+    }
+    public static ResponseDTO ok(Object data) {
+        return new ResponseDTO(successMsg, data);
     }
 
     public static ResponseDTO ok() {

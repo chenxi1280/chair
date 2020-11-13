@@ -28,4 +28,5 @@ public interface EcmArtworkBroadcastHotDao {
     int playArtWorkByArtworkId(Integer ecmArtworkBroadcastHot);
 
 
+    EcmArtworkBroadcastHotVO selectByArtworkId(Integer pkArtworkId);
 }

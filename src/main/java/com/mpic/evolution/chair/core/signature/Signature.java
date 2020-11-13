@@ -56,6 +56,7 @@ public class Signature {
         contextStr += "&expireTime=" + endTime;
         contextStr += "&random=" + random;
         contextStr += "&procedure=" + procedure;
+        contextStr += "&vodSubAppId=" + "1500001548";
         contextStr += "&taskNotifyMode=" + taskNotifyMode;
 
         try {
@@ -108,7 +109,7 @@ public class Signature {
 
 
 
-   
+
     public  static void test() {
         Signature sign = new Signature();
         sign.setSecretId(SECRET_ID);
@@ -128,6 +129,7 @@ public class Signature {
     }
     public static void main(String[] args) {
     	Signature.test();
-	}   
+	}
 }
+
 

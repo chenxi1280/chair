@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
 import com.mpic.evolution.chair.pojo.query.EcmInnerMessageQurey;
 import com.mpic.evolution.chair.util.JWTUtil;
 import com.mpic.evolution.chair.util.StringUtils;
@@ -32,41 +33,70 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Controller
 @RequestMapping("/EcmInnerMessage")
-public class EcmInnerMessageController {
+public class EcmInnerMessageController extends BaseController{
 	
 	@Resource
 	EcmInnerMessageService ecmInnerMessageService;
 	
 
+	/**
+	 * @param: [user]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2020/9/26
+	 * 描述 :  web 获取 站内信 接口
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
     @RequestMapping("/getInnerMessage")
     @ResponseBody
 	public ResponseDTO getInnerMessage(@RequestBody EcmUserVo user) {
+		Integer userIdByHandToken = getUserIdByHandToken();
+		if (userIdByHandToken == null){
+			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+		}
+		user.setPkUserId(userIdByHandToken);
 		return ecmInnerMessageService.getMsg(user);
     }
     
-
+	/**
+	 * @param: [ecmInnerMessageQurey]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2020/9/26
+	 * 描述 : 修改消息为删除 状态接口
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
     @RequestMapping("/batchDelete")
     @ResponseBody
 	public ResponseDTO batchDelete(@RequestBody EcmInnerMessageQurey ecmInnerMessageQurey) {
 		if (StringUtil.isEmpty(ecmInnerMessageQurey.getToken())){
-			return ResponseDTO.fail("非法访问");
+			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
 		}
 		if (CollectionUtils.isEmpty(ecmInnerMessageQurey.getMessageIds()) ){
 			return ResponseDTO.ok("无新消息可操作！");
 		}
 		String userId = JWTUtil.getUserId(ecmInnerMessageQurey.getToken());
 		ecmInnerMessageQurey.setPkUserId(Integer.valueOf(userId));
-
-
 		return ecmInnerMessageService.batchDelete(ecmInnerMessageQurey);
     }
     
 
+    /**
+	 * @param: [ecmInnerMessageQurey]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2020/9/26
+	 * 描述 :  修改消息为已读 状态接口
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
     @RequestMapping("/batchModifyRead")
     @ResponseBody
 	public ResponseDTO batchModifyRead(@RequestBody EcmInnerMessageQurey ecmInnerMessageQurey) {
     	if (StringUtil.isEmpty(ecmInnerMessageQurey.getToken())){
-    		return ResponseDTO.fail("非法访问");
+    		return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
 		}
 		String userId = JWTUtil.getUserId(ecmInnerMessageQurey.getToken());
 		ecmInnerMessageQurey.setPkUserId(Integer.valueOf(userId));

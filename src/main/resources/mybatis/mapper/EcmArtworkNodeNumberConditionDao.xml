@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mpic.evolution.chair.dao.EcmArtworkNodeNumberConditionDao">
+  <resultMap id="BaseResultMap" type="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeNumberCondition">
+    <id column="pk_detailId" jdbcType="INTEGER" property="pkDetailid" />
+    <result column="appear_condition0" jdbcType="VARCHAR" property="appearCondition0" />
+    <result column="change_condition0" jdbcType="VARCHAR" property="changeCondition0" />
+    <result column="appear_condition1" jdbcType="VARCHAR" property="appearCondition1" />
+    <result column="change_condition1" jdbcType="VARCHAR" property="changeCondition1" />
+    <result column="appear_condition2" jdbcType="VARCHAR" property="appearCondition2" />
+    <result column="change_condition2" jdbcType="VARCHAR" property="changeCondition2" />
+    <result column="appear_condition3" jdbcType="VARCHAR" property="appearCondition3" />
+    <result column="change_condition3" jdbcType="VARCHAR" property="changeCondition3" />
+    <result column="name_condition0" jdbcType="VARCHAR" property="nameCondition0" />
+    <result column="name_display0" jdbcType="TINYINT" property="nameDisplay0" />
+    <result column="name_condition1" jdbcType="VARCHAR" property="nameCondition1" />
+    <result column="name_display1" jdbcType="TINYINT" property="nameDisplay1" />
+    <result column="name_condition2" jdbcType="VARCHAR" property="nameCondition2" />
+    <result column="name_display2" jdbcType="TINYINT" property="nameDisplay2" />
+    <result column="name_condition3" jdbcType="VARCHAR" property="nameCondition3" />
+    <result column="name_display3" jdbcType="TINYINT" property="nameDisplay3" />
+    <result column="fk_artwork_id" jdbcType="INTEGER" property="fkArtworkId" />
+    <result column="change_flag" jdbcType="TINYINT" property="changeFlag" />
+    <result column="appear_flag" jdbcType="TINYINT" property="appearFlag" />
+    <result column="name_flag" jdbcType="TINYINT" property="nameFlag" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="updata_date" jdbcType="TIMESTAMP" property="updataDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pk_detailId, appear_condition0, change_condition0, appear_condition1, change_condition1,
+    appear_condition2, change_condition2, appear_condition3, change_condition3, name_condition0,
+    name_display0, name_condition1, name_display1, name_condition2, name_display2, name_condition3,
+    name_display3, fk_artwork_id, change_flag, appear_flag, name_flag, create_date, updata_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from ecm_artwork_node_number_condition
+    where pk_detailId = #{pkDetailid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ecm_artwork_node_number_condition
+    where pk_detailId = #{pkDetailid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="pk_detailId" keyProperty="pkDetailid" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeNumberCondition" useGeneratedKeys="true">
+    insert into ecm_artwork_node_number_condition (appear_condition0, change_condition0,
+      appear_condition1, change_condition1, appear_condition2,
+      change_condition2, appear_condition3, change_condition3,
+      name_condition0, name_display0, name_condition1,
+      name_display1, name_condition2, name_display2,
+      name_condition3, name_display3, fk_artwork_id,
+      change_flag, appear_flag, name_flag,
+      create_date, updata_date)
+    values (#{appearCondition0,jdbcType=VARCHAR}, #{changeCondition0,jdbcType=VARCHAR},
+      #{appearCondition1,jdbcType=VARCHAR}, #{changeCondition1,jdbcType=VARCHAR}, #{appearCondition2,jdbcType=VARCHAR},
+      #{changeCondition2,jdbcType=VARCHAR}, #{appearCondition3,jdbcType=VARCHAR}, #{changeCondition3,jdbcType=VARCHAR},
+      #{nameCondition0,jdbcType=VARCHAR}, #{nameDisplay0,jdbcType=TINYINT}, #{nameCondition1,jdbcType=VARCHAR},
+      #{nameDisplay1,jdbcType=TINYINT}, #{nameCondition2,jdbcType=VARCHAR}, #{nameDisplay2,jdbcType=TINYINT},
+      #{nameCondition3,jdbcType=VARCHAR}, #{nameDisplay3,jdbcType=TINYINT}, #{fkArtworkId,jdbcType=INTEGER},
+      #{changeFlag,jdbcType=TINYINT}, #{appearFlag,jdbcType=TINYINT}, #{nameFlag,jdbcType=TINYINT},
+      #{createDate,jdbcType=TIMESTAMP}, #{updataDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" keyColumn="pk_detailId" keyProperty="pkDetailid" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeNumberCondition" useGeneratedKeys="true">
+    insert into ecm_artwork_node_number_condition
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="appearCondition0 != null">
+        appear_condition0,
+      </if>
+      <if test="changeCondition0 != null">
+        change_condition0,
+      </if>
+      <if test="appearCondition1 != null">
+        appear_condition1,
+      </if>
+      <if test="changeCondition1 != null">
+        change_condition1,
+      </if>
+      <if test="appearCondition2 != null">
+        appear_condition2,
+      </if>
+      <if test="changeCondition2 != null">
+        change_condition2,
+      </if>
+      <if test="appearCondition3 != null">
+        appear_condition3,
+      </if>
+      <if test="changeCondition3 != null">
+        change_condition3,
+      </if>
+      <if test="nameCondition0 != null">
+        name_condition0,
+      </if>
+      <if test="nameDisplay0 != null">
+        name_display0,
+      </if>
+      <if test="nameCondition1 != null">
+        name_condition1,
+      </if>
+      <if test="nameDisplay1 != null">
+        name_display1,
+      </if>
+      <if test="nameCondition2 != null">
+        name_condition2,
+      </if>
+      <if test="nameDisplay2 != null">
+        name_display2,
+      </if>
+      <if test="nameCondition3 != null">
+        name_condition3,
+      </if>
+      <if test="nameDisplay3 != null">
+        name_display3,
+      </if>
+      <if test="fkArtworkId != null">
+        fk_artwork_id,
+      </if>
+      <if test="changeFlag != null">
+        change_flag,
+      </if>
+      <if test="appearFlag != null">
+        appear_flag,
+      </if>
+      <if test="nameFlag != null">
+        name_flag,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updataDate != null">
+        updata_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="appearCondition0 != null">
+        #{appearCondition0,jdbcType=VARCHAR},
+      </if>
+      <if test="changeCondition0 != null">
+        #{changeCondition0,jdbcType=VARCHAR},
+      </if>
+      <if test="appearCondition1 != null">
+        #{appearCondition1,jdbcType=VARCHAR},
+      </if>
+      <if test="changeCondition1 != null">
+        #{changeCondition1,jdbcType=VARCHAR},
+      </if>
+      <if test="appearCondition2 != null">
+        #{appearCondition2,jdbcType=VARCHAR},
+      </if>
+      <if test="changeCondition2 != null">
+        #{changeCondition2,jdbcType=VARCHAR},
+      </if>
+      <if test="appearCondition3 != null">
+        #{appearCondition3,jdbcType=VARCHAR},
+      </if>
+      <if test="changeCondition3 != null">
+        #{changeCondition3,jdbcType=VARCHAR},
+      </if>
+      <if test="nameCondition0 != null">
+        #{nameCondition0,jdbcType=VARCHAR},
+      </if>
+      <if test="nameDisplay0 != null">
+        #{nameDisplay0,jdbcType=TINYINT},
+      </if>
+      <if test="nameCondition1 != null">
+        #{nameCondition1,jdbcType=VARCHAR},
+      </if>
+      <if test="nameDisplay1 != null">
+        #{nameDisplay1,jdbcType=TINYINT},
+      </if>
+      <if test="nameCondition2 != null">
+        #{nameCondition2,jdbcType=VARCHAR},
+      </if>
+      <if test="nameDisplay2 != null">
+        #{nameDisplay2,jdbcType=TINYINT},
+      </if>
+      <if test="nameCondition3 != null">
+        #{nameCondition3,jdbcType=VARCHAR},
+      </if>
+      <if test="nameDisplay3 != null">
+        #{nameDisplay3,jdbcType=TINYINT},
+      </if>
+      <if test="fkArtworkId != null">
+        #{fkArtworkId,jdbcType=INTEGER},
+      </if>
+      <if test="changeFlag != null">
+        #{changeFlag,jdbcType=TINYINT},
+      </if>
+      <if test="appearFlag != null">
+        #{appearFlag,jdbcType=TINYINT},
+      </if>
+      <if test="nameFlag != null">
+        #{nameFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updataDate != null">
+        #{updataDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeNumberCondition">
+    update ecm_artwork_node_number_condition
+    <set>
+      <if test="appearCondition0 != null">
+        appear_condition0 = #{appearCondition0,jdbcType=VARCHAR},
+      </if>
+      <if test="changeCondition0 != null">
+        change_condition0 = #{changeCondition0,jdbcType=VARCHAR},
+      </if>
+      <if test="appearCondition1 != null">
+        appear_condition1 = #{appearCondition1,jdbcType=VARCHAR},
+      </if>
+      <if test="changeCondition1 != null">
+        change_condition1 = #{changeCondition1,jdbcType=VARCHAR},
+      </if>
+      <if test="appearCondition2 != null">
+        appear_condition2 = #{appearCondition2,jdbcType=VARCHAR},
+      </if>
+      <if test="changeCondition2 != null">
+        change_condition2 = #{changeCondition2,jdbcType=VARCHAR},
+      </if>
+      <if test="appearCondition3 != null">
+        appear_condition3 = #{appearCondition3,jdbcType=VARCHAR},
+      </if>
+      <if test="changeCondition3 != null">
+        change_condition3 = #{changeCondition3,jdbcType=VARCHAR},
+      </if>
+      <if test="nameCondition0 != null">
+        name_condition0 = #{nameCondition0,jdbcType=VARCHAR},
+      </if>
+      <if test="nameDisplay0 != null">
+        name_display0 = #{nameDisplay0,jdbcType=TINYINT},
+      </if>
+      <if test="nameCondition1 != null">
+        name_condition1 = #{nameCondition1,jdbcType=VARCHAR},
+      </if>
+      <if test="nameDisplay1 != null">
+        name_display1 = #{nameDisplay1,jdbcType=TINYINT},
+      </if>
+      <if test="nameCondition2 != null">
+        name_condition2 = #{nameCondition2,jdbcType=VARCHAR},
+      </if>
+      <if test="nameDisplay2 != null">
+        name_display2 = #{nameDisplay2,jdbcType=TINYINT},
+      </if>
+      <if test="nameCondition3 != null">
+        name_condition3 = #{nameCondition3,jdbcType=VARCHAR},
+      </if>
+      <if test="nameDisplay3 != null">
+        name_display3 = #{nameDisplay3,jdbcType=TINYINT},
+      </if>
+      <if test="fkArtworkId != null">
+        fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER},
+      </if>
+      <if test="changeFlag != null">
+        change_flag = #{changeFlag,jdbcType=TINYINT},
+      </if>
+      <if test="appearFlag != null">
+        appear_flag = #{appearFlag,jdbcType=TINYINT},
+      </if>
+      <if test="nameFlag != null">
+        name_flag = #{nameFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updataDate != null">
+        updata_date = #{updataDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where pk_detailId = #{pkDetailid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeNumberCondition">
+    update ecm_artwork_node_number_condition
+    set appear_condition0 = #{appearCondition0,jdbcType=VARCHAR},
+      change_condition0 = #{changeCondition0,jdbcType=VARCHAR},
+      appear_condition1 = #{appearCondition1,jdbcType=VARCHAR},
+      change_condition1 = #{changeCondition1,jdbcType=VARCHAR},
+      appear_condition2 = #{appearCondition2,jdbcType=VARCHAR},
+      change_condition2 = #{changeCondition2,jdbcType=VARCHAR},
+      appear_condition3 = #{appearCondition3,jdbcType=VARCHAR},
+      change_condition3 = #{changeCondition3,jdbcType=VARCHAR},
+      name_condition0 = #{nameCondition0,jdbcType=VARCHAR},
+      name_display0 = #{nameDisplay0,jdbcType=TINYINT},
+      name_condition1 = #{nameCondition1,jdbcType=VARCHAR},
+      name_display1 = #{nameDisplay1,jdbcType=TINYINT},
+      name_condition2 = #{nameCondition2,jdbcType=VARCHAR},
+      name_display2 = #{nameDisplay2,jdbcType=TINYINT},
+      name_condition3 = #{nameCondition3,jdbcType=VARCHAR},
+      name_display3 = #{nameDisplay3,jdbcType=TINYINT},
+      fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER},
+      change_flag = #{changeFlag,jdbcType=TINYINT},
+      appear_flag = #{appearFlag,jdbcType=TINYINT},
+      name_flag = #{nameFlag,jdbcType=TINYINT},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      updata_date = #{updataDate,jdbcType=TIMESTAMP}
+    where pk_detailId = #{pkDetailid,jdbcType=INTEGER}
+  </update>
+
+  <!--  sql-->
+  <select id="selectByArtWorkId" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkNodeNumberConditionVO">
+    select <include refid="Base_Column_List" />
+    from ecm_artwork_node_number_condition
+    where fk_artwork_id =#{pkArtworkId}
+
+  </select>
+  <!--  注意注意注意注意注意-->
+  <insert id="insertNode">
+
+     insert into ecm_artwork_node_number_condition (pk_detailId,appear_condition0, change_condition0,
+      appear_condition1, change_condition1, appear_condition2,
+      change_condition2, appear_condition3, change_condition3,
+      name_condition0, name_display0, name_condition1,
+      name_display1, name_condition2, name_display2,
+      name_condition3, name_display3, fk_artwork_id,
+      change_flag, appear_flag, name_flag,
+      create_date, updata_date)
+    values ( #{pkDetailid,jdbcType=INTEGER},#{appearCondition0,jdbcType=VARCHAR}, #{changeCondition0,jdbcType=VARCHAR},
+      #{appearCondition1,jdbcType=VARCHAR}, #{changeCondition1,jdbcType=VARCHAR}, #{appearCondition2,jdbcType=VARCHAR},
+      #{changeCondition2,jdbcType=VARCHAR}, #{appearCondition3,jdbcType=VARCHAR}, #{changeCondition3,jdbcType=VARCHAR},
+      #{nameCondition0,jdbcType=VARCHAR}, #{nameDisplay0,jdbcType=TINYINT}, #{nameCondition1,jdbcType=VARCHAR},
+      #{nameDisplay1,jdbcType=TINYINT}, #{nameCondition2,jdbcType=VARCHAR}, #{nameDisplay2,jdbcType=TINYINT},
+      #{nameCondition3,jdbcType=VARCHAR}, #{nameDisplay3,jdbcType=TINYINT}, #{fkArtworkId,jdbcType=INTEGER},
+      #{changeFlag,jdbcType=TINYINT}, #{appearFlag,jdbcType=TINYINT}, #{nameFlag,jdbcType=TINYINT},
+      #{createDate,jdbcType=TIMESTAMP}, #{updataDate,jdbcType=TIMESTAMP})
+
+  </insert>
+  <update id="updateByEcmArtworkNodeNumberConditionVOS">
+    update ecm_artwork_node_number_condition
+    <trim prefix="set" suffixOverrides=",">
+
+      <trim prefix="name_condition0 =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.nameDisplay0!=null">
+            when pk_detailId=#{item.pkDetailid}
+            then #{item.nameDisplay0}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="name_condition1 =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.nameDisplay1!=null">
+            when pk_detailId=#{item.pkDetailid}
+            then #{item.nameDisplay1}
+          </if>
+        </foreach>
+      </trim>
+
+
+      <trim prefix="name_condition2 =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.nameDisplay2!=null">
+            when pk_detailId=#{item.pkDetailid}
+            then #{item.nameDisplay2}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="name_condition3 =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.nameDisplay3!=null">
+            when pk_detailId=#{item.pkDetailid}
+            then #{item.nameDisplay3}
+          </if>
+        </foreach>
+      </trim>
+
+    </trim>
+    where pk_detailId in
+    <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+      #{item.pkDetailid}
+    </foreach>
+  </update>
+  <update id="updateNameConditionByArtworkID">
+    update ecm_artwork_node_number_condition
+    set
+      name_condition0 = #{nameCondition0,jdbcType=VARCHAR},
+      name_condition1 = #{nameCondition1,jdbcType=VARCHAR},
+      name_condition2 = #{nameCondition2,jdbcType=VARCHAR},
+      name_condition3 = #{nameCondition3,jdbcType=VARCHAR},
+      updata_date = #{updataDate,jdbcType=TIMESTAMP}
+    where fk_artwork_id = #{fkArtworkId}
+  </update>
+</mapper>

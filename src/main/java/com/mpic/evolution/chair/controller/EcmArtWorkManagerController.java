@@ -11,6 +11,9 @@ import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
 import com.mpic.evolution.chair.service.EcmArtworkManagerService;
 
+/**
+ * @author Administrator
+ */
 @Controller
 @RequestMapping("/ecmArtWorkManager")
 public class EcmArtWorkManagerController {

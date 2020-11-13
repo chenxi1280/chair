@@ -63,7 +63,7 @@ public class EcmInnerMessageServiceImpl implements EcmInnerMessageService{
 			return ResponseDTO.fail("网络错误");
 		}
 	}
-	@Transactional
+	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public ResponseDTO batchModifyRead(EcmInnerMessageQurey ecmInnerMessageQurey) {
 		try {
@@ -84,24 +84,15 @@ public class EcmInnerMessageServiceImpl implements EcmInnerMessageService{
 	@Override
 	public ResponseDTO getMsg(EcmUserVo user) {
 		JSONObject data = new JSONObject();
-		if (StringUtil.isEmpty(user.getToken())){
-			return ResponseDTO.fail("网络错误");
-		}
-		String userId = JWTUtil.getUserId(user.getToken());
-		if (StringUtils.isBlank(userId) || !NumberUtils.isParsable(userId)) {
-			return null;
-		}
+
 
 		EcmInnerMessage ecmInnerMessage = new EcmInnerMessage();
-		ecmInnerMessage.setFkUserId(Integer.valueOf(userId));
+		ecmInnerMessage.setFkUserId(user.getPkUserId());
 		List<EcmInnerMessageVo> messages = ecmInnerMessageDao.selectByMsgList(ecmInnerMessage);
-
 
 		if (messages == null || messages.isEmpty()) {
 			return ResponseDTO.ok("无信息");
 		}
-
-
 		messages = messages.stream().filter((EcmInnerMessage m)->m.getMessageStatus()<2).collect(Collectors.toList());
 		data.put("read", messages.size());
 		messages.sort((EcmInnerMessage m1, EcmInnerMessage m2)->m2.getSendDate().compareTo(m1.getSendDate()));

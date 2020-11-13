@@ -12,7 +12,9 @@ public interface WxUserDao {
     int insertSelective(WxUser record);
 
     WxUser selectByPrimaryKey(Integer pkId);
-
+    
+    WxUser selectByWxUser(WxUser record);
+    
     int updateByPrimaryKeySelective(WxUser record);
 
     int updateByPrimaryKey(WxUser record);

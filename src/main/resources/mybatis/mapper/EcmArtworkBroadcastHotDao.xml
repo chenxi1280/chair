@@ -5,9 +5,10 @@
     <id column="pk_broadcast_hot_id" jdbcType="INTEGER" property="pkBroadcastHotId" />
     <result column="fk_arkwork_id" jdbcType="INTEGER" property="fkArkworkId" />
     <result column="broadcast_count" jdbcType="INTEGER" property="broadcastCount" />
+    <result column="wait_count" jdbcType="INTEGER" property="waitCount" />
   </resultMap>
   <sql id="Base_Column_List">
-    pk_broadcast_hot_id, fk_arkwork_id, broadcast_count
+    pk_broadcast_hot_id, fk_arkwork_id, broadcast_count, wait_count
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
@@ -20,8 +21,10 @@
     where pk_broadcast_hot_id = #{pkBroadcastHotId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyColumn="pk_broadcast_hot_id" keyProperty="pkBroadcastHotId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHot" useGeneratedKeys="true">
-    insert into ecm_artwork_broadcast_hot (fk_arkwork_id, broadcast_count)
-    values (#{fkArkworkId,jdbcType=INTEGER}, #{broadcastCount,jdbcType=INTEGER})
+    insert into ecm_artwork_broadcast_hot (fk_arkwork_id, broadcast_count, wait_count
+      )
+    values (#{fkArkworkId,jdbcType=INTEGER}, #{broadcastCount,jdbcType=INTEGER}, #{waitCount,jdbcType=INTEGER}
+      )
   </insert>
   <insert id="insertSelective" keyColumn="pk_broadcast_hot_id" keyProperty="pkBroadcastHotId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHot" useGeneratedKeys="true">
     insert into ecm_artwork_broadcast_hot
@@ -32,6 +35,9 @@
       <if test="broadcastCount != null">
         broadcast_count,
       </if>
+      <if test="waitCount != null">
+        wait_count,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="fkArkworkId != null">
@@ -39,6 +45,9 @@
       </if>
       <if test="broadcastCount != null">
         #{broadcastCount,jdbcType=INTEGER},
+      </if>
+      <if test="waitCount != null">
+        #{waitCount,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -51,16 +60,19 @@
       <if test="broadcastCount != null">
         broadcast_count = #{broadcastCount,jdbcType=INTEGER},
       </if>
+      <if test="waitCount != null">
+        wait_count = #{waitCount,jdbcType=INTEGER},
+      </if>
     </set>
     where pk_broadcast_hot_id = #{pkBroadcastHotId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHot">
     update ecm_artwork_broadcast_hot
     set fk_arkwork_id = #{fkArkworkId,jdbcType=INTEGER},
-      broadcast_count = #{broadcastCount,jdbcType=INTEGER}
+      broadcast_count = #{broadcastCount,jdbcType=INTEGER},
+      wait_count = #{waitCount,jdbcType=INTEGER}
     where pk_broadcast_hot_id = #{pkBroadcastHotId,jdbcType=INTEGER}
   </update>
-
 
 
   <!--  sql-->
@@ -79,8 +91,13 @@
   </foreach>
 
   </select>
+  <select id="selectByArtworkId" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkBroadcastHotVO">
+    select <include refid="Base_Column_List" />
+    from ecm_artwork_broadcast_hot
+    where fk_arkwork_id = #{pkArtworkId}
+  </select>
   <update id="playArtWorkByArtworkId">
-    update ecm_artwork_broadcast_hot set broadcast_count = broadcast_count + 1 where #{fk_arkwork_id}
+    update ecm_artwork_broadcast_hot set broadcast_count = broadcast_count + 1 where fk_arkwork_id = #{fk_arkwork_id}
 
   </update>
 </mapper>

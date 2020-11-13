@@ -19,10 +19,11 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Classname WebSocketServer
  * @Description TODO
  * @Date 2020/9/16 9:58
+ *  WebSocket 服务类
  */
 @ServerEndpoint("/imserver/{token}")
 @Log4j
-@Component
+//@Component
 public class WebSocketServer {
 
 //    static Log log= LogFactory.get(WebSocketServer.class);
@@ -96,10 +97,10 @@ public class WebSocketServer {
         //消息保存到数据库、redis
         try {
             if (StringUtils.isNotBlank(message)) {
-                if (message.equals("ping")) {
+                String ping = "ping";
+                if (message.equals(ping)) {
                     log.info("用户:" + userId + ",心跳");
                 }
-
                 log.info("用户消息:" + userId + ",报文:" + message);
                 //解析发送的报文
                 JSONObject jsonObject = JSON.parseObject(message);

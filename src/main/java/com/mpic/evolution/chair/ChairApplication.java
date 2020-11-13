@@ -15,6 +15,9 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+/**
+ * @author Administrator
+ */
 @MapperScan(basePackages =  {"com.mpic.evolution.chair.dao"})
 @EnableTransactionManagement
 @SpringBootApplication

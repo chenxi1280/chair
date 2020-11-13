@@ -3,6 +3,7 @@ package com.mpic.evolution.chair.pojo.query;
 import lombok.Data;
 
 /**
+ * @author Administrator
  * @Classname EcmArtWorkQuery
  * @Description TODO
  * @Date 2020/8/3 17:32
@@ -72,4 +73,9 @@ public class EcmArtWorkQuery extends PageQuery {
      *  小程序 搜索文本字段
      */
     private String searchText;
+    
+    /**
+     * 	作品二维码类型 0是预览 4是已发布
+     */
+    private String codeType;
 }

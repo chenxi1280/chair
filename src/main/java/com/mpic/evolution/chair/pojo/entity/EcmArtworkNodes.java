@@ -2,6 +2,7 @@ package com.mpic.evolution.chair.pojo.entity;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
@@ -9,9 +10,10 @@ import java.io.Serializable;
 
 /**
  * ecm_artwork_nodes
- * @author 
+ * @author
  */
 @Data
+//@JsonInclude(JsonInclude.Include.NON_NULL)
 public class EcmArtworkNodes implements Serializable  {
 
 
@@ -28,7 +30,10 @@ public class EcmArtworkNodes implements Serializable  {
     // 是否为 定位
     @JsonProperty(value = "isPosition" )
     @JSONField(name = "isPosition ")
-    private Boolean branchPre;
+    /**
+     * 选项类型 0普通选项 1定位选项 2数值选项
+     */
+    private Byte branchPre;
 
     /**
      * 前台id
@@ -69,7 +74,9 @@ public class EcmArtworkNodes implements Serializable  {
 
 
     private Integer fkAchievementId;
-
+    /**
+     *  1:ai审核通过，2ai审核不通过，3ai审核有相似的，4，后台人员通过，5后台人员不通过 6投诉节点
+     */
     @JsonIgnore
     private Integer fkEndingId;
 
@@ -91,13 +98,17 @@ public class EcmArtworkNodes implements Serializable  {
     private String isDeleted;
 
     /**
-     * （未使用）祖先数组，以逗号分隔，以0开头，以自己的父亲结尾
+     * （使用）视频最后一帧
      */
+    @JsonProperty(value = "nodeLastImgUrl" )
+    @JSONField(name = "nodeLastImgUrl" )
     private String parentList;
 
     /**
      * （未使用）被选择的选项文本，与父亲的items_text[i]相同
      */
+    @JsonProperty(value = "isNumberSelect" )
+    @JSONField(name = "isNumberSelect" )
     private String chosenText;
 
     private static final long serialVersionUID = 1L;

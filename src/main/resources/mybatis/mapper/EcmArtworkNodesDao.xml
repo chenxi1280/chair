@@ -7,7 +7,7 @@
     <result column="video_code" jdbcType="VARCHAR" property="videoCode" />
     <result column="parent_code" jdbcType="VARCHAR" property="parentCode" />
     <result column="video_url" jdbcType="VARCHAR" property="videoUrl" />
-    <result column="branch_pre" jdbcType="BOOLEAN" property="branchPre" />
+    <result column="branch_pre" jdbcType="TINYINT" property="branchPre" />
     <result column="revolution_id" jdbcType="VARCHAR" property="revolutionId" />
     <result column="video_text" jdbcType="VARCHAR" property="videoText" />
     <result column="fk_artwork_id" jdbcType="INTEGER" property="fkArtworkId" />
@@ -24,34 +24,34 @@
     <result column="chosen_text" jdbcType="VARCHAR" property="chosenText" />
   </resultMap>
   <sql id="Base_Column_List">
-    pk_detail_id, parent_id, video_code, parent_code, video_url, branch_pre, revolution_id, 
-    video_text, fk_artwork_id, items, items_text, items_bak_text, css_vo, fk_achievement_id, 
+    pk_detail_id, parent_id, video_code, parent_code, video_url, branch_pre, revolution_id,
+    video_text, fk_artwork_id, items, items_text, items_bak_text, css_vo, fk_achievement_id,
     fk_ending_id, isleaf, a_level, is_deleted, parent_list, chosen_text
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from ecm_artwork_nodes
     where pk_detail_id = #{pkDetailId,jdbcType=INTEGER}
   </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from ecm_artwork_nodes
     where pk_detail_id = #{pkDetailId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyColumn="pk_detail_id" keyProperty="pkDetailId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes" useGeneratedKeys="true">
-    insert into ecm_artwork_nodes (parent_id, video_code, parent_code, 
-      video_url, branch_pre, revolution_id, 
-      video_text, fk_artwork_id, items, 
-      items_text, items_bak_text, css_vo, 
-      fk_achievement_id, fk_ending_id, isleaf, 
-      a_level, is_deleted, parent_list, 
+    insert into ecm_artwork_nodes (parent_id, video_code, parent_code,
+      video_url, branch_pre, revolution_id,
+      video_text, fk_artwork_id, items,
+      items_text, items_bak_text, css_vo,
+      fk_achievement_id, fk_ending_id, isleaf,
+      a_level, is_deleted, parent_list,
       chosen_text)
-    values (#{parentId,jdbcType=INTEGER}, #{videoCode,jdbcType=VARCHAR}, #{parentCode,jdbcType=VARCHAR}, 
-      #{videoUrl,jdbcType=VARCHAR}, #{branchPre,jdbcType=BOOLEAN}, #{revolutionId,jdbcType=VARCHAR}, 
-      #{videoText,jdbcType=VARCHAR}, #{fkArtworkId,jdbcType=INTEGER}, #{items,jdbcType=VARCHAR}, 
-      #{itemsText,jdbcType=VARCHAR}, #{itemsBakText,jdbcType=VARCHAR}, #{cssVo,jdbcType=VARCHAR}, 
-      #{fkAchievementId,jdbcType=INTEGER}, #{fkEndingId,jdbcType=INTEGER}, #{isleaf,jdbcType=VARCHAR}, 
-      #{aLevel,jdbcType=INTEGER}, #{isDeleted,jdbcType=VARCHAR}, #{parentList,jdbcType=VARCHAR}, 
+    values (#{parentId,jdbcType=INTEGER}, #{videoCode,jdbcType=VARCHAR}, #{parentCode,jdbcType=VARCHAR},
+      #{videoUrl,jdbcType=VARCHAR}, #{branchPre,jdbcType=TINYINT}, #{revolutionId,jdbcType=VARCHAR},
+      #{videoText,jdbcType=VARCHAR}, #{fkArtworkId,jdbcType=INTEGER}, #{items,jdbcType=VARCHAR},
+      #{itemsText,jdbcType=VARCHAR}, #{itemsBakText,jdbcType=VARCHAR}, #{cssVo,jdbcType=VARCHAR},
+      #{fkAchievementId,jdbcType=INTEGER}, #{fkEndingId,jdbcType=INTEGER}, #{isleaf,jdbcType=VARCHAR},
+      #{aLevel,jdbcType=INTEGER}, #{isDeleted,jdbcType=VARCHAR}, #{parentList,jdbcType=VARCHAR},
       #{chosenText,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" keyColumn="pk_detail_id" keyProperty="pkDetailId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes" useGeneratedKeys="true">
@@ -129,7 +129,7 @@
         #{videoUrl,jdbcType=VARCHAR},
       </if>
       <if test="branchPre != null">
-        #{branchPre,jdbcType=BOOLEAN},
+        #{branchPre,jdbcType=TINYINT},
       </if>
       <if test="revolutionId != null">
         #{revolutionId,jdbcType=VARCHAR},
@@ -175,7 +175,7 @@
       </if>
     </trim>
   </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes">
+  <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes">
     update ecm_artwork_nodes
     <set>
       <if test="parentId != null">
@@ -191,7 +191,7 @@
         video_url = #{videoUrl,jdbcType=VARCHAR},
       </if>
       <if test="branchPre != null">
-        branch_pre = #{branchPre,jdbcType=BOOLEAN},
+        branch_pre = #{branchPre,jdbcType=TINYINT},
       </if>
       <if test="revolutionId != null">
         revolution_id = #{revolutionId,jdbcType=VARCHAR},
@@ -244,7 +244,7 @@
       video_code = #{videoCode,jdbcType=VARCHAR},
       parent_code = #{parentCode,jdbcType=VARCHAR},
       video_url = #{videoUrl,jdbcType=VARCHAR},
-      branch_pre = #{branchPre,jdbcType=BOOLEAN},
+      branch_pre = #{branchPre,jdbcType=TINYINT},
       revolution_id = #{revolutionId,jdbcType=VARCHAR},
       video_text = #{videoText,jdbcType=VARCHAR},
       fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER},
@@ -356,6 +356,101 @@
     where pk_detail_id = #{pkDetailId}
   </update>
 
+  <update id="updateByEcmArtworkNodesList">
+    update ecm_artwork_nodes
+
+      <trim prefix="set" suffixOverrides=",">
+
+        <trim prefix="fk_ending_id =case" suffix="end,">
+          <foreach collection="list" item="item" index="index">
+            <if test="item.fkEndingId!=null">
+              when pk_detail_id=#{item.pkDetailId}
+              then #{item.fkEndingId}
+            </if>
+          </foreach>
+        </trim>
+
+        <trim prefix="video_url =case" suffix="end,">
+          <foreach collection="list" item="item" index="index">
+            <if test="item.videoUrl!=null">
+              when pk_detail_id=#{item.pkDetailId}
+              then #{item.videoUrl}
+            </if>
+          </foreach>
+        </trim>
+
+      </trim>
+      where pk_detail_id in
+      <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+        #{item.pkDetailId}
+      </foreach>
+
+    </update>
+    <update id="updateVideoUrlPrimaryEcmArtworkNode">
+
+      update ecm_artwork_nodes
+      <set>
+        <if test="parentId != null">
+          parent_id = #{parentId,jdbcType=INTEGER},
+        </if>
+        <if test="videoCode != null">
+          video_code = #{videoCode,jdbcType=VARCHAR},
+        </if>
+        <if test="parentCode != null">
+          parent_code = #{parentCode,jdbcType=VARCHAR},
+        </if>
+        <if test="videoUrl != null">
+          video_url = #{videoUrl,jdbcType=VARCHAR},
+        </if>
+        <if test="branchPre != null">
+          branch_pre = #{branchPre,jdbcType=TINYINT},
+        </if>
+        <if test="revolutionId != null">
+          revolution_id = #{revolutionId,jdbcType=VARCHAR},
+        </if>
+        <if test="videoText != null">
+          video_text = #{videoText,jdbcType=VARCHAR},
+        </if>
+        <if test="fkArtworkId != null">
+          fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER},
+        </if>
+        <if test="items != null">
+          items = #{items,jdbcType=VARCHAR},
+        </if>
+        <if test="itemsText != null">
+          items_text = #{itemsText,jdbcType=VARCHAR},
+        </if>
+        <if test="itemsBakText != null">
+          items_bak_text = #{itemsBakText,jdbcType=VARCHAR},
+        </if>
+        <if test="cssVo != null">
+          css_vo = #{cssVo,jdbcType=VARCHAR},
+        </if>
+        <if test="fkAchievementId != null">
+          fk_achievement_id = #{fkAchievementId,jdbcType=INTEGER},
+        </if>
+        <if test="fkEndingId != null">
+          fk_ending_id = #{fkEndingId,jdbcType=INTEGER},
+        </if>
+        <if test="isleaf != null">
+          isleaf = #{isleaf,jdbcType=VARCHAR},
+        </if>
+        <if test="aLevel != null">
+          a_level = #{aLevel,jdbcType=INTEGER},
+        </if>
+        <if test="isDeleted != null">
+          is_deleted = #{isDeleted,jdbcType=VARCHAR},
+        </if>
+        <if test="parentList == null">
+          parent_list = null,
+        </if>
+        <if test="chosenText != null">
+          chosen_text = #{chosenText,jdbcType=VARCHAR},
+        </if>
+      </set>
+      where pk_detail_id = #{pkDetailId,jdbcType=INTEGER}
+
+    </update>
 
 
 </mapper>

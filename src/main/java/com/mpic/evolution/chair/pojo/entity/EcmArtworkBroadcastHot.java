@@ -25,5 +25,10 @@ public class EcmArtworkBroadcastHot implements Serializable {
      */
     private Integer broadcastCount;
 
+    /**
+     * 昨天等待累加的次数
+     */
+    private Integer waitCount;
+
     private static final long serialVersionUID = 1L;
 }

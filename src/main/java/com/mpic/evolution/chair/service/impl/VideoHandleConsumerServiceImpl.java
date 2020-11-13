@@ -1,6 +1,7 @@
 package com.mpic.evolution.chair.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.mpic.evolution.chair.common.constant.JudgeConstant;
 import com.mpic.evolution.chair.dao.EcmArtworkNodesDao;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.tencent.video.AiContentReviewResultSet;
@@ -16,12 +17,16 @@ import com.tencentcloudapi.vod.v20180717.VodClient;
 import com.tencentcloudapi.vod.v20180717.models.ProcessMediaByProcedureRequest;
 import com.tencentcloudapi.vod.v20180717.models.ProcessMediaByProcedureResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 
 import javax.annotation.Resource;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.mpic.evolution.chair.common.constant.CosConstant.*;
@@ -66,6 +71,7 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
             JSONObject params = new JSONObject();
             params.put("FileId", videoCode);
             params.put("ProcedureName", CHANGE_PIPELINT);
+            params.put("SubAppId", "1500001548");
 
             ProcessMediaByProcedureRequest req = ProcessMediaByProcedureRequest.fromJsonString(params.toJSONString(), ProcessMediaByProcedureRequest.class);
 
@@ -83,28 +89,54 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
     public ResponseDTO videoHandleConsumer(TencentVideoResult tencentVideoResult) {
         System.out.println("腾讯视频审核回调接口开始工作了");
 
-        if (tencentVideoResult.getProcedureStateChangeEvent().getErrCode() == 0 && "SUCCESS".equals(tencentVideoResult.getProcedureStateChangeEvent().getMessage())){
-            EcmArtworkNodesVo ecmArtworkNodesVo = ecmArtworkNodesDao.selectByVideoCode(tencentVideoResult.getProcedureStateChangeEvent().getFileId());
-            ecmArtworkNodesVo.setVideoUrl(tencentVideoResult.getProcedureStateChangeEvent().getMediaProcessResultSet().get(0).getTranscodeTask().getOutput().getUrl());
-            List<AiContentReviewResultSet> aiContentReviewResultSet = tencentVideoResult.getProcedureStateChangeEvent().getAiContentReviewResultSet();
-            for (AiContentReviewResultSet aiContentReviewResult : aiContentReviewResultSet) {
-                try {
-                    Method method = aiContentReviewResult.getClass().getMethod("get" + aiContentReviewResult.getType().replace(".", "") + "Task");
-                    BaseTask invoke = (BaseTask) method.invoke(aiContentReviewResult);
-                    ecmArtworkNodesVo.setFkEndingId(1);
-                    if (invoke != null) {
-                        if (!"pass".equals(invoke.getOutput().getSuggestion())) {
-                            ecmArtworkNodesVo.setFkEndingId(2);
-                            break;
+        if (tencentVideoResult.getProcedureStateChangeEvent().getErrCode() == 0 && JudgeConstant.SUCCESS.toUpperCase().equals(tencentVideoResult.getProcedureStateChangeEvent().getMessage())){
+
+            List<EcmArtworkNodesVo> ecmArtworkNodesVoList = ecmArtworkNodesDao.selectByVideoCode(tencentVideoResult.getProcedureStateChangeEvent().getFileId());
+            List<EcmArtworkNodesVo> ecmArtworkNodesList = new ArrayList<>();
+            for (EcmArtworkNodesVo ecmArtworkNodesVo : ecmArtworkNodesVoList) {
+                EcmArtworkNodesVo ecmArtworkNode = new EcmArtworkNodesVo();
+                ecmArtworkNodesVo.setVideoUrl(tencentVideoResult.getProcedureStateChangeEvent().getMediaProcessResultSet().get(0).getTranscodeTask().getOutput().getUrl());
+                List<AiContentReviewResultSet> aiContentReviewResultSet = tencentVideoResult.getProcedureStateChangeEvent().getAiContentReviewResultSet();
+                for (AiContentReviewResultSet aiContentReviewResult : aiContentReviewResultSet) {
+                    try {
+                        Method method = aiContentReviewResult.getClass().getMethod("get" + aiContentReviewResult.getType().replace(".", "") + "Task");
+                        BaseTask invoke = (BaseTask) method.invoke(aiContentReviewResult);
+                        ecmArtworkNodesVo.setFkEndingId(1);
+                        if (invoke != null) {
+                            if (!"pass".equals(invoke.getOutput().getSuggestion())) {
+                                ecmArtworkNodesVo.setFkEndingId(2);
+                                break;
+                            }
                         }
+                    } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                        e.printStackTrace();
                     }
-                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                    e.printStackTrace();
                 }
+                ecmArtworkNode.setPkDetailId(ecmArtworkNodesVo.getPkDetailId());
+                ecmArtworkNode.setFkEndingId(ecmArtworkNodesVo.getFkEndingId());
+                ecmArtworkNode.setVideoUrl(ecmArtworkNodesVo.getVideoUrl());
+                ecmArtworkNodesList.add(ecmArtworkNode);
+
             }
-            ecmArtworkNodesDao.updateByPrimaryKeySelective(ecmArtworkNodesVo);
+            ecmArtworkNodesDao.updateByEcmArtworkNodesList(ecmArtworkNodesList);
+//            ecmArtworkNodesDao.updateByPrimaryKeySelective(ecmArtworkNodesVo);
+
         }
 
         return null;
+    }
+
+    @Override
+    public void handleArtwork(Integer pkArtworkId) {
+        List<EcmArtworkNodesVo> ecmArtworkNodesVos = ecmArtworkNodesDao.selectByArtWorkId(pkArtworkId);
+        if (!CollectionUtils.isEmpty(ecmArtworkNodesVos)){
+            ecmArtworkNodesVos.forEach( ecmArtworkNodesVo ->  {
+                if (!StringUtils.isEmpty(ecmArtworkNodesVo.getVideoCode())){
+                    this.handleOneVideo(ecmArtworkNodesVo.getVideoCode());
+                    System.out.println(ecmArtworkNodesVo.getVideoCode() + "已发送审核");
+                }
+            });
+        }
+
     }
 }

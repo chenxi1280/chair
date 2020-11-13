@@ -43,6 +43,7 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 		ecmUserVo.setUserLogoStatus((short)0);
 		ecmUserVo.setUpdateTime(new Date());
 //		int row = ecmUserDao.updateEcmUser(ecmUser, ecmUserVo);
+		ecmUserVo.setMobile(null);
 		int row = ecmUserDao.updateByPrimaryKeySelective(ecmUserVo);
 		if (row<1) {
 			return ResponseDTO.fail("保存信息失败", null, null, "000039");
