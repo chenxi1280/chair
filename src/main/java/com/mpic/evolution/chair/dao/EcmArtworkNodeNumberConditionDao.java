@@ -26,4 +26,6 @@ public interface EcmArtworkNodeNumberConditionDao {
     int updateByEcmArtworkNodeNumberConditionVOS(@Param("list") List<EcmArtworkNodeNumberConditionVO> ecmArtworkNodeNumberConditionVOS);
 
     int updateNameConditionByArtworkID(EcmArtworkNodeNumberConditionVO ecmArtworkNodeNumberConditionVO);
+
+    int updateNameConditionNameFLagByArtworkID(EcmArtworkNodeNumberConditionVO ecmArtworkNodeNumberConditionVO);
 }

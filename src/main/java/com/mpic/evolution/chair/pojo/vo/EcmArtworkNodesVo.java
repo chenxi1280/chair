@@ -67,4 +67,6 @@ public class EcmArtworkNodesVo extends EcmArtworkNodes  {
     private List<String> onNameConditionList;
 
     private Map<Integer, List<EcmArtworkNodeNumberConditionVO>> appearConditionMap ;
+
+    private List<Boolean> allNodeNameFlagList;
 }

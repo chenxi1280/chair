@@ -117,7 +117,8 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                     if (ecmArtworkNodeNumberCondition.getPkDetailid().equals(node.getPkDetailId())) {
                         // ecmArtworkNodeNumberCondition中数值0 1 2 3，并改成 前端对应的 list<NodeNumberConditionVO
                         List<NodeNumberConditionVO> numberCondition = new ArrayList<>(4);
-                        List<String> strings = new ArrayList<>(4);
+                        List<String> names = new ArrayList<>(4);
+                        List<Boolean> allNodeNameFlagList = new ArrayList<>(4);
                         Class<EcmArtworkNodeNumberCondition> ecmArtworkNodeNumberConditionClass = EcmArtworkNodeNumberCondition.class;
                         String appearCondition = "appearCondition";
                         String changeCondition = "changeCondition";
@@ -134,12 +135,14 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                             nodeNumberConditionVO.setChangeFlag(ecmArtworkNodeNumberCondition.getChangeFlag());
                             nodeNumberConditionVO.setAppearFlag(ecmArtworkNodeNumberCondition.getAppearFlag());
                             nodeNumberConditionVO.setNameFlag(ecmArtworkNodeNumberCondition.getNameFlag());
-                            strings.add(nodeNumberConditionVO.getNameCondition());
+                            names.add(nodeNumberConditionVO.getNameCondition());
+
                             numberCondition.add(i,nodeNumberConditionVO);
                         }
                         node.setOnAdvancedList(numberCondition);
                         node.setEcmArtworkNodeNumberCondition(ecmArtworkNodeNumberCondition);
-                        list.get(0).setOnNameConditionList(strings);
+                        list.get(0).setOnNameConditionList(names);
+                        list.get(0).setAllNodeNameFlagList(JSON.parseArray(ecmArtworkNodeNumberCondition.getAllNodeNameFlagListString(),Boolean.class));
                     }
                 }
             }
@@ -247,8 +250,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
     }
 
     @Override
-    public ResponseDTO saveArtworkNodeNumberCondition(EcmArtworkNodeNumberConditionVO
-                                                                  ecmArtworkNodeNumberConditionVO) {
+    public ResponseDTO saveArtworkNodeNumberCondition(EcmArtworkNodeNumberConditionVO ecmArtworkNodeNumberConditionVO) {
         EcmArtworkNodes ecmArtworkNodes = ecmArtworkNodesDao.selectByPrimaryKey(ecmArtworkNodeNumberConditionVO.getPkDetailid());
         if (ecmArtworkNodes == null) {
             return ResponseDTO.fail("作品错误");
@@ -267,24 +269,21 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             ecmArtworkNodes.setChosenText("0");
         }
         ecmArtworkNodeNumberConditionVO.setUpdataDate(new Date());
-//
-//        if (ecmArtworkNodeNumberConditionVO.getSaveNameFlag()) {
-//            ecmArtworkNodeNumberConditionDao.updateNameConditionByArtworkID(ecmArtworkNodeNumberConditionVO);
-//        }
-
-        if (ecmArtworkNodeNumberCondition != null ){
+        ecmArtworkNodeNumberConditionVO.setNameFlag((byte) 1);
+        try {
             ecmArtworkNodesDao.updateByPrimaryKeySelective(ecmArtworkNodes);
-            ecmArtworkNodeNumberConditionDao.updateByPrimaryKeySelective(ecmArtworkNodeNumberConditionVO);
             ecmArtworkNodeNumberConditionDao.updateNameConditionByArtworkID(ecmArtworkNodeNumberConditionVO);
+            if (ecmArtworkNodeNumberCondition != null) {
+                ecmArtworkNodeNumberConditionDao.updateByPrimaryKeySelective(ecmArtworkNodeNumberConditionVO);
+                return ResponseDTO.ok();
+            }
+            ecmArtworkNodeNumberConditionVO.setCreateDate(new Date());
+            ecmArtworkNodeNumberConditionDao.insertNode(ecmArtworkNodeNumberConditionVO);
             return ResponseDTO.ok();
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseDTO.fail("网络错误");
         }
-        ecmArtworkNodeNumberConditionVO.setCreateDate(new Date());
-        //更新是 为数值选项
-
-        ecmArtworkNodesDao.updateByPrimaryKeySelective(ecmArtworkNodes);
-        ecmArtworkNodeNumberConditionDao.insertNode(ecmArtworkNodeNumberConditionVO);
-        ecmArtworkNodeNumberConditionDao.updateNameConditionByArtworkID(ecmArtworkNodeNumberConditionVO);
-        return ResponseDTO.ok();
     }
 
 
