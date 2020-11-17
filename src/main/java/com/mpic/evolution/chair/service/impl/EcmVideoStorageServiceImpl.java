@@ -70,6 +70,8 @@ public class EcmVideoStorageServiceImpl implements EcmVideoStorageService {
 //            ecmArtworkNodesDao.updateByPrimaryKeySelective(ecmArtworkNodes);
             ecmArtworkNodesDao.updateVideoUrlPrimaryEcmArtworkNode(ecmArtworkNodes);
         }catch (Exception e){
+            System.out.print("数据回滚");
+            e.printStackTrace();
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             ResponseDTO.fail(ErrorEnum.ERR_601.getText());
         }

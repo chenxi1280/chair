@@ -389,7 +389,7 @@
     <update id="updateVideoUrlPrimaryEcmArtworkNode">
 
       update ecm_artwork_nodes
-      set
+      <set>
         parent_list = null,
         <if test="parentId != null">
           parent_id = #{parentId,jdbcType=INTEGER},
@@ -445,6 +445,7 @@
         <if test="chosenText != null">
           chosen_text = #{chosenText,jdbcType=VARCHAR},
         </if>
+      </set>
       where pk_detail_id = #{pkDetailId,jdbcType=INTEGER}
 
     </update>
