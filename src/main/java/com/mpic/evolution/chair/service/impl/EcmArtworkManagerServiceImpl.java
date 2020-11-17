@@ -158,9 +158,10 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			ecmArtwork.setLogoPath(ecmArtworkVo.getLogoPath());
 			ecmArtwork.setLastModifyDate(new Date());
 			ecmArtwork.setFourLetterTips(ecmArtworkVo.getFourLetterTips());
+			ecmArtwork.setArtworkDescribe(ecmArtworkVo.getArtworkDescribe());
 //			ecmArtwork.setLogoPath(ecmArtworkVo.getLogoPath());
  			ecmArtworkDao.updateByPrimaryKeySelective(ecmArtwork);
-			return ResponseDTO.ok("作品名称修改成功");
+			return ResponseDTO.ok("作品名称修改成功",ecmArtworkVo.getArtworkDescribe());
 		} catch (Exception e) {
 			return ResponseDTO.fail("修改失败");
 		}
