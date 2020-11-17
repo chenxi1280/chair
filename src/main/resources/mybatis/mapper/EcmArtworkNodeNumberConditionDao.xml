@@ -396,7 +396,13 @@
       name_condition1 = #{nameCondition1,jdbcType=VARCHAR},
       name_condition2 = #{nameCondition2,jdbcType=VARCHAR},
       name_condition3 = #{nameCondition3,jdbcType=VARCHAR},
-      all_node_name_flag_list_string = #{allNodeNameFlagListString,jdbcType=VARCHAR},
+      name_flag = 1,
+      updata_date = #{updataDate,jdbcType=TIMESTAMP}
+    where fk_artwork_id = #{fkArtworkId}
+  </update>
+  <update id="updateNameConditionNameFLagByArtworkID">
+    update ecm_artwork_node_number_condition
+    set
       <if test="allNodeNameFlag0 != null and allNodeNameFlag0 " >
         name_display0 = #{nameDisplay0,jdbcType=TINYINT},
       </if>
@@ -409,19 +415,6 @@
       <if test="allNodeNameFlag3 != null and allNodeNameFlag3">
         name_display3 = #{nameDisplay3,jdbcType=TINYINT},
       </if>
-      name_flag = 1,
-      updata_date = #{updataDate,jdbcType=TIMESTAMP}
-    where fk_artwork_id = #{fkArtworkId}
-  </update>
-  <update id="updateNameConditionNameFLagByArtworkID">
-    update ecm_artwork_node_number_condition
-    set
-      name_condition0 = #{nameCondition0,jdbcType=VARCHAR},
-      name_condition1 = #{nameCondition1,jdbcType=VARCHAR},
-      name_condition2 = #{nameCondition2,jdbcType=VARCHAR},
-      name_condition3 = #{nameCondition3,jdbcType=VARCHAR},
-      all_node_name_flag_list_string =  #{allNodeNameFlagListString,jdbcType=VARCHAR},
-      name_flag = #{nameFlag,jdbcType=TINYINT},
       updata_date = #{updataDate,jdbcType=TIMESTAMP}
     where fk_artwork_id = #{fkArtworkId}
   </update>

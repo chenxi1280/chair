@@ -142,7 +142,9 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                         node.setOnAdvancedList(numberCondition);
                         node.setEcmArtworkNodeNumberCondition(ecmArtworkNodeNumberCondition);
                         list.get(0).setOnNameConditionList(names);
-                        list.get(0).setAllNodeNameFlagList(JSON.parseArray(ecmArtworkNodeNumberCondition.getAllNodeNameFlagListString(),Boolean.class));
+//                        if(!StringUtils.isEmpty(ecmArtworkNodeNumberCondition.getAllNodeNameFlagListString())) {
+//                            node.setAllNodeNameFlagList(JSON.parseArray(ecmArtworkNodeNumberCondition.getAllNodeNameFlagListString(), Boolean.class));
+//                        }
                     }
                 }
             }
@@ -263,20 +265,34 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
         }
         EcmArtworkNodeNumberCondition ecmArtworkNodeNumberCondition = ecmArtworkNodeNumberConditionDao.selectByPrimaryKey(ecmArtworkNodeNumberConditionVO.getPkDetailid());
-        if (ecmArtworkNodeNumberConditionVO.getAppearFlag() == 1 || ecmArtworkNodeNumberConditionVO.getChangeFlag() == 1 ) {
-            ecmArtworkNodes.setChosenText("1");
+        if (ecmArtworkNodeNumberConditionVO.getAppearFlag() != null || ecmArtworkNodeNumberConditionVO.getChangeFlag() != null) {
+            if (ecmArtworkNodeNumberConditionVO.getAppearFlag() == 1 || ecmArtworkNodeNumberConditionVO.getChangeFlag() == 1) {
+                ecmArtworkNodes.setChosenText("1");
+            } else {
+                ecmArtworkNodes.setChosenText("0");
+            }
         }else {
             ecmArtworkNodes.setChosenText("0");
         }
         ecmArtworkNodeNumberConditionVO.setUpdataDate(new Date());
         ecmArtworkNodeNumberConditionVO.setNameFlag((byte) 1);
         try {
+
+
+            if (ecmArtworkNodeNumberConditionVO.getAllNodeNameFlag() != null) {
+                if (ecmArtworkNodeNumberConditionVO.getAllNodeNameFlag()) {
+                    ecmArtworkNodeNumberConditionDao.updateNameConditionNameFLagByArtworkID(ecmArtworkNodeNumberConditionVO);
+                    ecmArtworkNodesDao.updateNodeNumberFlag(ecmArtworkNodes.getFkArtworkId());
+                    return ResponseDTO.ok("全局应用成功");
+                }
+            }
             ecmArtworkNodesDao.updateByPrimaryKeySelective(ecmArtworkNodes);
             ecmArtworkNodeNumberConditionDao.updateNameConditionByArtworkID(ecmArtworkNodeNumberConditionVO);
             if (ecmArtworkNodeNumberCondition != null) {
                 ecmArtworkNodeNumberConditionDao.updateByPrimaryKeySelective(ecmArtworkNodeNumberConditionVO);
                 return ResponseDTO.ok();
             }
+
             ecmArtworkNodeNumberConditionVO.setCreateDate(new Date());
             ecmArtworkNodeNumberConditionDao.insertNode(ecmArtworkNodeNumberConditionVO);
             return ResponseDTO.ok();
@@ -284,6 +300,25 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             e.printStackTrace();
             return ResponseDTO.fail("网络错误");
         }
+    }
+
+    @Override
+    public ResponseDTO saveAllNodeNameFlagChange(EcmArtworkNodeNumberConditionVO ecmArtworkNodeNumberConditionVO) {
+        EcmArtworkNodes ecmArtworkNodes = ecmArtworkNodesDao.selectByPrimaryKey(ecmArtworkNodeNumberConditionVO.getPkDetailid());
+        if (ecmArtworkNodes == null) {
+            return ResponseDTO.fail("作品错误");
+        }
+        if (!ecmArtworkNodes.getFkArtworkId().equals(ecmArtworkNodeNumberConditionVO.getFkArtworkId())) {
+            return ResponseDTO.fail("作品错误");
+        }
+        EcmArtwork ecmArtwork = ecmArtworkDao.selectByPrimaryKey(ecmArtworkNodes.getFkArtworkId());
+        if (!ecmArtwork.getFkUserid().equals(ecmArtworkNodeNumberConditionVO.getFkUserId())) {
+            return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+        }
+        ecmArtworkNodeNumberConditionVO.setUpdataDate(new Date());
+        ecmArtworkNodeNumberConditionVO.setNameFlag((byte) 1);
+
+        return null;
     }
 
 

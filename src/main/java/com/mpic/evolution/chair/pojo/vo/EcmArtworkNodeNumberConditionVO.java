@@ -49,7 +49,7 @@ public class EcmArtworkNodeNumberConditionVO extends EcmArtworkNodeNumberConditi
      */
     private Boolean saveNameFlag;
 
-
+    private Boolean allNodeNameFlag;
 
     private Boolean allNodeNameFlag0;
     private Boolean allNodeNameFlag1;

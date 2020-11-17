@@ -166,6 +166,18 @@ public class EcmArtWorkController extends BaseController{
 		return ecmArtWorkService.saveArtworkNodeNumberCondition(ecmArtworkNodeNumberConditionVO);
 	}
 
+	@RequestMapping("/saveAllNodeNameFlagChange")
+	@ResponseBody
+	public ResponseDTO saveAllNodeNameFlagChange(@RequestBody EcmArtworkNodeNumberConditionVO ecmArtworkNodeNumberConditionVO){
+		Integer userId = getUserIdByHandToken();
+		if (userId == null){
+			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+		}
+		ecmArtworkNodeNumberConditionVO.setFkUserId(userId);
+
+		return ecmArtWorkService.saveAllNodeNameFlagChange(ecmArtworkNodeNumberConditionVO);
+	}
+
     /**
      * 	获取发布微信二维码
      * 	这里面的 scene 参数是前台要传过来的videoId

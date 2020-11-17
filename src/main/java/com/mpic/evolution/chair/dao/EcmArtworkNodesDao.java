@@ -30,4 +30,6 @@ public interface EcmArtworkNodesDao {
     int updateByEcmArtworkNodesList(List<EcmArtworkNodesVo> ecmArtworkNodesList);
 
     int updateVideoUrlPrimaryEcmArtworkNode(EcmArtworkNodes ecmArtworkNodes);
+
+    int updateNodeNumberFlag(Integer fkArtworkId);
 }
