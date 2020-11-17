@@ -331,9 +331,11 @@
       change_flag, appear_flag, name_flag,
       all_node_name_flag_list_string, create_date,
       updata_date)
-    values ( #{pkDetailid,jdbcType=INTEGER},#{appearCondition0,jdbcType=VARCHAR}, #{changeCondition0,jdbcType=VARCHAR},
-      #{appearCondition1,jdbcType=VARCHAR}, #{changeCondition1,jdbcType=VARCHAR}, #{appearCondition2,jdbcType=VARCHAR},
-      #{changeCondition2,jdbcType=VARCHAR}, #{appearCondition3,jdbcType=VARCHAR}, #{changeCondition3,jdbcType=VARCHAR},
+    values ( #{pkDetailid,jdbcType=INTEGER},
+    #{appearCondition0,jdbcType=VARCHAR}, #{changeCondition0,jdbcType=VARCHAR},
+      #{appearCondition1,jdbcType=VARCHAR}, #{changeCondition1,jdbcType=VARCHAR},
+      #{appearCondition2,jdbcType=VARCHAR},#{changeCondition2,jdbcType=VARCHAR},
+      #{appearCondition3,jdbcType=VARCHAR}, #{changeCondition3,jdbcType=VARCHAR},
       #{nameCondition0,jdbcType=VARCHAR}, #{nameDisplay0,jdbcType=TINYINT}, #{nameCondition1,jdbcType=VARCHAR},
       #{nameDisplay1,jdbcType=TINYINT}, #{nameCondition2,jdbcType=VARCHAR}, #{nameDisplay2,jdbcType=TINYINT},
       #{nameCondition3,jdbcType=VARCHAR}, #{nameDisplay3,jdbcType=TINYINT}, #{fkArtworkId,jdbcType=INTEGER},
@@ -342,7 +344,7 @@
       #{updataDate,jdbcType=TIMESTAMP})
 
   </insert>
-  <update id="updateByEcmArtworkNodeNumberConditionVOS">
+    <update id="updateByEcmArtworkNodeNumberConditionVOS">
     update ecm_artwork_node_number_condition
     <trim prefix="set" suffixOverrides=",">
 
@@ -418,4 +420,46 @@
       updata_date = #{updataDate,jdbcType=TIMESTAMP}
     where fk_artwork_id = #{fkArtworkId}
   </update>
+
+  <insert id="insertList">
+    insert into ecm_artwork_node_number_condition
+
+      (pk_detailId,
+      appear_condition0, change_condition0,
+      appear_condition1, change_condition1,
+      appear_condition2, change_condition2,
+      appear_condition3, change_condition3,
+      name_condition0, name_display0,
+      name_condition1, name_display1,
+      name_condition2, name_display2,
+      name_condition3, name_display3,
+      fk_artwork_id,
+      change_flag, appear_flag, name_flag,
+      create_date)
+    values
+    <foreach collection="list" separator="," index="index" item="item" >
+      (
+      #{item.pkDetailid},
+      'null,null','0',
+      'null,null','0',
+      'null,null','0',
+      'null,null','0',
+      #{item.nameCondition0 }, #{item.nameDisplay0 },
+      #{item.nameCondition1 }, #{item.nameDisplay1 },
+      #{item.nameCondition2 }, #{item.nameDisplay2 },
+      #{item.nameCondition3 }, #{item.nameDisplay3 },
+      #{item.fkArtworkId },
+      0,0,1,
+      #{item.createDate}
+      )
+    </foreach>
+
+
+
+  </insert>
+
+<!--  #{item.appearCondition0 }, #{item.changeCondition0 },-->
+<!--  #{item.appearCondition1 }, #{item.changeCondition1 },-->
+<!--  #{item.appearCondition2 }, #{item.changeCondition2 },-->
+<!--  #{item.appearCondition3 }, #{item.changeCondition3 },-->
 </mapper>

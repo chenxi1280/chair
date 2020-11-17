@@ -69,9 +69,9 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                 }
             });
         }
-        Map<String,Object> map = new HashMap<>(2);
-        map.put("list",ecmArtworkVoList);
-        map.put("count",count);
+        Map<String, Object> map = new HashMap<>(2);
+        map.put("list", ecmArtworkVoList);
+        map.put("count", count);
         return ResponseDTO.ok("success", map);
     }
 
@@ -109,7 +109,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             }
             // 还原定位数组方法
             if (!StringUtils.isEmpty(node.getItemsText())) {
-                node.setNodeLocationList( JSON.parseArray(node.getItemsText(), NodeOptionLocationVO.class));
+                node.setNodeLocationList(JSON.parseArray(node.getItemsText(), NodeOptionLocationVO.class));
             }
             // 还原数值数组方法
             if (!CollectionUtils.isEmpty(ecmArtworkNodeNumberConditionS)) {
@@ -127,17 +127,17 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                         for (int i = 0; i < 4; i++) {
                             NodeNumberConditionVO nodeNumberConditionVO = new NodeNumberConditionVO();
                             //反射还原前端对象
-                            VOUtils.setNodeNumberConditionFieldValue(ecmArtworkNodeNumberCondition,appearCondition ,i,ecmArtworkNodeNumberConditionClass,nodeNumberConditionVO);
-                            VOUtils.setNodeNumberConditionFieldValue(ecmArtworkNodeNumberCondition,changeCondition ,i,ecmArtworkNodeNumberConditionClass,nodeNumberConditionVO);
-                            VOUtils.setNodeNumberConditionFieldValue(ecmArtworkNodeNumberCondition,nameCondition ,i,ecmArtworkNodeNumberConditionClass,nodeNumberConditionVO);
-                            VOUtils.setNodeNumberConditionFieldValue(ecmArtworkNodeNumberCondition,nameDisplay ,i,ecmArtworkNodeNumberConditionClass,nodeNumberConditionVO);
+                            VOUtils.setNodeNumberConditionFieldValue(ecmArtworkNodeNumberCondition, appearCondition, i, ecmArtworkNodeNumberConditionClass, nodeNumberConditionVO);
+                            VOUtils.setNodeNumberConditionFieldValue(ecmArtworkNodeNumberCondition, changeCondition, i, ecmArtworkNodeNumberConditionClass, nodeNumberConditionVO);
+                            VOUtils.setNodeNumberConditionFieldValue(ecmArtworkNodeNumberCondition, nameCondition, i, ecmArtworkNodeNumberConditionClass, nodeNumberConditionVO);
+                            VOUtils.setNodeNumberConditionFieldValue(ecmArtworkNodeNumberCondition, nameDisplay, i, ecmArtworkNodeNumberConditionClass, nodeNumberConditionVO);
                             //设置 对应的flag
                             nodeNumberConditionVO.setChangeFlag(ecmArtworkNodeNumberCondition.getChangeFlag());
                             nodeNumberConditionVO.setAppearFlag(ecmArtworkNodeNumberCondition.getAppearFlag());
                             nodeNumberConditionVO.setNameFlag(ecmArtworkNodeNumberCondition.getNameFlag());
                             names.add(nodeNumberConditionVO.getNameCondition());
 
-                            numberCondition.add(i,nodeNumberConditionVO);
+                            numberCondition.add(i, nodeNumberConditionVO);
                         }
                         node.setOnAdvancedList(numberCondition);
                         node.setEcmArtworkNodeNumberCondition(ecmArtworkNodeNumberCondition);
@@ -165,7 +165,6 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         }
         return ResponseDTO.ok("success", TreeUtil.buildTree(collect).get(0));
     }
-
 
 
     @Override
@@ -271,7 +270,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             } else {
                 ecmArtworkNodes.setChosenText("0");
             }
-        }else {
+        } else {
             ecmArtworkNodes.setChosenText("0");
         }
         ecmArtworkNodeNumberConditionVO.setUpdataDate(new Date());
@@ -283,6 +282,39 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                 if (ecmArtworkNodeNumberConditionVO.getAllNodeNameFlag()) {
                     ecmArtworkNodeNumberConditionDao.updateNameConditionNameFLagByArtworkID(ecmArtworkNodeNumberConditionVO);
                     ecmArtworkNodesDao.updateNodeNumberFlag(ecmArtworkNodes.getFkArtworkId());
+                    List<EcmArtworkNodeNumberConditionVO> ecmArtworkNodeNumberConditionVOS = ecmArtworkNodeNumberConditionDao.selectByArtWorkId(ecmArtworkNodeNumberConditionVO.getFkArtworkId());
+                    List<EcmArtworkNodesVo> ecmArtworkNodesVoList = ecmArtworkNodesDao.selectByArtWorkId(ecmArtworkNodeNumberConditionVO.getFkArtworkId());
+                    if (!CollectionUtils.isEmpty(ecmArtworkNodeNumberConditionVOS ) && !CollectionUtils.isEmpty(ecmArtworkNodesVoList)){
+                        if (ecmArtworkNodeNumberConditionVOS.size() == ecmArtworkNodesVoList.size()){
+                            return ResponseDTO.ok("全局应用成功");
+                        }
+                    }
+                    Iterator<EcmArtworkNodesVo> iterator = ecmArtworkNodesVoList.iterator();
+                    while (iterator.hasNext()) {
+                        EcmArtworkNodesVo ecmArtworkNodesVo = iterator.next();
+                        if (!CollectionUtils.isEmpty(ecmArtworkNodeNumberConditionVOS)) {
+                            for (EcmArtworkNodeNumberConditionVO ecmArtworkNode : ecmArtworkNodeNumberConditionVOS) {
+                                if (ecmArtworkNodesVo.getPkDetailId().equals(ecmArtworkNode.getPkDetailid())) {
+                                    iterator.remove();
+                                }
+                            }
+                        }
+                    }
+                    List<EcmArtworkNodeNumberConditionVO> ecmArtworkNodeNumberConditionVOArrayList = new ArrayList<>();
+                    ecmArtworkNodesVoList.forEach(v -> {
+                        EcmArtworkNodeNumberConditionVO artworkNodeNumberConditionVO = new EcmArtworkNodeNumberConditionVO();
+                        BeanUtils.copyProperties(ecmArtworkNodeNumberConditionVO,artworkNodeNumberConditionVO);
+                        artworkNodeNumberConditionVO.setPkDetailid(v.getPkDetailId());
+                        artworkNodeNumberConditionVO.setCreateDate(new Date());
+                        ecmArtworkNodeNumberConditionVOArrayList.add(artworkNodeNumberConditionVO);
+
+                    });
+                    if(!CollectionUtils.isEmpty(ecmArtworkNodeNumberConditionVOArrayList)) {
+                        ecmArtworkNodeNumberConditionDao.insertList(ecmArtworkNodeNumberConditionVOArrayList);
+                    }
+
+
+//                    ecmArtworkNodeNumberConditionDao.insertList();
                     return ResponseDTO.ok("全局应用成功");
                 }
             }
@@ -296,7 +328,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             ecmArtworkNodeNumberConditionVO.setCreateDate(new Date());
             ecmArtworkNodeNumberConditionDao.insertNode(ecmArtworkNodeNumberConditionVO);
             return ResponseDTO.ok();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseDTO.fail("网络错误");
         }
@@ -354,12 +386,12 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 //        ecmArtworkVo.setArtworkName("好产品XXX造");
 //        ecmArtworkVo.setCode("ad");
 //        list.add(1, ecmArtworkVo);
-        Map<String,Object> map = new HashMap<>(2);
-        if(ecmArtworkBroadcastHotVOS.size() <  ecmArtWorkQuery.getLimit()) {
-            map.put("loadStatus",1);
+        Map<String, Object> map = new HashMap<>(2);
+        if (ecmArtworkBroadcastHotVOS.size() < ecmArtWorkQuery.getLimit()) {
+            map.put("loadStatus", 1);
         }
-        map.put("list",list);
-        return ResponseDTO.ok("sucess", map );
+        map.put("list", list);
+        return ResponseDTO.ok("sucess", map);
     }
 
 
