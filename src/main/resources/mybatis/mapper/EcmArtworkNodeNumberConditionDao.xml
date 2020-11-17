@@ -329,7 +329,8 @@
       name_display1, name_condition2, name_display2,
       name_condition3, name_display3, fk_artwork_id,
       change_flag, appear_flag, name_flag,
-      all_node_name_flag_list_string, create_date, updata_date
+      all_node_name_flag_list_string, create_date,
+      updata_date)
     values ( #{pkDetailid,jdbcType=INTEGER},#{appearCondition0,jdbcType=VARCHAR}, #{changeCondition0,jdbcType=VARCHAR},
       #{appearCondition1,jdbcType=VARCHAR}, #{changeCondition1,jdbcType=VARCHAR}, #{appearCondition2,jdbcType=VARCHAR},
       #{changeCondition2,jdbcType=VARCHAR}, #{appearCondition3,jdbcType=VARCHAR}, #{changeCondition3,jdbcType=VARCHAR},
@@ -337,7 +338,8 @@
       #{nameDisplay1,jdbcType=TINYINT}, #{nameCondition2,jdbcType=VARCHAR}, #{nameDisplay2,jdbcType=TINYINT},
       #{nameCondition3,jdbcType=VARCHAR}, #{nameDisplay3,jdbcType=TINYINT}, #{fkArtworkId,jdbcType=INTEGER},
       #{changeFlag,jdbcType=TINYINT}, #{appearFlag,jdbcType=TINYINT}, #{nameFlag,jdbcType=TINYINT},
-      #{allNodeNameFlagListString,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{updataDate,jdbcType=TIMESTAMP}
+      #{allNodeNameFlagListString,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP},
+      #{updataDate,jdbcType=TIMESTAMP})
 
   </insert>
   <update id="updateByEcmArtworkNodeNumberConditionVOS">
