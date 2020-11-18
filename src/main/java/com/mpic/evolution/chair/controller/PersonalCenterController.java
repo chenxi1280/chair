@@ -4,24 +4,22 @@ import java.util.Date;
 
 import javax.annotation.Resource;
 
-import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
-import com.qcloud.vod.common.StringUtil;
 import org.mybatis.spring.MyBatisSystemException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.mpic.evolution.chair.common.constant.SecretKeyConstants;
+import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmUser;
 import com.mpic.evolution.chair.pojo.vo.EcmUserVo;
 import com.mpic.evolution.chair.service.EcmUserService;
 import com.mpic.evolution.chair.service.PersonalCenterService;
 import com.mpic.evolution.chair.util.AIVerifyUtil;
-import com.mpic.evolution.chair.util.EncryptUtil;
 import com.mpic.evolution.chair.util.MD5Utils;
 import com.mpic.evolution.chair.util.StringUtils;
+import com.qcloud.vod.common.StringUtil;
 
 import lombok.extern.log4j.Log4j;
 
@@ -48,7 +46,7 @@ public class PersonalCenterController extends BaseController {
 	 *	保存用户信息
 	 * @Date: 2020/9/18
 	 */
-	@RequestMapping("/savaUserInfo")
+	@RequestMapping("/saveUserInfo")
 	@ResponseBody
 	public ResponseDTO savaUserInfo(@RequestBody EcmUserVo ecmUserVo){
 		Integer userIdByHandToken = getUserIdByHandToken();
@@ -56,12 +54,14 @@ public class PersonalCenterController extends BaseController {
 			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
 		}
 		ecmUserVo.setPkUserId(userIdByHandToken);
-		EcmUser userInfos = ecmUserService.getUserInfosByUserId(userIdByHandToken);
-
 		String username = ecmUserVo.getUsername();
 		try {
-			if (!StringUtil.isEmpty(ecmUserVo.getUsername())) {
-				if (ecmUserVo.getUsername().equals(userInfos.getUsername())) {
+			if (!StringUtil.isEmpty(username)) {
+				EcmUser user = new EcmUser();
+				user.setUsername(username);
+				user = ecmUserService.getUserInfos(user);
+				// 用户昵称是否存在
+				if (user != null && !StringUtils.isNullOrBlank(String.valueOf(user.getUsername()))) {
 					return ResponseDTO.fail("昵称已被使用", null, null, 504);
 				}
 				String result = AIVerifyUtil.convertContent(username);
@@ -69,7 +69,6 @@ public class PersonalCenterController extends BaseController {
 					return ResponseDTO.fail("昵称使用了违禁词汇", result, null, 510);
 				}
 			}
-			ecmUserVo.setPkUserId(getUserIdByHandToken());
 			return pcService.savaUserInfo(ecmUserVo);
 		} catch (MyBatisSystemException e) {
 			log.error("账号在数据库中有多条记录");
