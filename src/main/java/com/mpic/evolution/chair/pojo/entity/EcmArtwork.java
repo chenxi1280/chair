@@ -5,6 +5,9 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * ecm_artwork
  * @author
@@ -24,8 +27,8 @@ public class EcmArtwork implements Serializable {
     private String artworkName;
 
     /**
-     * 作品描述
-     */
+     * 	播放端用于分享的图片的url
+     */ 
     private String artworkDescribe;
 
     /**

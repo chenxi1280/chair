@@ -78,6 +78,7 @@ public class EcmArtWorkController extends BaseController{
 			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
 		}
 		ecmArtWorkQuery.setFkUserid(userIdByHandToken);
+
 		return ecmArtWorkService.getArtWork(ecmArtWorkQuery);
     }
 
@@ -164,6 +165,18 @@ public class EcmArtWorkController extends BaseController{
 		ecmArtworkNodeNumberConditionVO.setFkUserId(userId);
 
 		return ecmArtWorkService.saveArtworkNodeNumberCondition(ecmArtworkNodeNumberConditionVO);
+	}
+
+	@RequestMapping("/saveAllNodeNameFlagChange")
+	@ResponseBody
+	public ResponseDTO saveAllNodeNameFlagChange(@RequestBody EcmArtworkNodeNumberConditionVO ecmArtworkNodeNumberConditionVO){
+		Integer userId = getUserIdByHandToken();
+		if (userId == null){
+			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+		}
+		ecmArtworkNodeNumberConditionVO.setFkUserId(userId);
+
+		return ecmArtWorkService.saveAllNodeNameFlagChange(ecmArtworkNodeNumberConditionVO);
 	}
 
     /**

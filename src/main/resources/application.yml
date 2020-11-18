@@ -42,3 +42,4 @@ mybatis:
 logging:
   level:
     com.mpic.evolution.chair.dao: debug
+

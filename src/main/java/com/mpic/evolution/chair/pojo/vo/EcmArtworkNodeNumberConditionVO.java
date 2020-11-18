@@ -48,4 +48,11 @@ public class EcmArtworkNodeNumberConditionVO extends EcmArtworkNodeNumberConditi
      * 数值3发生怎样的改变
      */
     private Boolean saveNameFlag;
+
+    private Boolean allNodeNameFlag;
+
+    private Boolean allNodeNameFlag0;
+    private Boolean allNodeNameFlag1;
+    private Boolean allNodeNameFlag2;
+    private Boolean allNodeNameFlag3;
 }

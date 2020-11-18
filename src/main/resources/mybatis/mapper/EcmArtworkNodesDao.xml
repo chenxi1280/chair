@@ -386,10 +386,11 @@
       </foreach>
 
     </update>
-    <update id="updateVideoUrlPrimaryEcmArtworkNode">
+  <update id="updateVideoUrlPrimaryEcmArtworkNode">
 
       update ecm_artwork_nodes
       <set>
+        parent_list = null,
         <if test="parentId != null">
           parent_id = #{parentId,jdbcType=INTEGER},
         </if>
@@ -441,9 +442,6 @@
         <if test="isDeleted != null">
           is_deleted = #{isDeleted,jdbcType=VARCHAR},
         </if>
-        <if test="parentList == null">
-          parent_list = null,
-        </if>
         <if test="chosenText != null">
           chosen_text = #{chosenText,jdbcType=VARCHAR},
         </if>
@@ -451,6 +449,30 @@
       where pk_detail_id = #{pkDetailId,jdbcType=INTEGER}
 
     </update>
+  <update id="updateNodeNumberFlag">
+      update ecm_artwork_nodes
+      set chosen_text = '1'
+      where fk_artwork_id = #{fkArtworkId}
+
+  </update>
+  <update id="removeByNodeIds">
+    update ecm_artwork_nodes
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="is_deleted = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item!=null">
+            when pk_detail_id= #{item}
+            then 'Y'
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where pk_detail_id in
+    <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+      #{item}
+    </foreach>
+
+  </update>
 
 
 </mapper>
