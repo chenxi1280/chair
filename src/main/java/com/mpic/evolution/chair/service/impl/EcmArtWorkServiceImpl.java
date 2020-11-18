@@ -99,7 +99,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                                 } else {
                                     EcmArtworkNodesDTO ecmArtworkNodesDTO = new EcmArtworkNodesDTO();
                                     BeanUtils.copyProperties(ecmArtworkNodesVo, ecmArtworkNodesDTO);
-                                    ecmArtworkNodesDTO.setFkArtworkId(ecmArtwork.getPkArtworkId());
+                                    ecmArtworkNodesDTO.setFkArtworkId(ecmArtWorkQuery.getPkArtworkId());
                                     node.setLinkNode(ecmArtworkNodesDTO);
                                 }
                             }
@@ -149,7 +149,6 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                 }
             }
 
-
         }
 
         List<EcmArtworkNodesVo> collect = list.stream().filter(ecmArtworkNodesVo -> !JudgeConstant.Y.equals(ecmArtworkNodesVo.getIsDeleted())).collect(Collectors.toList());
@@ -159,8 +158,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         }
         // 作品类型
         collect.get(0).setArtWorkTips(ecmArtwork.getFourLetterTips());
-//        collect.get(0).setOnNameConditionList(strings);
-        if (list.isEmpty()) {
+        if (collect.isEmpty()) {
             return ResponseDTO.fail(ErrorEnum.ERR_200.getText());
         }
         return ResponseDTO.ok("success", TreeUtil.buildTree(collect).get(0));
@@ -239,15 +237,29 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         if (ecmArtworkNodesVo.getFkArtworkId() == null) {
             return ResponseDTO.fail("作品错误");
         }
+        if (ecmArtworkNodesVo.getPkDetailId() == null) {
+
+            return ResponseDTO.fail("网络错误");
+        }
         EcmArtwork ecmArtwork = ecmArtworkDao.selectByPrimaryKey(ecmArtworkNodesVo.getFkArtworkId());
         if (!ecmArtwork.getFkUserid().equals(ecmArtworkNodesVo.getFkUserId())) {
             return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
         }
+        List<EcmArtworkNodesVo> ecmArtworkNodesVoList = ecmArtworkNodesDao.selectByArtWorkId(ecmArtworkNodesVo.getFkArtworkId());
+        List<Integer> ids = new ArrayList<>();
+        ids.add(ecmArtworkNodesVo.getPkDetailId());
+        getRemoveNodeId(ecmArtworkNodesVo,ecmArtworkNodesVoList,ids);
+        ecmArtworkNodesDao.removeByNodeIds(ids);
+        return ResponseDTO.ok();
+    }
 
-        if (ecmArtworkNodesVo.getPkDetailId() != null) {
-            return ResponseDTO.get(1 == ecmArtworkNodesDao.removeByPrimaryKey(ecmArtworkNodesVo.getPkDetailId()));
-        }
-        return ResponseDTO.fail("网络错误");
+    private void getRemoveNodeId(EcmArtworkNodesVo ecmArtworkNodesVo, List<EcmArtworkNodesVo> ecmArtworkNodesVoList, List<Integer> ids) {
+        ecmArtworkNodesVoList.forEach(v -> {
+            if (v.getParentId().equals(ecmArtworkNodesVo.getPkDetailId())) {
+                ids.add(v.getPkDetailId());
+                getRemoveNodeId(v,ecmArtworkNodesVoList,ids);
+            }
+        });
     }
 
     @Override
@@ -270,9 +282,17 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             } else {
                 ecmArtworkNodes.setChosenText("0");
             }
-        } else {
-            ecmArtworkNodes.setChosenText("0");
         }
+
+        if (ecmArtworkNodeNumberConditionVO.getNameFlag() != null ){
+            ecmArtworkNodes.setChosenText("1");
+            if (ecmArtworkNodeNumberConditionVO.getAppearFlag() == 1 || ecmArtworkNodeNumberConditionVO.getChangeFlag() == 1) {
+                ecmArtworkNodes.setChosenText("1");
+            } else {
+                ecmArtworkNodes.setChosenText("0");
+            }
+        }
+
         ecmArtworkNodeNumberConditionVO.setUpdataDate(new Date());
         ecmArtworkNodeNumberConditionVO.setNameFlag((byte) 1);
         try {

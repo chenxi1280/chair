@@ -78,6 +78,7 @@ public class EcmArtWorkController extends BaseController{
 			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
 		}
 		ecmArtWorkQuery.setFkUserid(userIdByHandToken);
+
 		return ecmArtWorkService.getArtWork(ecmArtWorkQuery);
     }
 

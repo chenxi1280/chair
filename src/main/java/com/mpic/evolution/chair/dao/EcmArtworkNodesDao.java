@@ -31,5 +31,7 @@ public interface EcmArtworkNodesDao {
 
     int updateVideoUrlPrimaryEcmArtworkNode(EcmArtworkNodes ecmArtworkNodes);
 
-    int updateNodeNumberFlag(Integer fkArtworkId);
+    int updateNodeNumberFlag(@Param("fkArtworkId") Integer fkArtworkId);
+
+    int removeByNodeIds(@Param("list")List<Integer> ids);
 }
