@@ -23,7 +23,6 @@
     <result column="change_flag" jdbcType="TINYINT" property="changeFlag" />
     <result column="appear_flag" jdbcType="TINYINT" property="appearFlag" />
     <result column="name_flag" jdbcType="TINYINT" property="nameFlag" />
-    <result column="all_node_name_flag_list_string" jdbcType="VARCHAR" property="allNodeNameFlagListString" />
     <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
     <result column="updata_date" jdbcType="TIMESTAMP" property="updataDate" />
   </resultMap>
@@ -31,8 +30,7 @@
     pk_detailId, appear_condition0, change_condition0, appear_condition1, change_condition1,
     appear_condition2, change_condition2, appear_condition3, change_condition3, name_condition0,
     name_display0, name_condition1, name_display1, name_condition2, name_display2, name_condition3,
-    name_display3, fk_artwork_id, change_flag, appear_flag, name_flag, all_node_name_flag_list_string,
-    create_date, updata_date
+    name_display3, fk_artwork_id, change_flag, appear_flag, name_flag, create_date, updata_date
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
@@ -52,8 +50,7 @@
       name_display1, name_condition2, name_display2,
       name_condition3, name_display3, fk_artwork_id,
       change_flag, appear_flag, name_flag,
-      all_node_name_flag_list_string, create_date,
-      updata_date)
+      create_date, updata_date)
     values (#{appearCondition0,jdbcType=VARCHAR}, #{changeCondition0,jdbcType=VARCHAR},
       #{appearCondition1,jdbcType=VARCHAR}, #{changeCondition1,jdbcType=VARCHAR}, #{appearCondition2,jdbcType=VARCHAR},
       #{changeCondition2,jdbcType=VARCHAR}, #{appearCondition3,jdbcType=VARCHAR}, #{changeCondition3,jdbcType=VARCHAR},
@@ -61,8 +58,7 @@
       #{nameDisplay1,jdbcType=TINYINT}, #{nameCondition2,jdbcType=VARCHAR}, #{nameDisplay2,jdbcType=TINYINT},
       #{nameCondition3,jdbcType=VARCHAR}, #{nameDisplay3,jdbcType=TINYINT}, #{fkArtworkId,jdbcType=INTEGER},
       #{changeFlag,jdbcType=TINYINT}, #{appearFlag,jdbcType=TINYINT}, #{nameFlag,jdbcType=TINYINT},
-      #{allNodeNameFlagListString,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP},
-      #{updataDate,jdbcType=TIMESTAMP})
+      #{createDate,jdbcType=TIMESTAMP}, #{updataDate,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" keyColumn="pk_detailId" keyProperty="pkDetailid" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeNumberCondition" useGeneratedKeys="true">
     insert into ecm_artwork_node_number_condition
@@ -126,9 +122,6 @@
       </if>
       <if test="nameFlag != null">
         name_flag,
-      </if>
-      <if test="allNodeNameFlagListString != null">
-        all_node_name_flag_list_string,
       </if>
       <if test="createDate != null">
         create_date,
@@ -197,9 +190,6 @@
       </if>
       <if test="nameFlag != null">
         #{nameFlag,jdbcType=TINYINT},
-      </if>
-      <if test="allNodeNameFlagListString != null">
-        #{allNodeNameFlagListString,jdbcType=VARCHAR},
       </if>
       <if test="createDate != null">
         #{createDate,jdbcType=TIMESTAMP},
@@ -272,9 +262,6 @@
       <if test="nameFlag != null">
         name_flag = #{nameFlag,jdbcType=TINYINT},
       </if>
-      <if test="allNodeNameFlagListString != null">
-        all_node_name_flag_list_string = #{allNodeNameFlagListString,jdbcType=VARCHAR},
-      </if>
       <if test="createDate != null">
         create_date = #{createDate,jdbcType=TIMESTAMP},
       </if>
@@ -306,12 +293,10 @@
       change_flag = #{changeFlag,jdbcType=TINYINT},
       appear_flag = #{appearFlag,jdbcType=TINYINT},
       name_flag = #{nameFlag,jdbcType=TINYINT},
-      all_node_name_flag_list_string = #{allNodeNameFlagListString,jdbcType=VARCHAR},
       create_date = #{createDate,jdbcType=TIMESTAMP},
       updata_date = #{updataDate,jdbcType=TIMESTAMP}
     where pk_detailId = #{pkDetailid,jdbcType=INTEGER}
   </update>
-
   <!--  sql-->
   <select id="selectByArtWorkId" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkNodeNumberConditionVO">
     select <include refid="Base_Column_List" />
@@ -329,7 +314,7 @@
       name_display1, name_condition2, name_display2,
       name_condition3, name_display3, fk_artwork_id,
       change_flag, appear_flag, name_flag,
-      all_node_name_flag_list_string, create_date,
+      create_date,
       updata_date)
     values ( #{pkDetailid,jdbcType=INTEGER},
     #{appearCondition0,jdbcType=VARCHAR}, #{changeCondition0,jdbcType=VARCHAR},
@@ -340,7 +325,7 @@
       #{nameDisplay1,jdbcType=TINYINT}, #{nameCondition2,jdbcType=VARCHAR}, #{nameDisplay2,jdbcType=TINYINT},
       #{nameCondition3,jdbcType=VARCHAR}, #{nameDisplay3,jdbcType=TINYINT}, #{fkArtworkId,jdbcType=INTEGER},
       #{changeFlag,jdbcType=TINYINT}, #{appearFlag,jdbcType=TINYINT}, #{nameFlag,jdbcType=TINYINT},
-      #{allNodeNameFlagListString,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP},
+      #{createDate,jdbcType=TIMESTAMP},
       #{updataDate,jdbcType=TIMESTAMP})
 
   </insert>

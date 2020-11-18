@@ -117,11 +117,6 @@ public class EcmArtworkNodeNumberCondition implements Serializable {
     private Byte nameFlag;
 
     /**
-     * json格式的是否启用全局数组
-     */
-    private String allNodeNameFlagListString;
-
-    /**
      * 创建时间
      */
     private Date createDate;
