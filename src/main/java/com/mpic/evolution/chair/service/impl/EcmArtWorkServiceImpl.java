@@ -275,6 +275,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         if (!ecmArtwork.getFkUserid().equals(ecmArtworkNodeNumberConditionVO.getFkUserId())) {
             return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
         }
+
         EcmArtworkNodeNumberCondition ecmArtworkNodeNumberCondition = ecmArtworkNodeNumberConditionDao.selectByPrimaryKey(ecmArtworkNodeNumberConditionVO.getPkDetailid());
         if (ecmArtworkNodeNumberConditionVO.getAppearFlag() != null || ecmArtworkNodeNumberConditionVO.getChangeFlag() != null) {
             if (ecmArtworkNodeNumberConditionVO.getAppearFlag() == 1 || ecmArtworkNodeNumberConditionVO.getChangeFlag() == 1) {
@@ -286,11 +287,6 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
         if (ecmArtworkNodeNumberConditionVO.getNameFlag() != null ){
             ecmArtworkNodes.setChosenText("1");
-            if (ecmArtworkNodeNumberConditionVO.getAppearFlag() == 1 || ecmArtworkNodeNumberConditionVO.getChangeFlag() == 1) {
-                ecmArtworkNodes.setChosenText("1");
-            } else {
-                ecmArtworkNodes.setChosenText("0");
-            }
         }
 
         ecmArtworkNodeNumberConditionVO.setUpdataDate(new Date());

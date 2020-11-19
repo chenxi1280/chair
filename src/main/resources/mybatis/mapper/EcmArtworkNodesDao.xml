@@ -449,12 +449,14 @@
       where pk_detail_id = #{pkDetailId,jdbcType=INTEGER}
 
     </update>
+
   <update id="updateNodeNumberFlag">
       update ecm_artwork_nodes
       set chosen_text = '1'
       where fk_artwork_id = #{fkArtworkId}
 
   </update>
+
   <update id="removeByNodeIds">
     update ecm_artwork_nodes
     <trim prefix="set" suffixOverrides=",">

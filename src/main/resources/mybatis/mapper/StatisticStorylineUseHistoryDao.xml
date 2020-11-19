@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mpic.evolution.chair.dao.StatisticStorylineUseHistoryDao">
+  <resultMap id="BaseResultMap" type="com.mpic.evolution.chair.pojo.entity.StatisticStorylineUseHistory">
+    <id column="statistic_storyline_use_history_id" jdbcType="INTEGER" property="statisticStorylineUseHistoryId" />
+    <result column="fk_user_id" jdbcType="INTEGER" property="fkUserId" />
+    <result column="fk_artwork_id" jdbcType="INTEGER" property="fkArtworkId" />
+    <result column="fk_node_id" jdbcType="INTEGER" property="fkNodeId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    statistic_storyline_use_history_id, fk_user_id, fk_artwork_id, fk_node_id, create_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from statistic_storyline_use_history
+    where statistic_storyline_use_history_id = #{statisticStorylineUseHistoryId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from statistic_storyline_use_history
+    where statistic_storyline_use_history_id = #{statisticStorylineUseHistoryId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="statistic_storyline_use_history_id" keyProperty="statisticStorylineUseHistoryId" parameterType="com.mpic.evolution.chair.pojo.entity.StatisticStorylineUseHistory" useGeneratedKeys="true">
+    insert into statistic_storyline_use_history (fk_user_id, fk_artwork_id, fk_node_id, 
+      create_time)
+    values (#{fkUserId,jdbcType=INTEGER}, #{fkArtworkId,jdbcType=INTEGER}, #{fkNodeId,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" keyColumn="statistic_storyline_use_history_id" keyProperty="statisticStorylineUseHistoryId" parameterType="com.mpic.evolution.chair.pojo.entity.StatisticStorylineUseHistory" useGeneratedKeys="true">
+    insert into statistic_storyline_use_history
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="fkUserId != null">
+        fk_user_id,
+      </if>
+      <if test="fkArtworkId != null">
+        fk_artwork_id,
+      </if>
+      <if test="fkNodeId != null">
+        fk_node_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="fkUserId != null">
+        #{fkUserId,jdbcType=INTEGER},
+      </if>
+      <if test="fkArtworkId != null">
+        #{fkArtworkId,jdbcType=INTEGER},
+      </if>
+      <if test="fkNodeId != null">
+        #{fkNodeId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.StatisticStorylineUseHistory">
+    update statistic_storyline_use_history
+    <set>
+      <if test="fkUserId != null">
+        fk_user_id = #{fkUserId,jdbcType=INTEGER},
+      </if>
+      <if test="fkArtworkId != null">
+        fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER},
+      </if>
+      <if test="fkNodeId != null">
+        fk_node_id = #{fkNodeId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where statistic_storyline_use_history_id = #{statisticStorylineUseHistoryId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.StatisticStorylineUseHistory">
+    update statistic_storyline_use_history
+    set fk_user_id = #{fkUserId,jdbcType=INTEGER},
+      fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER},
+      fk_node_id = #{fkNodeId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where statistic_storyline_use_history_id = #{statisticStorylineUseHistoryId,jdbcType=INTEGER}
+  </update>
+</mapper>
