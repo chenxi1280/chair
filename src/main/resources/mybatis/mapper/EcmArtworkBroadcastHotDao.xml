@@ -83,6 +83,7 @@
     order by broadcast_count desc
     limit #{start},#{limit}
   </select>
+
   <select id="selectEcmArtworkList" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkBroadcastHotVO">
     select <include refid="Base_Column_List" />
     from ecm_artwork_broadcast_hot
