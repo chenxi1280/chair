@@ -22,16 +22,17 @@ import com.mpic.evolution.chair.util.JWTUtil;
 import org.springframework.transaction.annotation.TransactionManagementConfigurationSelector;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 
-/** 
-* @author 作者 SJ: 
-* @date 创建时间：2020-8-20 10:50:58 
+/**
+* @author 作者 SJ:
+* @date 创建时间：2020-8-20 10:50:58
 */
 @Service
 public class EcmInnerMessageServiceImpl implements EcmInnerMessageService{
-	
+
 	@Resource
 	EcmInnerMessageDao ecmInnerMessageDao;
 
@@ -67,6 +68,9 @@ public class EcmInnerMessageServiceImpl implements EcmInnerMessageService{
 	@Override
 	public ResponseDTO batchModifyRead(EcmInnerMessageQurey ecmInnerMessageQurey) {
 		try {
+			if (CollectionUtils.isEmpty(ecmInnerMessageQurey.getMessageIds())){
+				return ResponseDTO.ok(null);
+			}
 			Integer count = ecmInnerMessageDao.updateRedaMsg(ecmInnerMessageQurey.getMessageIds(),ecmInnerMessageQurey.getPkUserId());
 			if (count == ecmInnerMessageQurey.getMessageIds().size() && count !=1 ){
 				return ResponseDTO.ok("操作成功");
