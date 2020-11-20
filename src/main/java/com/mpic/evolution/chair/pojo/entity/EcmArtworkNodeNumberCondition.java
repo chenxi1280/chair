@@ -117,6 +117,11 @@ public class EcmArtworkNodeNumberCondition implements Serializable {
     private Byte nameFlag;
 
     /**
+     * 是否使用全局设置并全局使用 数值选项
+     */
+    private Byte allNameFlag;
+
+    /**
      * 创建时间
      */
     private Date createDate;

@@ -68,5 +68,9 @@ public class EcmArtworkNodesVo extends EcmArtworkNodes  {
 
     private Map<Integer, List<EcmArtworkNodeNumberConditionVO>> appearConditionMap ;
 
-    private List<Boolean> allNodeNameFlagList;
+
+    /**
+     * 是否使用全局设置并全局使用 数值选项
+     */
+    private Byte allNameFlag;
 }

@@ -17,6 +17,7 @@ import com.mpic.evolution.chair.util.TreeUtil;
 import com.mpic.evolution.chair.util.VOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.redis.util.ByteUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -142,9 +143,9 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                         node.setOnAdvancedList(numberCondition);
                         node.setEcmArtworkNodeNumberCondition(ecmArtworkNodeNumberCondition);
                         list.get(0).setOnNameConditionList(names);
-//                        if(!StringUtils.isEmpty(ecmArtworkNodeNumberCondition.getAllNodeNameFlagListString())) {
-//                            node.setAllNodeNameFlagList(JSON.parseArray(ecmArtworkNodeNumberCondition.getAllNodeNameFlagListString(), Boolean.class));
-//                        }
+                        if(ecmArtworkNodeNumberCondition.getAllNameFlag() != null) {
+                            node.setAllNameFlag(ecmArtworkNodeNumberCondition.getAllNameFlag());
+                        }
                     }
                 }
             }
@@ -277,23 +278,24 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         }
 
         EcmArtworkNodeNumberCondition ecmArtworkNodeNumberCondition = ecmArtworkNodeNumberConditionDao.selectByPrimaryKey(ecmArtworkNodeNumberConditionVO.getPkDetailid());
-        if (ecmArtworkNodeNumberConditionVO.getAppearFlag() != null || ecmArtworkNodeNumberConditionVO.getChangeFlag() != null) {
-            if (ecmArtworkNodeNumberConditionVO.getAppearFlag() == 1 || ecmArtworkNodeNumberConditionVO.getChangeFlag() == 1) {
-                ecmArtworkNodes.setChosenText("1");
-            } else {
-                ecmArtworkNodes.setChosenText("0");
-            }
-        }
 
-        if (ecmArtworkNodeNumberConditionVO.getNameFlag() != null ){
-            ecmArtworkNodes.setChosenText("1");
+        if (ecmArtworkNodeNumberConditionVO.getAllNameFlag() == null) {
+            if (ecmArtworkNodeNumberConditionVO.getAppearFlag() != null || ecmArtworkNodeNumberConditionVO.getChangeFlag() != null) {
+                if (ecmArtworkNodeNumberConditionVO.getAppearFlag() == 1 || ecmArtworkNodeNumberConditionVO.getChangeFlag() == 1) {
+                    ecmArtworkNodes.setChosenText("1");
+                } else {
+                    ecmArtworkNodes.setChosenText("0");
+                }
+            }
+
+            if (ecmArtworkNodeNumberConditionVO.getNameFlag() != null) {
+                ecmArtworkNodes.setChosenText("1");
+            }
         }
 
         ecmArtworkNodeNumberConditionVO.setUpdataDate(new Date());
         ecmArtworkNodeNumberConditionVO.setNameFlag((byte) 1);
         try {
-
-
             if (ecmArtworkNodeNumberConditionVO.getAllNodeNameFlag() != null) {
                 if (ecmArtworkNodeNumberConditionVO.getAllNodeNameFlag()) {
                     ecmArtworkNodeNumberConditionDao.updateNameConditionNameFLagByArtworkID(ecmArtworkNodeNumberConditionVO);
@@ -323,13 +325,10 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                         artworkNodeNumberConditionVO.setPkDetailid(v.getPkDetailId());
                         artworkNodeNumberConditionVO.setCreateDate(new Date());
                         ecmArtworkNodeNumberConditionVOArrayList.add(artworkNodeNumberConditionVO);
-
                     });
                     if(!CollectionUtils.isEmpty(ecmArtworkNodeNumberConditionVOArrayList)) {
                         ecmArtworkNodeNumberConditionDao.insertList(ecmArtworkNodeNumberConditionVOArrayList);
                     }
-
-
 //                    ecmArtworkNodeNumberConditionDao.insertList();
                     return ResponseDTO.ok("全局应用成功");
                 }
