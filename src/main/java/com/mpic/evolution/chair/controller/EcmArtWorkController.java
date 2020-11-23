@@ -242,7 +242,7 @@ public class EcmArtWorkController extends BaseController{
         	string = "artWorkId="+artWorkId+"=status=1";
 		}else {
 			string = "artWorkId="+artWorkId+"=status=4";
-	        data.put("path","pages/play/play?"+"artWorkId="+artWorkId);
+	        data.put("path","pages/play/play?"+"pkArtworkId="+artWorkId);
 		}
         param.put("scene",string);
 		String Base64Str = HttpMpicUtil.sendPostForBase64(url, param);
