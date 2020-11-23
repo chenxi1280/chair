@@ -1,23 +1,23 @@
 spring:
   redis:
-    # Redis服务器地址
-    host: 129.28.197.177
-    # Redis数据库索引（默认为0）
+# Redis服务器地址  
+    host: 172.30.0.2
+# Redis数据库索引（默认为0）
     database: 0
-    # Redis服务器连接端口
-    port: 17251
-    # 连接超时时间（毫秒）
+# Redis服务器连接端口 
+    port: 6379
+# 连接超时时间（毫秒）
     timeout: 20000
     pool:
-      # 连接池最大连接数（使用负值表示没有限制）
-      max-active: 8
-      # 连接池中的最小空闲连接
-      min-idle: 0
-      # 连接池中的最大空闲连接
-      max-idle: 8
-      # 连接池最大阻塞等待时间（使用负值表示没有限制）
+# 连接池最大连接数（使用负值表示没有限制）
+      max-active: 100
+# 连接池中的最小空闲连接  
+      min-idle: 10
+# 连接池中的最大空闲连接 
+      max-idle: 20
+# 连接池最大阻塞等待时间（使用负值表示没有限制）
       max-wait: -1
-    # Redis服务器连接密码（默认为空）
+# Redis服务器连接密码（默认为空）
     password: JqZf$Xpu!gm@w7J5
   application:
     name: spring-boot-redis
@@ -29,7 +29,7 @@ spring:
     date-format: yy-MM-dd HH:mm:ss  #统一进行日期格式的数据返回
     time-zone: Asia/Shanghai   # 默认时区
   datasource:
-    url: jdbc:mysql://129.28.197.177:3306/evlution?serverTimezone=Asia/Shanghai&characterEncoding=utf-8&useSSL=false&useAffectedRows=true   # 数据库的时区地址
+    url: jdbc:mysql://172.30.0.16:3306/evlution?serverTimezone=Asia/Shanghai&characterEncoding=utf-8&useSSL=false&useAffectedRows=true   # 数据库的时区地址
     username: root
     password: JqZf$Xpu!gm@w
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -37,7 +37,7 @@ spring:
 mybatis:
   configuration:
     map-underscore-to-camel-case: true  #  下划线转换程驼峰
-  #      log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  #  日志也可以这么配置
+#      log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  #  日志也可以这么配置
   mapper-locations: classpath*:mybatis/mapper/**/*.xml  # mapper.xml文件的路径配置com.mpic.evolution.chair.dao
 logging:
   level:
