@@ -27,4 +27,6 @@ public class NodeOptionLocationVO {
     private Double hideHeightScale;
     //文本框的宽度
     private Double hideWidthScale;
+    // 透明度
+    private Double  rectOpacity;
 }
