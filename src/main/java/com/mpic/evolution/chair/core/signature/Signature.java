@@ -1,5 +1,7 @@
 package com.mpic.evolution.chair.core.signature;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
@@ -23,6 +25,8 @@ public class Signature {
     private long currentTime;
     private int random;
     private int signValidDuration;
+    @Value("${tencent.vodSubAppId}")
+    private String vodSubAppId;// 腾讯ai审核
     /**
      *  	视频后续任务处理操作，即完成视频上传后，可自动发起任务流操作。参数值为任务流模板名，云点播支持 创建任务流模板 并为模板命名。
      */
@@ -56,7 +60,7 @@ public class Signature {
         contextStr += "&expireTime=" + endTime;
         contextStr += "&random=" + random;
         contextStr += "&procedure=" + procedure;
-        contextStr += "&vodSubAppId=" + "1500001548";
+        contextStr += "&vodSubAppId=" + vodSubAppId;
         contextStr += "&taskNotifyMode=" + taskNotifyMode;
 
         try {

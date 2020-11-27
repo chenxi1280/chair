@@ -16,6 +16,7 @@ import com.tencentcloudapi.common.profile.HttpProfile;
 import com.tencentcloudapi.vod.v20180717.VodClient;
 import com.tencentcloudapi.vod.v20180717.models.ProcessMediaByProcedureRequest;
 import com.tencentcloudapi.vod.v20180717.models.ProcessMediaByProcedureResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -44,7 +45,8 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
 
     @Resource
     EcmArtworkNodesDao ecmArtworkNodesDao;
-
+    @Value("${tencent.vodSubAppId}")
+    private String vodSubAppId;// 腾讯ai审核
 
     /**
       * 方法名:
@@ -71,7 +73,7 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
             JSONObject params = new JSONObject();
             params.put("FileId", videoCode);
             params.put("ProcedureName", CHANGE_PIPELINT);
-            params.put("SubAppId", "1500001548");
+            params.put("SubAppId", vodSubAppId);
 
             ProcessMediaByProcedureRequest req = ProcessMediaByProcedureRequest.fromJsonString(params.toJSONString(), ProcessMediaByProcedureRequest.class);
 
