@@ -23,6 +23,7 @@ import org.springframework.util.StringUtils;
 
 
 import javax.annotation.Resource;
+import javax.sql.DataSource;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -45,8 +46,10 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
 
     @Resource
     EcmArtworkNodesDao ecmArtworkNodesDao;
-    @Value("${tencent.vodSubAppId}")
-    private String vodSubAppId;// 腾讯ai审核
+
+    @Value("${spring.redis.host}")
+    private String redisHost;// 腾讯ai审核需要使用
+
 
     /**
       * 方法名:
@@ -73,9 +76,12 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
             JSONObject params = new JSONObject();
             params.put("FileId", videoCode);
             params.put("ProcedureName", CHANGE_PIPELINT);
-            if (!StringUtils.isEmpty(vodSubAppId)) {
-                params.put("SubAppId", vodSubAppId);
+            if (!"129.28.197.177".equals(redisHost)){
+                params.put("SubAppId", 1500001548);
+            }else {
+                System.out.println("这是测试环境的AI审核");
             }
+            params.put("SubAppId", 1500001548);
             ProcessMediaByProcedureRequest req = ProcessMediaByProcedureRequest.fromJsonString(params.toJSONString(), ProcessMediaByProcedureRequest.class);
 
             ProcessMediaByProcedureResponse resp = client.ProcessMediaByProcedure(req);
