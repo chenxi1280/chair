@@ -73,8 +73,9 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
             JSONObject params = new JSONObject();
             params.put("FileId", videoCode);
             params.put("ProcedureName", CHANGE_PIPELINT);
-            params.put("SubAppId", vodSubAppId);
-
+            if (!StringUtils.isEmpty(vodSubAppId)) {
+                params.put("SubAppId", vodSubAppId);
+            }
             ProcessMediaByProcedureRequest req = ProcessMediaByProcedureRequest.fromJsonString(params.toJSONString(), ProcessMediaByProcedureRequest.class);
 
             ProcessMediaByProcedureResponse resp = client.ProcessMediaByProcedure(req);

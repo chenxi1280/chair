@@ -1,6 +1,7 @@
 package com.mpic.evolution.chair.core.signature;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.StringUtils;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -60,7 +61,9 @@ public class Signature {
         contextStr += "&expireTime=" + endTime;
         contextStr += "&random=" + random;
         contextStr += "&procedure=" + procedure;
-        contextStr += "&vodSubAppId=" + vodSubAppId;
+        if (!StringUtils.isEmpty(vodSubAppId)) {
+            contextStr += "&vodSubAppId=" + vodSubAppId;
+        }
         contextStr += "&taskNotifyMode=" + taskNotifyMode;
 
         try {
