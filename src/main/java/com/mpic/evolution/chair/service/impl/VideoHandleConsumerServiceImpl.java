@@ -16,12 +16,14 @@ import com.tencentcloudapi.common.profile.HttpProfile;
 import com.tencentcloudapi.vod.v20180717.VodClient;
 import com.tencentcloudapi.vod.v20180717.models.ProcessMediaByProcedureRequest;
 import com.tencentcloudapi.vod.v20180717.models.ProcessMediaByProcedureResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 
 import javax.annotation.Resource;
+import javax.sql.DataSource;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -44,6 +46,9 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
 
     @Resource
     EcmArtworkNodesDao ecmArtworkNodesDao;
+
+    @Value("${spring.redis.host}")
+    private String redisHost;// 腾讯ai审核需要使用
 
 
     /**
@@ -71,7 +76,12 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
             JSONObject params = new JSONObject();
             params.put("FileId", videoCode);
             params.put("ProcedureName", CHANGE_PIPELINT);
-            params.put("SubAppId", "1500001548");
+            System.out.println("redisHost:"+redisHost);
+            if (!"129.28.197.177".equals(redisHost)){
+                params.put("SubAppId", 1500001548);
+            }else {
+                System.out.println("这是测试环境的AI审核");
+            }
 
             ProcessMediaByProcedureRequest req = ProcessMediaByProcedureRequest.fromJsonString(params.toJSONString(), ProcessMediaByProcedureRequest.class);
 

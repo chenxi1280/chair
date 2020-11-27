@@ -1,9 +1,13 @@
 package com.mpic.evolution.chair.core.signature;
 
+import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
+import org.springframework.core.io.ClassPathResource;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
 import java.util.Base64.Encoder;
+import java.util.Properties;
 import java.util.Random;
 
 import static com.mpic.evolution.chair.common.constant.CosConstant.SECRET_ID;
@@ -16,6 +20,7 @@ import static com.mpic.evolution.chair.common.constant.CosConstant.SECRET_KEY;
  * @date 2019/9/23 0023 17:08
  * 描述: 小程序请求调用云点播接口签名类
  */
+
 public class Signature {
 
     private String secretId;
@@ -23,6 +28,8 @@ public class Signature {
     private long currentTime;
     private int random;
     private int signValidDuration;
+
+
     /**
      *  	视频后续任务处理操作，即完成视频上传后，可自动发起任务流操作。参数值为任务流模板名，云点播支持 创建任务流模板 并为模板命名。
      */
@@ -56,7 +63,19 @@ public class Signature {
         contextStr += "&expireTime=" + endTime;
         contextStr += "&random=" + random;
         contextStr += "&procedure=" + procedure;
-        contextStr += "&vodSubAppId=" + "1500001548";
+
+
+//        if (!StringUtils.isEmpty(vodSubAppId)) {
+//            contextStr += "&vodSubAppId=" + vodSubAppId;
+//        }
+        YamlPropertiesFactoryBean yamlMapFactoryBean = new YamlPropertiesFactoryBean();
+        yamlMapFactoryBean.setResources(new ClassPathResource("application.yml"));
+        if (!"129.28.197.177".equals(yamlMapFactoryBean.getObject().getProperty("spring.redis.host"))){
+            contextStr += "&vodSubAppId=" + "1500001548";
+        }else {
+            System.out.println("这是测试环境的视频、图片、ai审核");
+        }
+
         contextStr += "&taskNotifyMode=" + taskNotifyMode;
 
         try {
