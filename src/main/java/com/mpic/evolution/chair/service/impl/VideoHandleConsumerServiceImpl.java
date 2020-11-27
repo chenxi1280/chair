@@ -76,12 +76,13 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
             JSONObject params = new JSONObject();
             params.put("FileId", videoCode);
             params.put("ProcedureName", CHANGE_PIPELINT);
+            System.out.println("redisHost:"+redisHost);
             if (!"129.28.197.177".equals(redisHost)){
                 params.put("SubAppId", 1500001548);
             }else {
                 System.out.println("这是测试环境的AI审核");
             }
-            params.put("SubAppId", 1500001548);
+
             ProcessMediaByProcedureRequest req = ProcessMediaByProcedureRequest.fromJsonString(params.toJSONString(), ProcessMediaByProcedureRequest.class);
 
             ProcessMediaByProcedureResponse resp = client.ProcessMediaByProcedure(req);
