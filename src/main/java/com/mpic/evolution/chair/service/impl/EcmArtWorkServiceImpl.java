@@ -159,6 +159,8 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         }
         // 作品类型
         collect.get(0).setArtWorkTips(ecmArtwork.getFourLetterTips());
+        // 作品播放类型
+        collect.get(0).setPlayMode( ecmArtwork.getPlayMode() == null ? 0 : ecmArtwork.getPlayMode() );
         if (collect.isEmpty()) {
             return ResponseDTO.fail(ErrorEnum.ERR_200.getText());
         }

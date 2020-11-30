@@ -115,6 +115,7 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 				return ResponseDTO.fail("作品名称违规含有违禁词",result,null,510);
 			}
 			ecmArtwork.setArtworkName(artworkName);
+			ecmArtwork.setPlayMode(ecmArtworkVo.getPlayMode());
 			ecmArtwork.setArtworkStatus((short)0);
 			ecmArtwork.setArtworkDescribe(ecmArtworkVo.getArtworkDescribe());
 			ecmArtwork.setFourLetterTips(ecmArtworkVo.getFourLetterTips());
@@ -153,6 +154,7 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			if (!StringUtils.isEmpty(result)) {
 				return ResponseDTO.fail("作品名称违规含有违禁词",result,null,510);
 			}
+			ecmArtwork.setPlayMode(ecmArtworkVo.getPlayMode());
 			ecmArtwork.setArtworkName(artworkName);
 			ecmArtwork.setLogoPathStatus((short)0);
 			ecmArtwork.setLogoPath(ecmArtworkVo.getLogoPath());
