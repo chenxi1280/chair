@@ -6,7 +6,10 @@ import com.jfinal.kit.HttpKit;
 import com.mpic.evolution.chair.common.constant.PublishConstants;
 import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
+import com.mpic.evolution.chair.pojo.entity.EcmArtworkEndings;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
+import com.mpic.evolution.chair.pojo.query.EcmArtworkEndingsQuery;
+import com.mpic.evolution.chair.pojo.vo.EcmArtworkEndingsVO;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodeNumberConditionVO;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
 import com.mpic.evolution.chair.service.EcmArtWorkService;
@@ -155,6 +158,15 @@ public class EcmArtWorkController extends BaseController{
 		return ecmArtWorkService.removeNode(ecmArtworkNodesVo);
 	}
 
+	/**
+	 * @param: [ecmArtworkNodeNumberConditionVO]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2020/12/2
+	 * 描述 : 保存数值选项 ~.~
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
 	@RequestMapping("/saveArtworkNodeNumberCondition")
 	@ResponseBody
 	public ResponseDTO saveArtworkNodeNumberCondition(@RequestBody EcmArtworkNodeNumberConditionVO ecmArtworkNodeNumberConditionVO){
@@ -166,7 +178,15 @@ public class EcmArtWorkController extends BaseController{
 
 		return ecmArtWorkService.saveArtworkNodeNumberCondition(ecmArtworkNodeNumberConditionVO);
 	}
-
+	/**
+	 * @param: [ecmArtworkNodeNumberConditionVO]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2020/12/2
+	 * 描述 : 保存全局数值选项 ~.~
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
 	@RequestMapping("/saveAllNodeNameFlagChange")
 	@ResponseBody
 	public ResponseDTO saveAllNodeNameFlagChange(@RequestBody EcmArtworkNodeNumberConditionVO ecmArtworkNodeNumberConditionVO){
@@ -178,6 +198,19 @@ public class EcmArtWorkController extends BaseController{
 
 		return ecmArtWorkService.saveAllNodeNameFlagChange(ecmArtworkNodeNumberConditionVO);
 	}
+
+	@RequestMapping("/saveArtworkEndings")
+	@ResponseBody
+	public ResponseDTO saveArtworkEndings(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
+//		Integer userId = getUserIdByHandToken();
+//		if (userId == null){
+//			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+//		}
+//		ecmArtworkEndingsQuery.setFkUserId(userId);
+
+		return ecmArtWorkService.saveArtworkEndings(ecmArtworkEndingsQuery);
+	}
+
 
     /**
      * 	获取发布微信二维码

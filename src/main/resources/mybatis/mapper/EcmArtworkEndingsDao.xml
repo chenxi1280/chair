@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mpic.evolution.chair.dao.EcmArtworkEndingsDao">
+  <resultMap id="BaseResultMap" type="com.mpic.evolution.chair.pojo.entity.EcmArtworkEndings">
+    <id column="pk_endings_id" jdbcType="INTEGER" property="pkEndingsId" />
+    <result column="fk_artwork_id" jdbcType="INTEGER" property="fkArtworkId" />
+    <result column="select_title" jdbcType="VARCHAR" property="selectTitle" />
+    <result column="video_url" jdbcType="VARCHAR" property="videoUrl" />
+    <result column="select_tree" jdbcType="VARCHAR" property="selectTree" />
+    <result column="comment" jdbcType="VARCHAR" property="comment" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pk_endings_id, fk_artwork_id, select_title, video_url, select_tree, `comment`
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from ecm_artwork_endings
+    where pk_endings_id = #{pkEndingsId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ecm_artwork_endings
+    where pk_endings_id = #{pkEndingsId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="pk_endings_id" keyProperty="pkEndingsId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkEndings" useGeneratedKeys="true">
+    insert into ecm_artwork_endings (fk_artwork_id, select_title, video_url,
+      select_tree, `comment`)
+    values (#{fkArtworkId,jdbcType=INTEGER}, #{selectTitle,jdbcType=VARCHAR}, #{videoUrl,jdbcType=VARCHAR},
+      #{selectTree,jdbcType=VARCHAR}, #{comment,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="pk_endings_id" keyProperty="pkEndingsId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkEndings" useGeneratedKeys="true">
+    insert into ecm_artwork_endings
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="fkArtworkId != null">
+        fk_artwork_id,
+      </if>
+      <if test="selectTitle != null">
+        select_title,
+      </if>
+      <if test="videoUrl != null">
+        video_url,
+      </if>
+      <if test="selectTree != null">
+        select_tree,
+      </if>
+      <if test="comment != null">
+        `comment`,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="fkArtworkId != null">
+        #{fkArtworkId,jdbcType=INTEGER},
+      </if>
+      <if test="selectTitle != null">
+        #{selectTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="videoUrl != null">
+        #{videoUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="selectTree != null">
+        #{selectTree,jdbcType=VARCHAR},
+      </if>
+      <if test="comment != null">
+        #{comment,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkEndings">
+    update ecm_artwork_endings
+    <set>
+      <if test="fkArtworkId != null">
+        fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER},
+      </if>
+      <if test="selectTitle != null">
+        select_title = #{selectTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="videoUrl != null">
+        video_url = #{videoUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="selectTree != null">
+        select_tree = #{selectTree,jdbcType=VARCHAR},
+      </if>
+      <if test="comment != null">
+        `comment` = #{comment,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where pk_endings_id = #{pkEndingsId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkEndings">
+    update ecm_artwork_endings
+    set fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER},
+      select_title = #{selectTitle,jdbcType=VARCHAR},
+      video_url = #{videoUrl,jdbcType=VARCHAR},
+      select_tree = #{selectTree,jdbcType=VARCHAR},
+      `comment` = #{comment,jdbcType=VARCHAR}
+    where pk_endings_id = #{pkEndingsId,jdbcType=INTEGER}
+  </update>
+
+<!--sql-->
+
+  <insert id="insertSelectiveList">
+    insert into ecm_artwork_endings
+     (fk_artwork_id, select_title, video_url,select_tree)
+    values
+
+    <foreach collection="list" separator="," index="index" item="item" >
+      (#{item.fkArtworkId},#{item.selectTitle},#{item.videoUrl},#{item.selectTree})
+    </foreach>
+
+  </insert>
+
+  <delete id="deleteByArtwork">
+    delete from ecm_artwork_endings
+    where fk_artwork_id = #{fkArtworkId}
+
+  </delete>
+
+</mapper>

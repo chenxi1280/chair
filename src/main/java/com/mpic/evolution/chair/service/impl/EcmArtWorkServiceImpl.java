@@ -10,6 +10,7 @@ import com.mpic.evolution.chair.pojo.entity.EcmArtwork;
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeNumberCondition;
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
+import com.mpic.evolution.chair.pojo.query.EcmArtworkEndingsQuery;
 import com.mpic.evolution.chair.pojo.vo.*;
 import com.mpic.evolution.chair.service.EcmArtWorkService;
 import com.mpic.evolution.chair.util.RandomUtil;
@@ -17,13 +18,11 @@ import com.mpic.evolution.chair.util.TreeUtil;
 import com.mpic.evolution.chair.util.VOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.redis.util.ByteUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -49,6 +48,9 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
     EcmArtworkBroadcastHotDao ecmArtworkBroadcastHotDao;
     @Resource
     EcmArtworkNodeNumberConditionDao ecmArtworkNodeNumberConditionDao;
+    @Resource
+    EcmArtworkEndingsDao ecmArtworkEndingsDao;
+
 
 
     @Override
@@ -366,6 +368,44 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         }
         ecmArtworkNodeNumberConditionVO.setUpdataDate(new Date());
         ecmArtworkNodeNumberConditionVO.setNameFlag((byte) 1);
+
+        return null;
+    }
+
+    @Override
+    public ResponseDTO saveArtworkEndings(EcmArtworkEndingsQuery ecmArtworkEndingsQuery) {
+//        if (StringUtils.isEmpty(ecmArtworkEndingsQuery.getEcmArtworkEndingsVOSJson())) {
+//            return ResponseDTO.fail("数据错误");
+//        }
+//        EcmArtwork ecmArtworkVo = ecmArtworkDao.selectByPrimaryKey(ecmArtworkEndingsQuery.getFkUserId());
+//        if (ecmArtworkVo == null) {
+//            return ResponseDTO.fail("作品错误");
+//        }
+
+//        List<EcmArtworkEndingsVO> ecmArtworkEndingsVOS = JSON.parseArray(ecmArtworkEndingsQuery.getEcmArtworkEndingsVOSJson(), EcmArtworkEndingsVO.class);
+        List<EcmArtworkEndingsVO> ecmArtworkEndingsVOS = new ArrayList<>();
+
+        for (int i = 0; i <= 200 ; i++) {
+            EcmArtworkEndingsVO ecmArtworkEndingsVO = new EcmArtworkEndingsVO();
+            ecmArtworkEndingsVO.setFkArtworkId(ecmArtworkEndingsQuery.getFkArtworkId());
+            ecmArtworkEndingsVOS.add(ecmArtworkEndingsVO);
+        }
+
+
+        //更新list
+
+        // 批量更新
+        try {
+            ecmArtworkEndingsDao.deleteByArtwork(ecmArtworkEndingsQuery.getFkArtworkId());
+            ecmArtworkEndingsDao.insertSelectiveList(ecmArtworkEndingsVOS);
+            System.out.println();
+        }catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDTO.fail("更新失败");
+        }
+
+
+        // 批量新增
 
         return null;
     }
