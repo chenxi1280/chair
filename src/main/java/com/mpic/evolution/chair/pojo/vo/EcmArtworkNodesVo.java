@@ -77,4 +77,9 @@ public class EcmArtworkNodesVo extends EcmArtworkNodes  {
      * 播放模式
      */
     private Integer playMode;
+
+    /**
+     * 多结局集合
+     */
+    private List<EcmArtworkEndingsVO> ecmArtworkEndingsVOS;
 }

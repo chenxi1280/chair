@@ -26,6 +26,16 @@ public class EcmArtworkEndings implements Serializable {
     private String selectTitle;
 
     /**
+     * 视频code
+     */
+    private String videoCode;
+
+    /**
+     * 视频img
+     */
+    private String videoImg;
+
+    /**
      * 视频url
      */
     private String videoUrl;
@@ -39,6 +49,12 @@ public class EcmArtworkEndings implements Serializable {
      * 备注
      */
     private String comment;
+
+
+    /**
+     * 对应的节点id
+     */
+    private Integer fkNodeId;
 
     private static final long serialVersionUID = 1L;
 }

@@ -5,12 +5,16 @@
     <id column="pk_endings_id" jdbcType="INTEGER" property="pkEndingsId" />
     <result column="fk_artwork_id" jdbcType="INTEGER" property="fkArtworkId" />
     <result column="select_title" jdbcType="VARCHAR" property="selectTitle" />
+    <result column="video_code" jdbcType="VARCHAR" property="videoCode" />
+    <result column="video_img" jdbcType="VARCHAR" property="videoImg" />
     <result column="video_url" jdbcType="VARCHAR" property="videoUrl" />
     <result column="select_tree" jdbcType="VARCHAR" property="selectTree" />
     <result column="comment" jdbcType="VARCHAR" property="comment" />
+    <result column="fk_node_id" jdbcType="INTEGER" property="fkNodeId" />
   </resultMap>
   <sql id="Base_Column_List">
-    pk_endings_id, fk_artwork_id, select_title, video_url, select_tree, `comment`
+    pk_endings_id, fk_artwork_id, select_title, video_code, video_img, video_url, select_tree,
+    `comment`, fk_node_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
@@ -23,10 +27,12 @@
     where pk_endings_id = #{pkEndingsId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyColumn="pk_endings_id" keyProperty="pkEndingsId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkEndings" useGeneratedKeys="true">
-    insert into ecm_artwork_endings (fk_artwork_id, select_title, video_url,
-      select_tree, `comment`)
-    values (#{fkArtworkId,jdbcType=INTEGER}, #{selectTitle,jdbcType=VARCHAR}, #{videoUrl,jdbcType=VARCHAR},
-      #{selectTree,jdbcType=VARCHAR}, #{comment,jdbcType=VARCHAR})
+    insert into ecm_artwork_endings (fk_artwork_id, select_title, video_code,
+      video_img, video_url, select_tree,
+      `comment`, fk_node_id)
+    values (#{fkArtworkId,jdbcType=INTEGER}, #{selectTitle,jdbcType=VARCHAR}, #{videoCode,jdbcType=VARCHAR},
+      #{videoImg,jdbcType=VARCHAR}, #{videoUrl,jdbcType=VARCHAR}, #{selectTree,jdbcType=VARCHAR},
+      #{comment,jdbcType=VARCHAR}, #{fkNodeId,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" keyColumn="pk_endings_id" keyProperty="pkEndingsId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkEndings" useGeneratedKeys="true">
     insert into ecm_artwork_endings
@@ -37,6 +43,12 @@
       <if test="selectTitle != null">
         select_title,
       </if>
+      <if test="videoCode != null">
+        video_code,
+      </if>
+      <if test="videoImg != null">
+        video_img,
+      </if>
       <if test="videoUrl != null">
         video_url,
       </if>
@@ -46,6 +58,9 @@
       <if test="comment != null">
         `comment`,
       </if>
+      <if test="fkNodeId != null">
+        fk_node_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="fkArtworkId != null">
@@ -53,6 +68,12 @@
       </if>
       <if test="selectTitle != null">
         #{selectTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="videoCode != null">
+        #{videoCode,jdbcType=VARCHAR},
+      </if>
+      <if test="videoImg != null">
+        #{videoImg,jdbcType=VARCHAR},
       </if>
       <if test="videoUrl != null">
         #{videoUrl,jdbcType=VARCHAR},
@@ -62,6 +83,9 @@
       </if>
       <if test="comment != null">
         #{comment,jdbcType=VARCHAR},
+      </if>
+      <if test="fkNodeId != null">
+        #{fkNodeId,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -74,6 +98,12 @@
       <if test="selectTitle != null">
         select_title = #{selectTitle,jdbcType=VARCHAR},
       </if>
+      <if test="videoCode != null">
+        video_code = #{videoCode,jdbcType=VARCHAR},
+      </if>
+      <if test="videoImg != null">
+        video_img = #{videoImg,jdbcType=VARCHAR},
+      </if>
       <if test="videoUrl != null">
         video_url = #{videoUrl,jdbcType=VARCHAR},
       </if>
@@ -83,6 +113,9 @@
       <if test="comment != null">
         `comment` = #{comment,jdbcType=VARCHAR},
       </if>
+      <if test="fkNodeId != null">
+        fk_node_id = #{fkNodeId,jdbcType=INTEGER},
+      </if>
     </set>
     where pk_endings_id = #{pkEndingsId,jdbcType=INTEGER}
   </update>
@@ -90,21 +123,25 @@
     update ecm_artwork_endings
     set fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER},
       select_title = #{selectTitle,jdbcType=VARCHAR},
+      video_code = #{videoCode,jdbcType=VARCHAR},
+      video_img = #{videoImg,jdbcType=VARCHAR},
       video_url = #{videoUrl,jdbcType=VARCHAR},
       select_tree = #{selectTree,jdbcType=VARCHAR},
-      `comment` = #{comment,jdbcType=VARCHAR}
+      `comment` = #{comment,jdbcType=VARCHAR},
+      fk_node_id = #{fkNodeId,jdbcType=INTEGER}
     where pk_endings_id = #{pkEndingsId,jdbcType=INTEGER}
   </update>
 
-<!--sql-->
+  <!--sql-->
 
   <insert id="insertSelectiveList">
     insert into ecm_artwork_endings
-     (fk_artwork_id, select_title, video_url,select_tree)
+     (fk_artwork_id, select_title, video_url,select_tree,video_code,`comment`,video_img,fk_node_id)
     values
 
     <foreach collection="list" separator="," index="index" item="item" >
-      (#{item.fkArtworkId},#{item.selectTitle},#{item.videoUrl},#{item.selectTree})
+      (#{item.fkArtworkId},#{item.selectTitle},#{item.videoUrl},#{item.selectTree},#{item.videoCode},#{item.comment},#{item.videoImg},#{item.fkNodeId}
+      )
     </foreach>
 
   </insert>
@@ -114,5 +151,12 @@
     where fk_artwork_id = #{fkArtworkId}
 
   </delete>
+  <select id="selectByArtwId" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkEndingsVO">
+    select <include refid="Base_Column_List" />
+    from ecm_artwork_endings
+    where fk_artwork_id = #{fkArtworkId}
+  </select>
+
+
 
 </mapper>

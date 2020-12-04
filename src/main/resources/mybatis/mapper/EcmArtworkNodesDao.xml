@@ -275,7 +275,7 @@
     </select>
 
 
-    <insert id="insertList" keyColumn="pk_detail_id" keyProperty="pkDetailId"  useGeneratedKeys="true">
+  <insert id="insertList" keyColumn="pk_detail_id" keyProperty="pkDetailId"  useGeneratedKeys="true">
     insert into ecm_artwork_nodes  (parent_id, video_code, parent_code,
     video_url, branch_pre, revolution_id,
     video_text, fk_artwork_id, items,
@@ -475,6 +475,47 @@
     </foreach>
 
   </update>
+
+  <update id="deleteByEcmArtworkEndingsList">
+    update ecm_artwork_nodes
+    set  is_deleted = 'Y'
+    where fk_artwork_id = #{fkArtworkId} and parent_id = -1
+
+
+  </update>
+
+  <insert id="insertEndingList" keyColumn="pk_detail_id" keyProperty="pkDetailId"  useGeneratedKeys="true" >
+    insert into ecm_artwork_nodes  (parent_id, video_code,
+    video_url,
+    video_text, fk_artwork_id, items_bak_text,
+    is_deleted )
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+     (
+      #{item.parentId},
+
+      #{item.videoCode},
+
+      #{item.videoUrl},
+
+      #{item.videoText},
+
+      #{item.fkArtworkId},
+
+      #{item.itemsBakText},
+
+      #{item.isDeleted}
+      )
+
+    </foreach>
+
+  </insert>
+  <delete id="deleteEcmArtworkEndingsByArtworkId">
+    update ecm_artwork_nodes
+    set  is_deleted = 'Y'
+    where fk_artwork_id = #{fkArtworkId} and parent_id = -1
+  </delete>
+
 
 
 </mapper>

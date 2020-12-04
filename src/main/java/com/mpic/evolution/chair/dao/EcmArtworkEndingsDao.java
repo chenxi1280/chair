@@ -23,4 +23,5 @@ public interface EcmArtworkEndingsDao {
 
     int deleteByArtwork(int fkArtwork);
 
+    List<EcmArtworkEndingsVO> selectByArtwId(Integer pkArtworkId);
 }

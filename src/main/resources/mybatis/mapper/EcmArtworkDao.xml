@@ -186,7 +186,7 @@
     where pk_artwork_id = #{pkArtworkId,jdbcType=INTEGER}
   </update>
 
-<!--sql-->
+  <!--sql-->
   <select id="selectArtWorks" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkVo">
     select <include refid="Base_Column_List" />
     from ecm_artwork
@@ -319,6 +319,14 @@
       </if>
 
   </select>
+
+  <update id="updateEndingsByArtworkId">
+    update ecm_artwork
+    set
+      is_endings = 1
+    where pk_artwork_id = #{pkArtworkId}
+  </update>
+
 
 
 </mapper>
