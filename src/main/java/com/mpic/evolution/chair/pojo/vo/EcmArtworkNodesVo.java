@@ -82,4 +82,6 @@ public class EcmArtworkNodesVo extends EcmArtworkNodes  {
      * 多结局集合
      */
     private List<EcmArtworkEndingsVO> ecmArtworkEndingsVOS;
+
+
 }

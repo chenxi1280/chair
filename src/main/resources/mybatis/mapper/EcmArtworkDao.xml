@@ -326,7 +326,13 @@
       is_endings = 1
     where pk_artwork_id = #{pkArtworkId}
   </update>
+    <update id="updateEndingsByArtwork">
+    update ecm_artwork
+    set
+      is_endings = #{isEndings}
+    where pk_artwork_id = #{pkArtworkId}
 
+    </update>
 
 
 </mapper>

@@ -12,6 +12,7 @@ import com.mpic.evolution.chair.pojo.query.EcmArtworkEndingsQuery;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkEndingsVO;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodeNumberConditionVO;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
+import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
 import com.mpic.evolution.chair.service.EcmArtWorkService;
 import com.mpic.evolution.chair.util.HttpMpicUtil;
 import com.mpic.evolution.chair.util.JWTUtil;
@@ -199,18 +200,47 @@ public class EcmArtWorkController extends BaseController{
 		return ecmArtWorkService.saveAllNodeNameFlagChange(ecmArtworkNodeNumberConditionVO);
 	}
 
+	/**
+	 * @param: [ecmArtworkEndingsQuery]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2020/12/4
+	 * 描述 :saveArtworkEndings 保存多结局信息
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
 	@RequestMapping("/saveArtworkEndings")
 	@ResponseBody
 	public ResponseDTO saveArtworkEndings(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
-//		Integer userId = getUserIdByHandToken();
-//		if (userId == null){
-//			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
-//		}
-//		ecmArtworkEndingsQuery.setFkUserId(userId);
+		Integer userId = getUserIdByHandToken();
+		if (userId == null){
+			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+		}
+		ecmArtworkEndingsQuery.setFkUserId(userId);
 
 		return ecmArtWorkService.saveArtworkEndings(ecmArtworkEndingsQuery);
 	}
 
+	/**
+	 * @param: [ecmArtworkVo]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2020/12/4
+	 * 描述 : 保存多结局 作品状态
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
+	@RequestMapping("/saveArtworkEndingState")
+	@ResponseBody
+	public ResponseDTO saveArtworkEndingState(@RequestBody EcmArtworkVo ecmArtworkVo){
+		Integer userId = getUserIdByHandToken();
+		if (userId == null){
+			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+		}
+		ecmArtworkVo.setFkUserid(userId);
+
+		return ecmArtWorkService.saveArtworkEndingState(ecmArtworkVo);
+	}
 
     /**
      * 	获取发布微信二维码

@@ -38,5 +38,5 @@ public interface EcmArtworkDao {
 
     int updateEndingsByArtworkId(int fkArtworkId);
 
-    int deleteByEcmArtworkEndingsList(List<EcmArtworkEndingsVO> ecmArtworkEndingsVOList);
+    int updateEndingsByArtwork(EcmArtworkVo ecmArtworkVo);
 }

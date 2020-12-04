@@ -183,8 +183,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                     ecmVideoTemporaryStorageVO.setNodeImgUrl(v.getVideoImg());
                     v.setVideoInfo(ecmVideoTemporaryStorageVO);
                 });
-                collect.get(0).setEcmArtworkEndingsVOS(  ecmArtworkEndingsVOList);
-                collect.get(0).setFkEndingId(1);
+                collect.get(0).setEcmArtworkEndingsVOS(ecmArtworkEndingsVOList);
             }
         }
         System.out.println("多结局转化的完成时间："+ DateUtil.timeStamp());
@@ -408,20 +407,28 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         List<EcmArtworkNodes> ecmArtworkNodesVoList = new ArrayList<>();
         List<EcmArtworkEndingsVO> ecmArtworkEndingsVOS = ecmArtworkEndingsQuery.getEcmArtworkEndingsVOS();
         ecmArtworkEndingsVOS.forEach( v->{
-            v.setVideoCode(v.getVideoInfo().getVideoCode());
-            v.setVideoUrl(v.getVideoInfo().getVideoUrl());
-            v.setVideoImg(v.getVideoInfo().getNodeImgUrl());
+            EcmArtworkNodes ecmArtworkNodesVo = new EcmArtworkNodes();
+
+            if ( v.getVideoInfo() != null ) {
+                v.setVideoCode(v.getVideoInfo().getVideoCode());
+                v.setVideoUrl(v.getVideoInfo().getVideoUrl());
+                v.setVideoImg(v.getVideoInfo().getNodeImgUrl());
+                ecmArtworkNodesVo.setVideoUrl(v.getVideoInfo().getVideoUrl());
+                ecmArtworkNodesVo.setVideoCode(v.getVideoInfo().getVideoCode());
+                ecmArtworkNodesVo.setItemsBakText(v.getVideoInfo().getNodeImgUrl());
+            }
+
+
             v.setComment(v.getSelectTree().replace("[", "").replace("]", "").replace(",", "").replace(" ", ""));
             v.setFkArtworkId(ecmArtworkEndingsQuery.getFkArtworkId());
 
-            EcmArtworkNodes ecmArtworkNodesVo = new EcmArtworkNodes();
-            ecmArtworkNodesVo.setVideoUrl(v.getVideoInfo().getVideoUrl());
-            ecmArtworkNodesVo.setVideoCode(v.getVideoInfo().getVideoCode());
+
+
             ecmArtworkNodesVo.setVideoText(v.getSelectTitle());
-            ecmArtworkNodesVo.setItemsBakText(v.getVideoInfo().getNodeImgUrl());
             ecmArtworkNodesVo.setParentId(-1);
             ecmArtworkNodesVo.setFkArtworkId(ecmArtworkEndingsQuery.getFkArtworkId());
             ecmArtworkNodesVo.setIsDeleted("N");
+
             ecmArtworkNodesVoList.add(ecmArtworkNodesVo);
 
         });
@@ -459,6 +466,19 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         // 批量新增
 
 
+    }
+
+    @Override
+    public ResponseDTO saveArtworkEndingState(EcmArtworkVo ecmArtworkVo) {
+        EcmArtwork ecmArtwork = ecmArtworkDao.selectByPrimaryKey(ecmArtworkVo.getPkArtworkId());
+        if (ecmArtwork == null) {
+            return ResponseDTO.fail("作品错误");
+        }
+        if (ecmArtworkVo.getFkUserid().equals(ecmArtwork.getFkUserid())) {
+            return ResponseDTO.fail("非法访问");
+        }
+        ecmArtworkDao.updateEndingsByArtwork(ecmArtworkVo);
+        return ResponseDTO.ok();
     }
 
 
