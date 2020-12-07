@@ -170,7 +170,6 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         // 作品播放类型
         collect.get(0).setPlayMode( ecmArtwork.getPlayMode() == null ? 0 : ecmArtwork.getPlayMode() );
         // 作品多结局 集合
-        System.out.println("进入多结局转化的时间："+ DateUtil.timeStamp());
         collect.get(0).setIsEndings(0);
         if (ecmArtwork.getIsEndings()!=null) {
             if (ecmArtwork.getIsEndings().equals(1)){
@@ -199,7 +198,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
 
     @Override
-    public ResponseDTO saveArtWorkNode(EcmArtworkNodesVo ecmArtworkNodes) {
+    public ResponseDTO  saveArtWorkNode(EcmArtworkNodesVo ecmArtworkNodes) {
 
         EcmArtwork ecmArtwork = ecmArtworkDao.selectByPrimaryKey(ecmArtworkNodes.getFkArtworkId());
         if (!ecmArtwork.getFkUserid().equals(ecmArtworkNodes.getFkUserId())) {
