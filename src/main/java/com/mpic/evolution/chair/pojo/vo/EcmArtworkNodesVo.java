@@ -85,5 +85,6 @@ public class EcmArtworkNodesVo extends EcmArtworkNodes  {
 
     private Integer isEndings;
 
+    private Integer endingCount;
 
 }

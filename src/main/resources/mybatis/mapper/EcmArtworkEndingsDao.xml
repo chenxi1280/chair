@@ -134,7 +134,7 @@
 
   <!--sql-->
 
-  <insert id="insertSelectiveList">
+  <insert id="insertSelectiveList"  keyColumn="pk_endings_id" keyProperty="pkEndingsId"   useGeneratedKeys="true">
     insert into ecm_artwork_endings
      (fk_artwork_id, select_title, video_url,select_tree,video_code,`comment`,video_img,fk_node_id)
     values
@@ -151,12 +151,135 @@
     where fk_artwork_id = #{fkArtworkId}
 
   </delete>
+  <delete id="deleteByPrimaryList">
+    delete from ecm_artwork_endings
+    where pk_endings_id in
+    <foreach collection="list" separator="," item="item" close=")" open="(">
+    #{item.pkEndingsId}
+  </foreach>
+  </delete>
   <select id="selectByArtwId" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkEndingsVO">
     select <include refid="Base_Column_List" />
     from ecm_artwork_endings
     where fk_artwork_id = #{fkArtworkId}
   </select>
+  <select id="selectByEndingList" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkEndingsVO">
+    select <include refid="Base_Column_List" />
+    from ecm_artwork_endings
+    where pk_endings_id in <foreach collection="list" open="(" close=")" item="item" separator=",">
+        #{item.pkEndingsId}
+    </foreach>
+    </select>
+  <select id="selectEcmArtworkEndingsQuery" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkEndingsVO">
+    select <include refid="Base_Column_List" />
+    from ecm_artwork_endings
+    where fk_artwork_id = #{fkArtworkId}
+    limit #{start},#{limit}
 
+  </select>
+  <select id="selectCountEcmArtworkEndingsQuery" resultType="java.lang.Integer">
+    select COUNT(*)
+    from ecm_artwork_endings
+    where fk_artwork_id = #{fkArtworkId}
+  </select>
+  <select id="selectCountEcmArtworkId" resultType="java.lang.Integer">
+    select COUNT(*)
+    from ecm_artwork_endings
+    where fk_artwork_id = #{fkArtworkId}
+  </select>
+  <select id="selectByPrimaryKeyList" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkEndingsVO">
+    select <include refid="Base_Column_List" />
+    from ecm_artwork_endings
+    where pk_endings_id in
+    <foreach collection="list" separator="," item="item" close=")" open="(">
+      #{item}
+    </foreach>
+  </select>
+  <update id="updateSelectiveList">
+    update ecm_artwork_endings
+
+    <trim prefix="set" suffixOverrides=",">
+
+      <trim prefix="fk_artwork_id =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.fkArtworkId!=null">
+            when pk_endings_id =#{item.pkEndingsId}
+            then #{item.fkArtworkId}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="select_title =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.selectTitle!=null">
+            when pk_endings_id=#{item.pkEndingsId}
+            then #{item.selectTitle}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="video_url =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.videoUrl!=null">
+            when pk_endings_id=#{item.pkEndingsId}
+            then #{item.videoUrl}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="select_tree =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.selectTree!=null">
+            when pk_endings_id=#{item.pkEndingsId}
+            then #{item.selectTree}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="video_code =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.videoCode!=null">
+            when pk_endings_id=#{item.pkEndingsId}
+            then #{item.videoCode}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix=" `comment` =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.comment!=null">
+            when pk_endings_id=#{item.pkEndingsId}
+            then #{item.comment}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="video_img =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.videoImg!=null">
+            when pk_endings_id=#{item.pkEndingsId}
+            then #{item.videoImg}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="fk_node_id =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.fkNodeId!=null">
+            when pk_endings_id=#{item.pkEndingsId}
+            then #{item.fkNodeId}
+          </if>
+        </foreach>
+      </trim>
+
+    </trim>
+    where pk_endings_id in
+    <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+      #{item.pkEndingsId}
+    </foreach>
+
+
+  </update>
 
 
 </mapper>
