@@ -6,21 +6,28 @@ import com.jfinal.kit.HttpKit;
 import com.mpic.evolution.chair.common.constant.PublishConstants;
 import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
+import com.mpic.evolution.chair.pojo.entity.EcmArtworkEndings;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
+import com.mpic.evolution.chair.pojo.query.EcmArtworkEndingsQuery;
+import com.mpic.evolution.chair.pojo.vo.EcmArtworkEndingsVO;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodeNumberConditionVO;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
+import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
 import com.mpic.evolution.chair.service.EcmArtWorkService;
+import com.mpic.evolution.chair.util.EndingUntil;
 import com.mpic.evolution.chair.util.HttpMpicUtil;
 import com.mpic.evolution.chair.util.JWTUtil;
 import com.mpic.evolution.chair.util.RedisUtil;
 import com.qcloud.vod.common.StringUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author cxd
@@ -155,6 +162,15 @@ public class EcmArtWorkController extends BaseController{
 		return ecmArtWorkService.removeNode(ecmArtworkNodesVo);
 	}
 
+	/**
+	 * @param: [ecmArtworkNodeNumberConditionVO]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2020/12/2
+	 * 描述 : 保存数值选项 ~.~
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
 	@RequestMapping("/saveArtworkNodeNumberCondition")
 	@ResponseBody
 	public ResponseDTO saveArtworkNodeNumberCondition(@RequestBody EcmArtworkNodeNumberConditionVO ecmArtworkNodeNumberConditionVO){
@@ -166,7 +182,15 @@ public class EcmArtWorkController extends BaseController{
 
 		return ecmArtWorkService.saveArtworkNodeNumberCondition(ecmArtworkNodeNumberConditionVO);
 	}
-
+	/**
+	 * @param: [ecmArtworkNodeNumberConditionVO]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2020/12/2
+	 * 描述 : 保存全局数值选项 ~.~
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
 	@RequestMapping("/saveAllNodeNameFlagChange")
 	@ResponseBody
 	public ResponseDTO saveAllNodeNameFlagChange(@RequestBody EcmArtworkNodeNumberConditionVO ecmArtworkNodeNumberConditionVO){
@@ -178,6 +202,136 @@ public class EcmArtWorkController extends BaseController{
 
 		return ecmArtWorkService.saveAllNodeNameFlagChange(ecmArtworkNodeNumberConditionVO);
 	}
+
+	/**
+	 * @param: [ecmArtworkEndingsQuery]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2020/12/4
+	 * 描述 :saveArtworkEndings 保存多结局信息
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
+	@RequestMapping("/saveArtworkEndings")
+	@ResponseBody
+	public ResponseDTO saveArtworkEndings(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
+		Integer userId = getUserIdByHandToken();
+		if (userId == null){
+			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+		}
+		ecmArtworkEndingsQuery.setFkUserId(userId);
+		String saveArtworkEndings = "saveArtworkEndings";
+		Long o = (Long) redisUtil.get(userId + saveArtworkEndings);
+		if ( o != null) {
+			if ( o <= (System.currentTimeMillis() - 3)){
+				return ResponseDTO.fail("保存频繁",null,480,480);
+			}
+		}
+
+		if (CollectionUtils.isEmpty(ecmArtworkEndingsQuery.getEcmArtworkEndingsVOS()) && ecmArtworkEndingsQuery.getEcmArtworkEndingsVOS().size() > 256 ){
+			return ResponseDTO.fail("结局数过多",null,490,490);
+		}
+		redisUtil.set(userId + saveArtworkEndings ,System.currentTimeMillis() );
+		return ecmArtWorkService.saveArtworkEndings(ecmArtworkEndingsQuery);
+	}
+
+	/**
+	 * @param: [ecmArtworkVo]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2020/12/4
+	 * 描述 : 保存多结局 作品状态
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
+	@RequestMapping("/saveArtworkEndingState")
+	@ResponseBody
+	public ResponseDTO saveArtworkEndingState(@RequestBody EcmArtworkVo ecmArtworkVo){
+		Integer userId = getUserIdByHandToken();
+		if (userId == null){
+			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+		}
+		ecmArtworkVo.setFkUserid(userId);
+
+		return ecmArtWorkService.saveArtworkEndingState(ecmArtworkVo);
+	}
+
+	@RequestMapping("/saveArtworkEndingList")
+	@ResponseBody
+	public ResponseDTO saveArtworkEndingList(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
+		Integer userId = getUserIdByHandToken();
+		if (userId == null){
+			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+		}
+		ecmArtworkEndingsQuery.setFkUserId(userId);
+		return ecmArtWorkService.saveArtworkEndingList(ecmArtworkEndingsQuery);
+	}
+
+	@RequestMapping("updateArtworkEndingList")
+	@ResponseBody
+	public ResponseDTO updateArtworkEndingList(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
+		Integer userId = getUserIdByHandToken();
+		if (userId == null){
+			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+		}
+		ecmArtworkEndingsQuery.setFkUserId(userId);
+		return ecmArtWorkService.updateArtworkEndingList(ecmArtworkEndingsQuery);
+	}
+
+	@RequestMapping("/deleteArtworkEnding")
+	@ResponseBody
+	public ResponseDTO deleteArtworkEnding(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
+		Integer userId = getUserIdByHandToken();
+		if (userId == null){
+			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+		}
+		ecmArtworkEndingsQuery.setFkUserId(userId);
+		return ecmArtWorkService.deleteArtworkEnding(ecmArtworkEndingsQuery);
+	}
+
+	@RequestMapping("/getArtworkEndingList")
+	@ResponseBody
+	public ResponseDTO getArtworkEndingList(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
+		Integer userId = getUserIdByHandToken();
+		if (userId == null){
+			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+		}
+		ecmArtworkEndingsQuery.setFkUserId(userId);
+		return ecmArtWorkService.getArtworkEndingList(ecmArtworkEndingsQuery);
+	}
+
+	@RequestMapping("/saveArtworkEndingAll")
+	@ResponseBody
+	public ResponseDTO saveArtworkEndingAll(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
+		Integer userId = getUserIdByHandToken();
+		if (userId == null){
+			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+		}
+		if (ecmArtworkEndingsQuery.getNodeNum() == null  ) {
+			return ResponseDTO.fail("无多结局");
+		}
+
+		if (ecmArtworkEndingsQuery.getNodeNum().length > 256){
+			return ResponseDTO.fail("结局数过多",null,490,490);
+		}
+
+
+		ecmArtworkEndingsQuery.setFkUserId(userId);
+		return ecmArtWorkService.saveArtworkEndingAll(ecmArtworkEndingsQuery);
+	}
+
+
+	@RequestMapping("/deleteArtworkEndingList")
+	@ResponseBody
+	public ResponseDTO deleteArtworkEndingList(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
+		Integer userId = getUserIdByHandToken();
+		if (userId == null){
+			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+		}
+		ecmArtworkEndingsQuery.setFkUserId(userId);
+		return ecmArtWorkService.deleteArtworkEndingList(ecmArtworkEndingsQuery);
+	}
+
 
     /**
      * 	获取发布微信二维码

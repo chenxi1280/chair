@@ -1,39 +1,20 @@
-package com.mpic.evolution.chair;
+package com.mpic.evolution.chair.util;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author by cxd
- * @Classname Test
+ * @Classname EndingUntil
  * @Description TODO
- * @Date 2020/9/26 14:43
+ * @Date 2020/12/8 17:56
  */
-public class Test {
-    public static void main(String[] args) {
-        int[] nodeNum = {4,3,2};
-
-        getEndingAll(nodeNum);
-
-//        int[] newArr = {};
-//        for (int i = 0; i < count; i++) {
-//            int[] ints = {};
-//            ints[0] = 0;
-//            System.arraycopy(arr,0,ints,1,arr.length);
-////            arr[i].unshift(0);
-////            newArr[i] = iqia{}
-////            newArr[i].selectTitle = '点击修改'
-////            newArr[i].selectTree = arr[i]
-//        }
-
-
-    }
-
-    private static void getEndingAll(int[] nodeNum) {
+public class EndingUntil {
+    public static List<String> getEndingAll(int[] nodeNum) {
         // 计算总结局数
         int count = 1;
         if (nodeNum.length < 1) {
-            return;
+            return null;
         }
 
         for (int i = 0; i < nodeNum.length; i++) {
@@ -80,17 +61,20 @@ public class Test {
         }
         List<String> list = new ArrayList<>();
         for (int[] ints : arr) {
-            String s = "";
+            String s = "[0,";
             for (int anInt : ints) {
-                s = s + String.valueOf(anInt);
+                s = s + String.valueOf(anInt)+",";
 //                System.out.print();
             }
+            s = s.substring(0,s.length() - 1);
+            s = s + "]";
             list.add(s);
             System.out.println(s);
         }
+        return list;
     }
 
-    private static void  setNum(int i, int j, int[][] arr, int editCount, int[] nodeNum) {
+    public static void  setNum(int i, int j, int[][] arr, int editCount, int[] nodeNum) {
         if (arr[i - 1][editCount] - 1 <= 0) {
             editCount -= 1;
             if (editCount >= 0) {
@@ -104,5 +88,4 @@ public class Test {
 //            isEdit = true;
         }
     }
-
 }

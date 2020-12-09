@@ -122,5 +122,11 @@ public class EcmArtworkNodesDTO implements Serializable {
 
     private List<EcmArtworkNodesVo> brotherNode;
 
+
+    /**
+     * 是否为多结局 0 ，null 不是 多结局，1是多结局
+     */
+    private Integer isEndings;
+
     private static final long serialVersionUID = 1L;
 }

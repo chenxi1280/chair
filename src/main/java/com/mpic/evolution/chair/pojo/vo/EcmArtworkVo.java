@@ -12,17 +12,17 @@ import lombok.Data;
  */
 @Data
 public class EcmArtworkVo extends EcmArtwork {
-    
+
     /**
      * 	调用接口的操作类型
      */
     private String code;
-    
+
     /**
      * 	用户token
      */
     private String token;
-    
+
     /**
      * 	播放次数
      */
@@ -35,4 +35,5 @@ public class EcmArtworkVo extends EcmArtwork {
      * 	用户头像
      */
     private String userLogoUrl;
+
 }

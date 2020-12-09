@@ -73,4 +73,18 @@ public class EcmArtworkNodesVo extends EcmArtworkNodes  {
      * 是否使用全局设置并全局使用 数值选项
      */
     private Byte allNameFlag;
+    /**
+     * 播放模式
+     */
+    private Integer playMode;
+
+    /**
+     * 多结局集合
+     */
+    private List<EcmArtworkEndingsVO> ecmArtworkEndingsVOS;
+
+    private Integer isEndings;
+
+    private Integer endingCount;
+
 }

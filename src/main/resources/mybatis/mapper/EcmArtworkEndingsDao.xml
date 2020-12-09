@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mpic.evolution.chair.dao.EcmArtworkEndingsDao">
+  <resultMap id="BaseResultMap" type="com.mpic.evolution.chair.pojo.entity.EcmArtworkEndings">
+    <id column="pk_endings_id" jdbcType="INTEGER" property="pkEndingsId" />
+    <result column="fk_artwork_id" jdbcType="INTEGER" property="fkArtworkId" />
+    <result column="select_title" jdbcType="VARCHAR" property="selectTitle" />
+    <result column="video_code" jdbcType="VARCHAR" property="videoCode" />
+    <result column="video_img" jdbcType="VARCHAR" property="videoImg" />
+    <result column="video_url" jdbcType="VARCHAR" property="videoUrl" />
+    <result column="select_tree" jdbcType="VARCHAR" property="selectTree" />
+    <result column="comment" jdbcType="VARCHAR" property="comment" />
+    <result column="fk_node_id" jdbcType="INTEGER" property="fkNodeId" />
+    <result column="video_name" jdbcType="VARCHAR" property="videoName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pk_endings_id, fk_artwork_id, select_title, video_code, video_img, video_url, select_tree,
+    `comment`, fk_node_id, video_name
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from ecm_artwork_endings
+    where pk_endings_id = #{pkEndingsId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ecm_artwork_endings
+    where pk_endings_id = #{pkEndingsId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="pk_endings_id" keyProperty="pkEndingsId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkEndings" useGeneratedKeys="true">
+    insert into ecm_artwork_endings (fk_artwork_id, select_title, video_code,
+      video_img, video_url, select_tree,
+      `comment`, fk_node_id, video_name
+      )
+    values (#{fkArtworkId,jdbcType=INTEGER}, #{selectTitle,jdbcType=VARCHAR}, #{videoCode,jdbcType=VARCHAR},
+      #{videoImg,jdbcType=VARCHAR}, #{videoUrl,jdbcType=VARCHAR}, #{selectTree,jdbcType=VARCHAR},
+      #{comment,jdbcType=VARCHAR}, #{fkNodeId,jdbcType=INTEGER}, #{videoName,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="pk_endings_id" keyProperty="pkEndingsId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkEndings" useGeneratedKeys="true">
+    insert into ecm_artwork_endings
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="fkArtworkId != null">
+        fk_artwork_id,
+      </if>
+      <if test="selectTitle != null">
+        select_title,
+      </if>
+      <if test="videoCode != null">
+        video_code,
+      </if>
+      <if test="videoImg != null">
+        video_img,
+      </if>
+      <if test="videoUrl != null">
+        video_url,
+      </if>
+      <if test="selectTree != null">
+        select_tree,
+      </if>
+      <if test="comment != null">
+        `comment`,
+      </if>
+      <if test="fkNodeId != null">
+        fk_node_id,
+      </if>
+      <if test="videoName != null">
+        video_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="fkArtworkId != null">
+        #{fkArtworkId,jdbcType=INTEGER},
+      </if>
+      <if test="selectTitle != null">
+        #{selectTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="videoCode != null">
+        #{videoCode,jdbcType=VARCHAR},
+      </if>
+      <if test="videoImg != null">
+        #{videoImg,jdbcType=VARCHAR},
+      </if>
+      <if test="videoUrl != null">
+        #{videoUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="selectTree != null">
+        #{selectTree,jdbcType=VARCHAR},
+      </if>
+      <if test="comment != null">
+        #{comment,jdbcType=VARCHAR},
+      </if>
+      <if test="fkNodeId != null">
+        #{fkNodeId,jdbcType=INTEGER},
+      </if>
+      <if test="videoName != null">
+        #{videoName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkEndings">
+    update ecm_artwork_endings
+    <set>
+      <if test="fkArtworkId != null">
+        fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER},
+      </if>
+      <if test="selectTitle != null">
+        select_title = #{selectTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="videoCode != null">
+        video_code = #{videoCode,jdbcType=VARCHAR},
+      </if>
+      <if test="videoImg != null">
+        video_img = #{videoImg,jdbcType=VARCHAR},
+      </if>
+      <if test="videoUrl != null">
+        video_url = #{videoUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="selectTree != null">
+        select_tree = #{selectTree,jdbcType=VARCHAR},
+      </if>
+      <if test="comment != null">
+        `comment` = #{comment,jdbcType=VARCHAR},
+      </if>
+      <if test="fkNodeId != null">
+        fk_node_id = #{fkNodeId,jdbcType=INTEGER},
+      </if>
+      <if test="videoName != null">
+        video_name = #{videoName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where pk_endings_id = #{pkEndingsId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkEndings">
+    update ecm_artwork_endings
+    set fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER},
+      select_title = #{selectTitle,jdbcType=VARCHAR},
+      video_code = #{videoCode,jdbcType=VARCHAR},
+      video_img = #{videoImg,jdbcType=VARCHAR},
+      video_url = #{videoUrl,jdbcType=VARCHAR},
+      select_tree = #{selectTree,jdbcType=VARCHAR},
+      `comment` = #{comment,jdbcType=VARCHAR},
+      fk_node_id = #{fkNodeId,jdbcType=INTEGER},
+      video_name = #{videoName,jdbcType=VARCHAR}
+    where pk_endings_id = #{pkEndingsId,jdbcType=INTEGER}
+  </update>
+
+  <!--sql-->
+
+  <insert id="insertSelectiveList"  keyColumn="pk_endings_id" keyProperty="pkEndingsId"   useGeneratedKeys="true">
+    insert into ecm_artwork_endings
+     (fk_artwork_id, select_title, video_url,select_tree,video_code,`comment`,video_img,fk_node_id,video_name)
+    values
+
+    <foreach collection="list" separator="," index="index" item="item" >
+      (#{item.fkArtworkId},#{item.selectTitle},#{item.videoUrl},#{item.selectTree},#{item.videoCode},#{item.comment}
+      ,#{item.videoImg},#{item.fkNodeId},#{item.videoName}
+      )
+    </foreach>
+
+  </insert>
+
+  <delete id="deleteByArtwork">
+    delete from ecm_artwork_endings
+    where fk_artwork_id = #{fkArtworkId}
+
+  </delete>
+  <delete id="deleteByPrimaryList">
+    delete from ecm_artwork_endings
+    where pk_endings_id in
+    <foreach collection="list" separator="," item="item" close=")" open="(">
+    #{item.pkEndingsId}
+  </foreach>
+  </delete>
+  <select id="selectByArtwId" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkEndingsVO">
+    select <include refid="Base_Column_List" />
+    from ecm_artwork_endings
+    where fk_artwork_id = #{fkArtworkId}
+  </select>
+  <select id="selectByEndingList" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkEndingsVO">
+    select <include refid="Base_Column_List" />
+    from ecm_artwork_endings
+    where pk_endings_id in <foreach collection="list" open="(" close=")" item="item" separator=",">
+        #{item.pkEndingsId}
+    </foreach>
+    </select>
+  <select id="selectEcmArtworkEndingsQuery" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkEndingsVO">
+    select <include refid="Base_Column_List" />
+    from ecm_artwork_endings
+    where fk_artwork_id = #{fkArtworkId}
+    limit #{start},#{limit}
+
+  </select>
+  <select id="selectCountEcmArtworkEndingsQuery" resultType="java.lang.Integer">
+    select COUNT(*)
+    from ecm_artwork_endings
+    where fk_artwork_id = #{fkArtworkId}
+  </select>
+  <select id="selectCountEcmArtworkId" resultType="java.lang.Integer">
+    select COUNT(*)
+    from ecm_artwork_endings
+    where fk_artwork_id = #{fkArtworkId}
+  </select>
+  <select id="selectByPrimaryKeyList" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkEndingsVO">
+    select <include refid="Base_Column_List" />
+    from ecm_artwork_endings
+    where pk_endings_id in
+    <foreach collection="list" separator="," item="item" close=")" open="(">
+      #{item}
+    </foreach>
+  </select>
+  <update id="updateSelectiveList">
+    update ecm_artwork_endings
+
+    <trim prefix="set" suffixOverrides=",">
+
+      <trim prefix="fk_artwork_id =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.fkArtworkId!=null">
+            when pk_endings_id =#{item.pkEndingsId}
+            then #{item.fkArtworkId}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="select_title =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.selectTitle!=null">
+            when pk_endings_id=#{item.pkEndingsId}
+            then #{item.selectTitle}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="video_url =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.videoUrl!=null">
+            when pk_endings_id=#{item.pkEndingsId}
+            then #{item.videoUrl}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="select_tree =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.selectTree!=null">
+            when pk_endings_id=#{item.pkEndingsId}
+            then #{item.selectTree}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="video_code =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.videoCode!=null">
+            when pk_endings_id=#{item.pkEndingsId}
+            then #{item.videoCode}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix=" `comment` =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.comment!=null">
+            when pk_endings_id=#{item.pkEndingsId}
+            then #{item.comment}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="video_img =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.videoImg!=null">
+            when pk_endings_id=#{item.pkEndingsId}
+            then #{item.videoImg}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="fk_node_id =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.fkNodeId!=null">
+            when pk_endings_id=#{item.pkEndingsId}
+            then #{item.fkNodeId}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="video_name =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.videoName!=null">
+            when pk_endings_id=#{item.pkEndingsId}
+            then #{item.videoName}
+          </if>
+        </foreach>
+      </trim>
+
+    </trim>
+    where pk_endings_id in
+    <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+      #{item.pkEndingsId}
+    </foreach>
+
+
+  </update>
+
+
+</mapper>

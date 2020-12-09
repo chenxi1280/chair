@@ -13,15 +13,18 @@
     <result column="last_modify_date" jdbcType="TIMESTAMP" property="lastModifyDate" />
     <result column="four_letter_tips" jdbcType="VARCHAR" property="fourLetterTips" />
     <result column="fk_audit_id" jdbcType="INTEGER" property="fkAuditId" />
+    <result column="play_mode" jdbcType="INTEGER" property="playMode" />
+    <result column="is_endings" jdbcType="INTEGER" property="isEndings" />
   </resultMap>
   <sql id="Base_Column_List">
     pk_artwork_id, fk_userId, artwork_name, artwork_describe, artwork_status, logo_path,
-    logo_path_status, last_create_date, last_modify_date, four_letter_tips, fk_audit_id
+    logo_path_status, last_create_date, last_modify_date, four_letter_tips, fk_audit_id,
+    play_mode, is_endings
   </sql>
   <sql id="WxuserEcmArtwork_Column_List">
     pk_artwork_id, fk_userId, artwork_name, artwork_describe, artwork_status, logo_path,
     logo_path_status, last_create_date, last_modify_date, four_letter_tips, fk_audit_id,
-    broadcast_count
+    play_mode, is_endings ,broadcast_count
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
@@ -37,11 +40,13 @@
     insert into ecm_artwork (fk_userId, artwork_name, artwork_describe,
       artwork_status, logo_path, logo_path_status,
       last_create_date, last_modify_date, four_letter_tips,
-      fk_audit_id)
+      fk_audit_id, play_mode, is_endings
+      )
     values (#{fkUserid,jdbcType=INTEGER}, #{artworkName,jdbcType=VARCHAR}, #{artworkDescribe,jdbcType=VARCHAR},
       #{artworkStatus,jdbcType=SMALLINT}, #{logoPath,jdbcType=VARCHAR}, #{logoPathStatus,jdbcType=SMALLINT},
       #{lastCreateDate,jdbcType=TIMESTAMP}, #{lastModifyDate,jdbcType=TIMESTAMP}, #{fourLetterTips,jdbcType=VARCHAR},
-      #{fkAuditId,jdbcType=INTEGER})
+      #{fkAuditId,jdbcType=INTEGER}, #{playMode,jdbcType=INTEGER}, #{isEndings,jdbcType=INTEGER}
+      )
   </insert>
   <insert id="insertSelective" keyColumn="pk_artwork_id" keyProperty="pkArtworkId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtwork" useGeneratedKeys="true">
     insert into ecm_artwork
@@ -76,6 +81,12 @@
       <if test="fkAuditId != null">
         fk_audit_id,
       </if>
+      <if test="playMode != null">
+        play_mode,
+      </if>
+      <if test="isEndings != null">
+        is_endings,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="fkUserid != null">
@@ -107,6 +118,12 @@
       </if>
       <if test="fkAuditId != null">
         #{fkAuditId,jdbcType=INTEGER},
+      </if>
+      <if test="playMode != null">
+        #{playMode,jdbcType=INTEGER},
+      </if>
+      <if test="isEndings != null">
+        #{isEndings,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -143,6 +160,12 @@
       <if test="fkAuditId != null">
         fk_audit_id = #{fkAuditId,jdbcType=INTEGER},
       </if>
+      <if test="playMode != null">
+        play_mode = #{playMode,jdbcType=INTEGER},
+      </if>
+      <if test="isEndings != null">
+        is_endings = #{isEndings,jdbcType=INTEGER},
+      </if>
     </set>
     where pk_artwork_id = #{pkArtworkId,jdbcType=INTEGER}
   </update>
@@ -157,11 +180,13 @@
       last_create_date = #{lastCreateDate,jdbcType=TIMESTAMP},
       last_modify_date = #{lastModifyDate,jdbcType=TIMESTAMP},
       four_letter_tips = #{fourLetterTips,jdbcType=VARCHAR},
-      fk_audit_id = #{fkAuditId,jdbcType=INTEGER}
+      fk_audit_id = #{fkAuditId,jdbcType=INTEGER},
+      play_mode = #{playMode,jdbcType=INTEGER},
+      is_endings = #{isEndings,jdbcType=INTEGER}
     where pk_artwork_id = #{pkArtworkId,jdbcType=INTEGER}
   </update>
 
-<!--sql-->
+  <!--sql-->
   <select id="selectArtWorks" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkVo">
     select <include refid="Base_Column_List" />
     from ecm_artwork
@@ -294,6 +319,20 @@
       </if>
 
   </select>
+
+  <update id="updateEndingsByArtworkId">
+    update ecm_artwork
+    set
+      is_endings = 1
+    where pk_artwork_id = #{pkArtworkId}
+  </update>
+    <update id="updateEndingsByArtwork">
+    update ecm_artwork
+    set
+      is_endings = #{isEndings}
+    where pk_artwork_id = #{pkArtworkId}
+
+    </update>
 
 
 </mapper>

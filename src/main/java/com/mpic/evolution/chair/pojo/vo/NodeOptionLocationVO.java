@@ -28,5 +28,7 @@ public class NodeOptionLocationVO {
     //文本框的宽度
     private Double hideWidthScale;
     // 透明度
-    private Double  rectOpacity;
+    private Double rectOpacity;
+
+    private String locationSkinFlag;
 }

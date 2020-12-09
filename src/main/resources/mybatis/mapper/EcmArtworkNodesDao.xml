@@ -275,7 +275,7 @@
     </select>
 
 
-    <insert id="insertList" keyColumn="pk_detail_id" keyProperty="pkDetailId"  useGeneratedKeys="true">
+  <insert id="insertList" keyColumn="pk_detail_id" keyProperty="pkDetailId"  useGeneratedKeys="true">
     insert into ecm_artwork_nodes  (parent_id, video_code, parent_code,
     video_url, branch_pre, revolution_id,
     video_text, fk_artwork_id, items,
@@ -472,6 +472,134 @@
     where pk_detail_id in
     <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
       #{item}
+    </foreach>
+
+  </update>
+
+  <update id="deleteByEcmArtworkEndingsList">
+    update ecm_artwork_nodes
+    set  is_deleted = 'Y'
+    where fk_artwork_id = #{fkArtworkId} and parent_id = -1
+
+
+  </update>
+
+    <insert id="insertEndingList" keyColumn="pk_detail_id" keyProperty="pkDetailId"  useGeneratedKeys="true" >
+    insert into ecm_artwork_nodes  (parent_id, video_code,
+    video_url,
+    video_text, fk_artwork_id, items_bak_text,
+    is_deleted )
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+     (
+      #{item.parentId},
+
+      #{item.videoCode},
+
+      #{item.videoUrl},
+
+      #{item.videoText},
+
+      #{item.fkArtworkId},
+
+      #{item.itemsBakText},
+
+      #{item.isDeleted}
+      )
+
+    </foreach>
+
+  </insert>
+  <delete id="deleteEcmArtworkEndingsByArtworkId">
+    update ecm_artwork_nodes
+    set  is_deleted = 'Y'
+    where fk_artwork_id = #{fkArtworkId} and parent_id = -1
+  </delete>
+  <delete id="deleteByNodeId">
+    update ecm_artwork_nodes
+    set  is_deleted = 'Y'
+    where pk_detail_id = #{fkNodeId} and parent_id = -1
+  </delete>
+    <delete id="deleteByPrimaryKeyList">
+    update ecm_artwork_nodes
+    set  is_deleted = 'Y'
+    where pk_detail_id in <foreach collection="list" open="(" close=")" item="item" separator=",">
+      #{item.fkNodeId}
+    </foreach>
+    </delete>
+
+    <update id="updateSelectiveEndingList">
+    update ecm_artwork_nodes
+
+    <trim prefix="set" suffixOverrides=",">
+
+      <trim prefix="parent_id =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.parentId!=null">
+            when pk_detail_id=#{item.pkDetailId}
+            then #{item.parentId}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="video_code =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.videoCode!=null">
+            when pk_detail_id=#{item.pkDetailId}
+            then #{item.videoCode}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="video_url =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.videoUrl!=null">
+            when pk_detail_id=#{item.pkDetailId}
+            then #{item.videoUrl}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="video_text =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.videoText!=null">
+            when pk_detail_id=#{item.pkDetailId}
+            then #{item.videoText}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="fk_artwork_id =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.fkArtworkId!=null">
+            when pk_detail_id=#{item.pkDetailId}
+            then #{item.fkArtworkId}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="items_bak_text =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.itemsBakText!=null">
+            when pk_detail_id=#{item.pkDetailId}
+            then #{item.itemsBakText}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="is_deleted =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.isDeleted!=null">
+            when pk_detail_id=#{item.pkDetailId}
+            then #{item.isDeleted}
+          </if>
+        </foreach>
+      </trim>
+
+    </trim>
+    where pk_detail_id in
+    <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+      #{item.pkDetailId}
     </foreach>
 
   </update>

@@ -30,6 +30,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.mpic.evolution.chair.common.constant.CosConstant.*;
 
@@ -139,8 +140,10 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
     @Override
     public void handleArtwork(Integer pkArtworkId) {
         List<EcmArtworkNodesVo> ecmArtworkNodesVos = ecmArtworkNodesDao.selectByArtWorkId(pkArtworkId);
+
         if (!CollectionUtils.isEmpty(ecmArtworkNodesVos)){
-            ecmArtworkNodesVos.forEach( ecmArtworkNodesVo ->  {
+            List<EcmArtworkNodesVo> collect = ecmArtworkNodesVos.stream().filter(ecmArtworkNodesVo -> !"Y".equals(ecmArtworkNodesVo.getIsDeleted())).collect(Collectors.toList());
+            collect.forEach( ecmArtworkNodesVo ->  {
                 if (!StringUtils.isEmpty(ecmArtworkNodesVo.getVideoCode())){
                     this.handleOneVideo(ecmArtworkNodesVo.getVideoCode());
                     System.out.println(ecmArtworkNodesVo.getVideoCode() + "已发送审核");

@@ -28,7 +28,7 @@ public class EcmArtwork implements Serializable {
 
     /**
      * 	播放端用于分享的图片的url
-     */ 
+     */
     private String artworkDescribe;
 
     /**
@@ -60,6 +60,16 @@ public class EcmArtwork implements Serializable {
      * 审核人
      */
     private Integer fkAuditId;
+
+    /**
+     * 播放模式
+     */
+    private Integer playMode;
+
+    /**
+     * 是否为多结局 0 ，null 不是 多结局，1是多结局
+     */
+    private Integer isEndings;
 
     private static final long serialVersionUID = 1L;
 }
