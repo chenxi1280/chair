@@ -412,6 +412,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                 v.setVideoCode(v.getVideoInfo().getVideoCode());
                 v.setVideoUrl(v.getVideoInfo().getVideoUrl());
                 v.setVideoImg(v.getVideoInfo().getNodeImgUrl());
+                v.setVideoName(v.getVideoInfo().getVideoName());
                 ecmArtworkNodesVo.setVideoUrl(v.getVideoInfo().getVideoUrl());
                 ecmArtworkNodesVo.setVideoCode(v.getVideoInfo().getVideoCode());
                 ecmArtworkNodesVo.setItemsBakText(v.getVideoInfo().getNodeImgUrl());
@@ -497,6 +498,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                 v.setVideoCode(v.getVideoInfo().getVideoCode());
                 v.setVideoUrl(v.getVideoInfo().getVideoUrl());
                 v.setVideoImg(v.getVideoInfo().getNodeImgUrl());
+                v.setVideoName(v.getVideoInfo().getVideoName());
                 ecmArtworkNodesVo.setVideoUrl(v.getVideoInfo().getVideoUrl());
                 ecmArtworkNodesVo.setVideoCode(v.getVideoInfo().getVideoCode());
                 ecmArtworkNodesVo.setItemsBakText(v.getVideoInfo().getNodeImgUrl());
@@ -553,6 +555,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                 v.setVideoCode(v.getVideoInfo().getVideoCode());
                 v.setVideoUrl(v.getVideoInfo().getVideoUrl());
                 v.setVideoImg(v.getVideoInfo().getNodeImgUrl());
+                v.setVideoName(v.getVideoInfo().getVideoName());
                 ecmArtworkNodesVo.setVideoUrl(v.getVideoInfo().getVideoUrl());
                 ecmArtworkNodesVo.setVideoCode(v.getVideoInfo().getVideoCode());
                 ecmArtworkNodesVo.setItemsBakText(v.getVideoInfo().getNodeImgUrl());

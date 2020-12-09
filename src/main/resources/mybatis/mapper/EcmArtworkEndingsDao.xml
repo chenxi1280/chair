@@ -11,10 +11,11 @@
     <result column="select_tree" jdbcType="VARCHAR" property="selectTree" />
     <result column="comment" jdbcType="VARCHAR" property="comment" />
     <result column="fk_node_id" jdbcType="INTEGER" property="fkNodeId" />
+    <result column="video_name" jdbcType="VARCHAR" property="videoName" />
   </resultMap>
   <sql id="Base_Column_List">
     pk_endings_id, fk_artwork_id, select_title, video_code, video_img, video_url, select_tree,
-    `comment`, fk_node_id
+    `comment`, fk_node_id, video_name
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
@@ -29,10 +30,12 @@
   <insert id="insert" keyColumn="pk_endings_id" keyProperty="pkEndingsId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkEndings" useGeneratedKeys="true">
     insert into ecm_artwork_endings (fk_artwork_id, select_title, video_code,
       video_img, video_url, select_tree,
-      `comment`, fk_node_id)
+      `comment`, fk_node_id, video_name
+      )
     values (#{fkArtworkId,jdbcType=INTEGER}, #{selectTitle,jdbcType=VARCHAR}, #{videoCode,jdbcType=VARCHAR},
       #{videoImg,jdbcType=VARCHAR}, #{videoUrl,jdbcType=VARCHAR}, #{selectTree,jdbcType=VARCHAR},
-      #{comment,jdbcType=VARCHAR}, #{fkNodeId,jdbcType=INTEGER})
+      #{comment,jdbcType=VARCHAR}, #{fkNodeId,jdbcType=INTEGER}, #{videoName,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" keyColumn="pk_endings_id" keyProperty="pkEndingsId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkEndings" useGeneratedKeys="true">
     insert into ecm_artwork_endings
@@ -61,6 +64,9 @@
       <if test="fkNodeId != null">
         fk_node_id,
       </if>
+      <if test="videoName != null">
+        video_name,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="fkArtworkId != null">
@@ -86,6 +92,9 @@
       </if>
       <if test="fkNodeId != null">
         #{fkNodeId,jdbcType=INTEGER},
+      </if>
+      <if test="videoName != null">
+        #{videoName,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -116,6 +125,9 @@
       <if test="fkNodeId != null">
         fk_node_id = #{fkNodeId,jdbcType=INTEGER},
       </if>
+      <if test="videoName != null">
+        video_name = #{videoName,jdbcType=VARCHAR},
+      </if>
     </set>
     where pk_endings_id = #{pkEndingsId,jdbcType=INTEGER}
   </update>
@@ -128,7 +140,8 @@
       video_url = #{videoUrl,jdbcType=VARCHAR},
       select_tree = #{selectTree,jdbcType=VARCHAR},
       `comment` = #{comment,jdbcType=VARCHAR},
-      fk_node_id = #{fkNodeId,jdbcType=INTEGER}
+      fk_node_id = #{fkNodeId,jdbcType=INTEGER},
+      video_name = #{videoName,jdbcType=VARCHAR}
     where pk_endings_id = #{pkEndingsId,jdbcType=INTEGER}
   </update>
 
@@ -136,11 +149,12 @@
 
   <insert id="insertSelectiveList"  keyColumn="pk_endings_id" keyProperty="pkEndingsId"   useGeneratedKeys="true">
     insert into ecm_artwork_endings
-     (fk_artwork_id, select_title, video_url,select_tree,video_code,`comment`,video_img,fk_node_id)
+     (fk_artwork_id, select_title, video_url,select_tree,video_code,`comment`,video_img,fk_node_id,video_name)
     values
 
     <foreach collection="list" separator="," index="index" item="item" >
-      (#{item.fkArtworkId},#{item.selectTitle},#{item.videoUrl},#{item.selectTree},#{item.videoCode},#{item.comment},#{item.videoImg},#{item.fkNodeId}
+      (#{item.fkArtworkId},#{item.selectTitle},#{item.videoUrl},#{item.selectTree},#{item.videoCode},#{item.comment}
+      ,#{item.videoImg},#{item.fkNodeId},#{item.videoName}
       )
     </foreach>
 
@@ -268,6 +282,15 @@
           <if test="item.fkNodeId!=null">
             when pk_endings_id=#{item.pkEndingsId}
             then #{item.fkNodeId}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="video_name =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.videoName!=null">
+            when pk_endings_id=#{item.pkEndingsId}
+            then #{item.videoName}
           </if>
         </foreach>
       </trim>

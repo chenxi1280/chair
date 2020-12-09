@@ -56,5 +56,11 @@ public class EcmArtworkEndings implements Serializable {
      */
     private Integer fkNodeId;
 
+
+    /**
+     * 视频名称
+     */
+    private String videoName;
+
     private static final long serialVersionUID = 1L;
 }
