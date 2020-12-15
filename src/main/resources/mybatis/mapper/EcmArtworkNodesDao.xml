@@ -22,11 +22,12 @@
     <result column="is_deleted" jdbcType="VARCHAR" property="isDeleted" />
     <result column="parent_list" jdbcType="VARCHAR" property="parentList" />
     <result column="chosen_text" jdbcType="VARCHAR" property="chosenText" />
+    <result column="video_info" jdbcType="VARCHAR" property="videoInfo" />
   </resultMap>
   <sql id="Base_Column_List">
     pk_detail_id, parent_id, video_code, parent_code, video_url, branch_pre, revolution_id,
     video_text, fk_artwork_id, items, items_text, items_bak_text, css_vo, fk_achievement_id,
-    fk_ending_id, isleaf, a_level, is_deleted, parent_list, chosen_text
+    fk_ending_id, isleaf, a_level, is_deleted, parent_list, chosen_text, video_info
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
@@ -45,14 +46,14 @@
       items_text, items_bak_text, css_vo,
       fk_achievement_id, fk_ending_id, isleaf,
       a_level, is_deleted, parent_list,
-      chosen_text)
+      chosen_text, video_info)
     values (#{parentId,jdbcType=INTEGER}, #{videoCode,jdbcType=VARCHAR}, #{parentCode,jdbcType=VARCHAR},
       #{videoUrl,jdbcType=VARCHAR}, #{branchPre,jdbcType=TINYINT}, #{revolutionId,jdbcType=VARCHAR},
       #{videoText,jdbcType=VARCHAR}, #{fkArtworkId,jdbcType=INTEGER}, #{items,jdbcType=VARCHAR},
       #{itemsText,jdbcType=VARCHAR}, #{itemsBakText,jdbcType=VARCHAR}, #{cssVo,jdbcType=VARCHAR},
       #{fkAchievementId,jdbcType=INTEGER}, #{fkEndingId,jdbcType=INTEGER}, #{isleaf,jdbcType=VARCHAR},
       #{aLevel,jdbcType=INTEGER}, #{isDeleted,jdbcType=VARCHAR}, #{parentList,jdbcType=VARCHAR},
-      #{chosenText,jdbcType=VARCHAR})
+      #{chosenText,jdbcType=VARCHAR}, #{videoInfo,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" keyColumn="pk_detail_id" keyProperty="pkDetailId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes" useGeneratedKeys="true">
     insert into ecm_artwork_nodes
@@ -114,6 +115,9 @@
       <if test="chosenText != null">
         chosen_text,
       </if>
+      <if test="videoInfo != null">
+        video_info,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="parentId != null">
@@ -172,6 +176,9 @@
       </if>
       <if test="chosenText != null">
         #{chosenText,jdbcType=VARCHAR},
+      </if>
+      <if test="videoInfo != null">
+        #{videoInfo,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -235,6 +242,9 @@
       <if test="chosenText != null">
         chosen_text = #{chosenText,jdbcType=VARCHAR},
       </if>
+      <if test="videoInfo != null">
+        video_info = #{videoInfo,jdbcType=VARCHAR},
+      </if>
     </set>
     where pk_detail_id = #{pkDetailId,jdbcType=INTEGER}
   </update>
@@ -258,7 +268,8 @@
       a_level = #{aLevel,jdbcType=INTEGER},
       is_deleted = #{isDeleted,jdbcType=VARCHAR},
       parent_list = #{parentList,jdbcType=VARCHAR},
-      chosen_text = #{chosenText,jdbcType=VARCHAR}
+      chosen_text = #{chosenText,jdbcType=VARCHAR},
+      video_info = #{videoInfo,jdbcType=VARCHAR}
     where pk_detail_id = #{pkDetailId,jdbcType=INTEGER}
   </update>
 
@@ -386,6 +397,7 @@
       </foreach>
 
     </update>
+
   <update id="updateVideoUrlPrimaryEcmArtworkNode">
 
       update ecm_artwork_nodes
@@ -445,6 +457,9 @@
         <if test="chosenText != null">
           chosen_text = #{chosenText,jdbcType=VARCHAR},
         </if>
+        <if test="videoInfo != null">
+          video_info = #{videoInfo,jdbcType=VARCHAR},
+        </if>
       </set>
       where pk_detail_id = #{pkDetailId,jdbcType=INTEGER}
 
@@ -480,8 +495,6 @@
     update ecm_artwork_nodes
     set  is_deleted = 'Y'
     where fk_artwork_id = #{fkArtworkId} and parent_id = -1
-
-
   </update>
 
     <insert id="insertEndingList" keyColumn="pk_detail_id" keyProperty="pkDetailId"  useGeneratedKeys="true" >
@@ -529,78 +542,87 @@
     </delete>
 
     <update id="updateSelectiveEndingList">
-    update ecm_artwork_nodes
+      update ecm_artwork_nodes
 
-    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="set" suffixOverrides=",">
 
-      <trim prefix="parent_id =case" suffix="end,">
-        <foreach collection="list" item="item" index="index">
-          <if test="item.parentId!=null">
-            when pk_detail_id=#{item.pkDetailId}
-            then #{item.parentId}
-          </if>
-        </foreach>
+        <trim prefix="parent_id =case" suffix="end,">
+          <foreach collection="list" item="item" index="index">
+            <if test="item.parentId!=null">
+              when pk_detail_id=#{item.pkDetailId}
+              then #{item.parentId}
+            </if>
+          </foreach>
+        </trim>
+
+        <trim prefix="video_code =case" suffix="end,">
+          <foreach collection="list" item="item" index="index">
+            <if test="item.videoCode!=null">
+              when pk_detail_id=#{item.pkDetailId}
+              then #{item.videoCode}
+            </if>
+          </foreach>
+        </trim>
+
+        <trim prefix="video_url =case" suffix="end,">
+          <foreach collection="list" item="item" index="index">
+            <if test="item.videoUrl!=null">
+              when pk_detail_id=#{item.pkDetailId}
+              then #{item.videoUrl}
+            </if>
+          </foreach>
+        </trim>
+
+        <trim prefix="video_text =case" suffix="end,">
+          <foreach collection="list" item="item" index="index">
+            <if test="item.videoText!=null">
+              when pk_detail_id=#{item.pkDetailId}
+              then #{item.videoText}
+            </if>
+          </foreach>
+        </trim>
+
+        <trim prefix="fk_artwork_id =case" suffix="end,">
+          <foreach collection="list" item="item" index="index">
+            <if test="item.fkArtworkId!=null">
+              when pk_detail_id=#{item.pkDetailId}
+              then #{item.fkArtworkId}
+            </if>
+          </foreach>
+        </trim>
+
+        <trim prefix="items_bak_text =case" suffix="end,">
+          <foreach collection="list" item="item" index="index">
+            <if test="item.itemsBakText!=null">
+              when pk_detail_id=#{item.pkDetailId}
+              then #{item.itemsBakText}
+            </if>
+          </foreach>
+        </trim>
+
+        <trim prefix="is_deleted =case" suffix="end,">
+          <foreach collection="list" item="item" index="index">
+            <if test="item.isDeleted!=null">
+              when pk_detail_id=#{item.pkDetailId}
+              then #{item.isDeleted}
+            </if>
+          </foreach>
+        </trim>
+
+        <trim prefix="video_info =case" suffix="end,">
+          <foreach collection="list" item="item" index="index">
+            <if test="item.videoInfo!=null">
+              when pk_detail_id=#{item.pkDetailId}
+              then #{item.videoInfo}
+            </if>
+          </foreach>
+        </trim>
+
       </trim>
-
-      <trim prefix="video_code =case" suffix="end,">
-        <foreach collection="list" item="item" index="index">
-          <if test="item.videoCode!=null">
-            when pk_detail_id=#{item.pkDetailId}
-            then #{item.videoCode}
-          </if>
-        </foreach>
-      </trim>
-
-      <trim prefix="video_url =case" suffix="end,">
-        <foreach collection="list" item="item" index="index">
-          <if test="item.videoUrl!=null">
-            when pk_detail_id=#{item.pkDetailId}
-            then #{item.videoUrl}
-          </if>
-        </foreach>
-      </trim>
-
-      <trim prefix="video_text =case" suffix="end,">
-        <foreach collection="list" item="item" index="index">
-          <if test="item.videoText!=null">
-            when pk_detail_id=#{item.pkDetailId}
-            then #{item.videoText}
-          </if>
-        </foreach>
-      </trim>
-
-      <trim prefix="fk_artwork_id =case" suffix="end,">
-        <foreach collection="list" item="item" index="index">
-          <if test="item.fkArtworkId!=null">
-            when pk_detail_id=#{item.pkDetailId}
-            then #{item.fkArtworkId}
-          </if>
-        </foreach>
-      </trim>
-
-      <trim prefix="items_bak_text =case" suffix="end,">
-        <foreach collection="list" item="item" index="index">
-          <if test="item.itemsBakText!=null">
-            when pk_detail_id=#{item.pkDetailId}
-            then #{item.itemsBakText}
-          </if>
-        </foreach>
-      </trim>
-
-      <trim prefix="is_deleted =case" suffix="end,">
-        <foreach collection="list" item="item" index="index">
-          <if test="item.isDeleted!=null">
-            when pk_detail_id=#{item.pkDetailId}
-            then #{item.isDeleted}
-          </if>
-        </foreach>
-      </trim>
-
-    </trim>
-    where pk_detail_id in
-    <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
-      #{item.pkDetailId}
-    </foreach>
+      where pk_detail_id in
+      <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+        #{item.pkDetailId}
+      </foreach>
 
   </update>
 

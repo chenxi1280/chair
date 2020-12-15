@@ -11,4 +11,10 @@ import lombok.Data;
  */
 @Data
 public class EcmVideoTemporaryStorageVO  extends EcmVideoTemporaryStorage {
+
+    private String videoHigh;
+
+    private String videoWidth;
+
+    private String videoTime;
 }

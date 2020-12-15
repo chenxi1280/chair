@@ -117,6 +117,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             // 还原定位数组方法
             if (!StringUtils.isEmpty(node.getItemsText())) {
                 node.setNodeLocationList(JSON.parseArray(node.getItemsText(), NodeOptionLocationVO.class));
+                node.setItemsText(null);
             }
             // 还原数值数组方法
             if (!CollectionUtils.isEmpty(ecmArtworkNodeNumberConditionS)) {
@@ -559,6 +560,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                 ecmArtworkNodesVo.setVideoUrl(v.getVideoInfo().getVideoUrl());
                 ecmArtworkNodesVo.setVideoCode(v.getVideoInfo().getVideoCode());
                 ecmArtworkNodesVo.setItemsBakText(v.getVideoInfo().getNodeImgUrl());
+                ecmArtworkNodesVo.setVideoInfo(v.getVideoInfo().getVideoHigh()+","+v.getVideoInfo().getVideoWidth()+","+v.getVideoInfo().getVideoTime());
             }
             v.setComment(v.getSelectTree().replace("[", "").replace("]", "").replace(",", "").replace(" ", ""));
             v.setFkArtworkId(ecmArtworkEndingsQuery.getFkArtworkId());

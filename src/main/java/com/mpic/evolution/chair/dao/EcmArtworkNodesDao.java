@@ -29,6 +29,13 @@ public interface EcmArtworkNodesDao {
 
     List<EcmArtworkNodesVo> selectByVideoCode(String fileId);
 
+    /**
+     * @param: [ecmArtworkNodesList]
+     * @return: int
+     * @author: cxd
+     * @Date: 2020/12/15
+     * 描述 : 视频回调批量修改节点视频url 状态等信息
+     */
     int updateByEcmArtworkNodesList(List<EcmArtworkNodesVo> ecmArtworkNodesList);
 
     int updateVideoUrlPrimaryEcmArtworkNode(EcmArtworkNodes ecmArtworkNodes);
