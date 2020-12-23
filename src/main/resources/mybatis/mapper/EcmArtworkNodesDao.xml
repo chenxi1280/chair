@@ -284,9 +284,17 @@
       from ecm_artwork_nodes
       where video_code = #{fileId}
     </select>
+    <select id="selectByArtWorkList" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo">
+      select  <include refid="Base_Column_List" />
+      from ecm_artwork_nodes
+      where fk_artwork_id in <foreach collection="list" separator="," item="item" close=")" open="(">
+        #{item.pkArtworkId}
+    </foreach>
+
+    </select>
 
 
-  <insert id="insertList" keyColumn="pk_detail_id" keyProperty="pkDetailId"  useGeneratedKeys="true">
+    <insert id="insertList" keyColumn="pk_detail_id" keyProperty="pkDetailId"  useGeneratedKeys="true">
     insert into ecm_artwork_nodes  (parent_id, video_code, parent_code,
     video_url, branch_pre, revolution_id,
     video_text, fk_artwork_id, items,
