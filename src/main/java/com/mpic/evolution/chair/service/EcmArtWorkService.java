@@ -14,6 +14,8 @@ public interface EcmArtWorkService {
 
     ResponseDTO updateNodeInfo(EcmArtWorkQuery ecmArtWorkQuery);
 
+    void insertNodeInfo(EcmArtworkNodesVo ecmArtworkNodesVo);
+
 
     /**
      * @param: [ecmArtWorkQuery] 传入的 查询参数 查询参数可以有 用户id，作品名称（模糊），视频状态，类型（当前模糊）

@@ -48,7 +48,12 @@ public class EcmArtWorkController extends BaseController{
 		return ecmArtWorkService.updateNodeInfo(ecmArtWorkQuery);
 	}
 
-
+	@RequestMapping("/insertNodeInfo")
+	@ResponseBody
+	public void insertNodeInfo(@RequestBody EcmArtworkNodesVo ecmArtworkNodesVo){
+		ecmArtWorkService.insertNodeInfo(ecmArtworkNodesVo);
+	}
+	
     /**
      * @param: [ecmArtWorkQuery] 传入的 查询参数 token
      * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
