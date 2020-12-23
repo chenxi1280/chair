@@ -55,10 +55,22 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
     @Override
     public ResponseDTO updateNodeInfo(EcmArtWorkQuery ecmArtWorkQuery) {
         List<EcmArtworkVo> ecmArtworkVoList =  ecmArtworkDao.selectArtWorksAll();
-	        
+        List<EcmArtworkNodesVo> list = ecmArtworkNodesDao.selectByArtWorkList(ecmArtworkVoList);
+        List<EcmArtworkNodesVo> collect = list.stream().filter(ecmArtworkNodesVo -> {
+            if ("Y".equals(ecmArtworkNodesVo.getIsDeleted()) ){
+                return false;
+            }
+            if (ecmArtworkNodesVo.getALevel() != null && ecmArtworkNodesVo.getALevel().equals(1)) {
+                return false;
+            }
+            if (ecmArtworkNodesVo.getVideoUrl() == null) {
+                return false;
+            }
+            return true;
+        }).collect(Collectors.toList());
 
 
-        return null;
+        return ResponseDTO.ok(collect);
     }
     
 

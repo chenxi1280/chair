@@ -4,6 +4,7 @@ import com.mpic.evolution.chair.pojo.entity.EcmArtworkEndings;
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkEndingsVO;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
+import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -55,4 +56,6 @@ public interface EcmArtworkNodesDao {
     int deleteByNodeId(Integer fkNodeId);
 
     int deleteByPrimaryKeyList( @Param("list") List<EcmArtworkEndingsVO> ecmArtworkEndings);
+
+    List<EcmArtworkNodesVo> selectByArtWorkList(@Param("list") List<EcmArtworkVo> ecmArtworkVoList);
 }

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @Description TODO
  * @Date 2020/12/16 15:36
  */
-@ControllerAdvice
+//@ControllerAdvice
 public class BaseExceptionHandler {
     // 捕获参数异常
     @ExceptionHandler(value = Exception.class)
