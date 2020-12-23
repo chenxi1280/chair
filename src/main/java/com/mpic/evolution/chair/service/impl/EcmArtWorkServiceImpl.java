@@ -83,6 +83,16 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         return ResponseDTO.ok(collect);
     }
 
+
+	@Override
+	public void insertNodeInfo(EcmArtworkNodesVo ecmArtworkNodesVo) {
+		EcmArtworkNodes ecmArtworkNodes = new EcmArtworkNodes();
+		ecmArtworkNodes.setPkDetailId(ecmArtworkNodesVo.getPkDetailId());
+		ecmArtworkNodes.setVideoInfo(ecmArtworkNodesVo.getVideoInfo());
+		ecmArtworkNodesDao.insertSelective(ecmArtworkNodes);
+	}
+
+
     @Override
     public ResponseDTO getArtWorks(EcmArtWorkQuery ecmArtWorkQuery) {
 //        List<EcmArtworkVo> ecmArtworkVoList = ecmArtworkDao.selectArtWorks(ecmArtWorkQuery);

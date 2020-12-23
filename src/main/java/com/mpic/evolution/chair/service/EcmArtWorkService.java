@@ -12,7 +12,9 @@ import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
  */
 public interface EcmArtWorkService {
 
-    ResponseDTO updateNodeInfo(EcmArtWorkQuery ecmArtWorkQuery);
+    ResponseDTO updateNodeInfo();
+
+    void insertNodeInfo(EcmArtworkNodesVo ecmArtworkNodesVo);
 
 
     /**
