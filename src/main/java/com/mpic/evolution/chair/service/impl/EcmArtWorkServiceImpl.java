@@ -71,11 +71,13 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             }
             return true;
         }).collect(Collectors.toList());
-
         collect.forEach( v -> {
             ecmArtworkVoList.forEach( addArtWork -> {
                 if(v.getFkArtworkId().equals(addArtWork.getPkArtworkId())){
                     v.setPlayMode(addArtWork.getPlayMode());
+                    if (addArtWork.getPlayMode() == null){
+                        v.setPlayMode(0);
+                    }
                 }
             });
         });
