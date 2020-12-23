@@ -44,8 +44,8 @@ public class EcmArtWorkController extends BaseController{
 
 	@RequestMapping("/updateNodeInfo")
 	@ResponseBody
-	public ResponseDTO updateNodeInfo(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
-		return ecmArtWorkService.updateNodeInfo(ecmArtWorkQuery);
+	public ResponseDTO updateNodeInfo(){
+		return ecmArtWorkService.updateNodeInfo();
 	}
 
 	@RequestMapping("/insertNodeInfo")
