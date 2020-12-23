@@ -66,8 +66,19 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             if (ecmArtworkNodesVo.getVideoUrl() == null) {
                 return false;
             }
+            if (ecmArtworkNodesVo.getFkArtworkId() == null) {
+                return false;
+            }
             return true;
         }).collect(Collectors.toList());
+
+        collect.forEach( v -> {
+            ecmArtworkVoList.forEach( addArtWork -> {
+                if(v.getFkArtworkId().equals(addArtWork.getPkArtworkId())){
+                    v.setPlayMode(addArtWork.getPlayMode());
+                }
+            });
+        });
 
         return ResponseDTO.ok(collect);
     }
