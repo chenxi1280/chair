@@ -53,7 +53,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
 
     @Override
-    public ResponseDTO updateNodeInfo(EcmArtWorkQuery ecmArtWorkQuery) {
+    public ResponseDTO updateNodeInfo() {
         List<EcmArtworkVo> ecmArtworkVoList =  ecmArtworkDao.selectArtWorksAll();
         List<EcmArtworkNodesVo> list = ecmArtworkNodesDao.selectByArtWorkList(ecmArtworkVoList);
         List<EcmArtworkNodesVo> collect = list.stream().filter(ecmArtworkNodesVo -> {
