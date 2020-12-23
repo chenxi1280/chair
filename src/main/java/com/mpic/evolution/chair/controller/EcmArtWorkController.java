@@ -4,17 +4,15 @@ package com.mpic.evolution.chair.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.HttpKit;
 import com.mpic.evolution.chair.common.constant.PublishConstants;
+import com.mpic.evolution.chair.common.constant.TiktokConstant;
 import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
-import com.mpic.evolution.chair.pojo.entity.EcmArtworkEndings;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
 import com.mpic.evolution.chair.pojo.query.EcmArtworkEndingsQuery;
-import com.mpic.evolution.chair.pojo.vo.EcmArtworkEndingsVO;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodeNumberConditionVO;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
 import com.mpic.evolution.chair.service.EcmArtWorkService;
-import com.mpic.evolution.chair.util.EndingUntil;
 import com.mpic.evolution.chair.util.HttpMpicUtil;
 import com.mpic.evolution.chair.util.JWTUtil;
 import com.mpic.evolution.chair.util.RedisUtil;
@@ -27,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * @author cxd
@@ -41,6 +38,16 @@ public class EcmArtWorkController extends BaseController{
 
     @Resource
 	RedisUtil redisUtil;
+
+
+
+
+	@RequestMapping("/updateNodeInfo")
+	@ResponseBody
+	public ResponseDTO updateNodeInfo(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
+		return ecmArtWorkService.updateNodeInfo(ecmArtWorkQuery);
+	}
+
 
     /**
      * @param: [ecmArtWorkQuery] 传入的 查询参数 token
@@ -64,7 +71,6 @@ public class EcmArtWorkController extends BaseController{
 //		ecmArtWorkQuery.setLimit(20);
         return ecmArtWorkService.getArtWorks(ecmArtWorkQuery);
     }
-
 
 
     /**
@@ -351,11 +357,11 @@ public class EcmArtWorkController extends BaseController{
 			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
 		}
     	//如果是null返回false
-    	boolean hasKey = redisUtil.hasKey("QRCode");
+    	boolean hasKey = redisUtil.hasKey("WxQRCode");
     	String accessToken = "";
     	try {
 	    	if (hasKey) {
-	    		accessToken = String.valueOf(redisUtil.get("QRCode"));
+	    		accessToken = String.valueOf(redisUtil.get("WxQRCode"));
 			}else {
 				accessToken = getAccessToken();
 			}
@@ -383,6 +389,50 @@ public class EcmArtWorkController extends BaseController{
 		}
     }
 
+
+    @RequestMapping("/getDycode")
+	@ResponseBody
+	public ResponseDTO getDyCode (@RequestBody EcmArtWorkQuery ecmArtWorkQuery) {
+
+		Integer userIdByHandToken = getUserIdByHandToken();
+		if (userIdByHandToken == null){
+			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+		}
+		//如果是null返回false
+		JSONObject data = new JSONObject();
+		boolean hasKey = redisUtil.hasKey("DyQRCode");
+		String accessToken = "";
+		try {
+			if (hasKey) {
+				accessToken = String.valueOf(redisUtil.get("DyQRCode"));
+			}else {
+				accessToken = getDyAccessToken();
+			}
+			String qrCodeStr = this.getDyQRCode(accessToken,ecmArtWorkQuery,data);
+			if (HttpMpicUtil.isJsonObject(qrCodeStr)) {
+				//返回的结果是：{"errcode":40001,"errmsg":"invalid credential, access_token is invalid or not latest rid: 5f364b21-395edb8d-336ae042"}
+				JSONObject result = JSONObject.parseObject(qrCodeStr);
+				if(result.get("errcode").equals("40001")) {
+					accessToken = getDyAccessToken();
+					qrCodeStr = this.getDyQRCode(accessToken,ecmArtWorkQuery,data);
+					String str = "data:image/jpg;base64," + qrCodeStr;
+					data.put("qrCodeStr", str);
+					return ResponseDTO.ok("获取发布二维码成功",data);
+				}else {
+					return ResponseDTO.fail("获取发布二维码失败", result.get("errmsg"),null,(Integer)result.get("errcode"));
+				}
+			}else {
+				String str = "data:image/jpg;base64," + qrCodeStr;
+				data.put("qrCodeStr", str);
+				return ResponseDTO.ok("获取发布二维码成功",data);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseDTO.fail("获取二维码图片失败");
+		}
+	}
+
+
     private String getQRCode(String accessToken,EcmArtWorkQuery ecmArtWorkQuery,JSONObject data) {
     	String url = String.format("https://api.weixin.qq.com/wxa/getwxacodeunlimit?"
         		+ "access_token=%s", accessToken);
@@ -404,22 +454,59 @@ public class EcmArtWorkController extends BaseController{
     }
 
 	/**
-     * 	通过请求获取accessToken
-     *	用户登陆时的token 解密出来的用户id
-     * 	此处要根据过期时间，存redis，有人请求，先从redis里面拿token，没有再请求
-     *
-     */
-    private String getAccessToken() {
-    	String requestUrl = String.format("https://api.weixin.qq.com/cgi-bin/token?"
-    			+ "grant_type=client_credential&appid=%s&secret=%s", PublishConstants.appid, PublishConstants.secret);
-        //将返回的access_token 存入redis 过期时间3000秒
-    	String jsonStr = HttpKit.get(requestUrl);
-    	JSONObject result = JSONObject.parseObject(jsonStr);
-    	String accessToken = result.getString("access_token");
-    	redisUtil.set("QRCode", accessToken, 3000L);
-        return accessToken;
-    }
+	 * 	通过请求获取accessToken
+	 *	用户登陆时的token 解密出来的用户id
+	 * 	此处要根据过期时间，存redis，有人请求，先从redis里面拿token，没有再请求
+	 *
+	 */
+	private String getAccessToken() {
+		String requestUrl = String.format("https://api.weixin.qq.com/cgi-bin/token?"
+				+ "grant_type=client_credential&appid=%s&secret=%s", PublishConstants.appid, PublishConstants.secret);
+		//将返回的access_token 存入redis 过期时间3000秒
+		String jsonStr = HttpKit.get(requestUrl);
+		JSONObject result = JSONObject.parseObject(jsonStr);
+		String accessToken = result.getString("access_token");
+		String expiresIn = result.getString("expires_in");
+		redisUtil.set("WxQRCode", accessToken, Long.valueOf(expiresIn));
+		return accessToken;
+	}
 
+
+
+
+	private String getDyQRCode(String accessToken,EcmArtWorkQuery ecmArtWorkQuery,JSONObject data) {
+		String url = String.format("https://developer.toutiao.com/api/apps/qrcode");
+		JSONObject param = new JSONObject();
+		param.put("access_token",accessToken);
+		param.put("path","pages/play/play");
+		String artWorkId = ecmArtWorkQuery.getArtWorkId();
+		//scene的value 是 videoId
+		String codeType = ecmArtWorkQuery.getCodeType();
+		String string = "";
+		if (codeType.equals("0")) {
+			string = "artWorkId="+artWorkId+"=status=1";
+		}else {
+			string = "artWorkId="+artWorkId+"=status=4";
+			data.put("path","pages/play/play?"+"pkArtworkId="+artWorkId);
+		}
+		param.put("scene",string);
+		param.put("appname","douyin");
+
+		String post = HttpMpicUtil.post(param, url );
+
+		return post;
+	}
+	private String getDyAccessToken() {
+		String requestUrl = String.format("https://developer.toutiao.com/api/apps/token?"
+				+ "grant_type=client_credential&appid=%s&secret=%s", TiktokConstant.appid, TiktokConstant.secret);
+		//将返回的access_token 存入redis 过期时间3000秒
+		String jsonStr = HttpKit.get(requestUrl);
+		JSONObject result = JSONObject.parseObject(jsonStr);
+		String accessToken = result.getString("access_token");
+		String expiresIn = result.getString("expires_in");
+		redisUtil.set("DyQRCode", accessToken, Long.valueOf(expiresIn));
+		return accessToken;
+	}
 
 	// 下面小程序端接口
 

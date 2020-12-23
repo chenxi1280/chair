@@ -45,8 +45,6 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
     @Resource
     ProcessMediaByProcedureDao processMediaByProcedureDao;
     @Resource
-    EcmArtworkBroadcastHistoryDao ecmArtworkBroadcastHistoryDao;
-    @Resource
     EcmArtworkBroadcastHotDao ecmArtworkBroadcastHotDao;
     @Resource
     EcmArtworkNodeNumberConditionDao ecmArtworkNodeNumberConditionDao;
@@ -54,6 +52,14 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
     EcmArtworkEndingsDao ecmArtworkEndingsDao;
 
 
+    @Override
+    public ResponseDTO updateNodeInfo(EcmArtWorkQuery ecmArtWorkQuery) {
+        List<EcmArtworkVo> ecmArtworkVoList =  ecmArtworkDao.selectArtWorksAll();
+
+
+
+        return null;
+    }
 
     @Override
     public ResponseDTO getArtWorks(EcmArtWorkQuery ecmArtWorkQuery) {
