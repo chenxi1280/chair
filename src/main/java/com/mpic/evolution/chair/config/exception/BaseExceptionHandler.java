@@ -11,12 +11,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @Description TODO
  * @Date 2020/12/16 15:36
  */
-//@ControllerAdvice
+@ControllerAdvice
 public class BaseExceptionHandler {
     // 捕获参数异常
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
     ResponseDTO  baseExceptionException(Exception e) {
+        System.out.println("后台全局异常捕获发现异常");
+        e.printStackTrace();
         return ResponseDTO.fail(e.getMessage(),"后台错误",550,550);
     }
 
