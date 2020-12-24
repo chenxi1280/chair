@@ -53,7 +53,7 @@ public class EcmArtWorkController extends BaseController{
 	public void insertNodeInfo(@RequestBody EcmArtworkNodesVo ecmArtworkNodesVo){
 		ecmArtWorkService.insertNodeInfo(ecmArtworkNodesVo);
 	}
-	
+
     /**
      * @param: [ecmArtWorkQuery] 传入的 查询参数 token
      * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
@@ -96,7 +96,6 @@ public class EcmArtWorkController extends BaseController{
 			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
 		}
 		ecmArtWorkQuery.setFkUserid(userIdByHandToken);
-
 		return ecmArtWorkService.getArtWork(ecmArtWorkQuery);
     }
 
