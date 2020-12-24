@@ -7,7 +7,7 @@ import java.util.Date;
 
 /**
  * ecm_video_temporary_storage
- * @author 
+ * @author
  */
 @Data
 public class EcmVideoTemporaryStorage implements Serializable {
@@ -65,6 +65,12 @@ public class EcmVideoTemporaryStorage implements Serializable {
      * 修改时间
      */
     private Date updateDate;
+
+
+    /**
+     * 视频信息
+     */
+    private String videoInfo;
 
     private static final long serialVersionUID = 1L;
 }

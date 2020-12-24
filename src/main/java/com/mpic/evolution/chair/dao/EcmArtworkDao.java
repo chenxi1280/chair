@@ -39,4 +39,6 @@ public interface EcmArtworkDao {
     int updateEndingsByArtworkId(int fkArtworkId);
 
     int updateEndingsByArtwork(EcmArtworkVo ecmArtworkVo);
+
+    List<EcmArtworkVo> selectArtWorksAll();
 }

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -38,9 +39,11 @@ public class EcmVideoStorageServiceImpl implements EcmVideoStorageService {
     EcmArtworkNodesDao ecmArtworkNodesDao;
 
     @Override
-    public ResponseDTO videoTemporaryStorage(EcmVideoTemporaryStorage ecmVideoTemporaryStorage) {
+    public ResponseDTO videoTemporaryStorage(EcmVideoTemporaryStorageVO ecmVideoTemporaryStorage) {
         ecmVideoTemporaryStorage.setVideoStatus((short) 0);
         ecmVideoTemporaryStorage.setCreateDate(new Date());
+        ecmVideoTemporaryStorage.setVideoInfo( ecmVideoTemporaryStorage.getVideoHigh() + "," +ecmVideoTemporaryStorage.getVideoWidth()
+                + "," + ecmVideoTemporaryStorage.getVideoTime());
         return ResponseDTO.get(1 == ecmVideoTemporaryStorageDao.insertSelective(ecmVideoTemporaryStorage),ecmVideoTemporaryStorage);
     }
 
@@ -59,12 +62,17 @@ public class EcmVideoStorageServiceImpl implements EcmVideoStorageService {
         if (ecmArtworkNodes == null){
             return ResponseDTO.fail(ErrorEnum.ERR_007.getText());
         }
+        String videoInfo =ecmVideoTemporaryStorage.getVideoHigh() + "," +ecmVideoTemporaryStorage.getVideoWidth()
+                + "," + ecmVideoTemporaryStorage.getVideoTime();
         ecmArtworkNodes.setVideoUrl(ecmVideoTemporaryStorage.getVideoUrl());
         ecmArtworkNodes.setVideoCode(ecmVideoTemporaryStorage.getVideoCode());
         ecmArtworkNodes.setItemsBakText(ecmVideoTemporaryStorage.getNodeImgUrl());
         ecmArtworkNodes.setParentList(null);
+        ecmArtworkNodes.setVideoInfo(videoInfo);
         ecmVideoTemporaryStorage.setVideoStatus((short) 1);
         ecmVideoTemporaryStorage.setUpdateDate(new Date());
+
+        ecmVideoTemporaryStorage.setVideoInfo(videoInfo);
         try{
             ecmVideoTemporaryStorageDao.updateByPrimaryKeySelective(ecmVideoTemporaryStorage);
 //            ecmArtworkNodesDao.updateByPrimaryKeySelective(ecmArtworkNodes);
@@ -89,7 +97,14 @@ public class EcmVideoStorageServiceImpl implements EcmVideoStorageService {
             if (!vo.getFkUserId().equals(ecmVideoTemporaryStorageQurey.getFkUserId())){
                 return  ResponseDTO.fail(ErrorEnum.ERR_603.getText());
             }
+            if ( !StringUtils.isEmpty(vo.getVideoInfo())){
+                String[] split = vo.getVideoInfo().split(",");
+                vo.setVideoHigh(split[0]);
+                vo.setVideoWidth(split[1]);
+                vo.setVideoTime(split[2]);
+            }
         }
+
         return ResponseDTO.ok(JudgeConstant.SUCCESS,vos);
     }
 

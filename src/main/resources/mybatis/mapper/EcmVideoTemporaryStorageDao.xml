@@ -13,10 +13,11 @@
     <result column="node_img_url" jdbcType="VARCHAR" property="nodeImgUrl" />
     <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
     <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="video_info" jdbcType="VARCHAR" property="videoInfo" />
   </resultMap>
   <sql id="Base_Column_List">
     pk_video_id, video_name, video_code, video_url, fk_artwork_id, fk_user_id, video_status,
-    fk_node_id, node_img_url, create_date, update_date
+    fk_node_id, node_img_url, create_date, update_date, video_info
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
@@ -32,11 +33,11 @@
     insert into ecm_video_temporary_storage (video_name, video_code, video_url,
       fk_artwork_id, fk_user_id, video_status,
       fk_node_id, node_img_url, create_date,
-      update_date)
+      update_date, video_info)
     values (#{videoName,jdbcType=VARCHAR}, #{videoCode,jdbcType=VARCHAR}, #{videoUrl,jdbcType=VARCHAR},
       #{fkArtworkId,jdbcType=INTEGER}, #{fkUserId,jdbcType=INTEGER}, #{videoStatus,jdbcType=SMALLINT},
       #{fkNodeId,jdbcType=INTEGER}, #{nodeImgUrl,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP},
-      #{updateDate,jdbcType=TIMESTAMP})
+      #{updateDate,jdbcType=TIMESTAMP}, #{videoInfo,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" keyColumn="pk_video_id" keyProperty="pkVideoId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmVideoTemporaryStorage" useGeneratedKeys="true">
     insert into ecm_video_temporary_storage
@@ -71,6 +72,9 @@
       <if test="updateDate != null">
         update_date,
       </if>
+      <if test="videoInfo != null">
+        video_info,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="videoName != null">
@@ -102,6 +106,9 @@
       </if>
       <if test="updateDate != null">
         #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="videoInfo != null">
+        #{videoInfo,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -138,6 +145,9 @@
       <if test="updateDate != null">
         update_date = #{updateDate,jdbcType=TIMESTAMP},
       </if>
+      <if test="videoInfo != null">
+        video_info = #{videoInfo,jdbcType=VARCHAR},
+      </if>
     </set>
     where pk_video_id = #{pkVideoId,jdbcType=INTEGER}
   </update>
@@ -152,7 +162,8 @@
       fk_node_id = #{fkNodeId,jdbcType=INTEGER},
       node_img_url = #{nodeImgUrl,jdbcType=VARCHAR},
       create_date = #{createDate,jdbcType=TIMESTAMP},
-      update_date = #{updateDate,jdbcType=TIMESTAMP}
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      video_info = #{videoInfo,jdbcType=VARCHAR}
     where pk_video_id = #{pkVideoId,jdbcType=INTEGER}
   </update>
 

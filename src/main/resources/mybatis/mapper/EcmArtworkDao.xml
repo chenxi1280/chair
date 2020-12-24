@@ -319,8 +319,13 @@
       </if>
 
   </select>
+    <select id="selectArtWorksAll" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkVo">
+      select <include refid="Base_Column_List" />
+      from ecm_artwork
+      where artwork_status != 5
+    </select>
 
-  <update id="updateEndingsByArtworkId">
+    <update id="updateEndingsByArtworkId">
     update ecm_artwork
     set
       is_endings = 1

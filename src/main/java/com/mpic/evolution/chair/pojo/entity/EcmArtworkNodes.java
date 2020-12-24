@@ -60,6 +60,7 @@ public class EcmArtworkNodes implements Serializable  {
     // node 定位节点
     @JsonProperty(value = "nodeLocation" )
     @JSONField(name = "nodeLocation")
+    @JsonIgnore
     private String itemsText;
 
     // 节点图片url
@@ -110,6 +111,12 @@ public class EcmArtworkNodes implements Serializable  {
     @JsonProperty(value = "isNumberSelect" )
     @JSONField(name = "isNumberSelect" )
     private String chosenText;
+
+
+    /**
+     * 视频宽高，时长
+     */
+    private String videoInfo;
 
     private static final long serialVersionUID = 1L;
 

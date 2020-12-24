@@ -12,7 +12,7 @@ import com.mpic.evolution.chair.pojo.vo.EcmVideoTemporaryStorageVO;
  * @Date 2020/10/15 9:47
  */
 public interface EcmVideoStorageService {
-    ResponseDTO videoTemporaryStorage(EcmVideoTemporaryStorage ecmVideoTemporaryStorage);
+    ResponseDTO videoTemporaryStorage(EcmVideoTemporaryStorageVO ecmVideoTemporaryStorage);
 
     ResponseDTO updataVideoTemporaryStorage(EcmVideoTemporaryStorageVO ecmVideoTemporaryStorage);
 

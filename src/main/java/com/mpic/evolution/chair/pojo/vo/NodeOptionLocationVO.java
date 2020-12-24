@@ -29,6 +29,22 @@ public class NodeOptionLocationVO {
     private Double hideWidthScale;
     // 透明度
     private Double rectOpacity;
-
-    private String locationSkinFlag;
+    // 是否使用 皮肤flag 弃用
+//    private String locationSkinFlag;
+    // 左皮肤框位置X轴比
+//    private Double skinRectLeftX;
+//    // 左皮肤框位置Y轴比
+//    private Double skinRectLeftY;
+//    // 右皮肤框位置X轴比
+//    private Double skinRectrightX;
+//    // 右皮肤框位置Y轴比
+//    private Double skinRectrightY;
+//    // 文本框位置X轴比
+//    private Double textRectWidth;
+//    // 文本框的位置Y轴比
+//    private Double textRectHeight;
+//    // 透明框位置 宽比
+//    private Double transparentRectWidth;
+//    // 透明框位置 高比
+//    private Double transparentRectHeight;
 }

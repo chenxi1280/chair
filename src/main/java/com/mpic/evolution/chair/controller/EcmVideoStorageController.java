@@ -35,7 +35,7 @@ public class EcmVideoStorageController extends BaseController {
      *       失败: status 500  msg "error“
      */
     @RequestMapping("/videoTemporaryStorage")
-    ResponseDTO videoTemporaryStorage(@RequestBody EcmVideoTemporaryStorage ecmVideoTemporaryStorage) {
+    ResponseDTO videoTemporaryStorage(@RequestBody EcmVideoTemporaryStorageVO ecmVideoTemporaryStorage) {
         Integer userIdByHandToken = getUserIdByHandToken();
         if (userIdByHandToken == null){
             return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
