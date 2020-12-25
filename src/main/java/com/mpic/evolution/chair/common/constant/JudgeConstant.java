@@ -17,7 +17,7 @@ public interface JudgeConstant {
 
     String N ="N";
 
-    int flowMax = 1024 * 500;
+    int FLOW_MAX = 1024 * 500;
 
 
 }

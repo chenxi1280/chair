@@ -18,8 +18,8 @@ import com.mpic.evolution.chair.common.constant.SecretKeyConstants;
 public class JWTUtil {
 
 	/** token 过期时间: 10天 */
-    public static final int calendarField = Calendar.DATE;
-    public static final int calendarInterval = 10;
+    public static final int CALENDAR_FIELD = Calendar.DATE;
+    public static final int CALENDAR_INTERVAL = 10;
 
     /**
      *
@@ -97,28 +97,29 @@ public class JWTUtil {
      */
     public static String sign(String userId,String username, String secret) {
     	// header Map
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>(4);
         map.put("alg", "HS256");
         map.put("typ", "JWT");
-        
+
         Date iatDate = new Date();
         //expire time
 		Calendar nowTime = Calendar.getInstance();
-		nowTime.add(calendarField, calendarInterval);
+		nowTime.add(CALENDAR_FIELD, CALENDAR_INTERVAL);
 		Date expiresDate = nowTime.getTime();
 
 		Algorithm algorithm = Algorithm.HMAC256(MD5Utils.encrypt(secret));
-		// 附带username信息
-		return JWT.create().withHeader(map) // header
+		// 附带username信息header
+		return JWT.create().withHeader(map)
 		        .withClaim("userId", userId)
 		        .withClaim("username", username)
-		        .withIssuedAt(iatDate) // sign time
+                // sign time
+		        .withIssuedAt(iatDate)
 		        .withExpiresAt(expiresDate)
 		        .sign(algorithm);
     }
-    
+
     public static void main(String[] args) {
-		String token = JWTUtil.sign("1506", "codeWhy", SecretKeyConstants.jwtSecretKey);
+		String token = JWTUtil.sign("1506", "codeWhy", SecretKeyConstants.JWT_SECRET_KEY);
 		System.out.println(token);
 		String userId = JWTUtil.getUserId(token);
 		System.out.println(userId);

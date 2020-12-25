@@ -17,13 +17,13 @@ import com.mpic.evolution.chair.common.constant.EmailConstants;
 import com.sun.mail.util.MailSSLSocketFactory;
 
 /**
- * 
+ *
  * @author SJ
  *
  */
 
 public class MailUtil{
-	
+
 	private String email;//收件人邮箱
 	private String emailType;//邮件内容
 	private String subject;
@@ -51,13 +51,14 @@ public class MailUtil{
 		properties.put("mail.smtp.ssl.socketFactory", mFactory);
 		// 获取默认session对象
 		Session session = Session.getDefaultInstance(properties, new Authenticator() {
+            @Override
 			public PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(EmailConstants.userName, EmailConstants.password);// 发件人邮箱账号和授权码
+				return new PasswordAuthentication(EmailConstants.USER_NAME, EmailConstants.PASSWORD);// 发件人邮箱账号和授权码
 			}
 		});
 		MimeMessage message = new MimeMessage(session);
 		// 设置发件人
-		message.setFrom(new InternetAddress(EmailConstants.userName));
+		message.setFrom(new InternetAddress(EmailConstants.USER_NAME));
 		// 设置接收人
 		message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
 		// 设置邮件主题
@@ -68,31 +69,31 @@ public class MailUtil{
 		Transport.send(message);
 		System.out.println("邮件发送成功");
 	}
-	
+
 	private String getEmailContent(String emailType, String uuid) {
 		String content = "";
-		if (emailType.equals("verification")) {
-			content = String.format("<html>" + 
-					"	<head></head>" + 
-					"	<body>" + 
-					"		<h1>这是一封激活邮件,激活请点击以下链接</h1>" + 
-					"		<h3><a href='http://192.168.1.10:8080/activateUser?token=%s" + 
-					"			 		'>http://192.168.1.10:8080/activateUser?token=%s" + 
-					"			 		</href>" + 
-					"		</h3>" + 
-					"	</body>" + 
+		if ("verification".equals(emailType)) {
+			content = String.format("<html>" +
+					"	<head></head>" +
+					"	<body>" +
+					"		<h1>这是一封激活邮件,激活请点击以下链接</h1>" +
+					"		<h3><a href='http://192.168.1.10:8080/activateUser?token=%s" +
+					"			 		'>http://192.168.1.10:8080/activateUser?token=%s" +
+					"			 		</href>" +
+					"		</h3>" +
+					"	</body>" +
 					"</html>"
 					,uuid,uuid);
 		}else {
-			content = String.format("<html>" + 
-					"	<head></head>" + 
-					"	<body>" + 
-					"		<h1>修改密码链接,请点击以下链接</h1>" + 
-					"		<h3><a href='http://192.168.1.9:8080/#/login/setpsd?token=%s" + 
-					"			 		'>http://192.168.1.9:8080/#/login/setpsd?token=%s" + 
-					"			 		</href>" + 
-					"		</h3>" + 
-					"	</body>" + 
+			content = String.format("<html>" +
+					"	<head></head>" +
+					"	<body>" +
+					"		<h1>修改密码链接,请点击以下链接</h1>" +
+					"		<h3><a href='http://192.168.1.9:8080/#/login/setpsd?token=%s" +
+					"			 		'>http://192.168.1.9:8080/#/login/setpsd?token=%s" +
+					"			 		</href>" +
+					"		</h3>" +
+					"	</body>" +
 					"</html>"
 					,uuid,uuid);
 		}

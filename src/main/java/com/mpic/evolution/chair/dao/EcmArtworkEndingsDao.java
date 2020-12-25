@@ -20,15 +20,15 @@ public interface EcmArtworkEndingsDao {
 
     int updateByPrimaryKey(EcmArtworkEndings record);
 
-    int insertSelectiveList(@Param("list") List<EcmArtworkEndingsVO> ecmArtworkEndingsVOS);
+    int insertSelectiveList(@Param("list") List<EcmArtworkEndingsVO> list);
 
     int deleteByArtwork(int fkArtwork);
 
     List<EcmArtworkEndingsVO> selectByArtwId(Integer pkArtworkId);
 
-    List<EcmArtworkEndingsVO> selectByEndingList( @Param("list") List<EcmArtworkEndingsVO> ecmArtworkEndingsVOS);
+    List<EcmArtworkEndingsVO> selectByEndingList( @Param("list") List<EcmArtworkEndingsVO> list);
 
-    int updateSelectiveList( @Param("list") List<EcmArtworkEndingsVO> ecmArtworkEndingsVOS);
+    int updateSelectiveList( @Param("list") List<EcmArtworkEndingsVO> list);
 
     List<EcmArtworkEndingsVO> selectEcmArtworkEndingsQuery(EcmArtworkEndingsQuery ecmArtworkEndingsQuery);
 

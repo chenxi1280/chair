@@ -63,7 +63,7 @@ public class EndingUntil {
         for (int[] ints : arr) {
             String s = "[0,";
             for (int anInt : ints) {
-                s = s + String.valueOf(anInt)+",";
+                s = s + anInt +",";
 //                System.out.print();
             }
             s = s.substring(0,s.length() - 1);

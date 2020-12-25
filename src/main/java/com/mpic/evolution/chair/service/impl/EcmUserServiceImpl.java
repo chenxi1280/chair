@@ -1,7 +1,7 @@
 package com.mpic.evolution.chair.service.impl;
 
+import static com.mpic.evolution.chair.common.constant.JudgeConstant.FLOW_MAX;
 import static com.mpic.evolution.chair.common.constant.JudgeConstant.SUCCESS;
-import static com.mpic.evolution.chair.common.constant.JudgeConstant.flowMax;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -38,7 +38,7 @@ import com.mpic.evolution.chair.util.VipDateUtil;
  */
 @Service
 public class EcmUserServiceImpl implements EcmUserService {
-	
+
 	@Resource
 	EcmUserDao ecmUserDao;
 	@Resource
@@ -70,7 +70,9 @@ public class EcmUserServiceImpl implements EcmUserService {
 	@Override
 	public boolean updatePwdByToken(EcmUser user, EcmUserVo userVo) {
 		int flag = ecmUserDao.updateEcmUser(user, userVo);
-		if (flag<0) return false;
+		if (flag<0) {
+            return false;
+        }
 		return true;
 	}
 
@@ -82,9 +84,9 @@ public class EcmUserServiceImpl implements EcmUserService {
 	@Override
 	public void updateIsvalidByToken(EcmUser user, EcmUserVo userVo) {
 		ecmUserDao.updateEcmUser(user,userVo);
-		
+
 	}
-	
+
 	/**
 	 * @param: [ecmUser] 用户身份信息
      * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
@@ -129,7 +131,7 @@ public class EcmUserServiceImpl implements EcmUserService {
 		user.setRoles(null);
 		user.setUserLogoStatus(null);
 		try {
-			user.setMobile(EncryptUtil.aesDecrypt(user.getMobile(), SecretKeyConstants.secretKey));
+			user.setMobile(EncryptUtil.aesDecrypt(user.getMobile(), SecretKeyConstants.SECRET_KEY));
 		} catch (Exception e) {
 			user.setMobile(null);
 			e.printStackTrace();
@@ -157,7 +159,7 @@ public class EcmUserServiceImpl implements EcmUserService {
 		//与前端约定 totalFlow是用户会员的剩余流量 userFlow是用户永久流量的剩余流量
 		return ResponseDTO.ok(SUCCESS,user);
 	}
-	
+
 	/**
 	 * @param: [EcmUserHistoryFlowVO] 用户上传的视频的历史信息
      * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
@@ -167,7 +169,7 @@ public class EcmUserServiceImpl implements EcmUserService {
 	 */
 	@Override
 	public ResponseDTO inspectFlow(EcmUserFlowQuery ecmUserFlowQuery) {
-		if (Integer.valueOf(ecmUserFlowQuery.getVideoFlow()) > flowMax ){
+		if (Integer.parseInt(ecmUserFlowQuery.getVideoFlow()) > FLOW_MAX ){
 			return ResponseDTO.fail("视频大于500M，请减小视频大小");
 		}
 		//查询本次请求的时间点用户是否是vip
@@ -206,7 +208,7 @@ public class EcmUserServiceImpl implements EcmUserService {
 		}
 		return ResponseDTO.fail("流量不足，请充值");
 	}
-	
+
 	/**
 	 * @param: [EcmUserHistoryFlowVO] 用户上传的视频的历史信息
      * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
@@ -290,10 +292,12 @@ public class EcmUserServiceImpl implements EcmUserService {
 	@Override
 	public boolean updatePwdByUserId(EcmUser user) {
 		int flag = ecmUserDao.updateByPrimaryKeySelective(user);
-		if (flag<0) return false;
+		if (flag<0) {
+            return false;
+        }
 		return true;
 	}
-	
+
 	/**
 	 * 	判断是否需要重置vipFlow
 	 * @param startDate

@@ -373,7 +373,8 @@ public class EcmArtWorkController extends BaseController{
 			if (HttpMpicUtil.isJsonObject(qrCodeStr)) {
 				//返回的结果是：{"errcode":40001,"errmsg":"invalid credential, access_token is invalid or not latest rid: 5f364b21-395edb8d-336ae042"}
 				JSONObject result = JSONObject.parseObject(qrCodeStr);
-				if(result.get("errcode").equals("40001")) {
+				// result.get("errcode").equals("40001")
+				if( "40001".equals(result.get("errcode"))) {
 					accessToken = getAccessToken();
 					qrCodeStr = this.getQRCode(accessToken,ecmArtWorkQuery,data);
 					String str = "data:image/jpg;base64," + qrCodeStr;
@@ -416,7 +417,8 @@ public class EcmArtWorkController extends BaseController{
 			if (HttpMpicUtil.isJsonObject(qrCodeStr)) {
 				//返回的结果是：{"errcode":40001,"errmsg":"invalid credential, access_token is invalid or not latest rid: 5f364b21-395edb8d-336ae042"}
 				JSONObject result = JSONObject.parseObject(qrCodeStr);
-				if(result.get("errcode").equals("40001")) {
+				//result.get("errcode").equals("40002")
+				if( "40002".equals(result.get("errcode")) ) {
 					accessToken = getDyAccessToken();
 					qrCodeStr = this.getDyQRCode(accessToken,ecmArtWorkQuery,data);
 					String str = "data:image/jpg;base64," + qrCodeStr;
@@ -446,15 +448,15 @@ public class EcmArtWorkController extends BaseController{
         //scene的value 是 videoId
         String codeType = ecmArtWorkQuery.getCodeType();
         String string = "";
-        if (codeType.equals("0")) {
+        if ( "0".equals(codeType)) {
         	string = "artWorkId="+artWorkId+"=status=1";
 		}else {
 			string = "artWorkId="+artWorkId+"=status=4";
 	        data.put("path","pages/play/play?"+"pkArtworkId="+artWorkId);
 		}
         param.put("scene",string);
-		String Base64Str = HttpMpicUtil.sendPostForBase64(url, param);
-		return Base64Str;
+		String base64Str = HttpMpicUtil.sendPostForBase64(url, param);
+		return base64Str;
     }
 
 	/**
@@ -465,7 +467,7 @@ public class EcmArtWorkController extends BaseController{
 	 */
 	private String getAccessToken() {
 		String requestUrl = String.format("https://api.weixin.qq.com/cgi-bin/token?"
-				+ "grant_type=client_credential&appid=%s&secret=%s", PublishConstants.appid, PublishConstants.secret);
+				+ "grant_type=client_credential&appid=%s&secret=%s", PublishConstants.APP_ID, PublishConstants.SECRET);
 		//将返回的access_token 存入redis 过期时间3000秒
 		String jsonStr = HttpKit.get(requestUrl);
 		JSONObject result = JSONObject.parseObject(jsonStr);
@@ -487,7 +489,8 @@ public class EcmArtWorkController extends BaseController{
 		//scene的value 是 videoId
 		String codeType = ecmArtWorkQuery.getCodeType();
 		String string = "";
-		if (codeType.equals("0")) {
+		//codeType.equals("0")
+		if ("0".equals(codeType)) {
 			string = "artWorkId="+artWorkId+"=status=1";
 		}else {
 			string = "artWorkId="+artWorkId+"=status=4";
@@ -502,7 +505,7 @@ public class EcmArtWorkController extends BaseController{
 	}
 	private String getDyAccessToken() {
 		String requestUrl = String.format("https://developer.toutiao.com/api/apps/token?"
-				+ "grant_type=client_credential&appid=%s&secret=%s", TiktokConstant.appid, TiktokConstant.secret);
+				+ "grant_type=client_credential&appid=%s&secret=%s", TiktokConstant.APP_ID, TiktokConstant.SECRET);
 		//将返回的access_token 存入redis 过期时间3000秒
 		String jsonStr = HttpKit.get(requestUrl);
 		JSONObject result = JSONObject.parseObject(jsonStr);

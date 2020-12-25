@@ -49,21 +49,26 @@ import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 import com.tencentcloudapi.sms.v20190711.models.SendStatus;
 
 /**
- * 
+ *
  * @author SJ
  */
 
+@SuppressWarnings("ALL")
 @Controller
 public class LoginController extends BaseController {
 
 	private Logger log = LogManager.getLogger(LoginController.class);
+
+	@SuppressWarnings("AlibabaConstantFieldShouldBeUpperCase")
+	private static final Pattern PATTERN = Pattern.compile("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{4,23}$");
+
 
 	@Resource
 	LoginService loginService;
 
 	@Resource
 	EcmUserService ecmUserService;
-	
+
 	@Resource
 	EcmInviteCodeService ecmInviteCodeService;
 
@@ -72,7 +77,7 @@ public class LoginController extends BaseController {
 
 	/**
 	 * abandon! it is going to user in the future
-	 * 
+	 *
 	 * @param code
 	 * @return
 	 */
@@ -113,7 +118,7 @@ public class LoginController extends BaseController {
 
 	/**
 	 * 登录接口 登陆成功之后 需要修改use表中的count(登录次数)，last_login_time(上一次登录时间)字段，update_time字段
-	 * 
+	 *
 	 * @param ecmUserVo
 	 * @return
 	 */
@@ -125,7 +130,7 @@ public class LoginController extends BaseController {
 		EcmUser user = new EcmUser();
 		EcmUserVo userVo = new EcmUserVo();
 		try {
-			ecmUser.setMobile(EncryptUtil.aesEncrypt(ecmUserVo.getMobile(), SecretKeyConstants.secretKey));
+			ecmUser.setMobile(EncryptUtil.aesEncrypt(ecmUserVo.getMobile(), SecretKeyConstants.SECRET_KEY));
 			ecmUser = ecmUserService.getUserInfos(ecmUser);
 			// 判断账号是否存在
 			if (ecmUser == null || StringUtils.isNullOrBlank(ecmUser.getPassword())) {
@@ -144,7 +149,7 @@ public class LoginController extends BaseController {
 			if (!data.isEmpty()) {
 				return ResponseDTO.fail("登陆失败", data, null, 508);
 			}
-			if (ecmUser.getIsValid().equals("N")) {
+			if ( "N".equals(ecmUser.getIsValid())) {
 				data.add("509");
 			}
 			String inputPwd = ecmUserVo.getPassword();
@@ -158,8 +163,8 @@ public class LoginController extends BaseController {
 			}
 			// 设置token
 			String token = JWTUtil.sign(String.valueOf(ecmUser.getPkUserId()), ecmUser.getUsername(),
-					SecretKeyConstants.jwtSecretKey);
-			// 根据userId 修改用户信息	
+					SecretKeyConstants.JWT_SECRET_KEY);
+			// 根据userId 修改用户信息
 			userVo.setPkUserId(ecmUser.getPkUserId());
 			user.setLastLoginTime(new Date());
 			user.setUpdateTime(new Date());
@@ -178,7 +183,7 @@ public class LoginController extends BaseController {
 
 	/**
 	 * 注册接口 注册成功还需要修改create_time字段和 update_time改字段
-	 * 
+	 *
 	 * @param ecmUserVo
 	 * @return
 	 */
@@ -201,7 +206,7 @@ public class LoginController extends BaseController {
 				if (ecmInviteCode == null || ecmInviteCode.getFkUserId() != null) {
 					return ResponseDTO.fail("请向管理员获取邀请码", null, null, 515);
 				}else {
-					
+
 				}
 			}
 			//昵称检测
@@ -219,7 +224,7 @@ public class LoginController extends BaseController {
 				return ResponseDTO.fail("昵称已被使用", null, null, 504);
 			}
 			//手机号检测
-			String mobile = EncryptUtil.aesEncrypt(ecmUserVo.getMobile(), SecretKeyConstants.secretKey);
+			String mobile = EncryptUtil.aesEncrypt(ecmUserVo.getMobile(), SecretKeyConstants.SECRET_KEY);
 			userInfo.setMobile(mobile);
 			user = ecmUserService.getUserInfos(userInfo);
 			if (user != null && !StringUtils.isNullOrBlank(String.valueOf(user.getMobile()))) {
@@ -264,9 +269,9 @@ public class LoginController extends BaseController {
 
 	/*
 	 * 短信验证
-	 * 
+	 *
 	 * @param ecmUserVo
-	 * 
+	 *
 	 * @return
 	 */
 	@RequestMapping("/sendSMS")
@@ -276,11 +281,11 @@ public class LoginController extends BaseController {
 			String mobile = "86" + ecmUserVo.getMobile();
 			String[] phoneNumbers = { mobile };
 			String phoneConfirmCode = RandomUtil.getCode();
-			String phoneCodeKey = EncryptUtil.aesEncrypt(ecmUserVo.getMobile(), SecretKeyConstants.secretKey);
+			String phoneCodeKey = EncryptUtil.aesEncrypt(ecmUserVo.getMobile(), SecretKeyConstants.SECRET_KEY);
 			// 往redis存的时候不做判断 取得时候做错误校验
 			redisUtil.set(phoneCodeKey, phoneConfirmCode, 300L);
 			SendStatus status = loginService.sendSMS(phoneConfirmCode, phoneNumbers);
-			if (!status.getCode().equals("Ok")) {
+			if (!"Ok".equals(status.getCode())) {
 				log.error("手机验证码发送失败：" + status.getMessage());
 				return ResponseDTO.fail("手机验证码发送失败：" + status.getMessage(), null, null, 502);
 			}
@@ -298,7 +303,7 @@ public class LoginController extends BaseController {
 
 	/**
 	 * 验证手机号
-	 * 
+	 *
 	 * @param ecmUserVo
 	 * @return
 	 */
@@ -311,7 +316,7 @@ public class LoginController extends BaseController {
 			String confirmCode = ecmUserVo.getConfirmCode();
 			String regionCode = String.valueOf(redisUtil.lPop(ecmUserVo.getImageCodeKey()));
 			String mobile = ecmUserVo.getMobile();
-			ecmUser.setMobile(EncryptUtil.aesEncrypt(mobile, SecretKeyConstants.secretKey));
+			ecmUser.setMobile(EncryptUtil.aesEncrypt(mobile, SecretKeyConstants.SECRET_KEY));
 			ecmUser = ecmUserService.getUserInfos(ecmUser);
 			if (StringUtils.isNullOrEmpty(regionCode)) {
 				data.add("501");
@@ -340,7 +345,7 @@ public class LoginController extends BaseController {
 
 	/**
 	 * 忘记密码
-	 * 
+	 *
 	 * @param ecmUserVo
 	 * @return
 	 */
@@ -354,7 +359,7 @@ public class LoginController extends BaseController {
 			// 确认密码验证
 			String inputPhoneConfirmCode = ecmUserVo.getPhoneConfirmCode();
 			String mobile = ecmUserVo.getMobile();
-			String mobileKey = EncryptUtil.aesEncrypt(mobile, SecretKeyConstants.secretKey);
+			String mobileKey = EncryptUtil.aesEncrypt(mobile, SecretKeyConstants.SECRET_KEY);
 			userVo.setMobile(mobileKey);
 			EcmUser userInfos = ecmUserService.getUserInfos(userVo);
 			String phoneConfirmCode = String.valueOf(redisUtil.get(mobileKey));
@@ -393,7 +398,7 @@ public class LoginController extends BaseController {
 
 	/**
 	 * 校验昵称
-	 * 
+	 *
 	 * @param ecmUserVo
 	 * @return
 	 */
@@ -426,7 +431,7 @@ public class LoginController extends BaseController {
 
 	/**
 	 * 校验手机号
-	 * 
+	 *
 	 * @param ecmUserVo
 	 * @return
 	 */
@@ -435,7 +440,7 @@ public class LoginController extends BaseController {
 	public ResponseDTO isExistMobile(@RequestBody EcmUserVo ecmUserVo) {
 		EcmUser user = new EcmUser();
 		try {
-			String mobile = EncryptUtil.aesEncrypt(ecmUserVo.getMobile(), SecretKeyConstants.secretKey);
+			String mobile = EncryptUtil.aesEncrypt(ecmUserVo.getMobile(), SecretKeyConstants.SECRET_KEY);
 			user.setMobile(mobile);
 			user = ecmUserService.getUserInfos(user);
 			if (user != null && !StringUtils.isNullOrBlank(String.valueOf(user.getMobile()))) {
@@ -456,7 +461,7 @@ public class LoginController extends BaseController {
 
 	/**
 	 * 校验图形验证码
-	 * 
+	 *
 	 * @param ecmUserVo
 	 * @return
 	 */
@@ -475,10 +480,10 @@ public class LoginController extends BaseController {
 		}
 		return ResponseDTO.ok();
 	}
-	
+
 	/**
 	 * 邀请码校验
-	 * 
+	 *
 	 * @param ecmUserVo
 	 * @return
 	 */
@@ -507,17 +512,16 @@ public class LoginController extends BaseController {
 		}
 		return ResponseDTO.ok();
 	}
-	
+
 	/**
 	 * 通过正则保证图形验证码都是字母加数字
-	 * 
+	 *
 	 * @param ecmUserVo
 	 * @return
 	 */
 	private String validateCreateText(DefaultKaptcha produce) {
-		Pattern pattern = Pattern.compile("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{4,23}$");
 		String createText = produce.createText();
-		Matcher matcher = pattern.matcher(createText);
+		Matcher matcher = PATTERN.matcher(createText);
 		boolean matches = matcher.matches();
 		if (matches) {
 			return createText;

@@ -17,7 +17,8 @@ public class DateUtil {
      * @return
      */
     public static String timeStamp2Date(String seconds,String format) {
-        if(seconds == null || seconds.isEmpty() || seconds.equals("null")){
+        String n = "null";
+        if(seconds == null || seconds.isEmpty() ||  n.equals(seconds)){
             return "";
         }
         if(format == null || format.isEmpty()){
@@ -32,10 +33,10 @@ public class DateUtil {
      * @param format 如：yyyy-MM-dd HH:mm:ss
      * @return
      */
-    public static String date2TimeStamp(String date_str,String format){
+    public static String date2TimeStamp(String dateStr,String format){
         try {
             SimpleDateFormat sdf = new SimpleDateFormat(format);
-            return String.valueOf(sdf.parse(date_str).getTime()/1000);
+            return String.valueOf(sdf.parse(dateStr).getTime()/1000);
         } catch (Exception e) {
             e.printStackTrace();
         }

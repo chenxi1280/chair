@@ -34,7 +34,7 @@ import org.junit.Test;
  *
  */
 public class QRcodeTest {
-	
+
     /**
      * 	发送该请求getQrcode 返回内容：
      * {"access_token":"36__h45mu6_20MC7dbJE8fNdc0zaa8MrQESUYkdMFRmoq-wzgWurveqRswGwZjAj_oCEi0PXLaoQ3yR3lDqS9UB-MQfkPFjOoyHrAICN-1UbZM_1WVSMsRM9Y-1lVq4a3n7RqYxYk7F4TKD9QO9CGCeAJAMQM",
@@ -60,7 +60,7 @@ public class QRcodeTest {
      */
     public void test2() {
 
-        String accessToken = getAccessToken(PublishConstants.appid, PublishConstants.secret);
+        String accessToken = getAccessToken(PublishConstants.APP_ID, PublishConstants.SECRET);
         String url = String.format("https://api.weixin.qq.com/wxa/getwxacodeunlimit?"
         		+ "access_token=%s", accessToken);
         JSONObject param = new JSONObject();
@@ -69,7 +69,7 @@ public class QRcodeTest {
         wxPost(url, param, "asd");
 
     }
-    
+
     private void wxPost(String uri, JSONObject param, String fileName) {
         try {
             URL url = new URL(uri);

@@ -102,9 +102,9 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         Integer count = ecmArtworkDao.selectArtWorkCountByEcmArtWorkQuery(ecmArtWorkQuery);
         List<EcmArtworkVo> collect = ecmArtworkVoList.stream().filter(ecmArtworkVo -> ecmArtworkVo.getArtworkStatus() == 4).collect(Collectors.toList());
         if (!CollectionUtils.isEmpty(collect)) {
-            List<EcmArtworkBroadcastHotVO> ecmArtworkBroadcastHotVOS = ecmArtworkBroadcastHotDao.selectEcmArtworkList(collect);
+            List<EcmArtworkBroadcastHotVO> list = ecmArtworkBroadcastHotDao.selectEcmArtworkList(collect);
             ecmArtworkVoList.forEach(ecmArtworkVo -> {
-                ecmArtworkBroadcastHotVOS.forEach(ecmArtworkBroadcastHotVO -> {
+                list.forEach(ecmArtworkBroadcastHotVO -> {
                     if (ecmArtworkBroadcastHotVO.getFkArkworkId().equals(ecmArtworkVo.getPkArtworkId())) {
                         ecmArtworkVo.setHotCount(ecmArtworkBroadcastHotVO.getBroadcastCount());
                     }
@@ -129,7 +129,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         if (!ecmArtWorkQuery.getFkUserid().equals(ecmArtwork.getFkUserid())) {
             return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
         }
-        
+
         List<EcmArtworkNodesVo> list = ecmArtworkNodesDao.selectByArtWorkId(ecmArtWorkQuery.getPkArtworkId());
         List<EcmArtworkNodeNumberConditionVO> ecmArtworkNodeNumberConditionS = ecmArtworkNodeNumberConditionDao.selectByArtWorkId(ecmArtWorkQuery.getPkArtworkId());
         //2次循环寻找 对应的  跳转节点
@@ -367,18 +367,18 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                 if (ecmArtworkNodeNumberConditionVO.getAllNodeNameFlag()) {
                     ecmArtworkNodeNumberConditionDao.updateNameConditionNameFLagByArtworkID(ecmArtworkNodeNumberConditionVO);
                     ecmArtworkNodesDao.updateNodeNumberFlag(ecmArtworkNodes.getFkArtworkId());
-                    List<EcmArtworkNodeNumberConditionVO> ecmArtworkNodeNumberConditionVOS = ecmArtworkNodeNumberConditionDao.selectByArtWorkId(ecmArtworkNodeNumberConditionVO.getFkArtworkId());
+                    List<EcmArtworkNodeNumberConditionVO> ecmArtworkNodeNumberConditionVOList = ecmArtworkNodeNumberConditionDao.selectByArtWorkId(ecmArtworkNodeNumberConditionVO.getFkArtworkId());
                     List<EcmArtworkNodesVo> ecmArtworkNodesVoList = ecmArtworkNodesDao.selectByArtWorkId(ecmArtworkNodeNumberConditionVO.getFkArtworkId());
-                    if (!CollectionUtils.isEmpty(ecmArtworkNodeNumberConditionVOS ) && !CollectionUtils.isEmpty(ecmArtworkNodesVoList)){
-                        if (ecmArtworkNodeNumberConditionVOS.size() == ecmArtworkNodesVoList.size()){
+                    if (!CollectionUtils.isEmpty(ecmArtworkNodeNumberConditionVOList ) && !CollectionUtils.isEmpty(ecmArtworkNodesVoList)){
+                        if (ecmArtworkNodeNumberConditionVOList.size() == ecmArtworkNodesVoList.size()){
                             return ResponseDTO.ok("全局应用成功");
                         }
                     }
                     Iterator<EcmArtworkNodesVo> iterator = ecmArtworkNodesVoList.iterator();
                     while (iterator.hasNext()) {
                         EcmArtworkNodesVo ecmArtworkNodesVo = iterator.next();
-                        if (!CollectionUtils.isEmpty(ecmArtworkNodeNumberConditionVOS)) {
-                            for (EcmArtworkNodeNumberConditionVO ecmArtworkNode : ecmArtworkNodeNumberConditionVOS) {
+                        if (!CollectionUtils.isEmpty(ecmArtworkNodeNumberConditionVOList)) {
+                            for (EcmArtworkNodeNumberConditionVO ecmArtworkNode : ecmArtworkNodeNumberConditionVOList) {
                                 if (ecmArtworkNodesVo.getPkDetailId().equals(ecmArtworkNode.getPkDetailid())) {
                                     iterator.remove();
                                 }
