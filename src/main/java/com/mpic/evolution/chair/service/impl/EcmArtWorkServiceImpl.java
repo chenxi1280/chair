@@ -91,7 +91,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 		EcmArtworkNodes ecmArtworkNodes = new EcmArtworkNodes();
 		ecmArtworkNodes.setPkDetailId(ecmArtworkNodesVo.getPkDetailId());
 		ecmArtworkNodes.setVideoInfo(ecmArtworkNodesVo.getVideoInfo());
-		ecmArtworkNodesDao.insertSelective(ecmArtworkNodes);
+		ecmArtworkNodesDao.updateByPrimaryKeySelective(ecmArtworkNodes);
 	}
 
 
