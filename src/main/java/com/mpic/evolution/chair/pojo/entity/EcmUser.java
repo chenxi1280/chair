@@ -7,7 +7,7 @@ import java.util.Date;
 
 /**
  * ecm_user
- * @author 
+ * @author
  */
 @Data
 public class EcmUser implements Serializable {
@@ -96,6 +96,11 @@ public class EcmUser implements Serializable {
      * 用户所在城市
      */
     private String city;
+
+    /**
+     * 用户注册来源
+     */
+    private String userSource;
 
     private static final long serialVersionUID = 1L;
 }
