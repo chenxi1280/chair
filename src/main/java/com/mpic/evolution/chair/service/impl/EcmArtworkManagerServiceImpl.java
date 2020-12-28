@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.annotation.Resource;
 
+import com.mpic.evolution.chair.common.constant.CommonField;
 import com.mpic.evolution.chair.common.constant.JudgeConstant;
 import com.mpic.evolution.chair.dao.EcmArtworkBroadcastHotDao;
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHot;
@@ -24,6 +25,8 @@ import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
 import com.mpic.evolution.chair.service.EcmArtworkManagerService;
 import com.mpic.evolution.chair.util.AIVerifyUtil;
 import com.mpic.evolution.chair.util.JWTUtil;
+
+import static com.mpic.evolution.chair.common.constant.CommonField.*;
 
 /**
 * @author 作者 SJ:
@@ -58,8 +61,8 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			ecmArtworkVo.setLastModifyDate(new Date());
 			//  作品通过审核发布
 			Boolean sendFail = false ;
-			if ( "publish".equals(ecmArtworkVo.getCode()) ){
-				if (ecmArtwork.getArtworkStatus() == 2  ||  ecmArtwork.getArtworkStatus() == 3 ){
+			if ( CommonField.PUBLISH.equals(ecmArtworkVo.getCode()) ){
+				if (ecmArtwork.getArtworkStatus() == INT_TWO  ||  ecmArtwork.getArtworkStatus() == INT_THREE ){
 					EcmArtworkBroadcastHotVO ecmArtworkBroadcastHotVO = ecmArtworkBroadcastHotDao.selectByArtworkId(ecmArtworkVo.getPkArtworkId());
 					if (ecmArtworkBroadcastHotVO == null){
 						ecmArtworkBroadcastHotVO  = new EcmArtworkBroadcastHotVO();
@@ -75,20 +78,15 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			}
 
 			//  作品请求审核
-			if ( "verify".equals(ecmArtworkVo.getCode())){
+			if ( CommonField.VERIFY.equals(ecmArtworkVo.getCode())){
+				videoHandleConsumerService.handleArtwork(ecmArtworkVo.getPkArtworkId());
 				// 重点优化需要 线程优化
-				try {
-					new Thread(() -> videoHandleConsumerService.handleArtwork(ecmArtworkVo.getPkArtworkId())).start();
-				}catch (Exception e){
-					e.printStackTrace();
-				}
-
 				ecmArtworkVo.setArtworkStatus((short)1);
 			}
-			if ( "cancel".equals(ecmArtworkVo.getCode() )){
+			if ( CommonField.CANCEL.equals(ecmArtworkVo.getCode() )){
 				ecmArtworkVo.setArtworkStatus((short)0);
 			}
-			if ( "delete".equals(ecmArtworkVo.getCode() )){
+			if ( CommonField.DELETE.equals(ecmArtworkVo.getCode() )){
 				ecmArtworkVo.setArtworkStatus((short)5);
 			}
 			ecmArtworkDao.updateByPrimaryKeySelective(ecmArtworkVo);

@@ -26,6 +26,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 
+import static com.mpic.evolution.chair.common.constant.CommonField.*;
+
 /**
  * @author cxd
  */
@@ -233,12 +235,13 @@ public class EcmArtWorkController extends BaseController{
 		String saveArtworkEndings = "saveArtworkEndings";
 		Long o = (Long) redisUtil.get(userId + saveArtworkEndings);
 		if ( o != null) {
-			if ( o <= (System.currentTimeMillis() - 3)){
+			int three = 3;
+			if ( o <= (System.currentTimeMillis() - three)){
 				return ResponseDTO.fail("保存频繁",null,480,480);
 			}
 		}
 
-		if (CollectionUtils.isEmpty(ecmArtworkEndingsQuery.getEcmArtworkEndingsVOS()) && ecmArtworkEndingsQuery.getEcmArtworkEndingsVOS().size() > 256 ){
+		if (CollectionUtils.isEmpty(ecmArtworkEndingsQuery.getEcmArtworkEndingsVOS()) && ecmArtworkEndingsQuery.getEcmArtworkEndingsVOS().size() > NODE_ENDING_MAX ){
 			return ResponseDTO.fail("结局数过多",null,490,490);
 		}
 		redisUtil.set(userId + saveArtworkEndings ,System.currentTimeMillis() );
@@ -265,7 +268,15 @@ public class EcmArtWorkController extends BaseController{
 
 		return ecmArtWorkService.saveArtworkEndingState(ecmArtworkVo);
 	}
-
+	/**
+	 * @param: [ecmArtworkEndingsQuery]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2020/12/25
+	 * 描述 : 保存多节点集合
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
 	@RequestMapping("/saveArtworkEndingList")
 	@ResponseBody
 	public ResponseDTO saveArtworkEndingList(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
@@ -277,6 +288,14 @@ public class EcmArtWorkController extends BaseController{
 		return ecmArtWorkService.saveArtworkEndingList(ecmArtworkEndingsQuery);
 	}
 
+	/**
+	 * @param: [ecmArtworkEndingsQuery]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2020/12/25
+	 * 描述 :  多结局 多节点 更新
+	 *
+	 */
 	@RequestMapping("updateArtworkEndingList")
 	@ResponseBody
 	public ResponseDTO updateArtworkEndingList(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
@@ -288,6 +307,13 @@ public class EcmArtWorkController extends BaseController{
 		return ecmArtWorkService.updateArtworkEndingList(ecmArtworkEndingsQuery);
 	}
 
+	/**
+	 * @param: [ecmArtworkEndingsQuery]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2020/12/25
+	 * 描述 : 多结局 节点 删除
+	 */
 	@RequestMapping("/deleteArtworkEnding")
 	@ResponseBody
 	public ResponseDTO deleteArtworkEnding(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
@@ -299,6 +325,15 @@ public class EcmArtWorkController extends BaseController{
 		return ecmArtWorkService.deleteArtworkEnding(ecmArtworkEndingsQuery);
 	}
 
+	/**
+	 * @param: [ecmArtworkEndingsQuery]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2020/12/25
+	 * 描述 : 获取多结局 list
+	 *       成功: status 200  msg "success”   date:ecmArtworkEndingsVOList
+	 *       失败: status 500  msg "error“
+	 */
 	@RequestMapping("/getArtworkEndingList")
 	@ResponseBody
 	public ResponseDTO getArtworkEndingList(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
@@ -310,6 +345,15 @@ public class EcmArtWorkController extends BaseController{
 		return ecmArtWorkService.getArtworkEndingList(ecmArtworkEndingsQuery);
 	}
 
+	/**
+	 * @param: [ecmArtworkEndingsQuery]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2020/12/25
+	 * 描述 : saveArtworkEndingAll 全删 全存 多结局
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
 	@RequestMapping("/saveArtworkEndingAll")
 	@ResponseBody
 	public ResponseDTO saveArtworkEndingAll(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
@@ -321,16 +365,23 @@ public class EcmArtWorkController extends BaseController{
 			return ResponseDTO.fail("无多结局");
 		}
 
-		if (ecmArtworkEndingsQuery.getNodeNum().length > 256){
+		if (ecmArtworkEndingsQuery.getNodeNum().length > NODE_ENDING_MAX){
 			return ResponseDTO.fail("结局数过多",null,490,490);
 		}
-
 
 		ecmArtworkEndingsQuery.setFkUserId(userId);
 		return ecmArtWorkService.saveArtworkEndingAll(ecmArtworkEndingsQuery);
 	}
 
-
+	/**
+	 * @param: [ecmArtworkEndingsQuery]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2020/12/25
+	 * 描述 : 多删除
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
 	@RequestMapping("/deleteArtworkEndingList")
 	@ResponseBody
 	public ResponseDTO deleteArtworkEndingList(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
@@ -374,7 +425,9 @@ public class EcmArtWorkController extends BaseController{
 				//返回的结果是：{"errcode":40001,"errmsg":"invalid credential, access_token is invalid or not latest rid: 5f364b21-395edb8d-336ae042"}
 				JSONObject result = JSONObject.parseObject(qrCodeStr);
 				// result.get("errcode").equals("40001")
-				if( "40001".equals(result.get("errcode"))) {
+				String error= "40001";
+				String errorCode = "errcode";
+				if( error.equals(result.get(errorCode))) {
 					accessToken = getAccessToken();
 					qrCodeStr = this.getQRCode(accessToken,ecmArtWorkQuery,data);
 					String str = "data:image/jpg;base64," + qrCodeStr;
@@ -394,7 +447,13 @@ public class EcmArtWorkController extends BaseController{
 		}
     }
 
-
+	/**
+	 * @param: [ecmArtWorkQuery]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2020/12/25
+	 * 描述 : 获取抖音二维码
+	 */
     @RequestMapping("/getDycode")
 	@ResponseBody
 	public ResponseDTO getDyCode (@RequestBody EcmArtWorkQuery ecmArtWorkQuery) {
@@ -418,7 +477,9 @@ public class EcmArtWorkController extends BaseController{
 				//返回的结果是：{"errcode":40001,"errmsg":"invalid credential, access_token is invalid or not latest rid: 5f364b21-395edb8d-336ae042"}
 				JSONObject result = JSONObject.parseObject(qrCodeStr);
 				//result.get("errcode").equals("40002")
-				if( "40002".equals(result.get("errcode")) ) {
+				String error= "40002";
+				String errorCode = "errcode";
+				if( error.equals(result.get(errorCode)) ) {
 					accessToken = getDyAccessToken();
 					qrCodeStr = this.getDyQRCode(accessToken,ecmArtWorkQuery,data);
 					String str = "data:image/jpg;base64," + qrCodeStr;
@@ -438,7 +499,13 @@ public class EcmArtWorkController extends BaseController{
 		}
 	}
 
-
+	/**
+	 * @param: [accessToken, ecmArtWorkQuery, data]
+	 * @return: java.lang.String
+	 * @author: cxd
+	 * @Date: 2020/12/25
+	 * 描述 : 微信获取二维码
+	 */
     private String getQRCode(String accessToken,EcmArtWorkQuery ecmArtWorkQuery,JSONObject data) {
     	String url = String.format("https://api.weixin.qq.com/wxa/getwxacodeunlimit?"
         		+ "access_token=%s", accessToken);
@@ -448,7 +515,8 @@ public class EcmArtWorkController extends BaseController{
         //scene的value 是 videoId
         String codeType = ecmArtWorkQuery.getCodeType();
         String string = "";
-        if ( "0".equals(codeType)) {
+
+        if ( STRING_ZORE.equals(codeType)) {
         	string = "artWorkId="+artWorkId+"=status=1";
 		}else {
 			string = "artWorkId="+artWorkId+"=status=4";
@@ -479,7 +547,13 @@ public class EcmArtWorkController extends BaseController{
 
 
 
-
+	/**
+	 * @param: [accessToken, ecmArtWorkQuery, data]
+	 * @return: java.lang.String
+	 * @author: cxd
+	 * @Date: 2020/12/25
+	 * 描述 : 抖音获取二维码
+	 */
 	private String getDyQRCode(String accessToken,EcmArtWorkQuery ecmArtWorkQuery,JSONObject data) {
 		String url = String.format("https://developer.toutiao.com/api/apps/qrcode");
 		JSONObject param = new JSONObject();
@@ -490,7 +564,7 @@ public class EcmArtWorkController extends BaseController{
 		String codeType = ecmArtWorkQuery.getCodeType();
 		String string = "";
 		//codeType.equals("0")
-		if ("0".equals(codeType)) {
+		if (STRING_ZORE.equals(codeType)) {
 			string = "artWorkId="+artWorkId+"=status=1";
 		}else {
 			string = "artWorkId="+artWorkId+"=status=4";

@@ -24,7 +24,7 @@ public interface EcmArtworkDao {
 
     List<EcmArtworkVo> selectArtWorks(EcmArtWorkQuery ecmArtWorkQuery);
 
-    List<EcmArtworkVo> selectFindArtWorks(@Param("ids") List<EcmArtworkBroadcastHotVO> ecmArtworkBroadcastHotVOS);
+    List<EcmArtworkVo> selectFindArtWorks(@Param("ids") List<EcmArtworkBroadcastHotVO> list);
 
     List<EcmArtworkVo> selectFindSortArtWorks(EcmArtWorkQuery ecmArtWorkQuery);
 

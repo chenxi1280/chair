@@ -8,4 +8,20 @@ package com.mpic.evolution.chair.common.constant;
  */
 public interface CommonField {
     String STRING_NULL = "null";
+    String STRING_DATA = "Data";
+    String STRING_CAPITAL_ERROR = "Error";
+    String STRING_LOWER_CASE_ERROR = "error";
+    int NODE_ENDING_MAX =  256;
+    String STRING_ZORE = "0";
+    String VERIFY = "verify";
+    String PUBLISH = "publish";
+    String CANCEL = "cancel";
+    String DELETE ="delete";
+    int INT_ZORE = 0;
+    int INT_ONE = 1;
+    int INT_TWO = 2;
+    int INT_THREE = 3;
+    String STRING_LOWER_CASE_ERRCODE = "ERRCODE";
+
+
 }

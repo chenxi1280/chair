@@ -105,10 +105,10 @@ public class HttpMpicUtil {
     }
 
 
-    public static String post(JSONObject json,String URL) {
+    public static String post(JSONObject json,String url) {
 //        HttpClient client = new DefaultHttpClient(); 过时方法
         HttpClient client = HttpClientBuilder.create().build();
-        HttpPost post = new HttpPost(URL);
+        HttpPost post = new HttpPost(url);
         post.setHeader("Content-Type", "application/json");
         String result = "";
         try {

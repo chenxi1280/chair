@@ -18,7 +18,7 @@ public class EcmArtworkEndingsQuery extends PageQuery{
     private int fkUserId;
     private int pkEndingsId;
     private int fkArtworkId;
-    private int nodeNum[];
+    private int[] nodeNum;
     private List<Integer> deleteEndingId;
 //    private String ecmArtworkEndingsVOSJson;
     private List<EcmArtworkEndingsVO> ecmArtworkEndingsVOS;

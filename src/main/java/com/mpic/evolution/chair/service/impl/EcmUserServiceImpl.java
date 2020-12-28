@@ -1,5 +1,6 @@
 package com.mpic.evolution.chair.service.impl;
 
+import static com.mpic.evolution.chair.common.constant.CommonField.*;
 import static com.mpic.evolution.chair.common.constant.JudgeConstant.FLOW_MAX;
 import static com.mpic.evolution.chair.common.constant.JudgeConstant.SUCCESS;
 
@@ -147,12 +148,12 @@ public class EcmUserServiceImpl implements EcmUserService {
 			user.setTotalFlow(vipflow);
 		}
 		//有会员但是会员到期了
-		if (symbol == 2) {
+		if (symbol == INT_TWO) {
 			user.setUserFlow(0);
 			user.setTotalFlow(0);
 		}
 		//无会员信息 不是会员就无法购买加油包 只有默认流量 此流量加在永久流量中
-		if (symbol == 3) {
+		if (symbol == INT_THREE) {
 			user.setUserFlow(ecmUserFlow.getPermanentFlow());
 			user.setTotalFlow(0);
 		}
@@ -188,19 +189,19 @@ public class EcmUserServiceImpl implements EcmUserService {
 		EcmUserFlowVO userFlow = ecmUserFlowDao.selectByPkUserId(ecmUserFlowQuery.getPkUserId());
 		int surplusFlow = 0;
 		//无会员信息只有默认流量
-		if (symbol == 3) {
+		if (symbol == INT_THREE) {
 			surplusFlow = userFlow.getPermanentFlow();
 		}
 		//会员到期 无可使用流量
-		if (symbol == 2) {
+		if (symbol == INT_TWO) {
 			return ResponseDTO.fail("流量不足，请充值");
 		}
 		//有会员 会员赠送+永久流量
-		if (symbol == 1) {
+		if (symbol == INT_ONE) {
 			surplusFlow = vipflow + userFlow.getPermanentFlow();
 		}
 		//有会员未到本月截止日期 会员赠送+永久流量-已使用会员流量
-		if (symbol == 0) {
+		if (symbol == INT_ZORE) {
 			surplusFlow = vipflow + userFlow.getPermanentFlow()-userFlow.getUsedFlow();
 		}
 		if (surplusFlow >= Integer.valueOf(ecmUserFlowQuery.getVideoFlow())){
@@ -256,21 +257,21 @@ public class EcmUserServiceImpl implements EcmUserService {
 			vipflow += 10*1024*1024;
 		}
 		//有会员信息，未到当月截止期，去掉已使用流量
-		if (symbol == 0) {
+		if (symbol == INT_ZORE) {
 			userFlow.setTotalFlow(vipflow + userFlow.getPermanentFlow()-userFlow.getUsedFlow());
 		}
 		//有会员过了当前月的截止期 重置已使用流量为0
-		if (symbol == 1) {
+		if (symbol == INT_ONE) {
 			userFlow.setTotalFlow(vipflow + userFlow.getPermanentFlow());
 		}
 		//有会员但是会员到期了
-		if (symbol == 2) {
+		if (symbol == INT_TWO) {
 			userFlow.setTotalFlow(0);
 			userFlow.setPermanentFlow(0);
 			userFlow.setUsedFlow(0);
 		}
 		//无会员信息 不是会员就无法购买加油包 只有默认流量 此流量加在永久流量中
-		if (symbol == 3) {
+		if (symbol == INT_THREE) {
 			userFlow.setTotalFlow(userFlow.getPermanentFlow());
 		}
 		try {

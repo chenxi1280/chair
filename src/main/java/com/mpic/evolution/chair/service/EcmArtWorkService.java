@@ -72,24 +72,114 @@ public interface EcmArtWorkService {
      */
     ResponseDTO removeNode(EcmArtworkNodesVo ecmArtworkNodesVo);
 
+    /**
+     * @param: [ecmArtworkNodeNumberConditionVO]
+     * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+     * @author: cxd
+     * @Date: 2020/12/25
+     * 描述 :  保存全局数值选项
+     *       成功: status 200  msg "success”
+     *       失败: status 500  msg "error“
+     */
     ResponseDTO saveArtworkNodeNumberCondition(EcmArtworkNodeNumberConditionVO ecmArtworkNodeNumberConditionVO);
 
+    /**
+     * @param: [ecmArtworkNodeNumberConditionVO]
+     * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+     * @author: cxd
+     * @Date: 2020/12/25
+     * 描述 : 	 * 描述 : 保存全局数值选项 ~.~
+     *       成功: status 200  msg "success”   date:
+     *       失败: status 500  msg "error“
+     */
     ResponseDTO saveAllNodeNameFlagChange(EcmArtworkNodeNumberConditionVO ecmArtworkNodeNumberConditionVO);
 
+    /**
+     * @param: [ecmArtworkEndingsVO]
+     * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+     * @author: cxd
+     * @Date: 2020/12/25
+     * 描述 : 保存 多结局节点
+     *       成功: status 200  msg "success”   date:
+     *       失败: status 500  msg "error“
+     */
     ResponseDTO saveArtworkEndings(EcmArtworkEndingsQuery ecmArtworkEndingsVO);
 
+    /**
+     * @param: [ecmArtworkVo]
+     * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+     * @author: cxd
+     * @Date: 2020/12/25
+     * 描述 : 修改作品多结局状态
+     *       成功: status 200  msg "success”   date:
+     *       失败: status 500  msg "error“
+     */
     ResponseDTO saveArtworkEndingState(EcmArtworkVo ecmArtworkVo);
 
+    /**
+     * @param: [ecmArtworkEndingsQuery]
+     * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+     * @author: cxd
+     * @Date: 2020/12/25
+     * 描述 : 保存多结局节点 list
+     *       成功: status 200  msg "success”   date:
+     *       失败: status 500  msg "error“
+     */
     ResponseDTO saveArtworkEndingList(EcmArtworkEndingsQuery ecmArtworkEndingsQuery);
 
+    /**
+     * @param: [ecmArtworkEndingsQuery]
+     * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+     * @author: cxd
+     * @Date: 2020/12/25
+     * 描述 : 批量更新 多结局 节点
+     *       成功: status 200  msg "success”   date:
+     *       失败: status 500  msg "error“
+     */
     ResponseDTO updateArtworkEndingList(EcmArtworkEndingsQuery ecmArtworkEndingsQuery);
 
+    /**
+     * @param: [ecmArtworkEndingsQuery]
+     * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+     * @author: cxd
+     * @Date: 2020/12/25
+     * 描述 : 删除 多结局 节点
+     *       成功: status 200  msg "success”   date:
+     *       失败: status 500  msg "error“
+     */
     ResponseDTO deleteArtworkEnding(EcmArtworkEndingsQuery ecmArtworkEndingsQuery);
 
+    /**
+     * @param: [ecmArtworkEndingsQuery]
+     * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+     * @author: cxd
+     * @Date: 2020/12/25
+     * 描述 : 获取多结局节点list
+     *       成功: status 200  msg "success”   date:
+     *       失败: status 500  msg "error“
+     */
     ResponseDTO getArtworkEndingList(EcmArtworkEndingsQuery ecmArtworkEndingsQuery);
 
+    /**
+     * @param: [ecmArtworkEndingsQuery]
+     * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+     * @author: cxd
+     * @Date: 2020/12/25
+     * 描述 : 批量保存多 多结局
+     *       成功: status 200  msg "success”   date:
+     *       失败: status 500  msg "error“
+     */
     ResponseDTO saveArtworkEndingAll(EcmArtworkEndingsQuery ecmArtworkEndingsQuery);
 
+    /**
+     * @param: [ecmArtworkEndingsQuery]
+     * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+     * @author: cxd
+     * @Date: 2020/12/25
+     * 描述 : 批量删除多结局 节点
+     *       成功: status 200  msg "success”   date:
+     *       失败: status 500  msg "error“
+     */
     ResponseDTO deleteArtworkEndingList(EcmArtworkEndingsQuery ecmArtworkEndingsQuery);
 
 

@@ -17,6 +17,7 @@ import com.tencentcloudapi.vod.v20180717.VodClient;
 import com.tencentcloudapi.vod.v20180717.models.ProcessMediaByProcedureRequest;
 import com.tencentcloudapi.vod.v20180717.models.ProcessMediaByProcedureResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -78,6 +79,7 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
             params.put("FileId", videoCode);
             params.put("ProcedureName", CHANGE_PIPELINT);
             System.out.println("redisHost:"+redisHost);
+            // 测试环境ip
             if (!"129.28.197.177".equals(redisHost)){
                 params.put("SubAppId", 1500001548);
             }else {
@@ -138,9 +140,9 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
     }
 
     @Override
+    @Async("taskExecutor")
     public void handleArtwork(Integer pkArtworkId) {
         List<EcmArtworkNodesVo> ecmArtworkNodesVos = ecmArtworkNodesDao.selectByArtWorkId(pkArtworkId);
-
         if (!CollectionUtils.isEmpty(ecmArtworkNodesVos)){
             List<EcmArtworkNodesVo> collect = ecmArtworkNodesVos.stream().filter(ecmArtworkNodesVo -> !"Y".equals(ecmArtworkNodesVo.getIsDeleted())).collect(Collectors.toList());
             collect.forEach( ecmArtworkNodesVo ->  {

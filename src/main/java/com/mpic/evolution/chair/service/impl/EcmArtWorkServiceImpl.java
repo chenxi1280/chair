@@ -29,6 +29,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.mpic.evolution.chair.common.constant.JudgeConstant.SUCCESS;
+import static com.mpic.evolution.chair.common.constant.JudgeConstant.Y;
 
 
 /**
@@ -57,7 +58,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         List<EcmArtworkVo> ecmArtworkVoList =  ecmArtworkDao.selectArtWorksAll();
         List<EcmArtworkNodesVo> list = ecmArtworkNodesDao.selectByArtWorkList(ecmArtworkVoList);
         List<EcmArtworkNodesVo> collect = list.stream().filter(ecmArtworkNodesVo -> {
-            if ("Y".equals(ecmArtworkNodesVo.getIsDeleted()) ){
+            if (Y.equals(ecmArtworkNodesVo.getIsDeleted()) ){
                 return false;
             }
             if (ecmArtworkNodesVo.getALevel() != null && ecmArtworkNodesVo.getALevel().equals(1)) {
@@ -100,6 +101,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 //        List<EcmArtworkVo> ecmArtworkVoList = ecmArtworkDao.selectArtWorks(ecmArtWorkQuery);
         List<EcmArtworkVo> ecmArtworkVoList = ecmArtworkDao.selectArtWorkListByEcmArtWorkQuery(ecmArtWorkQuery);
         Integer count = ecmArtworkDao.selectArtWorkCountByEcmArtWorkQuery(ecmArtWorkQuery);
+        // 过滤
         List<EcmArtworkVo> collect = ecmArtworkVoList.stream().filter(ecmArtworkVo -> ecmArtworkVo.getArtworkStatus() == 4).collect(Collectors.toList());
         if (!CollectionUtils.isEmpty(collect)) {
             List<EcmArtworkBroadcastHotVO> list = ecmArtworkBroadcastHotDao.selectEcmArtworkList(collect);
@@ -171,7 +173,8 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                         String changeCondition = "changeCondition";
                         String nameCondition = "nameCondition";
                         String nameDisplay = "nameDisplay";
-                        for (int i = 0; i < 4; i++) {
+                        int s = 4;
+                        for (int i = 0; i < s; i++) {
                             NodeNumberConditionVO nodeNumberConditionVO = new NodeNumberConditionVO();
                             //反射还原前端对象
                             VOUtils.setNodeNumberConditionFieldValue(ecmArtworkNodeNumberCondition, appearCondition, i, ecmArtworkNodeNumberConditionClass, nodeNumberConditionVO);
@@ -385,16 +388,16 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                             }
                         }
                     }
-                    List<EcmArtworkNodeNumberConditionVO> ecmArtworkNodeNumberConditionVOArrayList = new ArrayList<>();
+                    List<EcmArtworkNodeNumberConditionVO> ecmArtworkNodeNumberList = new ArrayList<>();
                     ecmArtworkNodesVoList.forEach(v -> {
                         EcmArtworkNodeNumberConditionVO artworkNodeNumberConditionVO = new EcmArtworkNodeNumberConditionVO();
                         BeanUtils.copyProperties(ecmArtworkNodeNumberConditionVO,artworkNodeNumberConditionVO);
                         artworkNodeNumberConditionVO.setPkDetailid(v.getPkDetailId());
                         artworkNodeNumberConditionVO.setCreateDate(new Date());
-                        ecmArtworkNodeNumberConditionVOArrayList.add(artworkNodeNumberConditionVO);
+                        ecmArtworkNodeNumberList.add(artworkNodeNumberConditionVO);
                     });
-                    if(!CollectionUtils.isEmpty(ecmArtworkNodeNumberConditionVOArrayList)) {
-                        ecmArtworkNodeNumberConditionDao.insertList(ecmArtworkNodeNumberConditionVOArrayList);
+                    if(!CollectionUtils.isEmpty(ecmArtworkNodeNumberList)) {
+                        ecmArtworkNodeNumberConditionDao.insertList(ecmArtworkNodeNumberList);
                     }
 //                    ecmArtworkNodeNumberConditionDao.insertList();
                     return ResponseDTO.ok("全局应用成功");
@@ -458,11 +461,8 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                 ecmArtworkNodesVo.setItemsBakText(v.getVideoInfo().getNodeImgUrl());
             }
 
-
             v.setComment(v.getSelectTree().replace("[", "").replace("]", "").replace(",", "").replace(" ", ""));
             v.setFkArtworkId(ecmArtworkEndingsQuery.getFkArtworkId());
-
-
 
             ecmArtworkNodesVo.setVideoText(v.getSelectTitle());
             ecmArtworkNodesVo.setParentId(-1);
@@ -473,13 +473,12 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
         });
 
-
         //更新list
 
         // 批量更新
         try {
-            List<EcmArtworkEndingsVO> ecmArtworkEndingsVOList = ecmArtworkEndingsDao.selectByArtwId(ecmArtworkEndingsQuery.getFkArtworkId());
-            if (!CollectionUtils.isEmpty(ecmArtworkEndingsVOList)) {
+            List<EcmArtworkEndingsVO> ecmArtworkEndingsList = ecmArtworkEndingsDao.selectByArtwId(ecmArtworkEndingsQuery.getFkArtworkId());
+            if (!CollectionUtils.isEmpty(ecmArtworkEndingsList)) {
                 if (!CollectionUtils.isEmpty(ecmArtworkEndingsVOS)) {
                     ecmArtworkNodesDao.deleteEcmArtworkEndingsByArtworkId(ecmArtworkEndingsQuery.getFkArtworkId());
                 }
@@ -500,7 +499,6 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             e.printStackTrace();
             return ResponseDTO.fail("更新失败");
         }
-
 
         // 批量新增
 
@@ -689,8 +687,6 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
     @Transactional
     public ResponseDTO saveArtworkEndingAll(EcmArtworkEndingsQuery ecmArtworkEndingsQuery) {
 
-
-
         EcmArtwork ecmArtworkVo = ecmArtworkDao.selectByPrimaryKey(ecmArtworkEndingsQuery.getFkArtworkId());
         if (ecmArtworkVo == null) {
             return ResponseDTO.fail("作品错误");
@@ -698,6 +694,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         if (!ecmArtworkVo.getFkUserid().equals(ecmArtworkEndingsQuery.getFkUserId())) {
             return ResponseDTO.fail("非法访问");
         }
+
         List<String> endingAll = EndingUntil.getEndingAll(ecmArtworkEndingsQuery.getNodeNum());
 //        CollectionUtils.
         Collections.reverse(endingAll);

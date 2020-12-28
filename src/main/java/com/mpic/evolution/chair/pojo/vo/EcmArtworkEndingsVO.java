@@ -13,7 +13,7 @@ import java.util.List;
  */
 @Data
 public class EcmArtworkEndingsVO extends EcmArtworkEndings {
-    private int fkUserId;
+    private Integer fkUserId;
     private List<Integer> selectTreeList;
     private EcmVideoTemporaryStorageVO videoInfo;
 }

@@ -13,6 +13,7 @@ import com.tencentcloudapi.common.profile.HttpProfile;
 
 import java.util.*;
 
+import static com.mpic.evolution.chair.common.constant.CommonField.*;
 import static com.mpic.evolution.chair.common.constant.CosConstant.SECRET_ID;
 import static com.mpic.evolution.chair.common.constant.CosConstant.SECRET_KEY;
 
@@ -48,7 +49,7 @@ public class AIVerifyUtil {
             TextModerationResponse resp = client.TextModeration(req);
 
             JSONObject obj = JSON.parseObject(TextModerationResponse.toJsonString(resp));
-            if(obj !=null && obj.get("Data")!=null){
+            if(obj !=null && obj.get(STRING_DATA)!=null){
                 JSONArray array = (JSONArray) ((JSONObject)obj.get("Data")).get("DetailResult");
                 if(array!=null && !array.isEmpty()){
                     for(Object o : array){
@@ -60,13 +61,13 @@ public class AIVerifyUtil {
                         }
                     }
                 }
-            }else if (obj !=null && obj.get("Error")!= null ){
-                res.add("error");
+            }else if (obj !=null && obj.get(STRING_CAPITAL_ERROR)!= null ){
+                res.add(STRING_LOWER_CASE_ERROR);
             }
 
         } catch (TencentCloudSDKException e) {
             System.out.println(e.toString());
-            res.add("error");
+            res.add(STRING_LOWER_CASE_ERROR);
         }
         return res;
     }
@@ -95,5 +96,5 @@ public class AIVerifyUtil {
         }
         return content;
     }
-    
+
 }
