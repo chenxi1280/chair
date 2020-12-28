@@ -196,7 +196,7 @@ public class LoginController extends BaseController {
 		String inputPhoneConfirmCode = ecmUserVo.getPhoneConfirmCode();
 		//邀请码所需条件 过期跳过邀请码检测
 		LocalDateTime now = LocalDateTime.now();
-		LocalDateTime dateTime = LocalDateTime.of(2020, 12, 31, 0, 0);
+		LocalDateTime dateTime = LocalDateTime.of(2021, 12, 31, 0, 0);
 		EcmInviteCode ecmInviteCode = new EcmInviteCode();
 		try {
 			//邀请码检测
@@ -249,6 +249,7 @@ public class LoginController extends BaseController {
 			userInfo.setUpdateTime(new Date());
 			// 用户敏感信息需要加密 可反解
 			userInfo.setMobile(mobile);
+			//TODO
 			userInfo.setPassword(MD5Utils.encrypt(ecmUserVo.getPassword()));
 			boolean savaUserFlag = ecmUserService.savaUser(userInfo);
 			if(now.isBefore(dateTime)) {
@@ -491,7 +492,7 @@ public class LoginController extends BaseController {
 	@ResponseBody
 	public ResponseDTO validateInviteCode(@RequestBody EcmInviteCodeVo ecmInviteCodeVo) {
 		LocalDateTime now = LocalDateTime.now();
-		LocalDateTime dateTime = LocalDateTime.of(2020, 12, 31, 0, 0);
+		LocalDateTime dateTime = LocalDateTime.of(2021, 12, 31, 0, 0);
 		if(now.isBefore(dateTime)) {
 			// 验证码验证
 			String regionCode = String.valueOf(redisUtil.lPop(ecmInviteCodeVo.getImageCodeKey()));
