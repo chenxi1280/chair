@@ -7,9 +7,11 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
-/** 
-* @author 作者 SJ: 
-* @date 创建时间：2020-10-12 17:04:57 
+import static com.mpic.evolution.chair.common.constant.CommonField.DOUBLE_HALF;
+
+/**
+* @author 作者 SJ:
+* @date 创建时间：2020-10-12 17:04:57
 */
 public class VipDateUtil {
 	/**
@@ -22,7 +24,7 @@ public class VipDateUtil {
 		DateTimeFormatter pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
 		return pattern.format(plusMonths);
 	}
-	
+
 	/**
 	 * 	按季度获取截止日期
 	 * @param time
@@ -33,7 +35,7 @@ public class VipDateUtil {
 		DateTimeFormatter pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
 		return pattern.format(plusMonths);
 	}
-	
+
 	/**
 	 * 	按年获取截止日期
 	 * @param time
@@ -44,7 +46,7 @@ public class VipDateUtil {
 		DateTimeFormatter pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
 		return pattern.format(plusMonths);
 	}
-	
+
 	/**
 	 * 获取会员截止时间
 	 * @param startDate endDate
@@ -63,7 +65,7 @@ public class VipDateUtil {
 		}
 		return sDate.plusMonths(difference);
 	}
-	
+
 	public static void main(String[] args) {
 		DateTimeFormatter pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
 		LocalDateTime localDateTime = LocalDateTime.of(2020, 10, 28, 9, 24, 0);
@@ -79,7 +81,7 @@ public class VipDateUtil {
 //		System.out.println(date);
 //		System.out.println(date1);
 //		System.out.println(date2);
-		if (-1 <= -0.5) {
+		if (-1 <= -DOUBLE_HALF) {
 			System.out.println(true);
 		}
 	}

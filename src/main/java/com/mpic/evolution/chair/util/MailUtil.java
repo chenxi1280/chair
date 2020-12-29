@@ -72,7 +72,8 @@ public class MailUtil{
 
 	private String getEmailContent(String emailType, String uuid) {
 		String content = "";
-		if ("verification".equals(emailType)) {
+		String verification="verification";
+		if (verification.equals(emailType)) {
 			content = String.format("<html>" +
 					"	<head></head>" +
 					"	<body>" +

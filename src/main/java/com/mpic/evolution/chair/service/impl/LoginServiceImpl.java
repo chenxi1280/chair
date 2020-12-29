@@ -161,11 +161,13 @@ public class LoginServiceImpl implements LoginService{
                 .append("&code=").append(code).append("&grant_type=authorization_code");
         String jsonStr = HttpKit.get(target.toString());
         JSONObject jSONObject = JSONObject.parseObject(jsonStr);
-        if (jSONObject != null && jSONObject.get("errcode") != null) { // 有错误码
-            String errcode = String.valueOf(jSONObject.get("errcode"));
-            String errmsg = String.valueOf(jSONObject.get("errmsg"));
-            resMap.put("errmsg", errmsg);
-            resMap.put("errcode", errcode);
+        String errCodeStr = "errcode";
+        String errMsgStr = "errmsg";
+        if (jSONObject != null && jSONObject.get(errCodeStr) != null) { // 有错误码
+            String errcode = String.valueOf(jSONObject.get(errCodeStr));
+            String errmsg = String.valueOf(jSONObject.get(errMsgStr));
+            resMap.put(errMsgStr, errmsg);
+            resMap.put(errCodeStr, errcode);
         } else {
             String accessToken = String.valueOf(jSONObject.get("access_token"));
             String refreshToken = String.valueOf(jSONObject.get("refresh_token"));
@@ -196,11 +198,13 @@ public class LoginServiceImpl implements LoginService{
                 .append("lang=zh_CN");
         String jsonStr = HttpKit.get(url.toString());
         JSONObject jSONObject = JSONObject.parseObject(jsonStr);
-        if (jSONObject != null && jSONObject.get("errcode") != null) {
-            String errcode = String.valueOf(jSONObject.get("errcode"));
-            String errmsg = String.valueOf(jSONObject.get("errmsg"));
-            resMap.put("errmsg", errmsg);
-            resMap.put("errcode", errcode);
+		String errCodeStr = "errcode";
+		String errMsgStr = "errmsg";
+        if (jSONObject != null && jSONObject.get(errCodeStr) != null) {
+            String errcode = String.valueOf(jSONObject.get(errCodeStr));
+            String errmsg = String.valueOf(jSONObject.get(errMsgStr));
+            resMap.put(errMsgStr, errmsg);
+            resMap.put(errCodeStr, errcode);
         } else {
             String nickname = String.valueOf(jSONObject.get("nickname"));
             String openid = String.valueOf(jSONObject.get("openid"));

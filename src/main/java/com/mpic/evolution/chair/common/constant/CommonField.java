@@ -21,7 +21,10 @@ public interface CommonField {
     int INT_ONE = 1;
     int INT_TWO = 2;
     int INT_THREE = 3;
+    int INT_SIX = 6;
     String STRING_LOWER_CASE_ERRCODE = "ERRCODE";
-
+    String STRING_ONE = "1";
+    String STRING_REDIS_IP = "129.28.197.177";
+    double DOUBLE_HALF = 0.5;
 
 }
