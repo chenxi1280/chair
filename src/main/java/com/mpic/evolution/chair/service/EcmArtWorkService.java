@@ -185,6 +185,8 @@ public interface EcmArtWorkService {
 
     ResponseDTO saveArtworkNodePopupSettings(EcmArtworkNodePopupSettingsVO ecmArtworkNodePopupSettingsVO);
 
+    ResponseDTO saveArtworkNodeCondition(EcmArtworkNodesVo ecmArtworkVo);
+
 
 
 //小程序接口

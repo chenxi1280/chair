@@ -11,24 +11,25 @@
     <result column="popup_context_state" jdbcType="INTEGER" property="popupContextState" />
   </resultMap>
   <sql id="Base_Column_List">
-    pk_node_popup_settings_id, fk_node_id, popup_name, popup_name_state, popup_position, 
+    pk_node_popup_settings_id, fk_node_id, popup_name, popup_name_state, popup_position,
     popup_context, popup_context_state
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from ecm_artwork_node_popup_settings
     where pk_node_popup_settings_id = #{pkNodePopupSettingsId,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from ecm_artwork_node_popup_settings
     where pk_node_popup_settings_id = #{pkNodePopupSettingsId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyColumn="pk_node_popup_settings_id" keyProperty="pkNodePopupSettingsId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodePopupSettings" useGeneratedKeys="true">
-    insert into ecm_artwork_node_popup_settings (fk_node_id, popup_name, popup_name_state, 
+    insert into ecm_artwork_node_popup_settings (fk_node_id, popup_name, popup_name_state,
       popup_position, popup_context, popup_context_state
       )
-    values (#{fkNodeId,jdbcType=INTEGER}, #{popupName,jdbcType=VARCHAR}, #{popupNameState,jdbcType=INTEGER}, 
+    values (#{fkNodeId,jdbcType=INTEGER}, #{popupName,jdbcType=VARCHAR}, #{popupNameState,jdbcType=INTEGER},
       #{popupPosition,jdbcType=INTEGER}, #{popupContext,jdbcType=VARCHAR}, #{popupContextState,jdbcType=INTEGER}
       )
   </insert>
@@ -109,4 +110,19 @@
       popup_context_state = #{popupContextState,jdbcType=INTEGER}
     where pk_node_popup_settings_id = #{pkNodePopupSettingsId,jdbcType=INTEGER}
   </update>
+
+<!--  sql-->
+  <select id="selectByArtworkNodeList" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkNodePopupSettingsVO">
+    select <include refid="Base_Column_List" />
+    from ecm_artwork_node_popup_settings
+    where fk_node_id in <foreach collection="list" open="(" close=")" item="item" separator=",">
+    #{item.pkDetailId}
+  </foreach>
+
+  </select>
+  <select id="selectByArtworkNodeId" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkNodePopupSettingsVO">
+    select <include refid="Base_Column_List" />
+    from ecm_artwork_node_popup_settings
+    where fk_node_id = #{fkNodeId}
+  </select>
 </mapper>

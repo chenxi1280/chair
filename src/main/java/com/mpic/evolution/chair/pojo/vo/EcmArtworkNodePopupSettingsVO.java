@@ -17,4 +17,7 @@ public class EcmArtworkNodePopupSettingsVO extends EcmArtworkNodePopupSettings {
      * 弹窗是否启用 0 null 为未启用 1 启用
      */
     private Integer popupState;
+
+    private Integer fkArtworkId;
+
 }

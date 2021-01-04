@@ -16,10 +16,8 @@ import com.mpic.evolution.chair.pojo.vo.*;
 import com.mpic.evolution.chair.service.EcmArtWorkService;
 import com.mpic.evolution.chair.util.*;
 import org.apache.commons.lang.StringUtils;
-import org.json.JSONArray;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.TransactionManagementConfigurationSelector;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.util.CollectionUtils;
@@ -136,8 +134,11 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
         List<EcmArtworkNodesVo> list = ecmArtworkNodesDao.selectByArtWorkId(ecmArtWorkQuery.getPkArtworkId());
         List<EcmArtworkNodeNumberConditionVO> ecmArtworkNodeNumberConditionS = ecmArtworkNodeNumberConditionDao.selectByArtWorkId(ecmArtWorkQuery.getPkArtworkId());
+        List<EcmArtworkNodePopupSettingsVO> ecmArtworkNodePopupSettingsVOList = ecmArtworkNodePopupSettingsDao.selectByArtworkNodeList(list);
+
         //2次循环寻找 对应的  跳转节点
         for (EcmArtworkNodesVo node : list) {
+
             if (!StringUtils.isEmpty(node.getItems()) && node.getALevel() != null) {
                 if (node.getALevel().equals(1)) {
                     for (EcmArtworkNodesVo ecmArtworkNodesVo : list) {
@@ -200,6 +201,16 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                     }
                 }
             }
+
+//             还原 弹窗设置
+            if(!CollectionUtils.isEmpty(ecmArtworkNodePopupSettingsVOList)) {
+                ecmArtworkNodePopupSettingsVOList.forEach( ecmArtworkNodePopupSettingsVO -> {
+                    if (ecmArtworkNodePopupSettingsVO.equals(node.getPkDetailId())) {
+                        node.setEcmArtworkNodePopupSettings(ecmArtworkNodePopupSettingsVO);
+                    }
+                });
+            }
+
 
         }
 
@@ -270,7 +281,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         if (ecmArtworkNodes.getBranchPre() == null) {
             ecmArtworkNodes.setBranchPre((byte) 0);
         }
-        if (1 == ecmArtworkNodesDao.insert(ecmArtworkNodes)) {
+        if (1 == ecmArtworkNodesDao.insertSelective(ecmArtworkNodes)) {
             return ResponseDTO.ok("success", ecmArtworkNodes);
         }
         return ResponseDTO.fail("正在保存上一个节点数据");
@@ -761,18 +772,44 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
     @Transactional(rollbackFor = Exception.class)
     public ResponseDTO saveArtworkNodePopupSettings(EcmArtworkNodePopupSettingsVO ecmArtworkNodePopupSettingsVO) {
 
+        EcmArtwork ecmArtworkVo = ecmArtworkDao.selectByPrimaryKey(ecmArtworkNodePopupSettingsVO.getFkArtworkId());
+        if (ecmArtworkVo == null ) {
+            return ResponseDTO.fail("作品错误");
+        }
+
         EcmArtworkNodes ecmArtworkNodes = ecmArtworkNodesDao.selectByPrimaryKey(ecmArtworkNodePopupSettingsVO.getFkNodeId());
-        if (ecmArtworkNodes == null) {
+        if (ecmArtworkNodes == null || !ecmArtworkNodes.getFkArtworkId().equals(ecmArtworkVo.getPkArtworkId()) ) {
             return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
         }
         ecmArtworkNodes.setPopupState(ecmArtworkNodePopupSettingsVO.getPopupState());
+        EcmArtworkNodePopupSettingsVO artworkNodePopupSettingsVO = ecmArtworkNodePopupSettingsDao.selectByArtworkNodeId(ecmArtworkNodePopupSettingsVO.getFkNodeId());
         try{
             ecmArtworkNodesDao.updatePopupSetting(ecmArtworkNodes);
-            ecmArtworkNodePopupSettingsDao.updateByPrimaryKeySelective(ecmArtworkNodePopupSettingsVO);
+            if (artworkNodePopupSettingsVO == null) {
+                ecmArtworkNodePopupSettingsDao.insertSelective(ecmArtworkNodePopupSettingsVO);
+            }else  {
+                ecmArtworkNodePopupSettingsDao.updateByPrimaryKeySelective(ecmArtworkNodePopupSettingsVO);
+
+            }
+
         }catch (Exception e){
             e.printStackTrace();
         }
 
+        return ResponseDTO.ok();
+    }
+
+    @Override
+    public ResponseDTO saveArtworkNodeCondition(EcmArtworkNodesVo ecmArtworkNodesVo) {
+        EcmArtwork ecmArtworkVo = ecmArtworkDao.selectByPrimaryKey(ecmArtworkNodesVo.getFkArtworkId());
+        if (ecmArtworkVo == null ) {
+            return ResponseDTO.fail("作品错误");
+        }
+        EcmArtworkNodes ecmArtworkNodes = ecmArtworkNodesDao.selectByPrimaryKey(ecmArtworkNodesVo.getPkDetailId());
+        if (ecmArtworkNodes == null ) {
+            return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+        }
+        ecmArtworkNodesDao.updateByPrimaryKeySelective(ecmArtworkNodesVo);
         return ResponseDTO.ok();
     }
 

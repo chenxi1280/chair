@@ -1,6 +1,11 @@
 package com.mpic.evolution.chair.dao;
 
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodePopupSettings;
+import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodePopupSettingsVO;
+import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface EcmArtworkNodePopupSettingsDao {
     int deleteByPrimaryKey(Integer pkNodePopupSettingsId);
@@ -14,4 +19,8 @@ public interface EcmArtworkNodePopupSettingsDao {
     int updateByPrimaryKeySelective(EcmArtworkNodePopupSettings record);
 
     int updateByPrimaryKey(EcmArtworkNodePopupSettings record);
+
+    List<EcmArtworkNodePopupSettingsVO> selectByArtworkNodeList(@Param("list") List<EcmArtworkNodesVo> list);
+
+    EcmArtworkNodePopupSettingsVO selectByArtworkNodeId(Integer fkNodeId);
 }
