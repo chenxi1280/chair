@@ -23,11 +23,14 @@
     <result column="parent_list" jdbcType="VARCHAR" property="parentList" />
     <result column="chosen_text" jdbcType="VARCHAR" property="chosenText" />
     <result column="video_info" jdbcType="VARCHAR" property="videoInfo" />
+    <result column="popup_state" jdbcType="INTEGER" property="popupState" />
+    <result column="condition_state" jdbcType="INTEGER" property="conditionState" />
   </resultMap>
   <sql id="Base_Column_List">
     pk_detail_id, parent_id, video_code, parent_code, video_url, branch_pre, revolution_id,
     video_text, fk_artwork_id, items, items_text, items_bak_text, css_vo, fk_achievement_id,
-    fk_ending_id, isleaf, a_level, is_deleted, parent_list, chosen_text, video_info
+    fk_ending_id, isleaf, a_level, is_deleted, parent_list, chosen_text, video_info,
+    popup_state, condition_state
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
@@ -46,14 +49,16 @@
       items_text, items_bak_text, css_vo,
       fk_achievement_id, fk_ending_id, isleaf,
       a_level, is_deleted, parent_list,
-      chosen_text, video_info)
+      chosen_text, video_info, popup_state,
+      condition_state)
     values (#{parentId,jdbcType=INTEGER}, #{videoCode,jdbcType=VARCHAR}, #{parentCode,jdbcType=VARCHAR},
       #{videoUrl,jdbcType=VARCHAR}, #{branchPre,jdbcType=TINYINT}, #{revolutionId,jdbcType=VARCHAR},
       #{videoText,jdbcType=VARCHAR}, #{fkArtworkId,jdbcType=INTEGER}, #{items,jdbcType=VARCHAR},
       #{itemsText,jdbcType=VARCHAR}, #{itemsBakText,jdbcType=VARCHAR}, #{cssVo,jdbcType=VARCHAR},
       #{fkAchievementId,jdbcType=INTEGER}, #{fkEndingId,jdbcType=INTEGER}, #{isleaf,jdbcType=VARCHAR},
       #{aLevel,jdbcType=INTEGER}, #{isDeleted,jdbcType=VARCHAR}, #{parentList,jdbcType=VARCHAR},
-      #{chosenText,jdbcType=VARCHAR}, #{videoInfo,jdbcType=VARCHAR})
+      #{chosenText,jdbcType=VARCHAR}, #{videoInfo,jdbcType=VARCHAR}, #{popupState,jdbcType=INTEGER},
+      #{conditionState,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" keyColumn="pk_detail_id" keyProperty="pkDetailId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes" useGeneratedKeys="true">
     insert into ecm_artwork_nodes
@@ -118,6 +123,12 @@
       <if test="videoInfo != null">
         video_info,
       </if>
+      <if test="popupState != null">
+        popup_state,
+      </if>
+      <if test="conditionState != null">
+        condition_state,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="parentId != null">
@@ -179,6 +190,12 @@
       </if>
       <if test="videoInfo != null">
         #{videoInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="popupState != null">
+        #{popupState,jdbcType=INTEGER},
+      </if>
+      <if test="conditionState != null">
+        #{conditionState,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -245,6 +262,12 @@
       <if test="videoInfo != null">
         video_info = #{videoInfo,jdbcType=VARCHAR},
       </if>
+      <if test="popupState != null">
+        popup_state = #{popupState,jdbcType=INTEGER},
+      </if>
+      <if test="conditionState != null">
+        condition_state = #{conditionState,jdbcType=INTEGER},
+      </if>
     </set>
     where pk_detail_id = #{pkDetailId,jdbcType=INTEGER}
   </update>
@@ -269,7 +292,9 @@
       is_deleted = #{isDeleted,jdbcType=VARCHAR},
       parent_list = #{parentList,jdbcType=VARCHAR},
       chosen_text = #{chosenText,jdbcType=VARCHAR},
-      video_info = #{videoInfo,jdbcType=VARCHAR}
+      video_info = #{videoInfo,jdbcType=VARCHAR},
+      popup_state = #{popupState,jdbcType=INTEGER},
+      condition_state = #{conditionState,jdbcType=INTEGER}
     where pk_detail_id = #{pkDetailId,jdbcType=INTEGER}
   </update>
 
@@ -295,13 +320,13 @@
 
 
     <insert id="insertList" keyColumn="pk_detail_id" keyProperty="pkDetailId"  useGeneratedKeys="true">
-    insert into ecm_artwork_nodes  (parent_id, video_code, parent_code,
-    video_url, branch_pre, revolution_id,
-    video_text, fk_artwork_id, items,
-    items_text, items_bak_text, css_vo,
-    fk_achievement_id, fk_ending_id, isleaf,
-    a_level, is_deleted, parent_list,
-    chosen_text)
+      insert into ecm_artwork_nodes  (parent_id, video_code, parent_code,
+      video_url, branch_pre, revolution_id,
+      video_text, fk_artwork_id, items,
+      items_text, items_bak_text, css_vo,
+      fk_achievement_id, fk_ending_id, isleaf,
+      a_level, is_deleted, parent_list,
+      chosen_text)
 
     <foreach collection="list" item="item" index="index" separator=",">
       <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -632,6 +657,11 @@
         #{item.pkDetailId}
       </foreach>
 
+  </update>
+  <update id="updatePopupSetting">
+   update ecm_artwork_nodes
+    set  popup_state = #{popupState}
+    where pk_detail_id = #{pkDetailId}
   </update>
 
 

@@ -50,6 +50,8 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
     EcmArtworkNodeNumberConditionDao ecmArtworkNodeNumberConditionDao;
     @Resource
     EcmArtworkEndingsDao ecmArtworkEndingsDao;
+    @Resource
+    EcmArtworkNodePopupSettingsDao ecmArtworkNodePopupSettingsDao;
 
 
     @Override
@@ -129,7 +131,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         if (!ecmArtWorkQuery.getFkUserid().equals(ecmArtwork.getFkUserid())) {
             return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
         }
-        
+
         List<EcmArtworkNodesVo> list = ecmArtworkNodesDao.selectByArtWorkId(ecmArtWorkQuery.getPkArtworkId());
         List<EcmArtworkNodeNumberConditionVO> ecmArtworkNodeNumberConditionS = ecmArtworkNodeNumberConditionDao.selectByArtWorkId(ecmArtWorkQuery.getPkArtworkId());
         //2次循环寻找 对应的  跳转节点
@@ -212,20 +214,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         if (ecmArtwork.getIsEndings()!=null) {
             collect.get(0).setIsEndings(ecmArtwork.getIsEndings());
         }
-//        List<EcmArtworkEndingsVO> ecmArtworkEndingsVOList = ecmArtworkEndingsDao.selectByArtwId(ecmArtwork.getPkArtworkId());
-//        if (CollectionUtils.isEmpty(ecmArtworkEndingsVOList)){
-//            ecmArtworkEndingsVOList.forEach( v -> {
-//                v.setSelectTreeList(JSON.parseArray(v.getSelectTree(),Integer.class));
-//                EcmVideoTemporaryStorageVO ecmVideoTemporaryStorageVO = new EcmVideoTemporaryStorageVO();
-//                ecmVideoTemporaryStorageVO.setVideoCode(v.getVideoCode());
-//                ecmVideoTemporaryStorageVO.setVideoUrl(v.getVideoUrl());
-//                ecmVideoTemporaryStorageVO.setNodeImgUrl(v.getVideoImg());
-//                v.setVideoInfo(ecmVideoTemporaryStorageVO);
-//            });
-//        }
-//        collect.get(0).setEcmArtworkEndingsVOS(ecmArtworkEndingsVOList);
         collect.get(0).setEndingCount(ecmArtworkEndingsDao.selectCountEcmArtworkId(ecmArtwork.getPkArtworkId()));
-        System.out.println("多结局转化的完成时间："+ DateUtil.timeStamp());
         if (collect.isEmpty()) {
             return ResponseDTO.fail(ErrorEnum.ERR_200.getText());
         }
@@ -769,6 +758,25 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             return ResponseDTO.fail("网络出错");
         }
 
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseDTO saveArtworkNodePopupSettings(EcmArtworkNodePopupSettingsVO ecmArtworkNodePopupSettingsVO) {
+
+        EcmArtworkNodes ecmArtworkNodes = ecmArtworkNodesDao.selectByPrimaryKey(ecmArtworkNodePopupSettingsVO.getFkNodeId());
+        if (ecmArtworkNodes == null) {
+            return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+        }
+        ecmArtworkNodes.setPopupState(ecmArtworkNodePopupSettingsVO.getPopupState());
+        try{
+            ecmArtworkNodesDao.updatePopupSetting(ecmArtworkNodes);
+            ecmArtworkNodePopupSettingsDao.updateByPrimaryKeySelective(ecmArtworkNodePopupSettingsVO);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return ResponseDTO.ok();
     }
 
 
