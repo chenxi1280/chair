@@ -7,9 +7,11 @@ import com.mpic.evolution.chair.common.constant.PublishConstants;
 import com.mpic.evolution.chair.common.constant.TiktokConstant;
 import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
+import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodePopupSettings;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
 import com.mpic.evolution.chair.pojo.query.EcmArtworkEndingsQuery;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodeNumberConditionVO;
+import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodePopupSettingsVO;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
 import com.mpic.evolution.chair.service.EcmArtWorkService;
@@ -391,6 +393,18 @@ public class EcmArtWorkController extends BaseController{
 		}
 		ecmArtworkEndingsQuery.setFkUserId(userId);
 		return ecmArtWorkService.deleteArtworkEndingList(ecmArtworkEndingsQuery);
+	}
+
+	@RequestMapping("/saveArtworkNodePopupSettings")
+	@ResponseBody
+	public ResponseDTO saveArtworkNodePopupSettings(@RequestBody EcmArtworkNodePopupSettingsVO ecmArtworkNodePopupSettingsVO){
+		Integer userId = getUserIdByHandToken();
+		if (userId == null){
+			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+		}
+		ecmArtworkNodePopupSettingsVO.setFkUserId(userId);
+
+		return ecmArtWorkService.saveArtworkNodePopupSettings(ecmArtworkNodePopupSettingsVO);
 	}
 
 

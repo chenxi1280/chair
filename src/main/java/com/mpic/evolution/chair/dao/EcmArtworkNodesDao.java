@@ -1,6 +1,5 @@
 package com.mpic.evolution.chair.dao;
 
-import com.mpic.evolution.chair.pojo.entity.EcmArtworkEndings;
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkEndingsVO;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
@@ -58,4 +57,6 @@ public interface EcmArtworkNodesDao {
     int deleteByPrimaryKeyList( @Param("list") List<EcmArtworkEndingsVO> ecmArtworkEndings);
 
     List<EcmArtworkNodesVo> selectByArtWorkList(@Param("list") List<EcmArtworkVo> ecmArtworkVoList);
+
+    int updatePopupSetting(EcmArtworkNodes pkDetailId);
 }

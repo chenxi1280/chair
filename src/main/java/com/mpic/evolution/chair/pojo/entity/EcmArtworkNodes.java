@@ -112,11 +112,20 @@ public class EcmArtworkNodes implements Serializable  {
     @JSONField(name = "isNumberSelect" )
     private String chosenText;
 
-
     /**
      * 视频宽高，时长
      */
     private String videoInfo;
+
+    /**
+     * 弹窗是否启用 0 null 为未启用 1 启用
+     */
+    private Integer popupState;
+
+    /**
+     * 条件是否启用 0 null 为未启用 1 启用
+     */
+    private Integer conditionState;
 
     private static final long serialVersionUID = 1L;
 

@@ -128,5 +128,15 @@ public class EcmArtworkNodesDTO implements Serializable {
      */
     private Integer isEndings;
 
+    /**
+     * 弹窗是否启用 0 null 为未启用 1 启用
+     */
+    private Integer popupState;
+
+    /**
+     * 条件是否启用 0 null 为未启用 1 启用
+     */
+    private Integer conditionState;
+
     private static final long serialVersionUID = 1L;
 }
