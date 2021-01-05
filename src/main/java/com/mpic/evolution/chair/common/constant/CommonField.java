@@ -21,6 +21,7 @@ public interface CommonField {
     int INT_ONE = 1;
     int INT_TWO = 2;
     int INT_THREE = 3;
+    int INT_FOUR = 4;
     int INT_SIX = 6;
     String STRING_LOWER_CASE_ERRCODE = "ERRCODE";
     String STRING_ONE = "1";

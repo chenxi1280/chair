@@ -26,6 +26,7 @@ import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.mpic.evolution.chair.common.constant.CommonField.INT_FOUR;
 import static com.mpic.evolution.chair.common.constant.JudgeConstant.SUCCESS;
 import static com.mpic.evolution.chair.common.constant.JudgeConstant.Y;
 
@@ -131,18 +132,18 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         if (!ecmArtWorkQuery.getFkUserid().equals(ecmArtwork.getFkUserid())) {
             return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
         }
-
+        // 茶渣 所有的节点
         List<EcmArtworkNodesVo> list = ecmArtworkNodesDao.selectByArtWorkId(ecmArtWorkQuery.getPkArtworkId());
+        // 查找到所有的数值选项
         List<EcmArtworkNodeNumberConditionVO> ecmArtworkNodeNumberConditionS = ecmArtworkNodeNumberConditionDao.selectByArtWorkId(ecmArtWorkQuery.getPkArtworkId());
+        // 查找到 所有的  弹窗设置信息
         List<EcmArtworkNodePopupSettingsVO> ecmArtworkNodePopupSettingsVOList = ecmArtworkNodePopupSettingsDao.selectByArtworkNodeList(list);
-
         //2次循环寻找 对应的  跳转节点
         for (EcmArtworkNodesVo node : list) {
-
+            // 是否为跳转节点
             if (!StringUtils.isEmpty(node.getItems()) && node.getALevel() != null) {
                 if (node.getALevel().equals(1)) {
                     for (EcmArtworkNodesVo ecmArtworkNodesVo : list) {
-                        //需要优化代码
                         if (!JudgeConstant.Y.equals(ecmArtworkNodesVo.getIsDeleted())) {
                             if (ecmArtworkNodesVo.getPkDetailId().equals(Integer.valueOf(node.getItems()))) {
                                 if (JudgeConstant.Y.equals(ecmArtworkNodesVo.getIsDeleted())) {
@@ -170,14 +171,13 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                         // ecmArtworkNodeNumberCondition中数值0 1 2 3，并改成 前端对应的 list<NodeNumberConditionVO
                         List<NodeNumberConditionVO> numberCondition = new ArrayList<>(4);
                         List<String> names = new ArrayList<>(4);
-                        List<Boolean> allNodeNameFlagList = new ArrayList<>(4);
+//                        List<Boolean> allNodeNameFlagList = new ArrayList<>(4);
                         Class<EcmArtworkNodeNumberCondition> ecmArtworkNodeNumberConditionClass = EcmArtworkNodeNumberCondition.class;
                         String appearCondition = "appearCondition";
                         String changeCondition = "changeCondition";
                         String nameCondition = "nameCondition";
                         String nameDisplay = "nameDisplay";
-                        int s = 4;
-                        for (int i = 0; i < s; i++) {
+                        for (int i = 0; i < INT_FOUR; i++) {
                             NodeNumberConditionVO nodeNumberConditionVO = new NodeNumberConditionVO();
                             //反射还原前端对象
                             VOUtils.setNodeNumberConditionFieldValue(ecmArtworkNodeNumberCondition, appearCondition, i, ecmArtworkNodeNumberConditionClass, nodeNumberConditionVO);
@@ -189,7 +189,6 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                             nodeNumberConditionVO.setAppearFlag(ecmArtworkNodeNumberCondition.getAppearFlag());
                             nodeNumberConditionVO.setNameFlag(ecmArtworkNodeNumberCondition.getNameFlag());
                             names.add(nodeNumberConditionVO.getNameCondition());
-
                             numberCondition.add(i, nodeNumberConditionVO);
                         }
                         node.setOnAdvancedList(numberCondition);
@@ -201,7 +200,6 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                     }
                 }
             }
-
 //             还原 弹窗设置
             if(!CollectionUtils.isEmpty(ecmArtworkNodePopupSettingsVOList)) {
                 ecmArtworkNodePopupSettingsVOList.forEach( ecmArtworkNodePopupSettingsVO -> {
@@ -210,10 +208,17 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                     }
                 });
             }
-
+            // 当 弹窗 和 条件选项 为 null 是 设置为 0 方便前端判断
+            if (node.getPopupState() == null ){
+                node.setPopupState(0);
+            }
+            if (node.getConditionState() == null ){
+                node.setConditionState(0);
+            }
 
         }
 
+        // 去除删除的  节点
         List<EcmArtworkNodesVo> collect = list.stream().filter(ecmArtworkNodesVo -> !JudgeConstant.Y.equals(ecmArtworkNodesVo.getIsDeleted())).collect(Collectors.toList());
 
         if (CollectionUtils.isEmpty(collect)) {
