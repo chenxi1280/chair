@@ -183,6 +183,7 @@ public interface EcmArtWorkService {
      */
     ResponseDTO deleteArtworkEndingList(EcmArtworkEndingsQuery ecmArtworkEndingsQuery);
 
+
     ResponseDTO saveArtworkNodePopupSettings(EcmArtworkNodePopupSettingsVO ecmArtworkNodePopupSettingsVO);
 
     ResponseDTO saveArtworkNodeCondition(EcmArtworkNodesVo ecmArtworkVo);

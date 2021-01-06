@@ -9,10 +9,13 @@
     <result column="popup_position" jdbcType="INTEGER" property="popupPosition" />
     <result column="popup_context" jdbcType="VARCHAR" property="popupContext" />
     <result column="popup_context_state" jdbcType="INTEGER" property="popupContextState" />
+    <result column="popup_skip" jdbcType="VARCHAR" property="popupSkip" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
     pk_node_popup_settings_id, fk_node_id, popup_name, popup_name_state, popup_position,
-    popup_context, popup_context_state
+    popup_context, popup_context_state, popup_skip, create_time, update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
@@ -20,17 +23,18 @@
     from ecm_artwork_node_popup_settings
     where pk_node_popup_settings_id = #{pkNodePopupSettingsId,jdbcType=INTEGER}
   </select>
-
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from ecm_artwork_node_popup_settings
     where pk_node_popup_settings_id = #{pkNodePopupSettingsId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyColumn="pk_node_popup_settings_id" keyProperty="pkNodePopupSettingsId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodePopupSettings" useGeneratedKeys="true">
     insert into ecm_artwork_node_popup_settings (fk_node_id, popup_name, popup_name_state,
-      popup_position, popup_context, popup_context_state
+      popup_position, popup_context, popup_context_state,
+      popup_skip, create_time, update_time
       )
     values (#{fkNodeId,jdbcType=INTEGER}, #{popupName,jdbcType=VARCHAR}, #{popupNameState,jdbcType=INTEGER},
-      #{popupPosition,jdbcType=INTEGER}, #{popupContext,jdbcType=VARCHAR}, #{popupContextState,jdbcType=INTEGER}
+      #{popupPosition,jdbcType=INTEGER}, #{popupContext,jdbcType=VARCHAR}, #{popupContextState,jdbcType=INTEGER},
+      #{popupSkip,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
       )
   </insert>
   <insert id="insertSelective" keyColumn="pk_node_popup_settings_id" keyProperty="pkNodePopupSettingsId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodePopupSettings" useGeneratedKeys="true">
@@ -54,6 +58,15 @@
       <if test="popupContextState != null">
         popup_context_state,
       </if>
+      <if test="popupSkip != null">
+        popup_skip,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="fkNodeId != null">
@@ -73,6 +86,15 @@
       </if>
       <if test="popupContextState != null">
         #{popupContextState,jdbcType=INTEGER},
+      </if>
+      <if test="popupSkip != null">
+        #{popupSkip,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -97,6 +119,15 @@
       <if test="popupContextState != null">
         popup_context_state = #{popupContextState,jdbcType=INTEGER},
       </if>
+      <if test="popupSkip != null">
+        popup_skip = #{popupSkip,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where pk_node_popup_settings_id = #{pkNodePopupSettingsId,jdbcType=INTEGER}
   </update>
@@ -107,7 +138,10 @@
       popup_name_state = #{popupNameState,jdbcType=INTEGER},
       popup_position = #{popupPosition,jdbcType=INTEGER},
       popup_context = #{popupContext,jdbcType=VARCHAR},
-      popup_context_state = #{popupContextState,jdbcType=INTEGER}
+      popup_context_state = #{popupContextState,jdbcType=INTEGER},
+      popup_skip = #{popupSkip,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
     where pk_node_popup_settings_id = #{pkNodePopupSettingsId,jdbcType=INTEGER}
   </update>
 

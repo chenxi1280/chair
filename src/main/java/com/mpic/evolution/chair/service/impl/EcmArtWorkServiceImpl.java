@@ -203,7 +203,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 //             还原 弹窗设置
             if(!CollectionUtils.isEmpty(ecmArtworkNodePopupSettingsVOList)) {
                 ecmArtworkNodePopupSettingsVOList.forEach( ecmArtworkNodePopupSettingsVO -> {
-                    if (ecmArtworkNodePopupSettingsVO.equals(node.getPkDetailId())) {
+                    if (ecmArtworkNodePopupSettingsVO.getFkNodeId().equals(node.getPkDetailId())) {
                         node.setEcmArtworkNodePopupSettings(ecmArtworkNodePopupSettingsVO);
                     }
                 });
@@ -791,17 +791,18 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         try{
             ecmArtworkNodesDao.updatePopupSetting(ecmArtworkNodes);
             if (artworkNodePopupSettingsVO == null) {
+                ecmArtworkNodePopupSettingsVO.setCreateTime( new Date());
                 ecmArtworkNodePopupSettingsDao.insertSelective(ecmArtworkNodePopupSettingsVO);
             }else  {
+                ecmArtworkNodePopupSettingsVO.setUpdateTime(new Date());
+                ecmArtworkNodePopupSettingsVO.setPkNodePopupSettingsId(artworkNodePopupSettingsVO.getPkNodePopupSettingsId());
                 ecmArtworkNodePopupSettingsDao.updateByPrimaryKeySelective(ecmArtworkNodePopupSettingsVO);
-
             }
-
         }catch (Exception e){
             e.printStackTrace();
         }
 
-        return ResponseDTO.ok();
+        return ResponseDTO.ok(ecmArtworkNodePopupSettingsVO);
     }
 
     @Override

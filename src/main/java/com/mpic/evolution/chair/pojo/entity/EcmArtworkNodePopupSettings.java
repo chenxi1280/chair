@@ -3,6 +3,7 @@ package com.mpic.evolution.chair.pojo.entity;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * ecm_artwork_node_popup_settings
@@ -26,7 +27,7 @@ public class EcmArtworkNodePopupSettings implements Serializable {
     private String popupName;
 
     /**
-     * 名字状态
+     * 名字状态 0
      */
     private Integer popupNameState;
 
@@ -44,6 +45,21 @@ public class EcmArtworkNodePopupSettings implements Serializable {
      * 弹窗内容格式 1 图片 2 图片连接地址
      */
     private Integer popupContextState;
+
+    /**
+     * 弹窗跳转地址
+     */
+    private String popupSkip;
+
+    /**
+     * 创建时间
+     */
+    private Date createTime;
+
+    /**
+     * 更新时间
+     */
+    private Date updateTime;
 
     private static final long serialVersionUID = 1L;
 }
