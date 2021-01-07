@@ -234,6 +234,12 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             collect.get(0).setIsEndings(ecmArtwork.getIsEndings());
         }
         collect.get(0).setEndingCount(ecmArtworkEndingsDao.selectCountEcmArtworkId(ecmArtwork.getPkArtworkId()));
+
+        if(!CollectionUtils.isEmpty(ecmArtworkNodePopupSettingsVOList)) {
+            collect.get(0).setPopupGlobalName(ecmArtworkNodePopupSettingsVOList.get(0).getPopupName());
+            collect.get(0).setPopupGlobalNameState(ecmArtworkNodePopupSettingsVOList.get(0).getPopupNameState());
+        }
+
         if (collect.isEmpty()) {
             return ResponseDTO.fail(ErrorEnum.ERR_200.getText());
         }
@@ -797,6 +803,9 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                 ecmArtworkNodePopupSettingsVO.setUpdateTime(new Date());
                 ecmArtworkNodePopupSettingsVO.setPkNodePopupSettingsId(artworkNodePopupSettingsVO.getPkNodePopupSettingsId());
                 ecmArtworkNodePopupSettingsDao.updateByPrimaryKeySelective(ecmArtworkNodePopupSettingsVO);
+                if  ( !artworkNodePopupSettingsVO.getPopupName().equals(ecmArtworkNodePopupSettingsVO.getPopupName()) || !artworkNodePopupSettingsVO.getPopupNameState().equals(ecmArtworkNodePopupSettingsVO.getPopupNameState())) {
+                    ecmArtworkNodePopupSettingsDao.updateNameByArtWorkSelective(ecmArtworkNodePopupSettingsVO);
+                }
             }
         }catch (Exception e){
             e.printStackTrace();

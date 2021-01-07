@@ -89,4 +89,14 @@ public class EcmArtworkNodesVo extends EcmArtworkNodes  {
     private Integer endingCount;
 
     private EcmArtworkNodePopupSettings ecmArtworkNodePopupSettings;
+
+    /**
+     * 弹窗名字
+     */
+    private String popupGlobalName;
+
+    /**
+     * 名字状态 0
+     */
+    private Integer popupGlobalNameState;
 }

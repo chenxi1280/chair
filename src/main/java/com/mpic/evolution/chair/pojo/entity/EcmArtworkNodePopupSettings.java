@@ -22,6 +22,11 @@ public class EcmArtworkNodePopupSettings implements Serializable {
     private Integer fkNodeId;
 
     /**
+     * 作品id
+     */
+    private Integer fkArtworkId;
+
+    /**
      * 弹窗名字
      */
     private String popupName;
