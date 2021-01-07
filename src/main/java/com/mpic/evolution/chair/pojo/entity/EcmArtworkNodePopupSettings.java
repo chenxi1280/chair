@@ -52,6 +52,11 @@ public class EcmArtworkNodePopupSettings implements Serializable {
     private String popupSkip;
 
     /**
+     * 弹窗跳转appid
+     */
+    private String popupAppId;
+
+    /**
      * 创建时间
      */
     private Date createTime;
