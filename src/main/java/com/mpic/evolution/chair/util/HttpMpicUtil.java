@@ -1,29 +1,22 @@
 package com.mpic.evolution.chair.util;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.protocol.HTTP;
+
 import java.io.*;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.ParseException;
-
-import com.alibaba.fastjson.JSON;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.lang.StringUtils;
-
-import com.alibaba.fastjson.JSONObject;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.protocol.HTTP;
-import org.apache.http.util.EntityUtils;
 
 /**
 * @author 作者 SJ:
@@ -112,12 +105,12 @@ public class HttpMpicUtil {
     }
 
 
-    public static String post(JSONObject json,String URL) {
-        HttpClient client = new DefaultHttpClient();
-        HttpPost post = new HttpPost(URL);
+    public static String post(JSONObject json,String url) {
+//        HttpClient client = new DefaultHttpClient(); 过时方法
+        HttpClient client = HttpClientBuilder.create().build();
+        HttpPost post = new HttpPost(url);
         post.setHeader("Content-Type", "application/json");
         String result = "";
-
         try {
 
             StringEntity s = new StringEntity(json.toString());

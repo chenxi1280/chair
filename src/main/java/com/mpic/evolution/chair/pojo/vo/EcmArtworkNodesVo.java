@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mpic.evolution.chair.pojo.dto.EcmArtworkNodesDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeNumberCondition;
+import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodePopupSettings;
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes;
 import lombok.Data;
 
@@ -81,10 +82,11 @@ public class EcmArtworkNodesVo extends EcmArtworkNodes  {
     /**
      * 多结局集合
      */
-    private List<EcmArtworkEndingsVO> ecmArtworkEndingsVOS;
+//    private List<EcmArtworkEndingsVO> ecmArtworkEndingsVOS;
 
     private Integer isEndings;
 
     private Integer endingCount;
 
+    private EcmArtworkNodePopupSettings ecmArtworkNodePopupSettings;
 }

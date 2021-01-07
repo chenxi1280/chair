@@ -2,6 +2,8 @@ package com.mpic.evolution.chair.util;
 
 import java.util.Random;
 
+import static com.mpic.evolution.chair.common.constant.CommonField.INT_SIX;
+
 /**
  * @author Administrator
  */
@@ -9,7 +11,7 @@ public class RandomUtil {
 	public static String getCode() {
 		String phoneConfirmCode = "";
 		Random random = new Random();
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < INT_SIX; i++) {
         	phoneConfirmCode += random.nextInt(10);
         }
 		return phoneConfirmCode;

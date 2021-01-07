@@ -17,6 +17,7 @@ import com.tencentcloudapi.vod.v20180717.VodClient;
 import com.tencentcloudapi.vod.v20180717.models.ProcessMediaByProcedureRequest;
 import com.tencentcloudapi.vod.v20180717.models.ProcessMediaByProcedureResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -24,6 +25,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
+import javax.xml.transform.sax.SAXResult;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -32,6 +34,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.mpic.evolution.chair.common.constant.CommonField.STRING_REDIS_IP;
 import static com.mpic.evolution.chair.common.constant.CosConstant.*;
 
 /**
@@ -78,7 +81,8 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
             params.put("FileId", videoCode);
             params.put("ProcedureName", CHANGE_PIPELINT);
             System.out.println("redisHost:"+redisHost);
-            if (!"129.28.197.177".equals(redisHost)){
+            // 测试环境ip
+            if (!STRING_REDIS_IP.equals(redisHost)){
                 params.put("SubAppId", 1500001548);
             }else {
                 System.out.println("这是测试环境的AI审核");
@@ -138,9 +142,9 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
     }
 
     @Override
+    @Async("taskExecutor")
     public void handleArtwork(Integer pkArtworkId) {
         List<EcmArtworkNodesVo> ecmArtworkNodesVos = ecmArtworkNodesDao.selectByArtWorkId(pkArtworkId);
-
         if (!CollectionUtils.isEmpty(ecmArtworkNodesVos)){
             List<EcmArtworkNodesVo> collect = ecmArtworkNodesVos.stream().filter(ecmArtworkNodesVo -> !"Y".equals(ecmArtworkNodesVo.getIsDeleted())).collect(Collectors.toList());
             collect.forEach( ecmArtworkNodesVo ->  {

@@ -9,23 +9,25 @@ import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Component;
 
-/** 
-* @author 作者 SJ: 
-* @date 创建时间：2020-10-8 12:46:30 
+import static com.mpic.evolution.chair.common.constant.CommonField.STRING_ONE;
+
+/**
+* @author 作者 SJ:
+* @date 创建时间：2020-10-8 12:46:30
 */
 @Component
 public class RedisLock {
-	
+
 	@Resource
 	private RedisTemplate<String, Object> redisTemplate;
-	
+
 	//锁过期时间
 	private long lockInvalidTime = 3000;
 	//获取锁超时时间
 	private long timeout = 3600000;
 	//锁键
 	private String lock_key = "redis_lock";
-	
+
 	/**
 	 * 	加锁
 	 * @param id
@@ -45,7 +47,7 @@ public class RedisLock {
 								+ "return 0 "
 							+ "end";
 				RedisScript<Long> redisScript = new DefaultRedisScript<>(lua, Long .class);
-				Long result = redisTemplate.execute(redisScript, Collections.singletonList(lock_key), 
+				Long result = redisTemplate.execute(redisScript, Collections.singletonList(lock_key),
 						Collections.singleton(id),lockInvalidTime);
 				if ("1".equals(result.toString())) {
 					System.out.println("获得了锁");
@@ -66,9 +68,9 @@ public class RedisLock {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
-		} 
+		}
 	}
-	
+
 	/**
 	 * 	解锁
 	 * @param id
@@ -84,7 +86,7 @@ public class RedisLock {
 		try {
 			Long result = redisTemplate.execute(redisScript, Collections.singletonList(lock_key),
 					Collections.singleton(id));
-			if ("1".equals(result.toString())) {
+			if (STRING_ONE.equals(result.toString())) {
 				System.out.println("解锁");
 				return true;
 			}
@@ -94,5 +96,5 @@ public class RedisLock {
 			return false;
 		}
 	}
-	
+
 }

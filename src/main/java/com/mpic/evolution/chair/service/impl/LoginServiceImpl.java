@@ -23,15 +23,17 @@ import com.tencentcloudapi.sms.v20190711.models.SendSmsRequest;
 import com.tencentcloudapi.sms.v20190711.models.SendSmsResponse;
 import com.tencentcloudapi.sms.v20190711.models.SendStatus;
 
+import static com.mpic.evolution.chair.common.constant.CommonField.STRING_LOWER_CASE_ERRCODE;
+
 /**
- * 
+ *
  * @author SJ
  *
  */
 
 @Service
 public class LoginServiceImpl implements LoginService{
-	
+
 	@Value("${wx.pc.fw.accessTokenUrl}")
     private String pcAccessTokenUrl;
 
@@ -43,7 +45,7 @@ public class LoginServiceImpl implements LoginService{
 
     @Value("${wx.appsecret}")
     private String pcAppsecret;
-    
+
     @Value("${sms.appid}")
 	private String appid;// 腾讯短信应用的 SDK AppID
 
@@ -55,13 +57,13 @@ public class LoginServiceImpl implements LoginService{
 
 	@Value("${sms.smsSign}")
 	private String smsSign;// 签名内容
-	
+
 	@Value("${sms.secretId}")
-	private String secretId;// 密钥对 
-	
+	private String secretId;// 密钥对
+
 	@Value("${sms.secretKey}")
-	private String secretKey;// 密钥对 
-	
+	private String secretKey;// 密钥对
+
 	@Override
 	public SendStatus sendSMS(String code, String[] phoneNumbers) throws TencentCloudSDKException {
 		/*
@@ -88,14 +90,14 @@ public class LoginServiceImpl implements LoginService{
 //		System.out.println(SendSmsResponse.toJsonString(res));
 		SendStatus sendStatus = res.getSendStatusSet()[0];
 		return sendStatus;
-	}	
+	}
 
 	@Override
 	public DefaultKaptcha getConfirmCode() {
 		return this.produce();
-       
+
 	}
-	
+
 	private DefaultKaptcha produce() {
 		DefaultKaptcha defaultKaptcha = new DefaultKaptcha();
 		Properties properties = new Properties();
@@ -118,17 +120,17 @@ public class LoginServiceImpl implements LoginService{
 
 	@Override
 	public ResponseDTO loginByWeiXin(String code) {
-		 Map<String, String> res = new HashMap<>();
-	        
+		 Map<String, String> res = new HashMap<>(8);
+
 	        if ( StringUtils.isBlank(code)) {
 	        	return ResponseDTO.fail("微信code为空", null, 501, null);
 	        }
 	        if (code != null) {
 	            // 第一次进入界面，code不空，openid为空，根据code获取openid，然后查询是否存在用户信息。
-	            Map<String, String> accessTokenMap = getPcWXAccessToken(code); 
+	            Map<String, String> accessTokenMap = getPcWXAccessToken(code);
 	            // 获取getWXAccessToken（微信网站PC扫码登录）
 	            /** 请求微信服务器错误 **/
-	            if (accessTokenMap.get("errcode") != null) {
+	            if (accessTokenMap.get(STRING_LOWER_CASE_ERRCODE) != null) {
 	            	String str = accessTokenMap.get("errcode");
 	            	int errcode = Integer.parseInt(str);
 	                return ResponseDTO.fail(accessTokenMap.get("errmsg"), null,errcode, null);
@@ -141,7 +143,7 @@ public class LoginServiceImpl implements LoginService{
 	            Map<String, String> wxUserMap = this.getPcWeiXinUserInfo(openid, accessToken); // 获得微信用户信息
 	            res = wxUserMap;
 	            /** 获取微信信息异常 **/
-	            if (wxUserMap.get("errcode") != null) {
+	            if (wxUserMap.get(STRING_LOWER_CASE_ERRCODE) != null) {
 	                String str = wxUserMap.get("errcode");
 	                int errcode = Integer.parseInt(str);
 	                return ResponseDTO.fail(wxUserMap.get("errmsg"), null, errcode, null);
@@ -151,19 +153,21 @@ public class LoginServiceImpl implements LoginService{
 	        }
 	        return ResponseDTO.ok("登陆成功", res);
 	}
-	
+
 	private Map<String, String> getPcWXAccessToken(String code) {
-        Map<String, String> resMap = new HashMap<String, String>();
+        Map<String, String> resMap = new HashMap<String, String>(8);
         StringBuffer target = new StringBuffer();
         target.append(pcAccessTokenUrl).append("appid=").append(pcAppID).append("&secret=").append(pcAppsecret)
                 .append("&code=").append(code).append("&grant_type=authorization_code");
         String jsonStr = HttpKit.get(target.toString());
         JSONObject jSONObject = JSONObject.parseObject(jsonStr);
-        if (jSONObject != null && jSONObject.get("errcode") != null) { // 有错误码
-            String errcode = String.valueOf(jSONObject.get("errcode"));
-            String errmsg = String.valueOf(jSONObject.get("errmsg"));
-            resMap.put("errmsg", errmsg);
-            resMap.put("errcode", errcode);
+        String errCodeStr = "errcode";
+        String errMsgStr = "errmsg";
+        if (jSONObject != null && jSONObject.get(errCodeStr) != null) { // 有错误码
+            String errcode = String.valueOf(jSONObject.get(errCodeStr));
+            String errmsg = String.valueOf(jSONObject.get(errMsgStr));
+            resMap.put(errMsgStr, errmsg);
+            resMap.put(errCodeStr, errcode);
         } else {
             String accessToken = String.valueOf(jSONObject.get("access_token"));
             String refreshToken = String.valueOf(jSONObject.get("refresh_token"));
@@ -188,17 +192,19 @@ public class LoginServiceImpl implements LoginService{
      * @return
      */
     private Map<String, String> getPcWeiXinUserInfo(String openId, String accessToken) {
-        Map<String, String> resMap = new HashMap<String, String>();
+        Map<String, String> resMap = new HashMap<String, String>(8);
         StringBuffer url = new StringBuffer(pcUserInfoUrl);
         url.append("access_token=").append(accessToken).append("&").append("openid=").append(openId).append("&")
                 .append("lang=zh_CN");
         String jsonStr = HttpKit.get(url.toString());
         JSONObject jSONObject = JSONObject.parseObject(jsonStr);
-        if (jSONObject != null && jSONObject.get("errcode") != null) {
-            String errcode = String.valueOf(jSONObject.get("errcode"));
-            String errmsg = String.valueOf(jSONObject.get("errmsg"));
-            resMap.put("errmsg", errmsg);
-            resMap.put("errcode", errcode);
+		String errCodeStr = "errcode";
+		String errMsgStr = "errmsg";
+        if (jSONObject != null && jSONObject.get(errCodeStr) != null) {
+            String errcode = String.valueOf(jSONObject.get(errCodeStr));
+            String errmsg = String.valueOf(jSONObject.get(errMsgStr));
+            resMap.put(errMsgStr, errmsg);
+            resMap.put(errCodeStr, errcode);
         } else {
             String nickname = String.valueOf(jSONObject.get("nickname"));
             String openid = String.valueOf(jSONObject.get("openid"));
@@ -221,5 +227,5 @@ public class LoginServiceImpl implements LoginService{
         return resMap;
     }
 
-	
+
 }

@@ -10,6 +10,7 @@ import java.util.Base64.Encoder;
 import java.util.Properties;
 import java.util.Random;
 
+import static com.mpic.evolution.chair.common.constant.CommonField.STRING_REDIS_IP;
 import static com.mpic.evolution.chair.common.constant.CosConstant.SECRET_ID;
 import static com.mpic.evolution.chair.common.constant.CosConstant.SECRET_KEY;
 
@@ -70,7 +71,8 @@ public class Signature {
 //        }
         YamlPropertiesFactoryBean yamlMapFactoryBean = new YamlPropertiesFactoryBean();
         yamlMapFactoryBean.setResources(new ClassPathResource("application.yml"));
-        if (!"129.28.197.177".equals(yamlMapFactoryBean.getObject().getProperty("spring.redis.host"))){
+        String springRedisHost = "spring.redis.host";
+        if (!STRING_REDIS_IP.equals(yamlMapFactoryBean.getObject().getProperty(springRedisHost))){
             contextStr += "&vodSubAppId=" + "1500001548";
         }else {
             System.out.println("这是测试环境的视频、图片、ai审核");
