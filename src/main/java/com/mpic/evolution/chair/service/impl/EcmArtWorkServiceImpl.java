@@ -27,6 +27,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.mpic.evolution.chair.common.constant.CommonField.INT_FOUR;
+import static com.mpic.evolution.chair.common.constant.CommonField.INT_ZORE;
 import static com.mpic.evolution.chair.common.constant.JudgeConstant.SUCCESS;
 import static com.mpic.evolution.chair.common.constant.JudgeConstant.Y;
 
@@ -225,19 +226,20 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             return ResponseDTO.ok(ErrorEnum.ERR_601.getText());
         }
         // 作品类型
-        collect.get(0).setArtWorkTips(ecmArtwork.getFourLetterTips());
+        collect.get(INT_ZORE).setArtWorkTips(ecmArtwork.getFourLetterTips());
         // 作品播放类型
-        collect.get(0).setPlayMode( ecmArtwork.getPlayMode() == null ? 0 : ecmArtwork.getPlayMode() );
+        collect.get(INT_ZORE).setPlayMode( ecmArtwork.getPlayMode() == null ? INT_ZORE : ecmArtwork.getPlayMode() );
         // 作品多结局 集合
-        collect.get(0).setIsEndings(0);
+        collect.get(INT_ZORE).setIsEndings(INT_ZORE);
         if (ecmArtwork.getIsEndings()!=null) {
-            collect.get(0).setIsEndings(ecmArtwork.getIsEndings());
+            collect.get(INT_ZORE).setIsEndings(ecmArtwork.getIsEndings());
         }
-        collect.get(0).setEndingCount(ecmArtworkEndingsDao.selectCountEcmArtworkId(ecmArtwork.getPkArtworkId()));
-
+        // 给前端的 的 多结局数量
+        collect.get(INT_ZORE).setEndingCount(ecmArtworkEndingsDao.selectCountEcmArtworkId(ecmArtwork.getPkArtworkId()));
+        //给前端设置全局的 弹窗
         if(!CollectionUtils.isEmpty(ecmArtworkNodePopupSettingsVOList)) {
-            collect.get(0).setPopupGlobalName(ecmArtworkNodePopupSettingsVOList.get(0).getPopupName());
-            collect.get(0).setPopupGlobalNameState(ecmArtworkNodePopupSettingsVOList.get(0).getPopupNameState());
+            collect.get(INT_ZORE).setPopupGlobalName(ecmArtworkNodePopupSettingsVOList.get(INT_ZORE).getPopupName());
+            collect.get(INT_ZORE).setPopupGlobalNameState(ecmArtworkNodePopupSettingsVOList.get(INT_ZORE).getPopupNameState());
         }
 
         if (collect.isEmpty()) {
@@ -799,6 +801,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             if (artworkNodePopupSettingsVO == null) {
                 ecmArtworkNodePopupSettingsVO.setCreateTime( new Date());
                 ecmArtworkNodePopupSettingsDao.insertSelective(ecmArtworkNodePopupSettingsVO);
+                ecmArtworkNodePopupSettingsDao.updateNameByArtWorkSelective(ecmArtworkNodePopupSettingsVO);
             }else  {
                 ecmArtworkNodePopupSettingsVO.setUpdateTime(new Date());
                 ecmArtworkNodePopupSettingsVO.setPkNodePopupSettingsId(artworkNodePopupSettingsVO.getPkNodePopupSettingsId());
