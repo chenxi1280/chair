@@ -205,6 +205,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             if(!CollectionUtils.isEmpty(ecmArtworkNodePopupSettingsVOList)) {
                 ecmArtworkNodePopupSettingsVOList.forEach( ecmArtworkNodePopupSettingsVO -> {
                     if (ecmArtworkNodePopupSettingsVO.getFkNodeId().equals(node.getPkDetailId())) {
+                        ecmArtworkNodePopupSettingsVO.setPopupState(node.getPopupState());
                         node.setEcmArtworkNodePopupSettings(ecmArtworkNodePopupSettingsVO);
                     }
                 });
