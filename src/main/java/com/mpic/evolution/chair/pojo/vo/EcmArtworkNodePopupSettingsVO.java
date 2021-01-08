@@ -18,6 +18,5 @@ public class EcmArtworkNodePopupSettingsVO extends EcmArtworkNodePopupSettings {
      */
     private Integer popupState;
 
-    private Integer fkArtworkId;
 
 }

@@ -23,4 +23,7 @@ public interface EcmArtworkNodePopupSettingsDao {
     List<EcmArtworkNodePopupSettingsVO> selectByArtworkNodeList(@Param("list") List<EcmArtworkNodesVo> list);
 
     EcmArtworkNodePopupSettingsVO selectByArtworkNodeId(Integer fkNodeId);
+
+    int updateNameByArtWorkSelective(EcmArtworkNodePopupSettingsVO ecmArtworkNodePopupSettingsVO);
+
 }
