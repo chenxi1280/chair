@@ -18,5 +18,9 @@ public class EcmArtworkNodePopupSettingsVO extends EcmArtworkNodePopupSettings {
      */
     private Integer popupState;
 
+    /**
+     * 0 为正常 1位多结局
+     */
+    private Integer endingPopup;
 
 }

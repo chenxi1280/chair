@@ -420,6 +420,18 @@ public class EcmArtWorkController extends BaseController{
 		return ecmArtWorkService.saveArtworkNodeCondition(ecmArtworkNodesVo);
 	}
 
+	@RequestMapping("/saveArtworkEndingCondition")
+	@ResponseBody
+	public ResponseDTO saveArtworkEndingCondition(@RequestBody EcmArtworkNodesVo ecmArtworkNodesVo){
+		Integer userId = getUserIdByHandToken();
+		if (userId == null){
+			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+		}
+		ecmArtworkNodesVo.setFkUserId(userId);
+
+		return ecmArtWorkService.saveArtworkEndingCondition(ecmArtworkNodesVo);
+	}
+
 
     /**
      * 	获取发布微信二维码

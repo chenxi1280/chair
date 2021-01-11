@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Data
 public class EcmArtworkEndings implements Serializable {
     /**
-     * 多结局主键
+     *
      */
     private Integer pkEndingsId;
 
@@ -50,17 +50,25 @@ public class EcmArtworkEndings implements Serializable {
      */
     private String comment;
 
-
     /**
      * 对应的节点id
      */
     private Integer fkNodeId;
 
-
     /**
      * 视频名称
      */
     private String videoName;
+
+    /**
+     * 弹窗是否启用 0 null 为未启用 1 启用
+     */
+    private Integer conditionState;
+
+    /**
+     * 弹窗是否启用 0 null 为未启用 1 启用
+     */
+    private Integer popupState;
 
     private static final long serialVersionUID = 1L;
 }

@@ -6,10 +6,7 @@ import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
 import com.mpic.evolution.chair.dao.*;
 import com.mpic.evolution.chair.pojo.dto.EcmArtworkNodesDTO;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
-import com.mpic.evolution.chair.pojo.entity.EcmArtwork;
-import com.mpic.evolution.chair.pojo.entity.EcmArtworkEndings;
-import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeNumberCondition;
-import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes;
+import com.mpic.evolution.chair.pojo.entity.*;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
 import com.mpic.evolution.chair.pojo.query.EcmArtworkEndingsQuery;
 import com.mpic.evolution.chair.pojo.vo.*;
@@ -235,8 +232,18 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         if (ecmArtwork.getIsEndings()!=null) {
             collect.get(INT_ZORE).setIsEndings(ecmArtwork.getIsEndings());
         }
+        List<EcmArtworkEndingsVO> ecmArtworkEndingsVOList =ecmArtworkEndingsDao.selectByArtwId(ecmArtwork.getPkArtworkId());
+
         // 给前端的 的 多结局数量
-        collect.get(INT_ZORE).setEndingCount(ecmArtworkEndingsDao.selectCountEcmArtworkId(ecmArtwork.getPkArtworkId()));
+        collect.get(INT_ZORE).setEndingCount(ecmArtworkEndingsVOList.size());
+        if (!CollectionUtils.isEmpty(ecmArtworkEndingsVOList)) {
+            collect.get(INT_ZORE).setEndingConditionState(ecmArtworkEndingsVOList.get(INT_ZORE).getConditionState());
+        }else {
+            collect.get(INT_ZORE).setEndingConditionState(0);
+        }
+
+
+
         //给前端设置全局的 弹窗
         if(!CollectionUtils.isEmpty(ecmArtworkNodePopupSettingsVOList)) {
             collect.get(INT_ZORE).setPopupGlobalName(ecmArtworkNodePopupSettingsVOList.get(INT_ZORE).getPopupName());
@@ -246,6 +253,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         if (collect.isEmpty()) {
             return ResponseDTO.fail(ErrorEnum.ERR_200.getText());
         }
+        collect.get(INT_ZORE).setPercentageState(collect.get(INT_ZORE).getPercentageState() == null ? 1 : collect.get(INT_ZORE).getPercentageState());
         return ResponseDTO.ok("success", TreeUtil.buildTree(collect).get(0));
     }
 
@@ -543,6 +551,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             return ResponseDTO.fail("非法访问");
         }
         List<EcmArtworkNodes> ecmArtworkNodesVoList = new ArrayList<>();
+//        List<EcmArtworkNodePopupSettings> ecmArtworkNodePopupSettingsList = new ArrayList<>();
         List<EcmArtworkEndingsVO> ecmArtworkEndingsVOS = ecmArtworkEndingsQuery.getEcmArtworkEndingsVOS();
         ecmArtworkEndingsVOS.forEach( v->{
             EcmArtworkNodes ecmArtworkNodesVo = new EcmArtworkNodes();
@@ -579,7 +588,11 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             ecmArtworkNodesDao.insertEndingList(ecmArtworkNodesVoList);
             for (int i = 0; i < ecmArtworkNodesVoList.size(); i++) {
                 ecmArtworkEndingsVOS.get(i).setFkNodeId(ecmArtworkNodesVoList.get(i).getPkDetailId());
+//                EcmArtworkNodePopupSettings ecmArtworkNodePopupSettings =  ecmArtworkEndingsVOS.get(i).getEcmArtworkNodePopupSettings();
+//                ecmArtworkNodePopupSettings.setFkNodeId(ecmArtworkNodesVoList.get(i).getPkDetailId());
+//                ecmArtworkNodePopupSettingsList.add(ecmArtworkNodePopupSettings);
             }
+//            ecmArtworkNodePopupSettingsDao.insertSelectiveList(ecmArtworkNodePopupSettingsList);
             ecmArtworkEndingsDao.insertSelectiveList(ecmArtworkEndingsVOS);
             return ResponseDTO.ok(ecmArtworkEndingsVOS);
         }catch (Exception e) {
@@ -678,16 +691,24 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
     @Override
     public ResponseDTO getArtworkEndingList(EcmArtworkEndingsQuery ecmArtworkEndingsQuery) {
         List<EcmArtworkEndingsVO> ecmArtworkEndingsVOList =  ecmArtworkEndingsDao.selectEcmArtworkEndingsQuery(ecmArtworkEndingsQuery);
+        List<EcmArtworkNodePopupSettingsVO> ecmArtworkNodePopupSettingsVOList = ecmArtworkNodePopupSettingsDao.selectByEndingList(ecmArtworkEndingsVOList);
 //        Integer count = ecmArtworkEndingsDao.selectCountEcmArtworkId(ecmArtworkEndingsQuery.getFkArtworkId());
         HashMap<String, Object> stringObjectHashMap = new HashMap<>(2);
-        if (CollectionUtils.isEmpty(ecmArtworkEndingsVOList)){
+        if (!CollectionUtils.isEmpty(ecmArtworkEndingsVOList)){
             ecmArtworkEndingsVOList.forEach( v -> {
                 v.setSelectTreeList(JSON.parseArray(v.getSelectTree(),Integer.class));
                 EcmVideoTemporaryStorageVO ecmVideoTemporaryStorageVO = new EcmVideoTemporaryStorageVO();
                 ecmVideoTemporaryStorageVO.setVideoCode(v.getVideoCode());
                 ecmVideoTemporaryStorageVO.setVideoUrl(v.getVideoUrl());
                 ecmVideoTemporaryStorageVO.setNodeImgUrl(v.getVideoImg());
+                ecmVideoTemporaryStorageVO.setFkNodeId(v.getFkNodeId());
                 v.setVideoInfo(ecmVideoTemporaryStorageVO);
+                ecmArtworkNodePopupSettingsVOList.forEach( ecmArtworkNodePopupSettingsVO ->  {
+                    if (v.getFkNodeId().equals(ecmArtworkNodePopupSettingsVO.getFkNodeId())){
+                        ecmArtworkNodePopupSettingsVO.setPopupState(v.getPopupState());
+                        v.setEcmArtworkNodePopupSettings(ecmArtworkNodePopupSettingsVO);
+                    }
+                });
             });
         }
         stringObjectHashMap.put("list",ecmArtworkEndingsVOList);
@@ -799,6 +820,13 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         EcmArtworkNodePopupSettingsVO artworkNodePopupSettingsVO = ecmArtworkNodePopupSettingsDao.selectByArtworkNodeId(ecmArtworkNodePopupSettingsVO.getFkNodeId());
         try{
             ecmArtworkNodesDao.updatePopupSetting(ecmArtworkNodes);
+            if (ecmArtworkNodePopupSettingsVO.getEndingPopup() == 1){
+                EcmArtworkEndingsVO ecmArtworkEndingsVO = ecmArtworkEndingsDao.selectByNodeId(ecmArtworkNodePopupSettingsVO.getFkNodeId());
+                if (ecmArtworkEndingsVO != null ){
+                    ecmArtworkEndingsVO.setPopupState(ecmArtworkNodePopupSettingsVO.getPopupState());
+                    ecmArtworkEndingsDao.updatePopupStateByPrimaryKey(ecmArtworkEndingsVO);
+                }
+            }
             if (artworkNodePopupSettingsVO == null) {
                 ecmArtworkNodePopupSettingsVO.setCreateTime( new Date());
                 ecmArtworkNodePopupSettingsDao.insertSelective(ecmArtworkNodePopupSettingsVO);
@@ -829,6 +857,24 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
         }
         ecmArtworkNodesDao.updateByPrimaryKeySelective(ecmArtworkNodesVo);
+        return ResponseDTO.ok();
+    }
+
+    @Override
+    public ResponseDTO saveArtworkEndingCondition(EcmArtworkNodesVo ecmArtworkNodesVo) {
+        EcmArtwork ecmArtworkVo = ecmArtworkDao.selectByPrimaryKey(ecmArtworkNodesVo.getFkArtworkId());
+        if (ecmArtworkVo == null ) {
+            return ResponseDTO.fail("作品错误");
+        }
+        EcmArtworkNodes ecmArtworkNodes = ecmArtworkNodesDao.selectByPrimaryKey(ecmArtworkNodesVo.getPkDetailId());
+        if (ecmArtworkNodes == null ) {
+            return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+        }
+        EcmArtworkEndings ecmArtworkEndings = new EcmArtworkEndings();
+        ecmArtworkEndings.setFkArtworkId(ecmArtworkNodesVo.getFkArtworkId());
+        ecmArtworkEndings.setConditionState(ecmArtworkNodesVo.getConditionState());
+
+        ecmArtworkEndingsDao.updateConditionByArtworkId(ecmArtworkEndings);
         return ResponseDTO.ok();
     }
 

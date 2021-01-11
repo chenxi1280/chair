@@ -188,6 +188,7 @@ public interface EcmArtWorkService {
 
     ResponseDTO saveArtworkNodeCondition(EcmArtworkNodesVo ecmArtworkVo);
 
+    ResponseDTO saveArtworkEndingCondition(EcmArtworkNodesVo ecmArtworkNodesVo);
 
 
 //小程序接口

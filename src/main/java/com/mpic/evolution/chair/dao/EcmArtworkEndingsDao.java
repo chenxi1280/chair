@@ -40,4 +40,11 @@ public interface EcmArtworkEndingsDao {
 
     int deleteByPrimaryList(@Param("list")List<EcmArtworkEndingsVO> ecmArtworkEndings);
 
+    EcmArtworkEndingsVO selectByNodeId(Integer fkNodeId);
+
+    int updatePopupStateByPrimaryKey(EcmArtworkEndingsVO ecmArtworkEndingsVO);
+
+    int updateConditionByNodeId(EcmArtworkEndings ecmArtworkEndings);
+
+    int updateConditionByArtworkId(EcmArtworkEndings ecmArtworkEndings);
 }

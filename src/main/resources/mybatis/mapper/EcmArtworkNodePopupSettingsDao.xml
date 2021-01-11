@@ -113,7 +113,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodePopupSettings">
+    <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodePopupSettings">
     update ecm_artwork_node_popup_settings
     <set>
       <if test="fkNodeId != null">
@@ -182,6 +182,13 @@
     from ecm_artwork_node_popup_settings
     where fk_node_id = #{fkNodeId}
   </select>
+  <select id="selectByEndingList" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkNodePopupSettingsVO">
+    select <include refid="Base_Column_List" />
+    from ecm_artwork_node_popup_settings
+    where fk_node_id in <foreach collection="list" open="(" close=")" item="item" separator=",">
+        #{item.fkNodeId}
+    </foreach>
+  </select>
   <update id="updateNameByArtWorkSelective">
     update ecm_artwork_node_popup_settings
     set popup_name = #{popupName,jdbcType=VARCHAR},
@@ -189,5 +196,20 @@
         update_time = #{updateTime,jdbcType=TIMESTAMP}
     where fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER}
   </update>
+
+  <insert id="insertSelectiveList">
+    insert into ecm_artwork_node_popup_settings
+    (fk_node_id, fk_artwork_id, popup_name, popup_name_state, popup_position, popup_context, popup_context_state,
+    popup_skip, popup_app_id, create_time)
+    values
+    <foreach collection="list" separator="," index="index" item="item" >
+      (#{fkNodeId}, #{fkArtworkId}, #{popupName},
+      #{popupNameState}, #{popupPosition}, #{popupContext},
+      #{popupContextState}, #{popupSkip}, #{popupAppId},
+      #{createTime}
+    </foreach>
+
+  </insert>
+
 
 </mapper>
