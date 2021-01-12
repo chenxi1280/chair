@@ -1,6 +1,7 @@
 package com.mpic.evolution.chair.dao;
 
 import com.mpic.evolution.chair.pojo.entity.EcmArtwork;
+import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkBroadcastHotVO;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkEndingsVO;
@@ -41,4 +42,6 @@ public interface EcmArtworkDao {
     int updateEndingsByArtwork(EcmArtworkVo ecmArtworkVo);
 
     List<EcmArtworkVo> selectArtWorksAll();
+
+
 }

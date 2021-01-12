@@ -104,4 +104,6 @@ public class EcmArtworkNodesVo extends EcmArtworkNodes  {
      * 条件是否启用 0 null 为未启用 1 启用
      */
     private Integer endingConditionState;
+
+    private  List<EcmArtworkNodeBuoyVO> ecmArtworkNodeBuoyVOList;
 }

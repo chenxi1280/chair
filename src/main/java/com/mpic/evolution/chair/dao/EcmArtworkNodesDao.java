@@ -59,4 +59,6 @@ public interface EcmArtworkNodesDao {
     List<EcmArtworkNodesVo> selectByArtWorkList(@Param("list") List<EcmArtworkVo> ecmArtworkVoList);
 
     int updatePopupSetting(EcmArtworkNodes pkDetailId);
+
+    int updateEndingConditionByArtworkId(EcmArtworkNodes ecmArtworkNodes);
 }

@@ -347,9 +347,8 @@
 
     select <include refid="Base_Column_List" />
     from ecm_artwork_endings
-    where fk_node_id in #{fkNodeId}
+    where fk_node_id =  #{fkNodeId}
   </select>
-
 
 
 </mapper>

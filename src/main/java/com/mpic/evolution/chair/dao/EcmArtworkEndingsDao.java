@@ -47,4 +47,7 @@ public interface EcmArtworkEndingsDao {
     int updateConditionByNodeId(EcmArtworkEndings ecmArtworkEndings);
 
     int updateConditionByArtworkId(EcmArtworkEndings ecmArtworkEndings);
+
+
+
 }

@@ -674,6 +674,11 @@
     set  popup_state = #{popupState}
     where pk_detail_id = #{pkDetailId}
   </update>
+    <update id="updateEndingConditionByArtworkId">
+    update ecm_artwork_nodes
+    set  condition_state = #{conditionState}
+    where fk_artwork_id = #{fkArtworkId} and parent_id = -1
+    </update>
 
 
 </mapper>

@@ -9,6 +9,7 @@ import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.*;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
 import com.mpic.evolution.chair.pojo.query.EcmArtworkEndingsQuery;
+import com.mpic.evolution.chair.pojo.query.EcmArtworkNodeBuoyQuery;
 import com.mpic.evolution.chair.pojo.vo.*;
 import com.mpic.evolution.chair.service.EcmArtWorkService;
 import com.mpic.evolution.chair.util.*;
@@ -23,8 +24,7 @@ import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.mpic.evolution.chair.common.constant.CommonField.INT_FOUR;
-import static com.mpic.evolution.chair.common.constant.CommonField.INT_ZORE;
+import static com.mpic.evolution.chair.common.constant.CommonField.*;
 import static com.mpic.evolution.chair.common.constant.JudgeConstant.SUCCESS;
 import static com.mpic.evolution.chair.common.constant.JudgeConstant.Y;
 
@@ -50,6 +50,8 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
     EcmArtworkEndingsDao ecmArtworkEndingsDao;
     @Resource
     EcmArtworkNodePopupSettingsDao ecmArtworkNodePopupSettingsDao;
+    @Resource
+    EcmArtworkNodeBuoyDao ecmArtworkNodeBuoyDao;
 
 
     @Override
@@ -132,15 +134,34 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         }
         // 茶渣 所有的节点
         List<EcmArtworkNodesVo> list = ecmArtworkNodesDao.selectByArtWorkId(ecmArtWorkQuery.getPkArtworkId());
+        // 去除删除的  节点
+        List<EcmArtworkNodesVo> collect = list.stream().filter(ecmArtworkNodesVo -> !JudgeConstant.Y.equals(ecmArtworkNodesVo.getIsDeleted())).collect(Collectors.toList());
+
+        if (CollectionUtils.isEmpty(collect)) {
+            return ResponseDTO.ok(ErrorEnum.ERR_601.getText());
+        }
+
         // 查找到所有的数值选项
         List<EcmArtworkNodeNumberConditionVO> ecmArtworkNodeNumberConditionS = ecmArtworkNodeNumberConditionDao.selectByArtWorkId(ecmArtWorkQuery.getPkArtworkId());
         // 查找到 所有的  弹窗设置信息
-        List<EcmArtworkNodePopupSettingsVO> ecmArtworkNodePopupSettingsVOList = ecmArtworkNodePopupSettingsDao.selectByArtworkNodeList(list);
+        List<EcmArtworkNodePopupSettingsVO> ecmArtworkNodePopupSettingsVOList = ecmArtworkNodePopupSettingsDao.selectByArtworkNodeList(collect);
+        //过滤掉 浮标 没有启用的 节点
+        List<EcmArtworkNodesVo> filterBuoyList = collect.stream().filter(ecmArtworkNodesVo -> INTEGER_TWO.equals(ecmArtworkNodesVo.getBranchPre())).collect(Collectors.toList());
+        // 查询出有 浮标得信息
+        List<EcmArtworkNodeBuoyVO> ecmArtworkNodeBuoyVOList = new ArrayList<>();
+        Map<Integer, List<EcmArtworkNodeBuoyVO>> map = new HashMap<>(INT_ONE);
+        if (!CollectionUtils.isEmpty(filterBuoyList)){
+            ecmArtworkNodeBuoyVOList = ecmArtworkNodeBuoyDao.selectByEcmArtworkNodeList(filterBuoyList);
+            // 按照 nodeID 进行分组
+            map = ecmArtworkNodeBuoyVOList.stream().collect(Collectors.groupingBy(EcmArtworkNodeBuoy::getFkNodeId));
+        }
+
+
         //2次循环寻找 对应的  跳转节点
-        for (EcmArtworkNodesVo node : list) {
+        for (EcmArtworkNodesVo node : collect) {
             // 是否为跳转节点
             if (!StringUtils.isEmpty(node.getItems()) && node.getALevel() != null) {
-                if (node.getALevel().equals(1)) {
+                if (node.getALevel().equals(INT_ONE)) {
                     for (EcmArtworkNodesVo ecmArtworkNodesVo : list) {
                         if (!JudgeConstant.Y.equals(ecmArtworkNodesVo.getIsDeleted())) {
                             if (ecmArtworkNodesVo.getPkDetailId().equals(Integer.valueOf(node.getItems()))) {
@@ -158,9 +179,17 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                 }
             }
             // 还原定位数组方法
-            if (!StringUtils.isEmpty(node.getItemsText())) {
-                node.setNodeLocationList(JSON.parseArray(node.getItemsText(), NodeOptionLocationVO.class));
-                node.setItemsText(null);
+            if (node.getBranchPre() != null &&  node.getBranchPre() == INT_ONE){
+                if (!StringUtils.isEmpty(node.getItemsText())) {
+                    node.setNodeLocationList(JSON.parseArray(node.getItemsText(), NodeOptionLocationVO.class));
+                    node.setItemsText(null);
+                }
+            }
+            // 还原浮标
+            if (node.getBranchPre() != null &&  node.getBranchPre() == INT_TWO){
+                if (!CollectionUtils.isEmpty(map)){
+                    node.setEcmArtworkNodeBuoyVOList(map.get(node.getPkDetailId()));
+                }
             }
             // 还原数值数组方法
             if (!CollectionUtils.isEmpty(ecmArtworkNodeNumberConditionS)) {
@@ -209,20 +238,14 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             }
             // 当 弹窗 和 条件选项 为 null 是 设置为 0 方便前端判断
             if (node.getPopupState() == null ){
-                node.setPopupState(0);
+                node.setPopupState(INT_ZORE);
             }
             if (node.getConditionState() == null ){
-                node.setConditionState(0);
+                node.setConditionState(INT_ZORE);
             }
 
         }
 
-        // 去除删除的  节点
-        List<EcmArtworkNodesVo> collect = list.stream().filter(ecmArtworkNodesVo -> !JudgeConstant.Y.equals(ecmArtworkNodesVo.getIsDeleted())).collect(Collectors.toList());
-
-        if (CollectionUtils.isEmpty(collect)) {
-            return ResponseDTO.ok(ErrorEnum.ERR_601.getText());
-        }
         // 作品类型
         collect.get(INT_ZORE).setArtWorkTips(ecmArtwork.getFourLetterTips());
         // 作品播放类型
@@ -239,9 +262,8 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         if (!CollectionUtils.isEmpty(ecmArtworkEndingsVOList)) {
             collect.get(INT_ZORE).setEndingConditionState(ecmArtworkEndingsVOList.get(INT_ZORE).getConditionState());
         }else {
-            collect.get(INT_ZORE).setEndingConditionState(0);
+            collect.get(INT_ZORE).setEndingConditionState(INT_ZORE);
         }
-
 
 
         //给前端设置全局的 弹窗
@@ -254,7 +276,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             return ResponseDTO.fail(ErrorEnum.ERR_200.getText());
         }
         collect.get(INT_ZORE).setPercentageState(collect.get(INT_ZORE).getPercentageState() == null ? 1 : collect.get(INT_ZORE).getPercentageState());
-        return ResponseDTO.ok("success", TreeUtil.buildTree(collect).get(0));
+        return ResponseDTO.ok("success", TreeUtil.buildTree(collect).get(INT_ZORE));
     }
 
 
@@ -455,7 +477,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
         }
         ecmArtworkNodeNumberConditionVO.setUpdataDate(new Date());
-        ecmArtworkNodeNumberConditionVO.setNameFlag((byte) 1);
+        ecmArtworkNodeNumberConditionVO.setNameFlag((byte) INT_ONE);
 
         return null;
     }
@@ -691,25 +713,32 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
     @Override
     public ResponseDTO getArtworkEndingList(EcmArtworkEndingsQuery ecmArtworkEndingsQuery) {
         List<EcmArtworkEndingsVO> ecmArtworkEndingsVOList =  ecmArtworkEndingsDao.selectEcmArtworkEndingsQuery(ecmArtworkEndingsQuery);
-        List<EcmArtworkNodePopupSettingsVO> ecmArtworkNodePopupSettingsVOList = ecmArtworkNodePopupSettingsDao.selectByEndingList(ecmArtworkEndingsVOList);
+        List<EcmArtworkNodePopupSettingsVO> ecmArtworkNodePopupSettingsVOList = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(ecmArtworkEndingsVOList)) {
+            ecmArtworkNodePopupSettingsVOList = ecmArtworkNodePopupSettingsDao.selectByEndingList(ecmArtworkEndingsVOList);
+
+        }
 //        Integer count = ecmArtworkEndingsDao.selectCountEcmArtworkId(ecmArtworkEndingsQuery.getFkArtworkId());
         HashMap<String, Object> stringObjectHashMap = new HashMap<>(2);
         if (!CollectionUtils.isEmpty(ecmArtworkEndingsVOList)){
-            ecmArtworkEndingsVOList.forEach( v -> {
-                v.setSelectTreeList(JSON.parseArray(v.getSelectTree(),Integer.class));
+            for (EcmArtworkEndingsVO ecmArtworkEndingsVO : ecmArtworkEndingsVOList) {
+                ecmArtworkEndingsVO.setSelectTreeList(JSON.parseArray(ecmArtworkEndingsVO.getSelectTree(),Integer.class));
                 EcmVideoTemporaryStorageVO ecmVideoTemporaryStorageVO = new EcmVideoTemporaryStorageVO();
-                ecmVideoTemporaryStorageVO.setVideoCode(v.getVideoCode());
-                ecmVideoTemporaryStorageVO.setVideoUrl(v.getVideoUrl());
-                ecmVideoTemporaryStorageVO.setNodeImgUrl(v.getVideoImg());
-                ecmVideoTemporaryStorageVO.setFkNodeId(v.getFkNodeId());
-                v.setVideoInfo(ecmVideoTemporaryStorageVO);
-                ecmArtworkNodePopupSettingsVOList.forEach( ecmArtworkNodePopupSettingsVO ->  {
-                    if (v.getFkNodeId().equals(ecmArtworkNodePopupSettingsVO.getFkNodeId())){
-                        ecmArtworkNodePopupSettingsVO.setPopupState(v.getPopupState());
-                        v.setEcmArtworkNodePopupSettings(ecmArtworkNodePopupSettingsVO);
-                    }
-                });
-            });
+                ecmVideoTemporaryStorageVO.setVideoCode(ecmArtworkEndingsVO.getVideoCode());
+                ecmVideoTemporaryStorageVO.setVideoUrl(ecmArtworkEndingsVO.getVideoUrl());
+                ecmVideoTemporaryStorageVO.setNodeImgUrl(ecmArtworkEndingsVO.getVideoImg());
+                ecmVideoTemporaryStorageVO.setFkNodeId(ecmArtworkEndingsVO.getFkNodeId());
+                ecmArtworkEndingsVO.setVideoInfo(ecmVideoTemporaryStorageVO);
+
+                if (!CollectionUtils.isEmpty(ecmArtworkEndingsVOList)){
+                    ecmArtworkNodePopupSettingsVOList.forEach( ecmArtworkNodePopupSettingsVO ->  {
+                        if (ecmArtworkEndingsVO.getFkNodeId().equals(ecmArtworkNodePopupSettingsVO.getFkNodeId())){
+                            ecmArtworkNodePopupSettingsVO.setPopupState(ecmArtworkEndingsVO.getPopupState());
+                            ecmArtworkEndingsVO.setEcmArtworkNodePopupSettings(ecmArtworkNodePopupSettingsVO);
+                        }
+                    });
+                }
+            }
         }
         stringObjectHashMap.put("list",ecmArtworkEndingsVOList);
 //        stringObjectHashMap.put("count",count);
@@ -861,6 +890,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public ResponseDTO saveArtworkEndingCondition(EcmArtworkNodesVo ecmArtworkNodesVo) {
         EcmArtwork ecmArtworkVo = ecmArtworkDao.selectByPrimaryKey(ecmArtworkNodesVo.getFkArtworkId());
         if (ecmArtworkVo == null ) {
@@ -873,9 +903,85 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         EcmArtworkEndings ecmArtworkEndings = new EcmArtworkEndings();
         ecmArtworkEndings.setFkArtworkId(ecmArtworkNodesVo.getFkArtworkId());
         ecmArtworkEndings.setConditionState(ecmArtworkNodesVo.getConditionState());
-
-        ecmArtworkEndingsDao.updateConditionByArtworkId(ecmArtworkEndings);
+        try {
+            ecmArtworkNodesDao.updateEndingConditionByArtworkId(ecmArtworkNodes);
+            ecmArtworkEndingsDao.updateConditionByArtworkId(ecmArtworkEndings);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return ResponseDTO.ok();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseDTO saveArtworkNodeBuoy(EcmArtworkNodeBuoyQuery ecmArtworkNodeBuoyQuery) {
+        EcmArtwork ecmArtworkVo = ecmArtworkDao.selectByPrimaryKey(ecmArtworkNodeBuoyQuery.getFkArtworkId());
+        if (ecmArtworkVo == null ) {
+            return ResponseDTO.fail("作品错误");
+        }
+        if (!ecmArtworkVo.getFkUserid().equals(ecmArtworkNodeBuoyQuery.getFkUserId())) {
+            return ResponseDTO.fail("非法访问");
+        }
+
+        List<EcmArtworkNodeBuoy> ecmArtworkNodeBuoyList = ecmArtworkNodeBuoyQuery.getEcmArtworkNodeBuoyList();
+
+        List<EcmArtworkNodeBuoyVO> ecmArtworkNodeBuoyVOList = ecmArtworkNodeBuoyDao.selectByEcmArtworkId(ecmArtworkNodeBuoyQuery.getFkArtworkId());
+
+        Iterator<EcmArtworkNodeBuoy> iterator = ecmArtworkNodeBuoyList.iterator();
+        while (iterator.hasNext()) {
+            for (EcmArtworkNodeBuoy ecmArtworkNodeBuoy : ecmArtworkNodeBuoyVOList) {
+                if (ecmArtworkNodeBuoy.getPkBuoyId().equals(iterator.next().getPkBuoyId())){
+                    ecmArtworkNodeBuoy =   iterator.next();
+                    iterator.remove();
+                }
+            }
+        }
+        try {
+            if (!CollectionUtils.isEmpty(ecmArtworkNodeBuoyList)) {
+                // 整插
+                ecmArtworkNodeBuoyDao.insertSelectiveList(ecmArtworkNodeBuoyList);
+            }
+            if (!CollectionUtils.isEmpty(ecmArtworkNodeBuoyVOList)) {
+                // 更新
+                ecmArtworkNodeBuoyDao.updateByPrimaryKeySelectiveList(ecmArtworkNodeBuoyVOList);
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+//
+//        try{
+//            if (!CollectionUtils.isEmpty(ecmArtworkNodeBuoyList)) {
+//                // 整删
+//                ecmArtworkNodeBuoyDao.deleteByEcmArtworkId(ecmArtworkNodeBuoyQuery.getFkArtworkId());
+//                // 整插
+//                ecmArtworkNodeBuoyDao.insertSelectiveList(ecmArtworkNodeBuoyList);
+//            }
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
+
+        return ResponseDTO.ok(ecmArtworkNodeBuoyVOList);
+    }
+
+    @Override
+    public ResponseDTO deleteArtworkNodeBuoy(EcmArtworkNodeBuoyVO ecmArtworkNodeBuoyVO) {
+        EcmArtwork ecmArtworkVo = ecmArtworkDao.selectByPrimaryKey(ecmArtworkNodeBuoyVO.getFkArtworkId());
+        if (ecmArtworkVo == null ) {
+            return ResponseDTO.fail("作品错误");
+        }
+        if (!ecmArtworkVo.getFkUserid().equals(ecmArtworkNodeBuoyVO.getFkUserId())) {
+            return ResponseDTO.fail("非法访问");
+        }
+        if (ecmArtworkNodeBuoyVO.getPkBuoyId() !=null ){
+            ecmArtworkNodeBuoyDao.deleteByPrimaryKey(ecmArtworkNodeBuoyVO.getPkBuoyId());
+            return ResponseDTO.ok();
+        }
+
+        return ResponseDTO.fail("网络错误！");
+
     }
 
 
