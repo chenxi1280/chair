@@ -62,6 +62,11 @@ public class EcmArtworkNodePopupSettings implements Serializable {
     private String popupAppId;
 
     /**
+     * 弹窗百分比是否展示
+     */
+    private Integer popupPercentageState;
+
+    /**
      * 创建时间
      */
     private Date createTime;
