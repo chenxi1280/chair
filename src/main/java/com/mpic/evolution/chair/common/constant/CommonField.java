@@ -28,5 +28,7 @@ public interface CommonField {
     String STRING_REDIS_IP = "129.28.197.177";
     double DOUBLE_HALF = 0.5;
     Integer INTEGER_TWO = 2;
-
+    Byte BYTER_TWO = 2;
+    byte BYTE_ONE = 1;
+    byte BYTE_TWO = 2;
 }

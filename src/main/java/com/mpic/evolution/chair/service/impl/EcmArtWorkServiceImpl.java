@@ -140,13 +140,12 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         if (CollectionUtils.isEmpty(collect)) {
             return ResponseDTO.ok(ErrorEnum.ERR_601.getText());
         }
-
         // 查找到所有的数值选项
         List<EcmArtworkNodeNumberConditionVO> ecmArtworkNodeNumberConditionS = ecmArtworkNodeNumberConditionDao.selectByArtWorkId(ecmArtWorkQuery.getPkArtworkId());
         // 查找到 所有的  弹窗设置信息
         List<EcmArtworkNodePopupSettingsVO> ecmArtworkNodePopupSettingsVOList = ecmArtworkNodePopupSettingsDao.selectByArtworkNodeList(collect);
         //过滤掉 浮标 没有启用的 节点
-        List<EcmArtworkNodesVo> filterBuoyList = collect.stream().filter(ecmArtworkNodesVo -> INTEGER_TWO.equals(ecmArtworkNodesVo.getBranchPre())).collect(Collectors.toList());
+        List<EcmArtworkNodesVo> filterBuoyList = collect.stream().filter(ecmArtworkNodesVo -> BYTER_TWO.equals(ecmArtworkNodesVo.getBranchPre())).collect(Collectors.toList());
         // 查询出有 浮标得信息
         List<EcmArtworkNodeBuoyVO> ecmArtworkNodeBuoyVOList = new ArrayList<>();
         Map<Integer, List<EcmArtworkNodeBuoyVO>> map = new HashMap<>(INT_ONE);
@@ -156,8 +155,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             map = ecmArtworkNodeBuoyVOList.stream().collect(Collectors.groupingBy(EcmArtworkNodeBuoy::getFkNodeId));
         }
 
-
-        //2次循环寻找 对应的  跳转节点
+        //循环 还原对应的  数据信息
         for (EcmArtworkNodesVo node : collect) {
             // 是否为跳转节点
             if (!StringUtils.isEmpty(node.getItems()) && node.getALevel() != null) {
@@ -179,14 +177,14 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                 }
             }
             // 还原定位数组方法
-            if (node.getBranchPre() != null &&  node.getBranchPre() == INT_ONE){
+            if (node.getBranchPre() != null &&  node.getBranchPre() == BYTE_ONE){
                 if (!StringUtils.isEmpty(node.getItemsText())) {
                     node.setNodeLocationList(JSON.parseArray(node.getItemsText(), NodeOptionLocationVO.class));
                     node.setItemsText(null);
                 }
             }
             // 还原浮标
-            if (node.getBranchPre() != null &&  node.getBranchPre() == INT_TWO){
+            if (node.getBranchPre() != null &&  node.getBranchPre() == BYTE_TWO){
                 if (!CollectionUtils.isEmpty(map)){
                     node.setEcmArtworkNodeBuoyVOList(map.get(node.getPkDetailId()));
                 }
@@ -272,10 +270,8 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             collect.get(INT_ZORE).setPopupGlobalNameState(ecmArtworkNodePopupSettingsVOList.get(INT_ZORE).getPopupNameState());
         }
 
-        if (collect.isEmpty()) {
-            return ResponseDTO.fail(ErrorEnum.ERR_200.getText());
-        }
-        collect.get(INT_ZORE).setPercentageState(collect.get(INT_ZORE).getPercentageState() == null ? 1 : collect.get(INT_ZORE).getPercentageState());
+        // 给百分比 默认值 1
+        collect.get(INT_ZORE).setPercentageState(collect.get(INT_ZORE).getPercentageState() == null ? INT_ONE : collect.get(INT_ZORE).getPercentageState());
         return ResponseDTO.ok("success", TreeUtil.buildTree(collect).get(INT_ZORE));
     }
 
