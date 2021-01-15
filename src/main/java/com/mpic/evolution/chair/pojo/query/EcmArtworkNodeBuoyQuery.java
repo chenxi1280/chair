@@ -19,4 +19,5 @@ public class EcmArtworkNodeBuoyQuery {
      */
     private Integer fkArtworkId;
     private List<EcmArtworkNodeBuoy> ecmArtworkNodeBuoyList;
+    private List<Integer> fkNodeIdList;
 }

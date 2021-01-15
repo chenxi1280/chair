@@ -14,10 +14,11 @@
     <result column="buoy_type" jdbcType="INTEGER" property="buoyType" />
     <result column="buoy_status" jdbcType="INTEGER" property="buoyStatus" />
     <result column="buoy_context" jdbcType="VARCHAR" property="buoyContext" />
+    <result column="buoy_event" jdbcType="VARCHAR" property="buoyEvent" />
   </resultMap>
   <sql id="Base_Column_List">
     pk_buoy_id, fk_node_id, fk_artwork_id, buoy_wide, buoy_high, buoy_opacity, buoy_section_time,
-    buoy_coordinate_x, buoy_coordinate_y, buoy_type, buoy_status, buoy_context
+    buoy_coordinate_x, buoy_coordinate_y, buoy_type, buoy_status, buoy_context, buoy_event
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
@@ -33,11 +34,13 @@
     insert into ecm_artwork_node_buoy (fk_node_id, fk_artwork_id, buoy_wide,
       buoy_high, buoy_opacity, buoy_section_time,
       buoy_coordinate_x, buoy_coordinate_y, buoy_type,
-      buoy_status, buoy_context)
+      buoy_status, buoy_context, buoy_event
+      )
     values (#{fkNodeId,jdbcType=INTEGER}, #{fkArtworkId,jdbcType=INTEGER}, #{buoyWide,jdbcType=VARCHAR},
       #{buoyHigh,jdbcType=VARCHAR}, #{buoyOpacity,jdbcType=VARCHAR}, #{buoySectionTime,jdbcType=VARCHAR},
       #{buoyCoordinateX,jdbcType=VARCHAR}, #{buoyCoordinateY,jdbcType=VARCHAR}, #{buoyType,jdbcType=INTEGER},
-      #{buoyStatus,jdbcType=INTEGER}, #{buoyContext,jdbcType=VARCHAR})
+      #{buoyStatus,jdbcType=INTEGER}, #{buoyContext,jdbcType=VARCHAR}, #{buoyEvent,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" keyColumn="pk_buoy_id" keyProperty="pkBuoyId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeBuoy" useGeneratedKeys="true">
     insert into ecm_artwork_node_buoy
@@ -75,6 +78,9 @@
       <if test="buoyContext != null">
         buoy_context,
       </if>
+      <if test="buoyEvent != null">
+        buoy_event,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="fkNodeId != null">
@@ -109,6 +115,9 @@
       </if>
       <if test="buoyContext != null">
         #{buoyContext,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyEvent != null">
+        #{buoyEvent,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -148,6 +157,9 @@
       <if test="buoyContext != null">
         buoy_context = #{buoyContext,jdbcType=VARCHAR},
       </if>
+      <if test="buoyEvent != null">
+        buoy_event = #{buoyEvent,jdbcType=VARCHAR},
+      </if>
     </set>
     where pk_buoy_id = #{pkBuoyId,jdbcType=INTEGER}
   </update>
@@ -163,10 +175,10 @@
       buoy_coordinate_y = #{buoyCoordinateY,jdbcType=VARCHAR},
       buoy_type = #{buoyType,jdbcType=INTEGER},
       buoy_status = #{buoyStatus,jdbcType=INTEGER},
-      buoy_context = #{buoyContext,jdbcType=VARCHAR}
+      buoy_context = #{buoyContext,jdbcType=VARCHAR},
+      buoy_event = #{buoyEvent,jdbcType=VARCHAR}
     where pk_buoy_id = #{pkBuoyId,jdbcType=INTEGER}
   </update>
-
   <!--  sql-->
   <select id="selectByEcmArtworkId" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkNodeBuoyVO">
     select <include refid="Base_Column_List"/>
@@ -181,9 +193,16 @@
   <select id="selectByEcmArtworkNodeList" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkNodeBuoyVO">
     select  <include refid="Base_Column_List" />
     from ecm_artwork_node_buoy
-    where fk_node_id in <foreach collection="list" separator="," item="item" close=")" open="(" >
-        #{pkDetailId}
+    where fk_node_id in  <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+        #{item.pkDetailId}
     </foreach>
+  </select>
+  <select id="selectByEcmNodeIdList" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkNodeBuoyVO">
+    select  <include refid="Base_Column_List" />
+    from ecm_artwork_node_buoy
+    where fk_node_id in  <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+    #{item}
+  </foreach>
   </select>
   <delete id="deleteByEcmArtworkId">
     delete from ecm_artwork_node_buoy
@@ -195,8 +214,8 @@
      buoy_section_time, buoy_coordinate_x, buoy_coordinate_y, buoy_type )
     values
     <foreach collection="list" separator="," index="index" item="item" >
-      (#{fkNodeId}, #{fkArtworkId}, #{buoyWide}, #{buoyHigh}, #{buoyOpacity},
-       #{buoySectionTime}, #{buoyCoordinateX}, #{buoyCoordinateY}, #{buoyType})
+      (#{item.fkNodeId}, #{item.fkArtworkId}, #{item.buoyWide}, #{item.buoyHigh}, #{item.buoyOpacity},
+       #{item.buoySectionTime}, #{item.buoyCoordinateX}, #{item.buoyCoordinateY}, #{item.buoyType})
     </foreach>
 
 

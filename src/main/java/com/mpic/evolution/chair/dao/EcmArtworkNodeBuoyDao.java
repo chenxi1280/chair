@@ -28,7 +28,9 @@ public interface EcmArtworkNodeBuoyDao {
 
     int insertSelectiveList(@Param("list") List<EcmArtworkNodeBuoy> ecmArtworkNodeBuoyList);
 
-    int updateByPrimaryKeySelectiveList(@Param("list")List<EcmArtworkNodeBuoyVO> ecmArtworkNodeBuoyVOList);
+    int updateByPrimaryKeySelectiveList(@Param("list")List<EcmArtworkNodeBuoy> ecmArtworkNodeBuoyVOList);
 
     List<EcmArtworkNodeBuoyVO> selectByEcmArtworkNodeList(@Param("list")List<EcmArtworkNodesVo> filterBuoyList);
+
+    List<EcmArtworkNodeBuoyVO> selectByEcmNodeIdList(@Param("list")List<Integer> fkNodeIdList);
 }

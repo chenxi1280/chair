@@ -7,9 +7,6 @@ import com.mpic.evolution.chair.common.constant.PublishConstants;
 import com.mpic.evolution.chair.common.constant.TiktokConstant;
 import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
-import com.mpic.evolution.chair.pojo.entity.EcmArtwork;
-import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeBuoy;
-import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodePopupSettings;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
 import com.mpic.evolution.chair.pojo.query.EcmArtworkEndingsQuery;
 import com.mpic.evolution.chair.pojo.query.EcmArtworkNodeBuoyQuery;
@@ -28,7 +25,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 
-import static com.mpic.evolution.chair.common.constant.CommonField.*;
+import static com.mpic.evolution.chair.common.constant.CommonField.NODE_ENDING_MAX;
+import static com.mpic.evolution.chair.common.constant.CommonField.STRING_ZORE;
 
 /**
  * @author cxd
@@ -454,6 +452,16 @@ public class EcmArtWorkController extends BaseController{
 		return ecmArtWorkService.deleteArtworkNodeBuoy(ecmArtworkNodeBuoyVO);
 	}
 
+	@RequestMapping("/getArtworkNodeBuoy")
+	@ResponseBody
+	public ResponseDTO getArtworkNodeBuoy(@RequestBody EcmArtworkNodeBuoyQuery ecmArtworkNodeBuoyQuery){
+		Integer userId = getUserIdByHandToken();
+		if (userId == null){
+			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+		}
+		ecmArtworkNodeBuoyQuery.setFkUserId(userId);
+		return ecmArtWorkService.getArtworkNodeBuoy(ecmArtworkNodeBuoyQuery);
+	}
 
 
     /**

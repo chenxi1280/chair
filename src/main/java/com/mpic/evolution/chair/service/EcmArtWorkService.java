@@ -192,6 +192,8 @@ public interface EcmArtWorkService {
 
     ResponseDTO deleteArtworkNodeBuoy(EcmArtworkNodeBuoyVO ecmArtworkNodeBuoyVO);
 
+    ResponseDTO getArtworkNodeBuoy(EcmArtworkNodeBuoyQuery ecmArtworkNodeBuoyQuery);
+
 
 
 
@@ -253,6 +255,7 @@ public interface EcmArtWorkService {
      *       失败: status 500  msg "error“
      */
     ResponseDTO getArtWorkNodes(EcmArtWorkQuery ecmArtWorkQuery);
+
 
 
 }
