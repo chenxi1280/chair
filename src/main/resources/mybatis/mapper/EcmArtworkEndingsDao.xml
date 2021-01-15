@@ -12,10 +12,12 @@
     <result column="comment" jdbcType="VARCHAR" property="comment" />
     <result column="fk_node_id" jdbcType="INTEGER" property="fkNodeId" />
     <result column="video_name" jdbcType="VARCHAR" property="videoName" />
+    <result column="condition_state" jdbcType="INTEGER" property="conditionState" />
+    <result column="popup_state" jdbcType="INTEGER" property="popupState" />
   </resultMap>
   <sql id="Base_Column_List">
     pk_endings_id, fk_artwork_id, select_title, video_code, video_img, video_url, select_tree,
-    `comment`, fk_node_id, video_name
+    `comment`, fk_node_id, video_name, condition_state, popup_state
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
@@ -30,12 +32,12 @@
   <insert id="insert" keyColumn="pk_endings_id" keyProperty="pkEndingsId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkEndings" useGeneratedKeys="true">
     insert into ecm_artwork_endings (fk_artwork_id, select_title, video_code,
       video_img, video_url, select_tree,
-      `comment`, fk_node_id, video_name
-      )
+      `comment`, fk_node_id, video_name,
+      condition_state, popup_state)
     values (#{fkArtworkId,jdbcType=INTEGER}, #{selectTitle,jdbcType=VARCHAR}, #{videoCode,jdbcType=VARCHAR},
       #{videoImg,jdbcType=VARCHAR}, #{videoUrl,jdbcType=VARCHAR}, #{selectTree,jdbcType=VARCHAR},
-      #{comment,jdbcType=VARCHAR}, #{fkNodeId,jdbcType=INTEGER}, #{videoName,jdbcType=VARCHAR}
-      )
+      #{comment,jdbcType=VARCHAR}, #{fkNodeId,jdbcType=INTEGER}, #{videoName,jdbcType=VARCHAR},
+      #{conditionState,jdbcType=INTEGER}, #{popupState,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" keyColumn="pk_endings_id" keyProperty="pkEndingsId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkEndings" useGeneratedKeys="true">
     insert into ecm_artwork_endings
@@ -67,6 +69,12 @@
       <if test="videoName != null">
         video_name,
       </if>
+      <if test="conditionState != null">
+        condition_state,
+      </if>
+      <if test="popupState != null">
+        popup_state,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="fkArtworkId != null">
@@ -95,6 +103,12 @@
       </if>
       <if test="videoName != null">
         #{videoName,jdbcType=VARCHAR},
+      </if>
+      <if test="conditionState != null">
+        #{conditionState,jdbcType=INTEGER},
+      </if>
+      <if test="popupState != null">
+        #{popupState,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -128,6 +142,12 @@
       <if test="videoName != null">
         video_name = #{videoName,jdbcType=VARCHAR},
       </if>
+      <if test="conditionState != null">
+        condition_state = #{conditionState,jdbcType=INTEGER},
+      </if>
+      <if test="popupState != null">
+        popup_state = #{popupState,jdbcType=INTEGER},
+      </if>
     </set>
     where pk_endings_id = #{pkEndingsId,jdbcType=INTEGER}
   </update>
@@ -141,10 +161,11 @@
       select_tree = #{selectTree,jdbcType=VARCHAR},
       `comment` = #{comment,jdbcType=VARCHAR},
       fk_node_id = #{fkNodeId,jdbcType=INTEGER},
-      video_name = #{videoName,jdbcType=VARCHAR}
+      video_name = #{videoName,jdbcType=VARCHAR},
+      condition_state = #{conditionState,jdbcType=INTEGER},
+      popup_state = #{popupState,jdbcType=INTEGER}
     where pk_endings_id = #{pkEndingsId,jdbcType=INTEGER}
   </update>
-
   <!--sql-->
 
   <insert id="insertSelectiveList"  keyColumn="pk_endings_id" keyProperty="pkEndingsId"   useGeneratedKeys="true">
@@ -303,6 +324,31 @@
 
 
   </update>
+  <update id="updatePopupStateByPrimaryKey">
+    update ecm_artwork_endings
+    set
+      popup_state = #{popupState}
+    where pk_endings_id = #{pkEndingsId}
+
+  </update>
+  <update id="updateConditionByNodeId">
+   update ecm_artwork_endings
+    set
+      condition_state = #{conditionState}
+    where  fk_node_id  = #{fkNodeId}
+  </update>
+  <update id="updateConditionByArtworkId">
+    update ecm_artwork_endings
+    set condition_state = #{conditionState}
+    where  fk_artwork_id  = #{fkArtworkId}
+  </update>
+
+  <select id="selectByNodeId" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkEndingsVO">
+
+    select <include refid="Base_Column_List" />
+    from ecm_artwork_endings
+    where fk_node_id =  #{fkNodeId}
+  </select>
 
 
 </mapper>

@@ -3,10 +3,8 @@ package com.mpic.evolution.chair.service;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
 import com.mpic.evolution.chair.pojo.query.EcmArtworkEndingsQuery;
-import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodeNumberConditionVO;
-import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodePopupSettingsVO;
-import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
-import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
+import com.mpic.evolution.chair.pojo.query.EcmArtworkNodeBuoyQuery;
+import com.mpic.evolution.chair.pojo.vo.*;
 
 /**
  * @author Administrator
@@ -188,6 +186,16 @@ public interface EcmArtWorkService {
 
     ResponseDTO saveArtworkNodeCondition(EcmArtworkNodesVo ecmArtworkVo);
 
+    ResponseDTO saveArtworkEndingCondition(EcmArtworkNodesVo ecmArtworkNodesVo);
+
+    ResponseDTO saveArtworkNodeBuoy(EcmArtworkNodeBuoyQuery ecmArtworkNodeBuoyVO);
+
+    ResponseDTO deleteArtworkNodeBuoy(EcmArtworkNodeBuoyVO ecmArtworkNodeBuoyVO);
+
+    ResponseDTO getArtworkNodeBuoy(EcmArtworkNodeBuoyQuery ecmArtworkNodeBuoyQuery);
+
+
+
 
 
 //小程序接口
@@ -247,5 +255,7 @@ public interface EcmArtWorkService {
      *       失败: status 500  msg "error“
      */
     ResponseDTO getArtWorkNodes(EcmArtWorkQuery ecmArtWorkQuery);
+
+
 
 }

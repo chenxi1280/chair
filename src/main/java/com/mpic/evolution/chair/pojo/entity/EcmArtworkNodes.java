@@ -31,7 +31,7 @@ public class EcmArtworkNodes implements Serializable  {
     @JsonProperty(value = "isPosition" )
     @JSONField(name = "isPosition ")
     /**
-     * 选项类型 0普通选项 1定位选项 2数值选项
+     * 选项类型 0普通选项 1定位选项 2浮标选项
      */
     private Byte branchPre;
 
@@ -126,6 +126,11 @@ public class EcmArtworkNodes implements Serializable  {
      * 条件是否启用 0 null 为未启用 1 启用
      */
     private Integer conditionState;
+
+    /**
+     * 百分比状态是否启用 0 null 为未启用 1 启用
+     */
+    private Integer percentageState;
 
     private static final long serialVersionUID = 1L;
 

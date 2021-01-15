@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mpic.evolution.chair.dao.EcmArtworkNodeBuoyDao">
+  <resultMap id="BaseResultMap" type="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeBuoy">
+    <id column="pk_buoy_id" jdbcType="INTEGER" property="pkBuoyId" />
+    <result column="fk_node_id" jdbcType="INTEGER" property="fkNodeId" />
+    <result column="fk_artwork_id" jdbcType="INTEGER" property="fkArtworkId" />
+    <result column="buoy_wide" jdbcType="VARCHAR" property="buoyWide" />
+    <result column="buoy_high" jdbcType="VARCHAR" property="buoyHigh" />
+    <result column="buoy_opacity" jdbcType="VARCHAR" property="buoyOpacity" />
+    <result column="buoy_section_time" jdbcType="VARCHAR" property="buoySectionTime" />
+    <result column="buoy_coordinate_x" jdbcType="VARCHAR" property="buoyCoordinateX" />
+    <result column="buoy_coordinate_y" jdbcType="VARCHAR" property="buoyCoordinateY" />
+    <result column="buoy_type" jdbcType="INTEGER" property="buoyType" />
+    <result column="buoy_status" jdbcType="INTEGER" property="buoyStatus" />
+    <result column="buoy_context" jdbcType="VARCHAR" property="buoyContext" />
+    <result column="buoy_event" jdbcType="VARCHAR" property="buoyEvent" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pk_buoy_id, fk_node_id, fk_artwork_id, buoy_wide, buoy_high, buoy_opacity, buoy_section_time,
+    buoy_coordinate_x, buoy_coordinate_y, buoy_type, buoy_status, buoy_context, buoy_event
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from ecm_artwork_node_buoy
+    where pk_buoy_id = #{pkBuoyId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ecm_artwork_node_buoy
+    where pk_buoy_id = #{pkBuoyId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="pk_buoy_id" keyProperty="pkBuoyId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeBuoy" useGeneratedKeys="true">
+    insert into ecm_artwork_node_buoy (fk_node_id, fk_artwork_id, buoy_wide,
+      buoy_high, buoy_opacity, buoy_section_time,
+      buoy_coordinate_x, buoy_coordinate_y, buoy_type,
+      buoy_status, buoy_context, buoy_event
+      )
+    values (#{fkNodeId,jdbcType=INTEGER}, #{fkArtworkId,jdbcType=INTEGER}, #{buoyWide,jdbcType=VARCHAR},
+      #{buoyHigh,jdbcType=VARCHAR}, #{buoyOpacity,jdbcType=VARCHAR}, #{buoySectionTime,jdbcType=VARCHAR},
+      #{buoyCoordinateX,jdbcType=VARCHAR}, #{buoyCoordinateY,jdbcType=VARCHAR}, #{buoyType,jdbcType=INTEGER},
+      #{buoyStatus,jdbcType=INTEGER}, #{buoyContext,jdbcType=VARCHAR}, #{buoyEvent,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="pk_buoy_id" keyProperty="pkBuoyId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeBuoy" useGeneratedKeys="true">
+    insert into ecm_artwork_node_buoy
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="fkNodeId != null">
+        fk_node_id,
+      </if>
+      <if test="fkArtworkId != null">
+        fk_artwork_id,
+      </if>
+      <if test="buoyWide != null">
+        buoy_wide,
+      </if>
+      <if test="buoyHigh != null">
+        buoy_high,
+      </if>
+      <if test="buoyOpacity != null">
+        buoy_opacity,
+      </if>
+      <if test="buoySectionTime != null">
+        buoy_section_time,
+      </if>
+      <if test="buoyCoordinateX != null">
+        buoy_coordinate_x,
+      </if>
+      <if test="buoyCoordinateY != null">
+        buoy_coordinate_y,
+      </if>
+      <if test="buoyType != null">
+        buoy_type,
+      </if>
+      <if test="buoyStatus != null">
+        buoy_status,
+      </if>
+      <if test="buoyContext != null">
+        buoy_context,
+      </if>
+      <if test="buoyEvent != null">
+        buoy_event,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="fkNodeId != null">
+        #{fkNodeId,jdbcType=INTEGER},
+      </if>
+      <if test="fkArtworkId != null">
+        #{fkArtworkId,jdbcType=INTEGER},
+      </if>
+      <if test="buoyWide != null">
+        #{buoyWide,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyHigh != null">
+        #{buoyHigh,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyOpacity != null">
+        #{buoyOpacity,jdbcType=VARCHAR},
+      </if>
+      <if test="buoySectionTime != null">
+        #{buoySectionTime,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyCoordinateX != null">
+        #{buoyCoordinateX,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyCoordinateY != null">
+        #{buoyCoordinateY,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyType != null">
+        #{buoyType,jdbcType=INTEGER},
+      </if>
+      <if test="buoyStatus != null">
+        #{buoyStatus,jdbcType=INTEGER},
+      </if>
+      <if test="buoyContext != null">
+        #{buoyContext,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyEvent != null">
+        #{buoyEvent,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeBuoy">
+    update ecm_artwork_node_buoy
+    <set>
+      <if test="fkNodeId != null">
+        fk_node_id = #{fkNodeId,jdbcType=INTEGER},
+      </if>
+      <if test="fkArtworkId != null">
+        fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER},
+      </if>
+      <if test="buoyWide != null">
+        buoy_wide = #{buoyWide,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyHigh != null">
+        buoy_high = #{buoyHigh,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyOpacity != null">
+        buoy_opacity = #{buoyOpacity,jdbcType=VARCHAR},
+      </if>
+      <if test="buoySectionTime != null">
+        buoy_section_time = #{buoySectionTime,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyCoordinateX != null">
+        buoy_coordinate_x = #{buoyCoordinateX,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyCoordinateY != null">
+        buoy_coordinate_y = #{buoyCoordinateY,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyType != null">
+        buoy_type = #{buoyType,jdbcType=INTEGER},
+      </if>
+      <if test="buoyStatus != null">
+        buoy_status = #{buoyStatus,jdbcType=INTEGER},
+      </if>
+      <if test="buoyContext != null">
+        buoy_context = #{buoyContext,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyEvent != null">
+        buoy_event = #{buoyEvent,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where pk_buoy_id = #{pkBuoyId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeBuoy">
+    update ecm_artwork_node_buoy
+    set fk_node_id = #{fkNodeId,jdbcType=INTEGER},
+      fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER},
+      buoy_wide = #{buoyWide,jdbcType=VARCHAR},
+      buoy_high = #{buoyHigh,jdbcType=VARCHAR},
+      buoy_opacity = #{buoyOpacity,jdbcType=VARCHAR},
+      buoy_section_time = #{buoySectionTime,jdbcType=VARCHAR},
+      buoy_coordinate_x = #{buoyCoordinateX,jdbcType=VARCHAR},
+      buoy_coordinate_y = #{buoyCoordinateY,jdbcType=VARCHAR},
+      buoy_type = #{buoyType,jdbcType=INTEGER},
+      buoy_status = #{buoyStatus,jdbcType=INTEGER},
+      buoy_context = #{buoyContext,jdbcType=VARCHAR},
+      buoy_event = #{buoyEvent,jdbcType=VARCHAR}
+    where pk_buoy_id = #{pkBuoyId,jdbcType=INTEGER}
+  </update>
+  <!--  sql-->
+  <select id="selectByEcmArtworkId" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkNodeBuoyVO">
+    select <include refid="Base_Column_List"/>
+    from ecm_artwork_node_buoy
+    where fk_artwork_id = #{fkArtworkId}
+  </select>
+  <select id="selectByEcmNodeId" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkNodeBuoyVO">
+    select <include refid="Base_Column_List"/>
+    from ecm_artwork_node_buoy
+    where fk_node_id = #{fkNodeId}
+  </select>
+  <select id="selectByEcmArtworkNodeList" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkNodeBuoyVO">
+    select  <include refid="Base_Column_List" />
+    from ecm_artwork_node_buoy
+    where fk_node_id in  <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+        #{item.pkDetailId}
+    </foreach>
+  </select>
+  <select id="selectByEcmNodeIdList" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkNodeBuoyVO">
+    select  <include refid="Base_Column_List" />
+    from ecm_artwork_node_buoy
+    where fk_node_id in  <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+    #{item}
+  </foreach>
+  </select>
+  <delete id="deleteByEcmArtworkId">
+    delete from ecm_artwork_node_buoy
+    where fk_artwork_id = #{fkArtworkId}
+  </delete>
+  <insert id="insertSelectiveList">
+    insert into ecm_artwork_node_buoy
+    (fk_node_id, fk_artwork_id, buoy_wide, buoy_high, buoy_opacity,
+     buoy_section_time, buoy_coordinate_x, buoy_coordinate_y, buoy_type )
+    values
+    <foreach collection="list" separator="," index="index" item="item" >
+      (#{item.fkNodeId}, #{item.fkArtworkId}, #{item.buoyWide}, #{item.buoyHigh}, #{item.buoyOpacity},
+       #{item.buoySectionTime}, #{item.buoyCoordinateX}, #{item.buoyCoordinateY}, #{item.buoyType})
+    </foreach>
+
+
+  </insert>
+  <update id="updateByPrimaryKeySelectiveList">
+    update ecm_artwork_node_buoy
+
+    <trim prefix="set" suffixOverrides=",">
+
+      <trim prefix="buoy_wide =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.buoyWide!=null">
+            when pk_buoy_id =#{item.pkBuoyId}
+            then #{item.buoyWide}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="buoy_high =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.buoyHigh!=null">
+            when pk_buoy_id =#{item.pkBuoyId}
+            then #{item.buoyHigh}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="buoy_opacity =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.buoyOpacity!=null">
+            when pk_buoy_id =#{item.pkBuoyId}
+            then #{item.buoyOpacity}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="buoy_section_time =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.buoySectionTime!=null">
+            when pk_buoy_id =#{item.pkBuoyId}
+            then #{item.buoySectionTime}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="buoy_coordinate_x =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.buoyCoordinateX!=null">
+            when pk_buoy_id =#{item.pkBuoyId}
+            then #{item.buoyCoordinateX}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix=" buoy_coordinate_y =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.buoyCoordinateY!=null">
+            when pk_buoy_id =#{item.pkBuoyId}
+            then #{item.buoyCoordinateY}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="buoy_type =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.buoyType!=null">
+            when pk_buoy_id =#{item.pkBuoyId}
+            then #{item.buoyType}
+          </if>
+        </foreach>
+      </trim>
+
+    </trim>
+    where pk_buoy_id in
+    <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+      #{item.pkBuoyId}
+    </foreach>
+
+  </update>
+
+
+</mapper>

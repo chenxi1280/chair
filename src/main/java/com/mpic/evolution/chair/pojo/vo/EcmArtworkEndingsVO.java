@@ -1,6 +1,7 @@
 package com.mpic.evolution.chair.pojo.vo;
 
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkEndings;
+import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodePopupSettings;
 import lombok.Data;
 
 import java.util.List;
@@ -16,4 +17,6 @@ public class EcmArtworkEndingsVO extends EcmArtworkEndings {
     private Integer fkUserId;
     private List<Integer> selectTreeList;
     private EcmVideoTemporaryStorageVO videoInfo;
+
+    private EcmArtworkNodePopupSettings ecmArtworkNodePopupSettings;
 }
