@@ -38,22 +38,22 @@ public class EcmArtWorkQuery extends PageQuery {
      * 四字标签
      */
     private String fourLetterTips;
-    
+
     /**
      * 	作品封面存储位置，绝对路径
      */
     private String logoPath;
-    
+
     /**
      * 	用户token
      */
     private String token;
-    
+
     /**
      * 	作品根节点id
      */
     private String videoId;
-    
+
     /**
      * 	作品id
      */
@@ -73,9 +73,11 @@ public class EcmArtWorkQuery extends PageQuery {
      *  小程序 搜索文本字段
      */
     private String searchText;
-    
+
     /**
      * 	作品二维码类型 0是预览 4是已发布
      */
     private String codeType;
+
+    private Integer pkDetailId;
 }
