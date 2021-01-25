@@ -621,10 +621,10 @@ public class EcmArtWorkController extends BaseController{
 				+ "access_token=%s", accessToken);
 		JSONObject param = new JSONObject();
 		param.put("page","pages/play/buoyPreviewPlay");
-		String artWorkId = ecmArtWorkQuery.getArtWorkId();
+//		String artWorkId = ecmArtWorkQuery.getArtWorkId();
 		//scene的value 是 videoId
-		String codeType = ecmArtWorkQuery.getCodeType();
-		String string = "artWorkId="+artWorkId+"+pkDetailId="+ecmArtWorkQuery.getPkDetailId();
+//		String codeType = ecmArtWorkQuery.getCodeType();
+		String string = "artWorkId="+ecmArtWorkQuery.getArtWorkId()+"=pkDetailId="+ecmArtWorkQuery.getPkDetailId();
 		param.put("scene",string);
 		String base64Str = HttpMpicUtil.sendPostForBase64(url, param);
 		return base64Str;
