@@ -208,7 +208,7 @@
     delete from ecm_artwork_node_buoy
     where fk_artwork_id = #{fkArtworkId}
   </delete>
-  <insert id="insertSelectiveList">
+  <insert id="insertSelectiveList"  keyColumn="pk_buoy_id" keyProperty="pkBuoyId"  useGeneratedKeys="true">
     insert into ecm_artwork_node_buoy
     (fk_node_id, fk_artwork_id, buoy_wide, buoy_high, buoy_opacity,
      buoy_section_time, buoy_coordinate_x, buoy_coordinate_y, buoy_type )
