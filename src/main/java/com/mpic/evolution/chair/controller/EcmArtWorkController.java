@@ -569,6 +569,67 @@ public class EcmArtWorkController extends BaseController{
 		}
 	}
 
+	@RequestMapping("/getWXBuoyPreviewCode")
+	@ResponseBody
+	public ResponseDTO getWXBuoyPreviewCode (@RequestBody EcmArtWorkQuery ecmArtWorkQuery) {
+
+		Integer userIdByHandToken = getUserIdByHandToken();
+
+		if (userIdByHandToken == null){
+			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+		}
+		JSONObject data = new JSONObject();
+
+		//如果是null返回false
+		boolean hasKey = redisUtil.hasKey("WxQRCode");
+		String accessToken = "";
+		try {
+			if (hasKey) {
+				accessToken = String.valueOf(redisUtil.get("WxQRCode"));
+			}else {
+				accessToken = getAccessToken();
+			}
+			String qrCodeStr = this.getBuoyPreviewQRCode(accessToken,ecmArtWorkQuery,data);
+			if (HttpMpicUtil.isJsonObject(qrCodeStr)) {
+				//返回的结果是：{"errcode":40001,"errmsg":"invalid credential, access_token is invalid or not latest rid: 5f364b21-395edb8d-336ae042"}
+				JSONObject result = JSONObject.parseObject(qrCodeStr);
+				// result.get("errcode").equals("40001")
+				String error= "40001";
+				String errorCode = "errcode";
+				if( error.equals(result.get(errorCode))) {
+					accessToken = getAccessToken();
+					qrCodeStr = this.getBuoyPreviewQRCode(accessToken,ecmArtWorkQuery,data);
+					String str = "data:image/jpg;base64," + qrCodeStr;
+					data.put("qrCodeStr", str);
+					return ResponseDTO.ok("获取发布二维码成功",data);
+				}else {
+					return ResponseDTO.fail("获取发布二维码失败", result.get("errmsg"),null,(Integer)result.get("errcode"));
+				}
+			}else {
+				String str = "data:image/jpg;base64," + qrCodeStr;
+				data.put("qrCodeStr", str);
+				return ResponseDTO.ok("获取发布二维码成功",data);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseDTO.fail("获取二维码图片失败");
+		}
+	}
+
+	private String getBuoyPreviewQRCode(String accessToken,EcmArtWorkQuery ecmArtWorkQuery,JSONObject data) {
+		String url = String.format("https://api.weixin.qq.com/wxa/getwxacodeunlimit?"
+				+ "access_token=%s", accessToken);
+		JSONObject param = new JSONObject();
+		param.put("page","pages/play/buoyPreviewPlay");
+//		String artWorkId = ecmArtWorkQuery.getArtWorkId();
+		//scene的value 是 videoId
+//		String codeType = ecmArtWorkQuery.getCodeType();
+		String string = "artWorkId="+ecmArtWorkQuery.getArtWorkId()+"=pkDetailId="+ecmArtWorkQuery.getPkDetailId();
+		param.put("scene",string);
+		String base64Str = HttpMpicUtil.sendPostForBase64(url, param);
+		return base64Str;
+	}
+
 	/**
 	 * @param: [accessToken, ecmArtWorkQuery, data]
 	 * @return: java.lang.String
@@ -611,7 +672,7 @@ public class EcmArtWorkController extends BaseController{
 		JSONObject result = JSONObject.parseObject(jsonStr);
 		String accessToken = result.getString("access_token");
 		String expiresIn = result.getString("expires_in");
-		redisUtil.set("WxQRCode", accessToken, Long.valueOf(expiresIn));
+		redisUtil.set("WxQRCode", accessToken, Long.parseLong(expiresIn));
 		return accessToken;
 	}
 
