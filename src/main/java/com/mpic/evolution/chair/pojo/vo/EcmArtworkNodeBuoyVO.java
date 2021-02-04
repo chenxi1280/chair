@@ -12,4 +12,6 @@ import lombok.Data;
 @Data
 public class EcmArtworkNodeBuoyVO extends EcmArtworkNodeBuoy {
     private Integer fkUserId;
+
+    private Integer comparingTime;
 }

@@ -989,9 +989,12 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             return ResponseDTO.fail("网络错误");
         }
         List<EcmArtworkNodeBuoyVO> ecmArtworkNodeBuoyVOList =  ecmArtworkNodeBuoyDao.selectByEcmNodeIdList(ecmArtworkNodeBuoyQuery.getFkNodeIdList());
+        ecmArtworkNodeBuoyVOList.forEach( v -> v.setComparingTime(Integer.valueOf(v.getBuoySectionTime()))
+        );
+        // 排序
+        List<EcmArtworkNodeBuoyVO> sortEcmArtworkNodeBuoyVOList = ecmArtworkNodeBuoyVOList.stream().sorted(Comparator.comparing(EcmArtworkNodeBuoyVO::getBuoyType).thenComparing(EcmArtworkNodeBuoyVO::getComparingTime)).collect(Collectors.toList());
 
-
-        return ResponseDTO.ok(ecmArtworkNodeBuoyVOList);
+        return ResponseDTO.ok(sortEcmArtworkNodeBuoyVOList);
     }
 
 
