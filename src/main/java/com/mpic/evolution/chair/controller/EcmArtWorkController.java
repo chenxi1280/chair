@@ -7,6 +7,7 @@ import com.mpic.evolution.chair.common.constant.PublishConstants;
 import com.mpic.evolution.chair.common.constant.TiktokConstant;
 import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
+import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
 import com.mpic.evolution.chair.pojo.query.EcmArtworkEndingsQuery;
 import com.mpic.evolution.chair.pojo.query.EcmArtworkNodeBuoyQuery;
@@ -463,6 +464,16 @@ public class EcmArtWorkController extends BaseController{
 		return ecmArtWorkService.getArtworkNodeBuoy(ecmArtworkNodeBuoyQuery);
 	}
 
+	@RequestMapping("/updateArtworkNodeBuoy")
+	@ResponseBody
+	public ResponseDTO updateArtworkBuoy(@RequestBody EcmArtworkNodesVo ecmArtworkNodesVo){
+		Integer userId = getUserIdByHandToken();
+		if (userId == null){
+			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+		}
+		ecmArtworkNodesVo.setFkUserId(userId);
+		return ecmArtWorkService.updateArtworkNodeBuoy(ecmArtworkNodesVo);
+	}
 
     /**
      * 	获取发布微信二维码

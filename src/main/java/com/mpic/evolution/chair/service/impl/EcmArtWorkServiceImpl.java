@@ -919,7 +919,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         }
 
         List<EcmArtworkNodeBuoy> ecmArtworkNodeBuoyList = ecmArtworkNodeBuoyQuery.getEcmArtworkNodeBuoyList();
-
+        EcmArtworkNodes ecmArtworkNodes = ecmArtworkNodesDao.selectByPrimaryKey(ecmArtworkNodeBuoyList.get(0).getFkNodeId());
         List<EcmArtworkNodeBuoyVO> ecmArtworkNodeBuoyVOList = ecmArtworkNodeBuoyDao.selectByEcmArtworkId(ecmArtworkNodeBuoyQuery.getFkArtworkId());
 
         List<EcmArtworkNodeBuoy> upDataEcmArtworkNodeBuoyVOList = new ArrayList<>();
@@ -942,11 +942,11 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                 // 整插
                 ecmArtworkNodeBuoyDao.insertSelectiveList(ecmArtworkNodeBuoyList);
             }
-            if (!CollectionUtils.isEmpty(ecmArtworkNodeBuoyVOList)) {
+            if (!CollectionUtils.isEmpty(upDataEcmArtworkNodeBuoyVOList)) {
                 // 更新
                 ecmArtworkNodeBuoyDao.updateByPrimaryKeySelectiveList(upDataEcmArtworkNodeBuoyVOList);
             }
-
+            ecmArtworkNodesDao.updateArtworkNodeBuoyByFkNodeId(ecmArtworkNodes.getParentId());
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -989,9 +989,23 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             return ResponseDTO.fail("网络错误");
         }
         List<EcmArtworkNodeBuoyVO> ecmArtworkNodeBuoyVOList =  ecmArtworkNodeBuoyDao.selectByEcmNodeIdList(ecmArtworkNodeBuoyQuery.getFkNodeIdList());
+        ecmArtworkNodeBuoyVOList.forEach( v -> v.setComparingTime(Integer.valueOf(v.getBuoySectionTime())));
+        // 排序
+        List<EcmArtworkNodeBuoyVO> sortEcmArtworkNodeBuoyVOList = ecmArtworkNodeBuoyVOList.stream().sorted(Comparator.comparing(EcmArtworkNodeBuoyVO::getBuoyType).thenComparing(EcmArtworkNodeBuoyVO::getComparingTime)).collect(Collectors.toList());
 
+        return ResponseDTO.ok(sortEcmArtworkNodeBuoyVOList);
+    }
 
-        return ResponseDTO.ok(ecmArtworkNodeBuoyVOList);
+    @Override
+    public ResponseDTO updateArtworkNodeBuoy(EcmArtworkNodesVo ecmArtworkNodesVo) {
+        EcmArtwork ecmArtworkVo = ecmArtworkDao.selectByPrimaryKey(ecmArtworkNodesVo.getFkArtworkId());
+        if (ecmArtworkVo == null ) {
+            return ResponseDTO.fail("作品错误");
+        }
+        if (ecmArtworkNodesVo.getFkUserId().equals(ecmArtworkVo.getFkUserid())) {
+            return ResponseDTO.fail("非法访问");
+        }
+        return ResponseDTO.get( ecmArtworkNodesDao.updateArtworkNodeBuoy(ecmArtworkNodesVo) ==1);
     }
 
 

@@ -679,6 +679,16 @@
     set  condition_state = #{conditionState}
     where fk_artwork_id = #{fkArtworkId} and parent_id = -1
     </update>
+    <update id="updateArtworkNodeBuoy">
+    update ecm_artwork_nodes
+    set  branch_pre = 2
+    where pk_detail_id = #{pkDetailId}
+    </update>
+  <update id="updateArtworkNodeBuoyByFkNodeId">
+    update ecm_artwork_nodes
+    set  branch_pre = 2
+    where pk_detail_id = #{pkDetailId}
+  </update>
 
 
 </mapper>
