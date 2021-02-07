@@ -61,4 +61,8 @@ public interface EcmArtworkNodesDao {
     int updatePopupSetting(EcmArtworkNodes pkDetailId);
 
     int updateEndingConditionByArtworkId(EcmArtworkNodes ecmArtworkNodes);
+
+    int updateArtworkNodeBuoy(EcmArtworkNodesVo ecmArtworkNodesVo);
+
+    int updateArtworkNodeBuoyByFkNodeId(Integer parentId);
 }
