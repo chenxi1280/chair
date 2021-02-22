@@ -104,9 +104,16 @@ public class HttpMpicUtil {
         }
     }
 
+    /**
+     * @param: [JSONObject, url]
+     * @return: java.lang.String   返回请求数据 json 串
+     * @author: cxd
+     * @Date: 2021/2/19
+     * 描述 :
+     *       返回请求数据 json 串
+     */
 
     public static String post(JSONObject json,String url) {
-//        HttpClient client = new DefaultHttpClient(); 过时方法
         HttpClient client = HttpClientBuilder.create().build();
         HttpPost post = new HttpPost(url);
         post.setHeader("Content-Type", "application/json");
