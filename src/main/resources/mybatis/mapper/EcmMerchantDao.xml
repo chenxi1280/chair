@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mpic.evolution.chair.dao.EcmMerchantDao">
+  <resultMap id="BaseResultMap" type="com.mpic.evolution.chair.pojo.entity.EcmMerchant">
+    <id column="pk_merchant_id" jdbcType="INTEGER" property="pkMerchantId" />
+    <result column="fk_user_id" jdbcType="INTEGER" property="fkUserId" />
+    <result column="merchant_name" jdbcType="VARCHAR" property="merchantName" />
+    <result column="mobile_phone" jdbcType="VARCHAR" property="mobilePhone" />
+    <result column="merchant_detail" jdbcType="VARCHAR" property="merchantDetail" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="open_state" jdbcType="INTEGER" property="openState" />
+    <result column="approval_status" jdbcType="INTEGER" property="approvalStatus" />
+    <result column="voucher_img" jdbcType="VARCHAR" property="voucherImg" />
+    <result column="business_type" jdbcType="VARCHAR" property="businessType" />
+    <result column="contact_name" jdbcType="VARCHAR" property="contactName" />
+    <result column="contact_phone" jdbcType="VARCHAR" property="contactPhone" />
+    <result column="contact_vx" jdbcType="VARCHAR" property="contactVx" />
+    <result column="h5_url" jdbcType="VARCHAR" property="h5Url" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pk_merchant_id, fk_user_id, merchant_name, mobile_phone, merchant_detail, email,
+    open_state, approval_status, voucher_img, business_type, contact_name, contact_phone,
+    contact_vx, h5_url, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from ecm_merchant
+    where pk_merchant_id = #{pkMerchantId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ecm_merchant
+    where pk_merchant_id = #{pkMerchantId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="pk_merchant_id" keyProperty="pkMerchantId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmMerchant" useGeneratedKeys="true">
+    insert into ecm_merchant (fk_user_id, merchant_name, mobile_phone,
+      merchant_detail, email, open_state,
+      approval_status, voucher_img, business_type,
+      contact_name, contact_phone, contact_vx,
+      h5_url, create_time, update_time
+      )
+    values (#{fkUserId,jdbcType=INTEGER}, #{merchantName,jdbcType=VARCHAR}, #{mobilePhone,jdbcType=VARCHAR},
+      #{merchantDetail,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{openState,jdbcType=INTEGER},
+      #{approvalStatus,jdbcType=INTEGER}, #{voucherImg,jdbcType=VARCHAR}, #{businessType,jdbcType=VARCHAR},
+      #{contactName,jdbcType=VARCHAR}, #{contactPhone,jdbcType=VARCHAR}, #{contactVx,jdbcType=VARCHAR},
+      #{h5Url,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="pk_merchant_id" keyProperty="pkMerchantId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmMerchant" useGeneratedKeys="true">
+    insert into ecm_merchant
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="fkUserId != null">
+        fk_user_id,
+      </if>
+      <if test="merchantName != null">
+        merchant_name,
+      </if>
+      <if test="mobilePhone != null">
+        mobile_phone,
+      </if>
+      <if test="merchantDetail != null">
+        merchant_detail,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+      <if test="openState != null">
+        open_state,
+      </if>
+      <if test="approvalStatus != null">
+        approval_status,
+      </if>
+      <if test="voucherImg != null">
+        voucher_img,
+      </if>
+      <if test="businessType != null">
+        business_type,
+      </if>
+      <if test="contactName != null">
+        contact_name,
+      </if>
+      <if test="contactPhone != null">
+        contact_phone,
+      </if>
+      <if test="contactVx != null">
+        contact_vx,
+      </if>
+      <if test="h5Url != null">
+        h5_url,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="fkUserId != null">
+        #{fkUserId,jdbcType=INTEGER},
+      </if>
+      <if test="merchantName != null">
+        #{merchantName,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilePhone != null">
+        #{mobilePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantDetail != null">
+        #{merchantDetail,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="openState != null">
+        #{openState,jdbcType=INTEGER},
+      </if>
+      <if test="approvalStatus != null">
+        #{approvalStatus,jdbcType=INTEGER},
+      </if>
+      <if test="voucherImg != null">
+        #{voucherImg,jdbcType=VARCHAR},
+      </if>
+      <if test="businessType != null">
+        #{businessType,jdbcType=VARCHAR},
+      </if>
+      <if test="contactName != null">
+        #{contactName,jdbcType=VARCHAR},
+      </if>
+      <if test="contactPhone != null">
+        #{contactPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="contactVx != null">
+        #{contactVx,jdbcType=VARCHAR},
+      </if>
+      <if test="h5Url != null">
+        #{h5Url,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmMerchant">
+    update ecm_merchant
+    <set>
+      <if test="fkUserId != null">
+        fk_user_id = #{fkUserId,jdbcType=INTEGER},
+      </if>
+      <if test="merchantName != null">
+        merchant_name = #{merchantName,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilePhone != null">
+        mobile_phone = #{mobilePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantDetail != null">
+        merchant_detail = #{merchantDetail,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="openState != null">
+        open_state = #{openState,jdbcType=INTEGER},
+      </if>
+      <if test="approvalStatus != null">
+        approval_status = #{approvalStatus,jdbcType=INTEGER},
+      </if>
+      <if test="voucherImg != null">
+        voucher_img = #{voucherImg,jdbcType=VARCHAR},
+      </if>
+      <if test="businessType != null">
+        business_type = #{businessType,jdbcType=VARCHAR},
+      </if>
+      <if test="contactName != null">
+        contact_name = #{contactName,jdbcType=VARCHAR},
+      </if>
+      <if test="contactPhone != null">
+        contact_phone = #{contactPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="contactVx != null">
+        contact_vx = #{contactVx,jdbcType=VARCHAR},
+      </if>
+      <if test="h5Url != null">
+        h5_url = #{h5Url,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where pk_merchant_id = #{pkMerchantId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmMerchant">
+    update ecm_merchant
+    set fk_user_id = #{fkUserId,jdbcType=INTEGER},
+      merchant_name = #{merchantName,jdbcType=VARCHAR},
+      mobile_phone = #{mobilePhone,jdbcType=VARCHAR},
+      merchant_detail = #{merchantDetail,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      open_state = #{openState,jdbcType=INTEGER},
+      approval_status = #{approvalStatus,jdbcType=INTEGER},
+      voucher_img = #{voucherImg,jdbcType=VARCHAR},
+      business_type = #{businessType,jdbcType=VARCHAR},
+      contact_name = #{contactName,jdbcType=VARCHAR},
+      contact_phone = #{contactPhone,jdbcType=VARCHAR},
+      contact_vx = #{contactVx,jdbcType=VARCHAR},
+      h5_url = #{h5Url,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where pk_merchant_id = #{pkMerchantId,jdbcType=INTEGER}
+  </update>
+
+
+<!--  sql-->
+  <select id="selectByUserId" resultType="com.mpic.evolution.chair.pojo.vo.EcmMerchantVO">
+    select <include refid="Base_Column_List" />
+    from ecm_merchant
+    where fk_user_id = #{fkUserid}
+
+  </select>
+
+
+</mapper>

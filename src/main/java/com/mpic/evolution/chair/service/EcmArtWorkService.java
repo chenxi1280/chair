@@ -192,8 +192,26 @@ public interface EcmArtWorkService {
 
     ResponseDTO deleteArtworkNodeBuoy(EcmArtworkNodeBuoyVO ecmArtworkNodeBuoyVO);
 
+    /**
+     * @param: [ecmArtworkNodeBuoyQuery]
+     * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+     * @author: cxd
+     * @Date: 2021/2/26
+     * 描述 : 获取浮标对象
+     *       成功: status 200  msg "success”   date:
+     *       失败: status 500  msg "error“
+     */
     ResponseDTO getArtworkNodeBuoy(EcmArtworkNodeBuoyQuery ecmArtworkNodeBuoyQuery);
 
+    /**
+     * @param: [ecmArtworkNodesVo] 被更新的浮标对象
+     * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+     * @author: cxd
+     * @Date: 2021/2/26
+     * 描述 :] 更新的浮标对象
+     *       成功: status 200  msg "success”   date:
+     *       失败: status 500  msg "error“
+     */
     ResponseDTO updateArtworkNodeBuoy(EcmArtworkNodesVo ecmArtworkNodesVo);
 
 

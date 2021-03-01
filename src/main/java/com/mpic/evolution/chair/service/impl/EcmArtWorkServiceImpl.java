@@ -99,7 +99,6 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
     @Override
     public ResponseDTO getArtWorks(EcmArtWorkQuery ecmArtWorkQuery) {
-//        List<EcmArtworkVo> ecmArtworkVoList = ecmArtworkDao.selectArtWorks(ecmArtWorkQuery);
         List<EcmArtworkVo> ecmArtworkVoList = ecmArtworkDao.selectArtWorkListByEcmArtWorkQuery(ecmArtWorkQuery);
         Integer count = ecmArtworkDao.selectArtWorkCountByEcmArtWorkQuery(ecmArtWorkQuery);
         // 过滤
@@ -147,7 +146,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         //过滤掉 浮标 没有启用的 节点
         List<EcmArtworkNodesVo> filterBuoyList = collect.stream().filter(ecmArtworkNodesVo -> BYTER_TWO.equals(ecmArtworkNodesVo.getBranchPre())).collect(Collectors.toList());
         // 查询出有 浮标得信息
-        List<EcmArtworkNodeBuoyVO> ecmArtworkNodeBuoyVOList = new ArrayList<>();
+        List<EcmArtworkNodeBuoyVO> ecmArtworkNodeBuoyVOList;
         Map<Integer, List<EcmArtworkNodeBuoyVO>> map = new HashMap<>(INT_ONE);
         if (!CollectionUtils.isEmpty(filterBuoyList)){
             ecmArtworkNodeBuoyVOList = ecmArtworkNodeBuoyDao.selectByEcmArtworkNodeList(filterBuoyList);
@@ -1124,7 +1123,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             });
         });
 
-        return ResponseDTO.ok("sucess", list);
+        return ResponseDTO.ok("success", list);
     }
 
     @Override
@@ -1160,7 +1159,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
             });
         });
-        return ResponseDTO.ok("sucess", list);
+        return ResponseDTO.ok("success", list);
     }
 
     @Override
