@@ -20,7 +20,7 @@ import static com.mpic.evolution.chair.common.returnvo.ErrorEnum.ERR_603;
  * @Date 2021/3/1 9:17
  */
 @Controller
-@RequestMapping("/merchant")
+@RequestMapping("merchant")
 public class MerchantController extends BaseController {
     @Resource
     MerchantService merchantService;

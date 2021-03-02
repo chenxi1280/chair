@@ -27,9 +27,8 @@ public class FileServiceImpl implements FileService {
         // 获取系统的类别, Window
         String systemType = System.getProperty("os.name");
         String targetFilePath = systemType.toLowerCase().contains("windows") ? FILE_WINDOW_CONFIG_UPLOAD_PATH_TEST: FILE_LINUX_CONFIG_UPLOAD_PATH_TEST;
-
-        String fileName = UUID.randomUUID().toString().replace("-", "");
-        File targetFile = new File(targetFilePath + File.separator + fileName + ".txt");
+//        String fileName = UUID.randomUUID().toString().replace("-", "");
+        File targetFile = new File(targetFilePath + File.separator +"/"+  file.getOriginalFilename());
 
         FileOutputStream fileOutputStream = null;
         try {
@@ -45,6 +44,8 @@ public class FileServiceImpl implements FileService {
 
             }
         }
-        return ResponseDTO.ok();
+        System.out.println("文件上传到"+ targetFilePath +"，文件名称"+ file.getOriginalFilename());
+
+        return ResponseDTO.ok(file.getOriginalFilename());
     }
 }

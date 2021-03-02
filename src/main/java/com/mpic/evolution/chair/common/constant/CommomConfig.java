@@ -12,6 +12,6 @@ public interface CommomConfig {
     String H5_BASE_URL ="www.wxcz.com";
 
     String FILE_WINDOW_CONFIG_UPLOAD_PATH_TEST = "D:\\uploadTest";
-    String FILE_LINUX_CONFIG_UPLOAD_PATH_TEST = "/appl/cookie/www/location";
-    String FILE_LINUX_CONFIG_UPLOAD_PATH_FORMAL = "/appl/cookie/www/location";
+    String FILE_LINUX_CONFIG_UPLOAD_PATH_TEST = "/usr/local/tomcat/webapps/txt/";
+    String FILE_LINUX_CONFIG_UPLOAD_PATH_FORMAL = "/usr/local/tomcat/webapps/txt";
 }

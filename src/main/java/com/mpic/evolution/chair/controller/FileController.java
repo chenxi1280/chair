@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -19,7 +20,7 @@ import javax.annotation.Resource;
  * @Date 2021/3/1 16:34
  */
 @Controller
-@RequestMapping("/file")
+@RequestMapping("file")
 public class FileController {
     private static final Logger logger = LoggerFactory.getLogger(TestController.class);
 
@@ -30,8 +31,8 @@ public class FileController {
      * 文件上传测试接口
      * @return
      */
-//    @AppIdAuthorization
-    @RequestMapping("/uploadTxt")
+    @RequestMapping("uploadTxt")
+    @ResponseBody
     public ResponseDTO uploadFileTest(@RequestParam("uploadFile") MultipartFile file) {
         return fileService.uploadTxtFile(file);
     }

@@ -54,9 +54,10 @@ public class MerchantServiceImpl implements MerchantService {
             ecmMerchantDao.insertSelective(ecmMerchant);
         }
         HashMap<String, Object> map = new HashMap<>(2);
-        String url = ecmMerchant.getH5Url() + "?token=" + JWTUtil.sign(String.valueOf(ecmMerchant.getFkUserId()),
-                user.getUsername(), SecretKeyConstants.JWT_SECRET_KEY);
+        String url = ecmMerchant.getH5Url() + "?token=" + JWTUtil.sign(String.valueOf(ecmMerchant.getPkMerchantId()),
+                ecmMerchant.getMerchantName(), SecretKeyConstants.JWT_SECRET_KEY);
         map.put("url",url);
+
 //        try {
 //            map.put("QRCode", QRCodeUtils.coachQRCode(url));
 //        } catch (WriterException e) {
