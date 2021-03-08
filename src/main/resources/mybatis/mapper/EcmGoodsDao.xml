@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mpic.evolution.chair.dao.EcmGoodsDao">
+  <resultMap id="BaseResultMap" type="com.mpic.evolution.chair.pojo.entity.EcmGoods">
+    <id column="pk_goods_id" jdbcType="INTEGER" property="pkGoodsId" />
+    <result column="fk_goods_category_id" jdbcType="INTEGER" property="fkGoodsCategoryId" />
+    <result column="goods_name" jdbcType="VARCHAR" property="goodsName" />
+    <result column="goods_price" jdbcType="DECIMAL" property="goodsPrice" />
+    <result column="goods_state" jdbcType="INTEGER" property="goodsState" />
+    <result column="goods_context" jdbcType="VARCHAR" property="goodsContext" />
+    <result column="goods_flow" jdbcType="INTEGER" property="goodsFlow" />
+    <result column="goods_sort" jdbcType="INTEGER" property="goodsSort" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pk_goods_id, fk_goods_category_id, goods_name, goods_price, goods_state, goods_context,
+    goods_flow, goods_sort, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from ecm_goods
+    where pk_goods_id = #{pkGoodsId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ecm_goods
+    where pk_goods_id = #{pkGoodsId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="pk_goods_id" keyProperty="pkGoodsId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmGoods" useGeneratedKeys="true">
+    insert into ecm_goods (fk_goods_category_id, goods_name, goods_price,
+      goods_state, goods_context, goods_flow,
+      goods_sort, create_time, update_time
+      )
+    values (#{fkGoodsCategoryId,jdbcType=INTEGER}, #{goodsName,jdbcType=VARCHAR}, #{goodsPrice,jdbcType=DECIMAL},
+      #{goodsState,jdbcType=INTEGER}, #{goodsContext,jdbcType=VARCHAR}, #{goodsFlow,jdbcType=INTEGER},
+      #{goodsSort,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="pk_goods_id" keyProperty="pkGoodsId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmGoods" useGeneratedKeys="true">
+    insert into ecm_goods
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="fkGoodsCategoryId != null">
+        fk_goods_category_id,
+      </if>
+      <if test="goodsName != null">
+        goods_name,
+      </if>
+      <if test="goodsPrice != null">
+        goods_price,
+      </if>
+      <if test="goodsState != null">
+        goods_state,
+      </if>
+      <if test="goodsContext != null">
+        goods_context,
+      </if>
+      <if test="goodsFlow != null">
+        goods_flow,
+      </if>
+      <if test="goodsSort != null">
+        goods_sort,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="fkGoodsCategoryId != null">
+        #{fkGoodsCategoryId,jdbcType=INTEGER},
+      </if>
+      <if test="goodsName != null">
+        #{goodsName,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsPrice != null">
+        #{goodsPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="goodsState != null">
+        #{goodsState,jdbcType=INTEGER},
+      </if>
+      <if test="goodsContext != null">
+        #{goodsContext,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsFlow != null">
+        #{goodsFlow,jdbcType=INTEGER},
+      </if>
+      <if test="goodsSort != null">
+        #{goodsSort,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmGoods">
+    update ecm_goods
+    <set>
+      <if test="fkGoodsCategoryId != null">
+        fk_goods_category_id = #{fkGoodsCategoryId,jdbcType=INTEGER},
+      </if>
+      <if test="goodsName != null">
+        goods_name = #{goodsName,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsPrice != null">
+        goods_price = #{goodsPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="goodsState != null">
+        goods_state = #{goodsState,jdbcType=INTEGER},
+      </if>
+      <if test="goodsContext != null">
+        goods_context = #{goodsContext,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsFlow != null">
+        goods_flow = #{goodsFlow,jdbcType=INTEGER},
+      </if>
+      <if test="goodsSort != null">
+        goods_sort = #{goodsSort,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where pk_goods_id = #{pkGoodsId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmGoods">
+    update ecm_goods
+    set fk_goods_category_id = #{fkGoodsCategoryId,jdbcType=INTEGER},
+      goods_name = #{goodsName,jdbcType=VARCHAR},
+      goods_price = #{goodsPrice,jdbcType=DECIMAL},
+      goods_state = #{goodsState,jdbcType=INTEGER},
+      goods_context = #{goodsContext,jdbcType=VARCHAR},
+      goods_flow = #{goodsFlow,jdbcType=INTEGER},
+      goods_sort = #{goodsSort,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where pk_goods_id = #{pkGoodsId,jdbcType=INTEGER}
+  </update>
+
+<!--  sql-->
+  <select id="selectListByEcmGoodsQuery" resultType="com.mpic.evolution.chair.pojo.vo.EcmGoodsVO">
+    select    pk_goods_id, fk_goods_category_id, goods_name, goods_price, goods_state, goods_context,
+    goods_flow, goods_sort,  ecm_goods.create_time, ecm_goods.update_time, category_name
+    from ecm_goods
+    inner join ecm_goods_category on fk_goods_category_id = pk_category_id
+  </select>
+
+</mapper>
