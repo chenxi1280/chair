@@ -40,4 +40,10 @@ public class EcmGoodsServiceImpl implements EcmGoodsService {
         Map<String, List<EcmGoodsVO>> collect = ecmGoodsVOList.stream().collect(Collectors.groupingBy(EcmGoodsVO::getCategoryName));
         return ResponseDTO.ok(collect);
     }
+
+    @Override
+    public EcmGoods getGoodsVOByPkId(Integer id) {
+
+        return ecmGoodsDao.selectByPrimaryKey(id);
+    }
 }

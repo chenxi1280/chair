@@ -1,15 +1,14 @@
 package com.mpic.evolution.chair.service;
 
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
-import com.mpic.evolution.chair.pojo.entity.EcmGoods;
 import com.mpic.evolution.chair.pojo.vo.EcmOrderVO;
 
 /**
  * @author by cxd
- * @Classname EcmOrderService
+ * @Classname EcmPaySerice
  * @Description TODO
- * @Date 2021/3/8 20:12
+ * @Date 2021/3/9 9:20
  */
-public interface EcmOrderService {
-    EcmOrderVO buyGoods(EcmOrderVO ecmOrderVO);
+public interface EcmPaySerice {
+    ResponseDTO wxPayQueryOrder(EcmOrderVO ecmOrderVO);
 }
