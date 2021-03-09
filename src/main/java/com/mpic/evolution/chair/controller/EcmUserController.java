@@ -35,7 +35,7 @@ public class EcmUserController extends BaseController{
      *  	成功: status 200  msg "success" data: ecmUserVo信息
      *     	失败: status 500  msg "error"
      */
-       @ResponseBody
+    @ResponseBody
     @RequestMapping("webGetUserInfo")
     ResponseDTO webGetUserInfo(){
            EcmUser ecmUser = new EcmUser();

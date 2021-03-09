@@ -39,7 +39,6 @@ public class VOUtils {
                 return;
             }
             String resultValue = (String) declaredField.get(ecmArtworkNodeNumberCondition);
-
             if (appearCondition.equals(fieldName)) {
                 String[] split = resultValue.split(",");
                 nodeNumberCondition.setAppearValueMin(split[0]);

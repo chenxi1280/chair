@@ -1,4 +1,4 @@
-package com.mpic.evolution.chair.common.constant;
+package com.mpic.evolution.chair.config;
 
 import com.github.wxpay.sdk.WXPayConfig;
 import com.github.wxpay.sdk.WXPayUtil;
@@ -28,18 +28,16 @@ public class WxConfig  {
     public static final String APPID = "wxa001a9842ad0f851";
     public static final String MCH_ID = "1607156332";
 
-    public static final String DOM_URL = "https://wanxiangchengzhen.com/pay/callpay.action";
+    public static final String DOM_URL = "https://wanxiangchengzhen.com/bpi/callpay.action";
+
+    public static final String  APIKEY = "sb5cj6ovc3yhe96ypxlnictxhaoupohi";
 
 
     // 微信支付异步通知接口
-    public static final String NOTIFY_URL = "https://wanxiangchengzhen.com/pay/callpay.action";
+    public static final String NOTIFY_URL = "https://wanxiangchengzhen.com/bpi/callpay.action";
     // 微信没有同步通知接口:付款之后,还得自己去查询订单状态是否改变,所以还需要自己写.
 
 
-    public static final String APPSCRET = "bac1f91449a15a5cdf5665e63d5a6ade";
-    public static final String MYKEY = "500222199110025451151001lhaijj13";
-
-    private byte[] CERT_DATA;
 
 
 
