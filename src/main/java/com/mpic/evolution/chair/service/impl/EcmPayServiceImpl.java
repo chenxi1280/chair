@@ -3,12 +3,16 @@ package com.mpic.evolution.chair.service.impl;
 import cn.hutool.core.util.XmlUtil;
 import com.github.wxpay.sdk.WXPayUtil;
 import com.mpic.evolution.chair.config.WxConfig;
+import com.mpic.evolution.chair.dao.EcmOrderHistoryDao;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
+import com.mpic.evolution.chair.pojo.entity.EcmOrderHistory;
 import com.mpic.evolution.chair.pojo.vo.EcmOrderVO;
-import com.mpic.evolution.chair.service.EcmPaySerice;
+import com.mpic.evolution.chair.service.EcmOrderHistoryService;
+import com.mpic.evolution.chair.service.EcmOrderService;
+import com.mpic.evolution.chair.service.EcmPayService;
 import com.mpic.evolution.chair.util.HttpClient;
-
 import com.mpic.evolution.chair.util.PayForUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,7 +35,18 @@ import static com.mpic.evolution.chair.config.WxConfig.getIpAddr;
  * @Date 2021/3/9 9:20
  */
 @Service
-public class EcmPaySericeImpl implements EcmPaySerice {
+public class EcmPayServiceImpl implements EcmPayService {
+
+    final
+    EcmOrderService ecmOrderService;
+    EcmOrderHistoryService ecmOrderHistoryService;
+
+    public EcmPayServiceImpl(EcmOrderService ecmOrderService, EcmOrderHistoryService ecmOrderHistoryService) {
+        this.ecmOrderService = ecmOrderService;
+        this.ecmOrderHistoryService = ecmOrderHistoryService;
+    }
+
+
     @Override
     public ResponseDTO wxPayQueryOrder(EcmOrderVO ecmOrderVO) {
 
@@ -50,7 +65,6 @@ public class EcmPaySericeImpl implements EcmPaySerice {
             //4、获取参数
             String content = httpClient.getContent();
             Map<String, String> stringMap = WXPayUtil.xmlToMap(content);
-            System.out.println("stringMap:" + stringMap);
 
             //5、获取部分页面所需参数
             Map<String, String> dataMap = new HashMap<String, String>();
@@ -81,6 +95,8 @@ public class EcmPaySericeImpl implements EcmPaySerice {
         in.close();
         inputStream.close();
 
+        EcmOrderHistory ecmOrderHistory = new EcmOrderHistory();
+
         // 解析xml成map
         Map<String, Object> m= XmlUtil.xmlToMap(sb.toString());
         // 过滤空 设置 TreeMap
@@ -102,24 +118,43 @@ public class EcmPaySericeImpl implements EcmPaySerice {
         if (PayForUtil.isTenpaySign(packageParams, key)) {
             String resXml = "";
             if ("SUCCESS".equals((String) packageParams.get("result_code"))) {
+
                 System.err.println("--------------------------------------------");
                 System.err.println("支付回调成功。。。可在此处执行业务逻辑。。。");
-                System.err.println("--------------------------------------------");
-
+                EcmOrderVO ecmOrderVO = new EcmOrderVO();
                 // 支付成功,执行自己的业务逻辑开始
-//                String app_id = (String) packageParams.get("appid");
-//                String mch_id = (String) packageParams.get("mch_id");
-//                String openid = (String) packageParams.get("openid");
+                String app_id = (String) packageParams.get("appid");
+                String mch_id = (String) packageParams.get("mch_id");
+                String openid = (String) packageParams.get("openid");
 //                // 是否关注公众号
 //                String is_subscribe = (String) packageParams.get("is_subscribe");
 //                // 附加参数【商标申请_0bda32824db44d6f9611f1047829fa3b_15460】--【业务类型_会员ID_订单号】
 //                String attach = (String) packageParams.get("attach");
-//                String out_trade_no = (String) packageParams.get("out_trade_no");
-//                String total_fee = (String) packageParams.get("total_fee");
+                String out_trade_no = (String) packageParams.get("out_trade_no");
+                String total_fee = (String) packageParams.get("total_fee");
 //                // 微信支付订单号
-//                String transaction_id = (String) packageParams.get("transaction_id");
+                String transaction_id = (String) packageParams.get("transaction_id");
 //                // 支付完成时间
 //                String time_end = (String) packageParams.get("time_end");
+                ecmOrderVO.setOrderCode(out_trade_no);
+                ecmOrderVO.setUpdateTime(new Date());
+                ecmOrderVO.setOrderState(2);
+                ecmOrderVO.setOrderType(0);
+                ecmOrderVO.setPayOrderId(transaction_id);
+                ecmOrderService.updateOrderByPay(ecmOrderVO);
+                ecmOrderHistoryService.insertOrderHistory(out_trade_no,total_fee);
+
+                System.err.println("正在执行执行业务逻辑");
+                // 调用 业务判断
+                if (true) {
+                    ecmOrderVO.setUpdateTime(new Date());
+                    ecmOrderVO.setOrderState(3);
+                    ecmOrderService.updateOrderByPay(ecmOrderVO);
+                }
+                System.err.println("--------------------------------------------");
+
+
+
 
                 // 通知微信.异步确认成功.必写.不然会一直通知后台.八次之后就认为交易失败了.
                 resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>"
@@ -134,6 +169,8 @@ public class EcmPaySericeImpl implements EcmPaySerice {
         } else {
             System.err.println("通知签名验证失败");
         }
+
+
 
     }
 

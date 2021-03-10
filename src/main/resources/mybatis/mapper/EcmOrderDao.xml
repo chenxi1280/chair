@@ -15,11 +15,11 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    pk_order_id, order_code, order_type, order_price, order_state, order_goods_number, 
+    pk_order_id, order_code, order_type, order_price, order_state, order_goods_number,
     fk_goods_id, fk_user_id, pay_order_id, create_time, update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from ecm_order
     where pk_order_id = #{pkOrderId,jdbcType=INTEGER}
@@ -29,13 +29,13 @@
     where pk_order_id = #{pkOrderId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyColumn="pk_order_id" keyProperty="pkOrderId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmOrder" useGeneratedKeys="true">
-    insert into ecm_order (order_code, order_type, order_price, 
-      order_state, order_goods_number, fk_goods_id, 
-      fk_user_id, pay_order_id, create_time, 
+    insert into ecm_order (order_code, order_type, order_price,
+      order_state, order_goods_number, fk_goods_id,
+      fk_user_id, pay_order_id, create_time,
       update_time)
-    values (#{orderCode,jdbcType=VARCHAR}, #{orderType,jdbcType=INTEGER}, #{orderPrice,jdbcType=DECIMAL}, 
-      #{orderState,jdbcType=INTEGER}, #{orderGoodsNumber,jdbcType=INTEGER}, #{fkGoodsId,jdbcType=INTEGER}, 
-      #{fkUserId,jdbcType=INTEGER}, #{payOrderId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+    values (#{orderCode,jdbcType=VARCHAR}, #{orderType,jdbcType=INTEGER}, #{orderPrice,jdbcType=DECIMAL},
+      #{orderState,jdbcType=INTEGER}, #{orderGoodsNumber,jdbcType=INTEGER}, #{fkGoodsId,jdbcType=INTEGER},
+      #{fkUserId,jdbcType=INTEGER}, #{payOrderId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
       #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" keyColumn="pk_order_id" keyProperty="pkOrderId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmOrder" useGeneratedKeys="true">
@@ -155,4 +155,25 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where pk_order_id = #{pkOrderId,jdbcType=INTEGER}
   </update>
+
+<!--  sql-->
+    <update id="updateWxPayOrderByCode">
+    update ecm_order
+    set
+      order_type = #{orderType,jdbcType=INTEGER},
+      order_state = #{orderState,jdbcType=INTEGER},
+      pay_order_id = #{payOrderId,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where order_code = #{orderCode}
+    </update>
+
+    <select id="selectByOrderCode" resultType="com.mpic.evolution.chair.pojo.vo.EcmOrderVO">
+      select <include refid="Base_Column_List" />
+      from ecm_order
+      where order_code = #{code}
+
+    </select>
+
+
+
 </mapper>

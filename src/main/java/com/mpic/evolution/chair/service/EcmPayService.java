@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
  * @Description TODO
  * @Date 2021/3/9 9:20
  */
-public interface EcmPaySerice {
+public interface EcmPayService {
     /**
      * @param: [ecmOrderVO]
      * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO

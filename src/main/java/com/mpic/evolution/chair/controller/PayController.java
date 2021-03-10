@@ -1,20 +1,15 @@
 package com.mpic.evolution.chair.controller;
 
-import com.github.wxpay.sdk.WXPayConstants;
-import com.github.wxpay.sdk.WXPayUtil;
-import com.mpic.evolution.chair.pojo.tencent.wx.pay.WxPayDTO;
-import com.mpic.evolution.chair.service.EcmPaySerice;
+import com.mpic.evolution.chair.dao.EcmOrderHistoryDao;
+import com.mpic.evolution.chair.service.EcmOrderHistoryService;
+import com.mpic.evolution.chair.service.EcmPayService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author by cxd
@@ -25,19 +20,20 @@ import java.util.Map;
 @Controller
 public class PayController {
     final
-    EcmPaySerice ecmPaySerice;
+    EcmPayService ecmPayService;
+    EcmOrderHistoryService ecmOrderHistoryService;
 
-    public PayController(EcmPaySerice ecmPaySerice) {
-        this.ecmPaySerice = ecmPaySerice;
+    public PayController(EcmPayService ecmPayService, EcmOrderHistoryService ecmOrderHistoryService) {
+        this.ecmPayService = ecmPayService;
+        this.ecmOrderHistoryService = ecmOrderHistoryService;
     }
 
-    @ResponseBody
     @RequestMapping("callpay.action")
     public void wxPayAction(HttpServletRequest request, HttpServletResponse response) {
         System.out.println("wx支付回调成功！！");
 
         try {
-            ecmPaySerice.wxPayNotify( request,  response);
+            ecmPayService.wxPayNotify( request,  response);
         } catch (Exception e) {
             e.printStackTrace();
         }

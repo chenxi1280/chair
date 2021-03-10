@@ -12,4 +12,6 @@ import com.mpic.evolution.chair.pojo.vo.EcmOrderVO;
  */
 public interface EcmOrderService {
     EcmOrderVO buyGoods(EcmOrderVO ecmOrderVO);
+
+    boolean updateOrderByPay(EcmOrderVO ecmOrderVO);
 }
