@@ -1,11 +1,14 @@
 package com.mpic.evolution.chair.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmUser;
 import com.mpic.evolution.chair.pojo.query.EcmUserFlowQuery;
 import com.mpic.evolution.chair.pojo.vo.EcmUserHistoryFlowVO;
+import com.mpic.evolution.chair.pojo.vo.EcmUserVo;
 import com.mpic.evolution.chair.service.EcmUserService;
+import com.mpic.evolution.chair.service.EcmVipService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +29,9 @@ public class EcmUserController extends BaseController{
     @Resource
     EcmUserService ecmUserService;
 
+    @Resource
+    private EcmVipService ecmVipService;
+
     /**
      * @param: [EcmUser]  请求头中必须带有token
      * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
@@ -45,8 +51,13 @@ public class EcmUserController extends BaseController{
                return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
            }
            ecmUser.setPkUserId(Integer.valueOf(userId));
-
-        return ecmUserService.webGetUserInfo(ecmUser);
+           EcmUserVo user = ecmUserService.webGetUserInfo(ecmUser);
+           if(user == null){
+               return ResponseDTO.fail(ErrorEnum.ERR_003.getText());
+           }
+           JSONObject data = ecmVipService.getUserVipInfo(user.getPkUserId());
+           data.put("userInfo",user);
+           return ResponseDTO.ok(data);
     }
 
     /**

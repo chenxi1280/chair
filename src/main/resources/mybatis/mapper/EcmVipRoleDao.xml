@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mpic.evolution.chair.dao.EcmVipRoleDao">
+  <resultMap id="BaseResultMap" type="com.mpic.evolution.chair.pojo.entity.EcmVipRole">
+    <id column="pk_role_id" jdbcType="INTEGER" property="pkRoleId" />
+    <result column="vip_role_describe" jdbcType="VARCHAR" property="vipRoleDescribe" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pk_role_id, vip_role_describe, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from ecm_vip_role
+    where pk_role_id = #{pkRoleId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ecm_vip_role
+    where pk_role_id = #{pkRoleId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="pk_role_id" keyProperty="pkRoleId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmVipRole" useGeneratedKeys="true">
+    insert into ecm_vip_role (vip_role_describe, create_time, update_time
+      )
+    values (#{vipRoleDescribe,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="pk_role_id" keyProperty="pkRoleId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmVipRole" useGeneratedKeys="true">
+    insert into ecm_vip_role
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="vipRoleDescribe != null">
+        vip_role_describe,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="vipRoleDescribe != null">
+        #{vipRoleDescribe,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmVipRole">
+    update ecm_vip_role
+    <set>
+      <if test="vipRoleDescribe != null">
+        vip_role_describe = #{vipRoleDescribe,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where pk_role_id = #{pkRoleId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmVipRole">
+    update ecm_vip_role
+    set vip_role_describe = #{vipRoleDescribe,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where pk_role_id = #{pkRoleId,jdbcType=INTEGER}
+  </update>
+</mapper>

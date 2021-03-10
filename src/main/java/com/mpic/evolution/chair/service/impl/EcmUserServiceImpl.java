@@ -96,10 +96,10 @@ public class EcmUserServiceImpl implements EcmUserService {
      * 	描述 :   流量的查询
 	 */
 	@Override
-	public ResponseDTO webGetUserInfo(EcmUser ecmUser) {
+	public EcmUserVo webGetUserInfo(EcmUser ecmUser) {
 		EcmUserVo user = ecmUserDao.selectByPkUserId(ecmUser.getPkUserId());
 		if (user == null ){
-			return ResponseDTO.fail(ErrorEnum.ERR_003.getText());
+			return user;
 		}
 		int vipflow = 0;
 		//如何计算流量的标志
@@ -157,8 +157,9 @@ public class EcmUserServiceImpl implements EcmUserService {
 			user.setUserFlow(ecmUserFlow.getPermanentFlow());
 			user.setTotalFlow(0);
 		}
+
 		//与前端约定 totalFlow是用户会员的剩余流量 userFlow是用户永久流量的剩余流量
-		return ResponseDTO.ok(SUCCESS,user);
+		return user;
 	}
 
 	/**

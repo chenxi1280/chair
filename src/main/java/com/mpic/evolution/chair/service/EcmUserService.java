@@ -26,7 +26,7 @@ public interface EcmUserService {
 
 	void updateIsvalidByToken(EcmUser user, EcmUserVo userVo);
 
-	ResponseDTO webGetUserInfo(EcmUser ecmUser);
+	EcmUserVo webGetUserInfo(EcmUser ecmUser);
 
     ResponseDTO inspectFlow(EcmUserFlowQuery ecmUserFlowQuery);
 

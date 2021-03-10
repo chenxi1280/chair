@@ -66,9 +66,39 @@ public class VipDateUtil {
 		return sDate.plusMonths(difference);
 	}
 
+	/**
+	 * LocalDateTime 转数据库dateTime类型
+	 * @param param
+	 */
+	public static Date formatToDate(LocalDateTime param){
+		//date 转 LocalDateTime方法
+		ZoneId zoneId = ZoneId.systemDefault();
+		ZonedDateTime zdt = param.atZone(zoneId);
+		Date date = Date.from(zdt.toInstant());
+		return date;
+	}
+
+	/**
+	 *  数据库dateTime类型转LocalDateTime
+	 * @param param
+	 */
+	public static LocalDateTime formatToLocalDateTime(Date param){
+		//date 转 LocalDateTime方法
+		Instant instant = param.toInstant();
+		ZoneId zoneId = ZoneId.systemDefault();
+		LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
+		return localDateTime;
+	}
+
 	public static void main(String[] args) {
 		DateTimeFormatter pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
 		LocalDateTime localDateTime = LocalDateTime.of(2020, 10, 28, 9, 24, 0);
+		Date date = new Date();
+		LocalDateTime now = LocalDateTime.now();
+		Date date1 = VipDateUtil.formatToDate(now);
+		System.out.println(date1);
+		LocalDateTime localDateTime1 = VipDateUtil.formatToLocalDateTime(date);
+		System.out.println(localDateTime1);
 //		String date = VipDateUtil.getEndDateByMonth(localDateTime);
 //		String date1 = VipDateUtil.getEndDateBySeason(localDateTime);
 //		String date2 = VipDateUtil.getEndDateByYear(localDateTime);
