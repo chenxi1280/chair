@@ -1,4 +1,4 @@
-package com.mpic.evolution.chair.controller;
+package com.mpic.evolution.chair.controller.file;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.web.bind.annotation.PathVariable;

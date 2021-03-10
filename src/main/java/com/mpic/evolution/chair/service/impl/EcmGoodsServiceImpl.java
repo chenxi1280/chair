@@ -1,13 +1,12 @@
 package com.mpic.evolution.chair.service.impl;
 
 import com.mpic.evolution.chair.dao.EcmGoodsCategoryDao;
-import com.mpic.evolution.chair.pojo.entity.EcmGoods;
-import com.mpic.evolution.chair.pojo.vo.EcmGoodsVO;
-import com.mpic.evolution.chair.service.EcmGoodsService;
 import com.mpic.evolution.chair.dao.EcmGoodsDao;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
+import com.mpic.evolution.chair.pojo.entity.EcmGoods;
 import com.mpic.evolution.chair.pojo.query.EcmGoodsQuery;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.mpic.evolution.chair.pojo.vo.EcmGoodsVO;
+import com.mpic.evolution.chair.service.EcmGoodsService;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
