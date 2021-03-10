@@ -1,5 +1,6 @@
-package com.mpic.evolution.chair.controller;
+package com.mpic.evolution.chair.controller.file;
 
+import com.mpic.evolution.chair.controller.TestController;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.service.FileService;
 import org.slf4j.Logger;

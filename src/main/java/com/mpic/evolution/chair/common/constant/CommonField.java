@@ -31,4 +31,6 @@ public interface CommonField {
     Byte BYTER_TWO = 2;
     byte BYTE_ONE = 1;
     byte BYTE_TWO = 2;
+
+    Integer INTEGER_THREE = 3;
 }

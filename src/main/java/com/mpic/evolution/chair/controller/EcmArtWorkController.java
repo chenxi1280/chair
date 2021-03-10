@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.HttpKit;
 import com.mpic.evolution.chair.common.constant.PublishConstants;
 import com.mpic.evolution.chair.common.constant.TiktokConstant;
+import com.mpic.evolution.chair.common.exception.TokenException;
 import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes;
@@ -72,7 +73,7 @@ public class EcmArtWorkController extends BaseController{
     public ResponseDTO getArtWorks(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
 		Integer userIdByHandToken = getUserIdByHandToken();
 		if (userIdByHandToken == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+			throw new TokenException();
 		}
 		ecmArtWorkQuery.setFkUserid(userIdByHandToken);
 //		ecmArtWorkQuery.setPage();
@@ -96,7 +97,7 @@ public class EcmArtWorkController extends BaseController{
 
 		Integer userIdByHandToken = getUserIdByHandToken();
 		if (userIdByHandToken == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+			throw new TokenException();
 		}
 		ecmArtWorkQuery.setFkUserid(userIdByHandToken);
 		return ecmArtWorkService.getArtWork(ecmArtWorkQuery);
@@ -117,7 +118,7 @@ public class EcmArtWorkController extends BaseController{
 		Integer userId = getUserIdByHandToken();
 
 		if (userId== null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+			throw new TokenException();
 		}
 		if (ecmArtworkNodes.getParentId() == null){
             return ResponseDTO.fail("父节点id为空");
@@ -149,7 +150,7 @@ public class EcmArtWorkController extends BaseController{
     public ResponseDTO addArtWork(@RequestBody EcmArtworkNodesVo ecmArtworkNodesVo){
 		String token = getRequest().getHeader("Authorization");
 		if (StringUtil.isEmpty(token)){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+			throw new TokenException();
 		}
         return ecmArtWorkService.addArtWork(ecmArtworkNodesVo);
     }
@@ -168,7 +169,7 @@ public class EcmArtWorkController extends BaseController{
 	public ResponseDTO removeNode(@RequestBody EcmArtworkNodesVo ecmArtworkNodesVo){
 		Integer userId = getUserIdByHandToken();
 		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+			throw new TokenException();
 		}
 		ecmArtworkNodesVo.setFkUserId(userId);
 
@@ -189,7 +190,7 @@ public class EcmArtWorkController extends BaseController{
 	public ResponseDTO saveArtworkNodeNumberCondition(@RequestBody EcmArtworkNodeNumberConditionVO ecmArtworkNodeNumberConditionVO){
 		Integer userId = getUserIdByHandToken();
 		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+			throw new TokenException();
 		}
 		ecmArtworkNodeNumberConditionVO.setFkUserId(userId);
 
@@ -209,7 +210,7 @@ public class EcmArtWorkController extends BaseController{
 	public ResponseDTO saveAllNodeNameFlagChange(@RequestBody EcmArtworkNodeNumberConditionVO ecmArtworkNodeNumberConditionVO){
 		Integer userId = getUserIdByHandToken();
 		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+			throw new TokenException();
 		}
 		ecmArtworkNodeNumberConditionVO.setFkUserId(userId);
 
@@ -230,7 +231,7 @@ public class EcmArtWorkController extends BaseController{
 	public ResponseDTO saveArtworkEndings(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
 		Integer userId = getUserIdByHandToken();
 		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+			throw new TokenException();
 		}
 		ecmArtworkEndingsQuery.setFkUserId(userId);
 		String saveArtworkEndings = "saveArtworkEndings";
@@ -263,7 +264,7 @@ public class EcmArtWorkController extends BaseController{
 	public ResponseDTO saveArtworkEndingState(@RequestBody EcmArtworkVo ecmArtworkVo){
 		Integer userId = getUserIdByHandToken();
 		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+			throw new TokenException();
 		}
 		ecmArtworkVo.setFkUserid(userId);
 
@@ -283,7 +284,7 @@ public class EcmArtWorkController extends BaseController{
 	public ResponseDTO saveArtworkEndingList(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
 		Integer userId = getUserIdByHandToken();
 		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+			throw new TokenException();
 		}
 		ecmArtworkEndingsQuery.setFkUserId(userId);
 		return ecmArtWorkService.saveArtworkEndingList(ecmArtworkEndingsQuery);
@@ -302,7 +303,7 @@ public class EcmArtWorkController extends BaseController{
 	public ResponseDTO updateArtworkEndingList(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
 		Integer userId = getUserIdByHandToken();
 		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+			throw new TokenException();
 		}
 		ecmArtworkEndingsQuery.setFkUserId(userId);
 		return ecmArtWorkService.updateArtworkEndingList(ecmArtworkEndingsQuery);
@@ -320,7 +321,7 @@ public class EcmArtWorkController extends BaseController{
 	public ResponseDTO deleteArtworkEnding(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
 		Integer userId = getUserIdByHandToken();
 		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+			throw new TokenException();
 		}
 		ecmArtworkEndingsQuery.setFkUserId(userId);
 		return ecmArtWorkService.deleteArtworkEnding(ecmArtworkEndingsQuery);
@@ -340,7 +341,7 @@ public class EcmArtWorkController extends BaseController{
 	public ResponseDTO getArtworkEndingList(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
 		Integer userId = getUserIdByHandToken();
 		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+			throw new TokenException();
 		}
 		ecmArtworkEndingsQuery.setFkUserId(userId);
 		return ecmArtWorkService.getArtworkEndingList(ecmArtworkEndingsQuery);
@@ -360,7 +361,7 @@ public class EcmArtWorkController extends BaseController{
 	public ResponseDTO saveArtworkEndingAll(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
 		Integer userId = getUserIdByHandToken();
 		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+			throw new TokenException();
 		}
 		if (ecmArtworkEndingsQuery.getNodeNum() == null  ) {
 			return ResponseDTO.fail("无多结局");
@@ -388,7 +389,7 @@ public class EcmArtWorkController extends BaseController{
 	public ResponseDTO deleteArtworkEndingList(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
 		Integer userId = getUserIdByHandToken();
 		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+			throw new TokenException();
 		}
 		ecmArtworkEndingsQuery.setFkUserId(userId);
 		return ecmArtWorkService.deleteArtworkEndingList(ecmArtworkEndingsQuery);
@@ -408,7 +409,7 @@ public class EcmArtWorkController extends BaseController{
 	public ResponseDTO saveArtworkNodePopupSettings(@RequestBody EcmArtworkNodePopupSettingsVO ecmArtworkNodePopupSettingsVO){
 		Integer userId = getUserIdByHandToken();
 		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+			throw new TokenException();
 		}
 		ecmArtworkNodePopupSettingsVO.setFkUserId(userId);
 
@@ -429,7 +430,7 @@ public class EcmArtWorkController extends BaseController{
 	public ResponseDTO saveArtworkNodeCondition(@RequestBody EcmArtworkNodesVo ecmArtworkNodesVo){
 		Integer userId = getUserIdByHandToken();
 		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+			throw new TokenException();
 		}
 		ecmArtworkNodesVo.setFkUserId(userId);
 
@@ -450,7 +451,7 @@ public class EcmArtWorkController extends BaseController{
 	public ResponseDTO saveArtworkEndingCondition(@RequestBody EcmArtworkNodesVo ecmArtworkNodesVo){
 		Integer userId = getUserIdByHandToken();
 		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+			throw new TokenException();
 		}
 		ecmArtworkNodesVo.setFkUserId(userId);
 
@@ -462,7 +463,7 @@ public class EcmArtWorkController extends BaseController{
 	public ResponseDTO saveArtworkNodeBuoy(@RequestBody EcmArtworkNodeBuoyQuery ecmArtworkNodeBuoyQuery){
 		Integer userId = getUserIdByHandToken();
 		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+			throw new TokenException();
 		}
 		ecmArtworkNodeBuoyQuery.setFkUserId(userId);
 
@@ -482,7 +483,7 @@ public class EcmArtWorkController extends BaseController{
 	public ResponseDTO deleteArtworkNodeBuoy(@RequestBody EcmArtworkNodeBuoyVO ecmArtworkNodeBuoyVO){
 		Integer userId = getUserIdByHandToken();
 		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+			throw new TokenException();
 		}
 		ecmArtworkNodeBuoyVO.setFkUserId(userId);
 		return ecmArtWorkService.deleteArtworkNodeBuoy(ecmArtworkNodeBuoyVO);
@@ -493,7 +494,7 @@ public class EcmArtWorkController extends BaseController{
 	public ResponseDTO getArtworkNodeBuoy(@RequestBody EcmArtworkNodeBuoyQuery ecmArtworkNodeBuoyQuery){
 		Integer userId = getUserIdByHandToken();
 		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+			throw new TokenException();
 		}
 		ecmArtworkNodeBuoyQuery.setFkUserId(userId);
 		return ecmArtWorkService.getArtworkNodeBuoy(ecmArtworkNodeBuoyQuery);
@@ -504,7 +505,7 @@ public class EcmArtWorkController extends BaseController{
 	public ResponseDTO updateArtworkBuoy(@RequestBody EcmArtworkNodesVo ecmArtworkNodesVo){
 		Integer userId = getUserIdByHandToken();
 		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+			throw new TokenException();
 		}
 		ecmArtworkNodesVo.setFkUserId(userId);
 		return ecmArtWorkService.updateArtworkNodeBuoy(ecmArtworkNodesVo);
@@ -525,7 +526,7 @@ public class EcmArtWorkController extends BaseController{
     	String userId = JWTUtil.getUserId(token);
     	JSONObject data = new JSONObject();
     	if (StringUtil.isEmpty(userId)){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+			throw new TokenException();
 		}
     	//如果是null返回false
     	boolean hasKey = redisUtil.hasKey("WxQRCode");
@@ -576,7 +577,7 @@ public class EcmArtWorkController extends BaseController{
 
 		Integer userIdByHandToken = getUserIdByHandToken();
 		if (userIdByHandToken == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+			throw new TokenException();
 		}
 		//如果是null返回false
 		JSONObject data = new JSONObject();
@@ -622,7 +623,7 @@ public class EcmArtWorkController extends BaseController{
 		Integer userIdByHandToken = getUserIdByHandToken();
 
 		if (userIdByHandToken == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+			throw new TokenException();
 		}
 		JSONObject data = new JSONObject();
 
