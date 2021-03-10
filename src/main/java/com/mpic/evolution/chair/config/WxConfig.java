@@ -1,21 +1,11 @@
 package com.mpic.evolution.chair.config;
 
-import com.github.wxpay.sdk.WXPayConfig;
 import com.github.wxpay.sdk.WXPayUtil;
 import com.mpic.evolution.chair.util.DeviceUtil;
-import org.springframework.core.io.ClassPathResource;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 
 /**
  * @author by cxd
@@ -25,7 +15,7 @@ import java.util.Scanner;
  */
 public class WxConfig  {
 
-    public static final String APPID = "wxa001a9842ad0f851";
+    public static final String APP_ID = "wxa001a9842ad0f851";
     public static final String MCH_ID = "1607156332";
 
     public static final String DOM_URL = "https://wanxiangchengzhen.com/bpi/callpay.action";

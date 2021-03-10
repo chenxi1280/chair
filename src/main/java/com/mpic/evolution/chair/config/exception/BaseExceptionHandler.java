@@ -30,7 +30,7 @@ public class BaseExceptionHandler {
     @ResponseBody
     ResponseDTO  tokenException(TokenException e) {
 //        System.out.println("后台全局异常捕获发现异常");
-        e.printStackTrace();
+//        e.printStackTrace();
         return ResponseDTO.fail(ERR_603.getText(),ERR_603.getText(),Integer.valueOf(ERR_603.getValue()),ERR_603.getValue());
     }
 }

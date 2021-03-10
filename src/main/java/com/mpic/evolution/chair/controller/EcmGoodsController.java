@@ -37,10 +37,7 @@ public class EcmGoodsController extends BaseController{
     @RequestMapping("getGoodsAll")
     @ResponseBody
     public ResponseDTO getGoodsAll(@RequestBody EcmGoodsQuery ecmGoodsQuery) {
-        Integer userIdByHandToken = getUserIdByHandToken();
-        if (userIdByHandToken == null ){
-            throw new TokenException();
-        }
+        ecmGoodsQuery.setFkUserId(getUserIdByHandToken());
         return  ecmGoodsService.getGoodsAll(ecmGoodsQuery);
     }
 

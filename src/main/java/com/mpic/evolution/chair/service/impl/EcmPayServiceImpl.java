@@ -191,7 +191,7 @@ public class EcmPayServiceImpl implements EcmPayService {
         // 定义个装参数的map
         Map<String, String> data = new HashMap<>(12);
         //  appid
-        data.put("appid", WxConfig.APPID);
+        data.put("appid", WxConfig.APP_ID);
         // 商户id
         data.put("mch_id", WxConfig.MCH_ID);
         //随机字符串
