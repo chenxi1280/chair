@@ -137,7 +137,7 @@ public class EcmPayServiceImpl implements EcmPayService {
                 String transaction_id = (String) packageParams.get("transaction_id");
                 ecmOrderVO.setOrderCode(out_trade_no);
                 ecmOrderVO.setUpdateTime(new Date());
-                ecmOrderVO.setOrderState(2);
+                ecmOrderVO.setOrderState(1);
                 ecmOrderVO.setOrderType(0);
                 ecmOrderVO.setPayOrderId(transaction_id);
                 ecmOrderService.updateOrderByPay(ecmOrderVO);
@@ -147,7 +147,7 @@ public class EcmPayServiceImpl implements EcmPayService {
                 // 调用 业务判断
                 if (true) {
                     ecmOrderVO.setUpdateTime(new Date());
-                    ecmOrderVO.setOrderState(3);
+                    ecmOrderVO.setOrderState(2);
                     ecmOrderService.updateOrderByPay(ecmOrderVO);
                 }
                 System.err.println("--------------------------------------------");
