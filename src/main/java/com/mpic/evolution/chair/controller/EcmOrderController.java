@@ -38,13 +38,23 @@ public class EcmOrderController extends BaseController{
             throw new TokenException();
         }
         ecmOrderVO.setFkUserId(userIdByHandToken);
-        EcmOrderVO ecmGoods= ecmOrderService.buyGoods(ecmOrderVO);
-        ecmPayService.wxPayQueryOrder(ecmGoods);
+        EcmOrderVO ecmOrder= ecmOrderService.buyGoods(ecmOrderVO);
 
-
-        return  ecmPayService.wxPayQueryOrder(ecmGoods);
+        return  ecmPayService.wxPayQueryOrder(ecmOrder);
     }
 
+    @RequestMapping("queryOrderResult")
+    @ResponseBody
+    public ResponseDTO queryOrderResult(@RequestBody EcmOrderVO ecmOrderVO) {
+//        Integer userIdByHandToken = getUserIdByHandToken();
+//        if (userIdByHandToken == null ){
+//            throw new TokenException();
+//        }
+//        ecmOrderVO.setFkUserId(userIdByHandToken);
+//        EcmOrderVO ecmGoods= ecmOrderService.buyGoods(ecmOrderVO);
+//        ecmPayService.wxPayQueryOrder(ecmGoods);
+        return  ecmOrderService.queryOrderResult(ecmOrderVO);
+    }
 
 
 

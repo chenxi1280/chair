@@ -8,10 +8,10 @@ import com.mpic.evolution.chair.pojo.entity.EcmOrderHistory;
 import com.mpic.evolution.chair.pojo.vo.EcmOrderVO;
 import com.mpic.evolution.chair.service.EcmOrderHistoryService;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * @author by cxd
@@ -42,6 +42,7 @@ public class EcmOrderHistoryServiceImpl implements EcmOrderHistoryService {
         BeanUtils.copyProperties( ecmGoods,ecmOrderHistory);
         ecmOrderHistory.setFkOrderId(ecmOrderVO.getPkOrderId());
         ecmOrderHistory.setPayOrderPrice(BigDecimal.valueOf( Long.parseLong(total) / 100 ));
+        ecmOrderHistory.setCreateTime(new Date());
         ecmOrderHistoryDao.insertSelective(ecmOrderHistory);
 
     }

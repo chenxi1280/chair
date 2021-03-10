@@ -3,7 +3,6 @@ package com.mpic.evolution.chair.service.impl;
 import cn.hutool.core.util.XmlUtil;
 import com.github.wxpay.sdk.WXPayUtil;
 import com.mpic.evolution.chair.config.WxConfig;
-import com.mpic.evolution.chair.dao.EcmOrderHistoryDao;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmOrderHistory;
 import com.mpic.evolution.chair.pojo.vo.EcmOrderVO;
@@ -12,7 +11,6 @@ import com.mpic.evolution.chair.service.EcmOrderService;
 import com.mpic.evolution.chair.service.EcmPayService;
 import com.mpic.evolution.chair.util.HttpClient;
 import com.mpic.evolution.chair.util.PayForUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,6 +48,10 @@ public class EcmPayServiceImpl implements EcmPayService {
     @Override
     public ResponseDTO wxPayQueryOrder(EcmOrderVO ecmOrderVO) {
 
+        if ( ecmOrderVO ==null ){
+            ResponseDTO.fail("非法商品");
+        }
+
         //1、封装参数
         Map<String, String> data = getParameterMap(ecmOrderVO);
         try {
@@ -68,9 +70,9 @@ public class EcmPayServiceImpl implements EcmPayService {
 
             //5、获取部分页面所需参数
             Map<String, String> dataMap = new HashMap<String, String>();
-            dataMap.put("code_url", stringMap.get("code_url"));
-            dataMap.put("out_trade_no",ecmOrderVO.getOrderCode());
-            dataMap.put("total_fee",String.valueOf(ecmOrderVO.getOrderPrice()));
+            dataMap.put("codeUrl", stringMap.get("code_url"));
+            dataMap.put("orderCode",ecmOrderVO.getOrderCode());
+            dataMap.put("orderPrice",String.valueOf(ecmOrderVO.getOrderPrice()));
 
             return ResponseDTO.ok(dataMap);
 
@@ -119,8 +121,7 @@ public class EcmPayServiceImpl implements EcmPayService {
             String resXml = "";
             if ("SUCCESS".equals((String) packageParams.get("result_code"))) {
 
-                System.err.println("--------------------------------------------");
-                System.err.println("支付回调成功。。。可在此处执行业务逻辑。。。");
+                System.err.println("--------------------------支付回调------------------");
                 EcmOrderVO ecmOrderVO = new EcmOrderVO();
                 // 支付成功,执行自己的业务逻辑开始
                 String app_id = (String) packageParams.get("appid");
@@ -134,8 +135,6 @@ public class EcmPayServiceImpl implements EcmPayService {
                 String total_fee = (String) packageParams.get("total_fee");
 //                // 微信支付订单号
                 String transaction_id = (String) packageParams.get("transaction_id");
-//                // 支付完成时间
-//                String time_end = (String) packageParams.get("time_end");
                 ecmOrderVO.setOrderCode(out_trade_no);
                 ecmOrderVO.setUpdateTime(new Date());
                 ecmOrderVO.setOrderState(2);
@@ -152,8 +151,6 @@ public class EcmPayServiceImpl implements EcmPayService {
                     ecmOrderService.updateOrderByPay(ecmOrderVO);
                 }
                 System.err.println("--------------------------------------------");
-
-
 
 
                 // 通知微信.异步确认成功.必写.不然会一直通知后台.八次之后就认为交易失败了.
@@ -175,6 +172,7 @@ public class EcmPayServiceImpl implements EcmPayService {
     }
 
 
+
     /**
      * 基础必传参数简单封装
      * <p>
@@ -191,24 +189,29 @@ public class EcmPayServiceImpl implements EcmPayService {
     private Map<String, String> getParameterMap(EcmOrderVO order) {
 
         // 定义个装参数的map
-        Map<String, String> data = new HashMap<>();
-        //沙箱环境
-        data.put("appid", WxConfig.APPID);//  appid
-        data.put("mch_id", WxConfig.MCH_ID);// 商户id
-        data.put("nonce_str", WXPayUtil.generateNonceStr()); //随机字符串
-        data.put("body", order.getGoodsName());//描述 商品名称
-        data.put("out_trade_no", String.valueOf(order.getOrderCode()));//订单编号
+        Map<String, String> data = new HashMap<>(12);
+        //  appid
+        data.put("appid", WxConfig.APPID);
+        // 商户id
+        data.put("mch_id", WxConfig.MCH_ID);
+        //随机字符串
+        data.put("nonce_str", WXPayUtil.generateNonceStr());
+        //描述 商品名称
+        data.put("body", order.getGoodsName());
+        //订单编号
+        data.put("out_trade_no", String.valueOf(order.getOrderCode()));
         //订单有效支付时间yyyyMMddHHmmss,格式(必须)
-        String youxiaoDate = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date(System.currentTimeMillis() + 1000 * 60 * 2));
-        data.put("time_expire", youxiaoDate);// 订单有效支付时间
-
-        int zonge = order.getOrderPrice().multiply(new BigDecimal("100")).intValue();// int类型的金额单位是分
-
-        data.put("total_fee", String.valueOf(zonge));//总金额
+        String youxiaoDate = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date(System.currentTimeMillis() + 1000 * 60 * 5));
+        // 订单有效支付时间
+        data.put("time_expire", youxiaoDate);
+        // int类型的金额单位是分
+        int zonge = order.getOrderPrice().multiply(new BigDecimal("100")).intValue();
+        //总金额
+        data.put("total_fee", String.valueOf(zonge));
         //设置ip地址
         data.put("spbill_create_ip", getIpAddr());
-        //支付结果通知路径
-        data.put("notify_url", WxConfig.DOM_URL); // 异步通知路径
+        //支付结果通知路径异步通知路径
+        data.put("notify_url", WxConfig.DOM_URL);
         data.put("attach",String.valueOf(order.getPkOrderId()));
 
         return data;

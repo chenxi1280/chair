@@ -24,6 +24,13 @@ public interface EcmPayService {
      */
     ResponseDTO wxPayQueryOrder(EcmOrderVO ecmOrderVO);
 
+    /**
+     * @param: [request, response]
+     * @return: void
+     * @author: cxd
+     * @Date: 2021/3/10
+     * 描述 : 微信回调
+     */
     void wxPayNotify(HttpServletRequest request, HttpServletResponse response) throws Exception;
 
 

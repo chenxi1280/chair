@@ -1,6 +1,7 @@
 package com.mpic.evolution.chair.service.impl;
 
 import com.mpic.evolution.chair.dao.EcmOrderDao;
+import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmGoods;
 import com.mpic.evolution.chair.pojo.vo.EcmOrderVO;
 import com.mpic.evolution.chair.service.EcmGoodsService;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
+
+import static com.mpic.evolution.chair.common.constant.CommonField.*;
 
 /**
  * @author by cxd
@@ -52,5 +55,17 @@ public class EcmOrderServiceImpl implements EcmOrderService {
     @Override
     public boolean updateOrderByPay(EcmOrderVO ecmOrderVO) {
         return 1 == ecmOrderDao.updateWxPayOrderByCode(ecmOrderVO);
+    }
+
+    @Override
+    public ResponseDTO queryOrderResult(EcmOrderVO ecmOrderVO) {
+        EcmOrderVO ecmOrder = ecmOrderDao.selectByOrderCode(ecmOrderVO.getOrderCode());
+        if (ecmOrder == null ){
+            return ResponseDTO.fail("请支付","",500,500);
+        }
+        if (INTEGER_THREE.equals(ecmOrder.getOrderState())){
+            return ResponseDTO.ok("购买成功");
+        }
+        return ResponseDTO.fail("请等待","",470,470);
     }
 }
