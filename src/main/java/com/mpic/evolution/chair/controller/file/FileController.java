@@ -5,6 +5,7 @@ import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.service.FileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,8 +26,11 @@ import javax.annotation.Resource;
 public class FileController {
     private static final Logger logger = LoggerFactory.getLogger(TestController.class);
 
-    @Resource
-    private FileService fileService;
+    final FileService fileService;
+
+    public FileController(FileService fileService) {
+        this.fileService = fileService;
+    }
 
     /**
      * 文件上传测试接口

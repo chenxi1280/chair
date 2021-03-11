@@ -1,6 +1,6 @@
 package com.mpic.evolution.chair.config.exception;
 
-import com.mpic.evolution.chair.common.exception.TokenException;
+import com.mpic.evolution.chair.common.exception.EcmTokenException;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -26,9 +26,9 @@ public class BaseExceptionHandler {
     }
 
 
-    @ExceptionHandler(value = TokenException.class)
+    @ExceptionHandler(value = EcmTokenException.class)
     @ResponseBody
-    ResponseDTO  tokenException(TokenException e) {
+    ResponseDTO  tokenException(EcmTokenException e) {
 //        System.out.println("后台全局异常捕获发现异常");
 //        e.printStackTrace();
         return ResponseDTO.fail(ERR_603.getText(),ERR_603.getText(),Integer.valueOf(ERR_603.getValue()),ERR_603.getValue());

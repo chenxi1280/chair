@@ -63,7 +63,7 @@ public class EcmOrderServiceImpl implements EcmOrderService {
         if (ecmOrder == null ){
             return ResponseDTO.fail("请支付","",500,500);
         }
-        if (INTEGER_THREE.equals(ecmOrder.getOrderState())){
+        if (INTEGER_TWO.equals(ecmOrder.getOrderState())){
             return ResponseDTO.ok("购买成功");
         }
         return ResponseDTO.fail("请等待","",470,470);

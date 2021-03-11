@@ -1,5 +1,7 @@
 package com.mpic.evolution.chair.config.annotation;
 
+import lombok.NoArgsConstructor;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

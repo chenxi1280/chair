@@ -11,6 +11,7 @@ import com.mpic.evolution.chair.service.EcmOrderService;
 import com.mpic.evolution.chair.service.EcmPayService;
 import com.mpic.evolution.chair.util.HttpClient;
 import com.mpic.evolution.chair.util.PayForUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +23,7 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static com.mpic.evolution.chair.common.constant.CommonField.STRING_REDIS_IP;
 import static com.mpic.evolution.chair.config.WxPayConfig.APIKEY;
 import static com.mpic.evolution.chair.config.WxPayConfig.getIpAddr;
 
@@ -34,6 +36,10 @@ import static com.mpic.evolution.chair.config.WxPayConfig.getIpAddr;
  */
 @Service
 public class EcmPayServiceImpl implements EcmPayService {
+
+    // 判断是否为真实环境
+    @Value("${spring.redis.host}")
+    private String redisHost;
 
     final
     EcmOrderService ecmOrderService;
@@ -211,7 +217,15 @@ public class EcmPayServiceImpl implements EcmPayService {
         //设置ip地址
         data.put("spbill_create_ip", getIpAddr());
         //支付结果通知路径异步通知路径
-        data.put("notify_url", WxPayConfig.DOM_URL);
+
+        if (!STRING_REDIS_IP.equals(redisHost)){
+            data.put("notify_url", WxPayConfig.DOM_URL);
+        }else {
+            System.out.println("这是测试环境");
+            data.put("notify_url", WxPayConfig.DOM_URL_TEST);
+        }
+
+
         data.put("attach",String.valueOf(order.getPkOrderId()));
 
         return data;

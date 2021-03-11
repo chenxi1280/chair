@@ -1,6 +1,6 @@
 package com.mpic.evolution.chair.config.interceptor;
 
-import com.mpic.evolution.chair.common.exception.TokenException;
+import com.mpic.evolution.chair.common.exception.EcmTokenException;
 import com.mpic.evolution.chair.util.JWTUtil;
 import com.qcloud.vod.common.StringUtil;
 import org.slf4j.Logger;
@@ -34,11 +34,11 @@ public class UserAccessInterceptor implements HandlerInterceptor {
         String token = request.getHeader("Authorization");
         if (StringUtil.isEmpty(token)){
             logger.info("拦截器 -- > 非法访问");
-            throw new TokenException();
+            throw new EcmTokenException();
         }
         if (StringUtil.isEmpty(JWTUtil.getUserId(token))){
             logger.info("拦截器 -- > 非法访问");
-            throw new TokenException();
+            throw new EcmTokenException();
         }
 
         return true;
