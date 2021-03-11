@@ -35,7 +35,7 @@ import java.util.List;
  */
 @Aspect
 @Component
-//spring bean加载优先级注解
+// spring bean加载优先级注解
 @Order(-10)
 public class AuthenticationAspect {
 
@@ -110,7 +110,7 @@ public class AuthenticationAspect {
                     ecmVipRoleAuthorities = (List<EcmVipRoleAuthorityVO>) redisUtil.get(token + "AuthVipRoleAuthorities");
                 }else {
                     ecmVipRoleAuthorities = ecmVipRoleAuthorityDao.selectByEcmVipRoleInfoList(ecmVipUserInfo);
-                    redisUtil.set(token+"AuthVipRoleAuthorities",ecmVipRoleAuthorities,60 * 60 * 6);
+                    redisUtil.set(token+"AuthVipRoleAuthorities",ecmVipRoleAuthorities,60 * 60 * 3);
                 }
                 if (!CollectionUtils.isEmpty(ecmVipRoleAuthorities)) {
                     for (EcmVipRoleAuthority ecmVipRoleAuthority : ecmVipRoleAuthorities) {
@@ -128,40 +128,6 @@ public class AuthenticationAspect {
         }
         logger.info("非法访问 ==》 拦截");
         throw new EcmAuthenticationException();
-
-
-//        String card = null;
-//        List<Long> roleList = new ArrayList<>();
-//        for (Object arg : joinPoint.getArgs()) {
-//            if (arg != null && arg.getClass() == RequestFacade.class) {
-//                RequestFacade request = (RequestFacade) arg;
-////                card = CookieUtils.getCardFromCookie(request);
-////                if (StringUtils.isEmpty(card)) {
-////                    return JsonResult.buildFailResult(-1, 1000, "权限验证未通过", null);
-////                }
-////                List<Role> roles = authDao.getRolesByCard(card);
-////                for (Role role : roles) {
-////                    roleList.add(role.getId());
-////                }
-//                break;
-//            }
-//        }
-//        logger.info("[authentication] user={}, roles={}", card, roleList);
-//        long[] aims = authentication.role();
-//        boolean isPass = false;
-//        for (long aim : aims) {
-//            if (roleList.contains(aim)) {
-//                isPass = true;
-//            }
-//        }
-//        if (isPass) {
-//            logger.info("[authentication] authentication pass, cost time: {}", System.currentTimeMillis() - beginTime.get());
-//            return joinPoint.proceed();
-//        } else {
-//            beginTime.set(System.currentTimeMillis());
-//            logger.info("[authentication] authentication reject, cost time: {}", System.currentTimeMillis() - beginTime.get());
-////            return JsonResult.buildFailResult(-1, 1000, "权限验证未通过", null);
-//        }
 
 
     }
