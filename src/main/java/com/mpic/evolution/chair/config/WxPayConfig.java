@@ -17,42 +17,13 @@ public class WxPayConfig {
 
     public static final String APP_ID = "wxa001a9842ad0f851";
     public static final String MCH_ID = "1607156332";
-
+    // 微信支付异步通知接口
     public static final String DOM_URL_TEST = "https://wanxiangchengzhen.com/bpi/callpay.action";
     public static final String DOM_URL = "https://wanxiangchengzhen.com/pbpi/callpay.action";
 
 
     public static final String  APIKEY = "sb5cj6ovc3yhe96ypxlnictxhaoupohi";
 
-
-    // 微信支付异步通知接口
-    public static final String NOTIFY_URL = "https://wanxiangchengzhen.com/bpi/callpay.action";
-    // 微信没有同步通知接口:付款之后,还得自己去查询订单状态是否改变,所以还需要自己写.
-
-
-
-
-
-
-
-
-    /**
-     * 告诉微信异步通知的时候，告诉微信我收到了，你不要再给我发用户付款成功的消息了
-     *
-     * @return
-     */
-    public static String notifyWxImGet() {
-        Map<String, String> resMap = new HashMap<>();
-        resMap.put("return_code", "SUCCESS");
-        resMap.put("return_msg", "OK");
-        //将map转换成xml字符串返回给微信，我收到了，你别再发了
-        try {
-            return WXPayUtil.mapToXml(resMap);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
 
 
     //获得客户端访问的IP地址

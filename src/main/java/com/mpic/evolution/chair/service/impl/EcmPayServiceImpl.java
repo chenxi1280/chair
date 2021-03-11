@@ -12,7 +12,6 @@ import com.mpic.evolution.chair.service.EcmOrderService;
 import com.mpic.evolution.chair.service.EcmPayService;
 import com.mpic.evolution.chair.util.HttpClient;
 import com.mpic.evolution.chair.util.PayForUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
