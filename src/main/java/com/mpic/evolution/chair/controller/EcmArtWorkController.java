@@ -185,7 +185,6 @@ public class EcmArtWorkController extends BaseController{
 	@ResponseBody
 	public ResponseDTO saveAllNodeNameFlagChange(@RequestBody EcmArtworkNodeNumberConditionVO ecmArtworkNodeNumberConditionVO){
 		ecmArtworkNodeNumberConditionVO.setFkUserId(getUserIdByHandToken());
-
 		return ecmArtWorkService.saveAllNodeNameFlagChange(ecmArtworkNodeNumberConditionVO);
 	}
 

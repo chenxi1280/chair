@@ -13,7 +13,7 @@ import java.util.Map;
  * @Description TODO
  * @Date 2021/3/9 14:08
  */
-public class WxConfig  {
+public class WxPayConfig {
 
     public static final String APP_ID = "wxa001a9842ad0f851";
     public static final String MCH_ID = "1607156332";

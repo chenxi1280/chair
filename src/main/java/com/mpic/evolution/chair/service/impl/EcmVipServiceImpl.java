@@ -33,6 +33,7 @@ public class EcmVipServiceImpl implements EcmVipService {
     @Resource
     EcmVipUserInfoDao ecmVipUserInfoDao;
 
+    @Override
     public JSONObject getUserVipInfo(Integer fkUserId) {
         JSONObject data = new JSONObject();
         EcmVipUserInfo ecmVipUserInfo = new EcmVipUserInfo();

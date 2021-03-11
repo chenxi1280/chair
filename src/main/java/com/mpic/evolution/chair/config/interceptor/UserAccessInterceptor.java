@@ -1,5 +1,6 @@
 package com.mpic.evolution.chair.config.interceptor;
 
+import com.mpic.evolution.chair.common.exception.TokenException;
 import com.mpic.evolution.chair.util.JWTUtil;
 import com.qcloud.vod.common.StringUtil;
 import org.slf4j.Logger;
@@ -13,12 +14,12 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author by cxd
- * @Classname BaseInterceptor
+ * @Classname UserAccessInterceptor
  * @Description TODO
- * @Date 2021/1/8 9:26
+ * @Date 2021/3/10 18:08
  */
 @Component
-public class BaseInterceptor implements HandlerInterceptor {
+public class UserAccessInterceptor implements HandlerInterceptor {
     Logger logger = LoggerFactory.getLogger(BaseInterceptor.class);
 
     /**
@@ -28,18 +29,17 @@ public class BaseInterceptor implements HandlerInterceptor {
      */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        logger.info("拦截器  在控制器执行之前执行");
+//        logger.info("拦截器  在控制器执行之前执行");
 
-//        String token = request.getHeader("Authorization");
-//        if (StringUtil.isEmpty(token)){
-//            return false;
-//        }
-//        String userId = JWTUtil.getUserId(token);
-//        if (!StringUtil.isEmpty(userId)){
-//            return  Integer.valueOf(userId);
-//        }
-
-
+        String token = request.getHeader("Authorization");
+        if (StringUtil.isEmpty(token)){
+            logger.info("拦截器 -- > 非法访问");
+            throw new TokenException();
+        }
+        if (StringUtil.isEmpty(JWTUtil.getUserId(token))){
+            logger.info("拦截器 -- > 非法访问");
+            throw new TokenException();
+        }
 
         return true;
     }
@@ -49,7 +49,7 @@ public class BaseInterceptor implements HandlerInterceptor {
      */
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        logger.info("拦截器  在控制器执行之后执行");
+//        logger.info("拦截器  在控制器执行之后执行");
     }
 
     /**
@@ -57,6 +57,6 @@ public class BaseInterceptor implements HandlerInterceptor {
      */
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        logger.info("拦截器  最后执行");
+//        logger.info("拦截器  最后执行");
     }
 }

@@ -3,9 +3,11 @@ package com.mpic.evolution.chair.dao;
 
 
 import com.mpic.evolution.chair.pojo.entity.EcmVipRoleAuthority;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface EcmVipRoleAuthorityDao {
     int deleteByPrimaryKey(Integer pkId);
 

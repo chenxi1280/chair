@@ -2,7 +2,7 @@ package com.mpic.evolution.chair.service.impl;
 
 import cn.hutool.core.util.XmlUtil;
 import com.github.wxpay.sdk.WXPayUtil;
-import com.mpic.evolution.chair.config.WxConfig;
+import com.mpic.evolution.chair.config.WxPayConfig;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmOrderHistory;
 import com.mpic.evolution.chair.pojo.vo.EcmOrderVO;
@@ -22,8 +22,8 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static com.mpic.evolution.chair.config.WxConfig.APIKEY;
-import static com.mpic.evolution.chair.config.WxConfig.getIpAddr;
+import static com.mpic.evolution.chair.config.WxPayConfig.APIKEY;
+import static com.mpic.evolution.chair.config.WxPayConfig.getIpAddr;
 
 
 /**
@@ -191,9 +191,9 @@ public class EcmPayServiceImpl implements EcmPayService {
         // 定义个装参数的map
         Map<String, String> data = new HashMap<>(12);
         //  appid
-        data.put("appid", WxConfig.APP_ID);
+        data.put("appid", WxPayConfig.APP_ID);
         // 商户id
-        data.put("mch_id", WxConfig.MCH_ID);
+        data.put("mch_id", WxPayConfig.MCH_ID);
         //随机字符串
         data.put("nonce_str", WXPayUtil.generateNonceStr());
         //描述 商品名称
@@ -211,7 +211,7 @@ public class EcmPayServiceImpl implements EcmPayService {
         //设置ip地址
         data.put("spbill_create_ip", getIpAddr());
         //支付结果通知路径异步通知路径
-        data.put("notify_url", WxConfig.DOM_URL);
+        data.put("notify_url", WxPayConfig.DOM_URL);
         data.put("attach",String.valueOf(order.getPkOrderId()));
 
         return data;
