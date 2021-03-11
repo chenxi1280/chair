@@ -1,5 +1,6 @@
 package com.mpic.evolution.chair.service.vip;
 
+import com.alibaba.druid.util.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
@@ -27,7 +28,14 @@ public class BeanConfig implements InitializingBean, ApplicationContextAware {
     public void afterPropertiesSet() throws Exception {
         Map<String, PaymentVipService> beanMap = applicationContext.getBeansOfType(PaymentVipService.class);
         for (PaymentVipService serviceImpl : beanMap.values()) {
-            querySeviceImpMap.put(serviceImpl.getClass().getSimpleName(), serviceImpl);
+            String name = serviceImpl.getClass().getSimpleName();
+            int index = name.indexOf("$");
+            if(index<0){
+                querySeviceImpMap.put(name, serviceImpl);
+            }else {
+                String string = name.substring(0, index);
+                querySeviceImpMap.put(string, serviceImpl);
+            }
         }
     }
 
