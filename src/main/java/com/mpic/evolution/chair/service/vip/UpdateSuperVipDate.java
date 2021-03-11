@@ -13,6 +13,7 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class UpdateSuperVipDate implements PaymentVipService {
@@ -29,7 +30,8 @@ public class UpdateSuperVipDate implements PaymentVipService {
         ecmVipUserInfo.setFkUserid(fkUserId);
         ecmVipUserInfo.setFkVipRoleId(2);
         ecmVipUserInfo.setVipStatus((short)1);
-        ecmVipUserInfo = ecmVipUserInfoDao.selectByUserInfo(ecmVipUserInfo);
+        List<EcmVipUserInfo> ecmVipUserInfos = ecmVipUserInfoDao.selectByUserInfo(ecmVipUserInfo);
+        ecmVipUserInfo = ecmVipUserInfos.get(0);
         EcmVipPaymentHistory history = new EcmVipPaymentHistory();
         history.setCreateTime(new Date());
         history.setFkUserid(fkUserId);

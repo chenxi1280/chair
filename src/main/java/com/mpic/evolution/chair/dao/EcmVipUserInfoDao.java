@@ -2,6 +2,8 @@ package com.mpic.evolution.chair.dao;
 
 import com.mpic.evolution.chair.pojo.entity.EcmVipUserInfo;
 
+import java.util.List;
+
 public interface EcmVipUserInfoDao {
     int deleteByPrimaryKey(Integer pkId);
 
@@ -11,7 +13,7 @@ public interface EcmVipUserInfoDao {
 
     EcmVipUserInfo selectByPrimaryKey(Integer pkId);
 
-    EcmVipUserInfo selectByUserInfo(EcmVipUserInfo record);
+    List<EcmVipUserInfo> selectByUserInfo(EcmVipUserInfo record);
 
     int updateByPrimaryKeySelective(EcmVipUserInfo record);
 

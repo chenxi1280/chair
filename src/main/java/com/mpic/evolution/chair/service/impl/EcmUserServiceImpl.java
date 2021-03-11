@@ -8,21 +8,19 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.mpic.evolution.chair.dao.*;
+import com.mpic.evolution.chair.pojo.entity.EcmVipUserInfo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.mpic.evolution.chair.common.constant.SecretKeyConstants;
 import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
-import com.mpic.evolution.chair.dao.EcmUserDao;
-import com.mpic.evolution.chair.dao.EcmUserExtraflowDao;
-import com.mpic.evolution.chair.dao.EcmUserFlowDao;
-import com.mpic.evolution.chair.dao.EcmUserHistoryFlowDao;
-import com.mpic.evolution.chair.dao.EcmUserVipDao;
-import com.mpic.evolution.chair.dao.WxUserDao;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmUser;
 import com.mpic.evolution.chair.pojo.entity.EcmUserVip;
@@ -49,7 +47,7 @@ public class EcmUserServiceImpl implements EcmUserService {
 	@Resource
 	WxUserDao wxUserDao;
 	@Resource
-    EcmUserVipDao ecmUserVipDao;
+	EcmVipUserInfoDao ecmVipUserInfoDao;
 	@Resource
     EcmUserExtraflowDao ecmUserExtraflowDao;
 
@@ -88,6 +86,7 @@ public class EcmUserServiceImpl implements EcmUserService {
 
 	}
 
+	//TODO 1.查询用户是否是会员的数据表变了 2.流量计算公式要加入超级会员的流量
 	/**
 	 * @param: [ecmUser] 用户身份信息
      * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
@@ -97,7 +96,6 @@ public class EcmUserServiceImpl implements EcmUserService {
 	 */
 	@Override
 	public EcmUserVo webGetUserInfo(EcmUser ecmUser) {
-		//TODO 1.查询用户流量的数据表变了 2.流量计算公式要加入超级会员的流量
 		EcmUserVo user = ecmUserDao.selectByPkUserId(ecmUser.getPkUserId());
 		if (user == null ){
 			return user;
@@ -106,12 +104,16 @@ public class EcmUserServiceImpl implements EcmUserService {
 		//如何计算流量的标志
 		int symbol = 3;
 		//查询vip是否到期 是否需要重置
-		EcmUserVip vip = new EcmUserVip();
-		vip.setFkUserId(ecmUser.getPkUserId());
-		EcmUserVip vipInfo = ecmUserVipDao.selectByVipUser(vip);
-		if (vipInfo != null && vipInfo.getVipId() != null) {
-			Date startDate = vipInfo.getVipStartTime();
-			Date endDate = vipInfo.getVipEndTime();
+		EcmVipUserInfo vip = new EcmVipUserInfo();
+		vip.setFkUserid(ecmUser.getPkUserId());
+		//TODO 查出的可能是多个结果
+		List<EcmVipUserInfo> ecmVipUserInfos = ecmVipUserInfoDao.selectByUserInfo(vip);
+		vip = this.getEffectiveVipInfo(ecmVipUserInfos);
+		if (vip != null && vip.getPkId() != null) {
+			//TODO 查出的可能是多个结果
+			Date startDate = vip.getVipStartTime();
+			//TODO 查出的可能是多个结果
+			Date endDate = vip.getVipEndTime();
 			symbol = this.isResetVipFlowTime(startDate, endDate);
 			vipflow += 10*1024*1024;
 		}
@@ -180,10 +182,15 @@ public class EcmUserServiceImpl implements EcmUserService {
 		int vipflow = 0;
 		//如何计算流量的标志
 		int symbol = 3;
-		EcmUserVip vip = new EcmUserVip();
-		vip.setFkUserId(ecmUserFlowQuery.getPkUserId());
-		EcmUserVip vipInfo = ecmUserVipDao.selectByVipUser(vip);
-		if (vipInfo != null && vipInfo.getVipId() != null) {
+//		EcmUserVip vip = new EcmUserVip();
+//		vip.setFkUserId(ecmUserFlowQuery.getPkUserId());
+//		EcmUserVip vipInfo = ecmUserVipDao.selectByVipUser(vip);
+		EcmVipUserInfo vipInfo = new EcmVipUserInfo();
+		vipInfo.setFkUserid(ecmUserFlowQuery.getPkUserId());
+		//TODO 查出的可能是多个结果
+		List<EcmVipUserInfo> ecmVipUserInfos = ecmVipUserInfoDao.selectByUserInfo(vipInfo);
+		vipInfo = this.getEffectiveVipInfo(ecmVipUserInfos);
+		if (vipInfo != null && vipInfo.getPkId() != null) {
 			Date startDate = vipInfo.getVipStartTime();
 			Date endDate = vipInfo.getVipEndTime();
 			symbol = this.isResetVipFlowTime(startDate, endDate);
@@ -251,10 +258,15 @@ public class EcmUserServiceImpl implements EcmUserService {
 		int vipflow = 0;
 		//如何计算流量的标志
 		int symbol = 3;
-		EcmUserVip vip = new EcmUserVip();
+		/*EcmUserVip vip = new EcmUserVip();
 		vip.setFkUserId(ecmUserHistoryFlowVO.getUserId());
-		EcmUserVip vipInfo = ecmUserVipDao.selectByVipUser(vip);
-		if (vipInfo != null && vipInfo.getVipId() != null) {
+		EcmUserVip vipInfo = ecmUserVipDao.selectByVipUser(vip);*/
+		EcmVipUserInfo vipInfo = new EcmVipUserInfo();
+		vipInfo.setFkUserid(ecmUserHistoryFlowVO.getUserId());
+		//TODO 查出的可能是多个结果
+		List<EcmVipUserInfo> ecmVipUserInfos = ecmVipUserInfoDao.selectByUserInfo(vipInfo);
+		vipInfo = this.getEffectiveVipInfo(ecmVipUserInfos);
+		if (vipInfo != null && vipInfo.getPkId() != null) {
 			Date startDate = vipInfo.getVipStartTime();
 			Date endDate = vipInfo.getVipEndTime();
 			symbol = this.isResetVipFlowTime(startDate, endDate);
@@ -304,7 +316,7 @@ public class EcmUserServiceImpl implements EcmUserService {
 	}
 
 	/**
-	 * 	判断是否需要重置vipFlow
+	 * 判断	超级是否会员到期 会员是否过期 超级会员是否会员月到期 会员是否会员月到期
 	 * @param startDate
 	 * @param endDate
 	 * @return
@@ -328,6 +340,33 @@ public class EcmUserServiceImpl implements EcmUserService {
 		}
 		//需要把所有的流量都清零
 		return 2;
+	}
+
+	private EcmVipUserInfo getEffectiveVipInfo(List<EcmVipUserInfo> ecmVipUserInfos){
+		HashMap<Integer,Integer> map = new HashMap<>();
+		//如果集合只有一个元素就不用判断了
+		if(ecmVipUserInfos.size() > 1){
+			//筛选出过期的用户信息
+			for (int i = 0; i < ecmVipUserInfos.size();i++){
+				LocalDateTime now = LocalDateTime.now();
+				Date vipEndTime = ecmVipUserInfos.get(i).getVipEndTime();
+				LocalDateTime endTime = VipDateUtil.formatToLocalDateTime(vipEndTime);
+				if(endTime.isBefore(now)){
+					ecmVipUserInfos.remove(i);
+				}else{
+					map.put(ecmVipUserInfos.get(i).getFkVipRoleId(),i);
+				}
+			}
+			if(map.containsKey(2)){
+				return ecmVipUserInfos.get(map.get(2));
+			}else if(map.containsKey(1)){
+				return ecmVipUserInfos.get(map.get(1));
+			}else{
+				return null;
+			}
+		}else{
+			return ecmVipUserInfos.get(0);
+		}
 	}
 
 }
