@@ -17,6 +17,7 @@ import com.mpic.evolution.chair.service.EcmVipService;
 import com.mpic.evolution.chair.service.vip.BeanConfig;
 import com.mpic.evolution.chair.service.vip.PaymentVipService;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -73,13 +74,13 @@ public class TestController {
 		System.out.println(String.format("执行线程数:%d,总耗时:%d,count数为:%d",1000,end-start,count));
 	}*/
 
+//	@RequestMapping("/testVip")
+//	@ResponseBody
+//	public ResponseDTO testVip() {
+//		JSONObject userVipInfo = ecmVipService.getUserVipInfo(1617);
+//		return ResponseDTO.ok(userVipInfo);
+//	}
 	@RequestMapping("/testVip")
-	@ResponseBody
-	public ResponseDTO testVip() {
-		JSONObject userVipInfo = ecmVipService.getUserVipInfo(1617);
-		return ResponseDTO.ok(userVipInfo);
-	}
-
 	public void savaVipPaymentInfo(String orderCode) {
 		EcmOrderVO ecmOrderVO = ecmOrderService.queryOrderInfo(orderCode);
 		EcmGoods goods = ecmGoodsService.getGoodsVOByPkId(ecmOrderVO.getFkGoodsId());

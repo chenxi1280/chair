@@ -3,6 +3,7 @@ package com.mpic.evolution.chair.service.impl;
 import cn.hutool.core.util.XmlUtil;
 import com.github.wxpay.sdk.WXPayUtil;
 import com.mpic.evolution.chair.config.WxPayConfig;
+import com.mpic.evolution.chair.controller.TestController;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmOrderHistory;
 import com.mpic.evolution.chair.pojo.vo.EcmOrderVO;
@@ -11,8 +12,11 @@ import com.mpic.evolution.chair.service.EcmOrderService;
 import com.mpic.evolution.chair.service.EcmPayService;
 import com.mpic.evolution.chair.util.HttpClient;
 import com.mpic.evolution.chair.util.PayForUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,10 +48,12 @@ public class EcmPayServiceImpl implements EcmPayService {
     final
     EcmOrderService ecmOrderService;
     EcmOrderHistoryService ecmOrderHistoryService;
+    TestController testController;
 
-    public EcmPayServiceImpl(EcmOrderService ecmOrderService, EcmOrderHistoryService ecmOrderHistoryService) {
+    public EcmPayServiceImpl(EcmOrderService ecmOrderService, EcmOrderHistoryService ecmOrderHistoryService, TestController testController) {
         this.ecmOrderService = ecmOrderService;
         this.ecmOrderHistoryService = ecmOrderHistoryService;
+        this.testController = testController;
     }
 
 
@@ -90,6 +96,7 @@ public class EcmPayServiceImpl implements EcmPayService {
     }
 
     @Override
+    @Transactional
     public void wxPayNotify(HttpServletRequest request, HttpServletResponse response) throws Exception {
         // 读取回调数据
         InputStream inputStream;
@@ -146,22 +153,28 @@ public class EcmPayServiceImpl implements EcmPayService {
                 ecmOrderVO.setOrderState(1);
                 ecmOrderVO.setOrderType(0);
                 ecmOrderVO.setPayOrderId(transaction_id);
-                ecmOrderService.updateOrderByPay(ecmOrderVO);
-                ecmOrderHistoryService.insertOrderHistory(out_trade_no,total_fee);
+//                ecmOrderService.updateOrderByPay(ecmOrderVO);
 
-                System.err.println("正在执行执行业务逻辑");
-                // 调用 业务判断
-                if (true) {
-                    ecmOrderVO.setUpdateTime(new Date());
+                try {
+                    System.err.println("正在执行执行业务逻辑");
+                    // 调用 业务判断
+                    testController.savaVipPaymentInfo(out_trade_no);
                     ecmOrderVO.setOrderState(2);
+                }catch (Exception e) {
+                    e.printStackTrace();
+                    ecmOrderVO.setOrderState(1);
+                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                    System.out.println("支付成功，业务执行失败!!  订单code："+out_trade_no);
+                }finally {
+                    ecmOrderHistoryService.insertOrderHistory(out_trade_no,total_fee);
                     ecmOrderService.updateOrderByPay(ecmOrderVO);
+                    // 通知微信.异步确认成功.必写.不然会一直通知后台.八次之后就认为交易失败了.
+                    resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>"
+                            + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml> ";
+                    response.getWriter().write(resXml);
                 }
+
                 System.err.println("--------------------------------------------");
-
-
-                // 通知微信.异步确认成功.必写.不然会一直通知后台.八次之后就认为交易失败了.
-                resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>"
-                        + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml> ";
             } else {
                 System.err.println("支付失败,错误信息：" + packageParams.get("err_code"));
 

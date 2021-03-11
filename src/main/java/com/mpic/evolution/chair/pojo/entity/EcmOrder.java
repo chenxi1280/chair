@@ -33,7 +33,7 @@ public class EcmOrder implements Serializable {
     private BigDecimal orderPrice;
 
     /**
-     * 订单状态 0 未支付 1 支付完成并未做完业务  2 完成     5过期
+     * 订单状态 0 未支付 1 支付完成并未做完业务  2 完成 ,      5过期
      */
     private Integer orderState;
 
