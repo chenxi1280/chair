@@ -23,10 +23,10 @@ import java.util.List;
  * @Description TODO
  * @Date 2021/3/10 20:05
  */
-@Aspect
-@Component
-//spring bean加载优先级注解
-@Order(-10)
+//@Aspect
+//@Component
+////spring bean加载优先级注解
+//@Order(-10)
 public class AuthenticationAspect {
 
     private static Logger logger = LoggerFactory.getLogger(AuthenticationAspect.class);
