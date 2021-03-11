@@ -1,21 +1,23 @@
 package com.mpic.evolution.chair.aop.auth;
 
+import com.mpic.evolution.chair.common.exception.EcmTokenException;
+import com.mpic.evolution.chair.config.annotation.EcmArtworkAuthentication;
 import com.mpic.evolution.chair.dao.EcmVipRoleAuthorityDao;
 import com.mpic.evolution.chair.dao.EcmVipRoleDao;
-import org.apache.catalina.connector.RequestFacade;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import com.mpic.evolution.chair.util.JWTUtil;
+import com.qcloud.vod.common.StringUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author by cxd
@@ -43,31 +45,56 @@ public class AuthenticationAspect {
 
     ThreadLocal<Long> beginTime = new ThreadLocal<Long>();
 
-    @Pointcut()
-    public void AuthenticationService(Authentication authentication) {
+    /**
+     * 定义切入点
+     */
+    @Pointcut("@annotation(ecmArtworkAuthentication)")
+    public void AuthenticationService(EcmArtworkAuthentication ecmArtworkAuthentication) {
 
     }
 
-    @Around("AuthenticationService(authentication)")
-    public Object doAround(ProceedingJoinPoint joinPoint, Authentication authentication) throws Throwable {
+    @Around("AuthenticationService(ecmArtworkAuthentication)")
+    public Object doAround(ProceedingJoinPoint joinPoint, EcmArtworkAuthentication ecmArtworkAuthentication) throws Throwable {
         beginTime.set(System.currentTimeMillis());
-        String card = null;
-        List<Long> roleList = new ArrayList<>();
-        for (Object arg : joinPoint.getArgs()) {
-            if (arg != null && arg.getClass() == RequestFacade.class) {
-                RequestFacade request = (RequestFacade) arg;
-//                card = CookieUtils.getCardFromCookie(request);
-//                if (StringUtils.isEmpty(card)) {
-//                    return JsonResult.buildFailResult(-1, 1000, "权限验证未通过", null);
-//                }
-//                List<Role> roles = authDao.getRolesByCard(card);
-//                for (Role role : roles) {
-//                    roleList.add(role.getId());
-//                }
-                break;
-            }
+
+        //获取RequestAttributes
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        //从获取RequestAttributes中获取HttpServletRequest的信息
+        HttpServletRequest request = (HttpServletRequest) requestAttributes.resolveReference(RequestAttributes.REFERENCE_REQUEST);
+        String token= request.getHeader("Authorization");
+        if (StringUtil.isEmpty(token)){
+            throw new EcmTokenException(603,"非法访问");
         }
-        logger.info("[authentication] user={}, roles={}", card, roleList);
+        String userId = JWTUtil.getUserId(token);
+        if (StringUtil.isEmpty(userId)){
+            throw new EcmTokenException(603,"非法访问");
+        }
+
+
+
+
+
+
+        int[] role = ecmArtworkAuthentication.role();
+
+
+//        String card = null;
+//        List<Long> roleList = new ArrayList<>();
+//        for (Object arg : joinPoint.getArgs()) {
+//            if (arg != null && arg.getClass() == RequestFacade.class) {
+//                RequestFacade request = (RequestFacade) arg;
+////                card = CookieUtils.getCardFromCookie(request);
+////                if (StringUtils.isEmpty(card)) {
+////                    return JsonResult.buildFailResult(-1, 1000, "权限验证未通过", null);
+////                }
+////                List<Role> roles = authDao.getRolesByCard(card);
+////                for (Role role : roles) {
+////                    roleList.add(role.getId());
+////                }
+//                break;
+//            }
+//        }
+//        logger.info("[authentication] user={}, roles={}", card, roleList);
 //        long[] aims = authentication.role();
 //        boolean isPass = false;
 //        for (long aim : aims) {
@@ -85,7 +112,7 @@ public class AuthenticationAspect {
 //        }
 
 
-        return null;
+        return joinPoint.proceed();
     }
 
 }

@@ -1,7 +1,6 @@
 package com.mpic.evolution.chair.controller;
 
-import com.mpic.evolution.chair.common.exception.TokenException;
-import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
+import com.mpic.evolution.chair.common.exception.EcmTokenException;
 import com.mpic.evolution.chair.util.JWTUtil;
 import com.qcloud.vod.common.StringUtil;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -68,7 +67,7 @@ public class BaseController {
                 return  Integer.valueOf(userId);
             }
         }
-        throw new TokenException(603,"非法访问");
+        throw new EcmTokenException(603,"非法访问");
     }
 
 }

@@ -18,7 +18,9 @@ public class WxPayConfig {
     public static final String APP_ID = "wxa001a9842ad0f851";
     public static final String MCH_ID = "1607156332";
 
-    public static final String DOM_URL = "https://wanxiangchengzhen.com/bpi/callpay.action";
+    public static final String DOM_URL_TEST = "https://wanxiangchengzhen.com/bpi/callpay.action";
+    public static final String DOM_URL = "https://wanxiangchengzhen.com/pbpi/callpay.action";
+
 
     public static final String  APIKEY = "sb5cj6ovc3yhe96ypxlnictxhaoupohi";
 

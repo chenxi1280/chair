@@ -5,10 +5,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.HttpKit;
 import com.mpic.evolution.chair.common.constant.PublishConstants;
 import com.mpic.evolution.chair.common.constant.TiktokConstant;
-import com.mpic.evolution.chair.common.exception.TokenException;
-import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
+import com.mpic.evolution.chair.common.exception.EcmTokenException;
+import com.mpic.evolution.chair.config.annotation.EcmArtworkAuthentication;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
-import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
 import com.mpic.evolution.chair.pojo.query.EcmArtworkEndingsQuery;
 import com.mpic.evolution.chair.pojo.query.EcmArtworkNodeBuoyQuery;
@@ -68,6 +67,7 @@ public class EcmArtWorkController extends BaseController{
      *     	保存失败: status 500  msg "error“
      *
      */
+    @EcmArtworkAuthentication(role = {1})
     @RequestMapping("/getArtWorks")
     @ResponseBody
     public ResponseDTO getArtWorks(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
@@ -444,7 +444,7 @@ public class EcmArtWorkController extends BaseController{
     	String userId = JWTUtil.getUserId(token);
     	JSONObject data = new JSONObject();
     	if (StringUtil.isEmpty(userId)){
-			throw new TokenException(603,"非法访问");
+			throw new EcmTokenException(603,"非法访问");
 		}
     	//如果是null返回false
     	boolean hasKey = redisUtil.hasKey("WxQRCode");

@@ -6,14 +6,14 @@ import lombok.NoArgsConstructor;
 
 /**
  * @author by cxd
- * @Classname TokenException
+ * @Classname EcmAuthenticationException
  * @Description TODO
- * @Date 2021/1/8 9:30
+ * @Date 2021/3/11 9:53
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TokenException  extends RuntimeException {
-        private Integer code;
-        private String message;
+public class EcmAuthenticationException extends RuntimeException {
+    private Integer code;
+    private String message;
 }
