@@ -15,6 +15,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class UpdateVipDate implements PaymentVipService {
@@ -31,7 +32,8 @@ public class UpdateVipDate implements PaymentVipService {
         ecmVipUserInfo.setFkUserid(fkUserId);
         ecmVipUserInfo.setFkVipRoleId(1);
         ecmVipUserInfo.setVipStatus((short)1);
-        ecmVipUserInfo = ecmVipUserInfoDao.selectByUserInfo(ecmVipUserInfo);
+        List<EcmVipUserInfo> ecmVipUserInfos = ecmVipUserInfoDao.selectByUserInfo(ecmVipUserInfo);
+        ecmVipUserInfo = ecmVipUserInfos.get(0);
         EcmVipPaymentHistory history = new EcmVipPaymentHistory();
         history.setCreateTime(new Date());
         history.setFkUserid(fkUserId);

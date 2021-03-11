@@ -5,6 +5,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import java.util.List;
+
 @Repository
 public interface EcmVipUserInfoDao {
     int deleteByPrimaryKey(Integer pkId);
@@ -15,7 +17,7 @@ public interface EcmVipUserInfoDao {
 
     EcmVipUserInfo selectByPrimaryKey(Integer pkId);
 
-    EcmVipUserInfo selectByUserInfo(EcmVipUserInfo record);
+    List<EcmVipUserInfo> selectByUserInfo(EcmVipUserInfo record);
 
     int updateByPrimaryKeySelective(EcmVipUserInfo record);
 
