@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 public class UpdateDownloadFlow implements PaymentVipService {
 
     @Override
-    public boolean operationRelateToPayment(Integer number,Integer fkUserId) {
+    public boolean operationRelateToPayment(Integer number,Integer fkUserId,String type) {
         System.out.println("2");
         return false;
     }

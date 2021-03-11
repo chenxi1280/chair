@@ -9,6 +9,10 @@ import javax.annotation.Resource;
 
 import com.alibaba.fastjson.JSONObject;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
+import com.mpic.evolution.chair.pojo.entity.EcmGoods;
+import com.mpic.evolution.chair.pojo.vo.EcmOrderVO;
+import com.mpic.evolution.chair.service.EcmGoodsService;
+import com.mpic.evolution.chair.service.EcmOrderService;
 import com.mpic.evolution.chair.service.EcmVipService;
 import com.mpic.evolution.chair.service.vip.BeanConfig;
 import com.mpic.evolution.chair.service.vip.PaymentVipService;
@@ -35,6 +39,12 @@ public class TestController {
 
 	@Resource
 	private BeanConfig beanConfig;
+
+	@Resource
+	private EcmOrderService ecmOrderService;
+
+	@Resource
+	private EcmGoodsService ecmGoodsService;
 
 //	private int count = 0;
 
@@ -70,12 +80,12 @@ public class TestController {
 		return ResponseDTO.ok(userVipInfo);
 	}
 
-	@RequestMapping("/testImpl")
-	@ResponseBody
-	public void testImpl(String type) {
-		PaymentVipService updateVipDate = beanConfig.createQueryService(type);
+	public void savaVipPaymentInfo(String orderCode) {
+		EcmOrderVO ecmOrderVO = ecmOrderService.queryOrderInfo(orderCode);
+		EcmGoods goods = ecmGoodsService.getGoodsVOByPkId(ecmOrderVO.getFkGoodsId());
+		PaymentVipService updateVipDate = beanConfig.createQueryService(goods.getGoodsType());
 		System.out.println(updateVipDate.toString());
-//		updateVipDate.operationRelateToPayment(10);
+		updateVipDate.operationRelateToPayment(goods.getGoodsActionNumber(),ecmOrderVO.getFkUserId(),goods.getGoodsName());
 	}
 
 }

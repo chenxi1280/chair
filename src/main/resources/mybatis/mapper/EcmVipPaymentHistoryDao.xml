@@ -4,12 +4,11 @@
   <resultMap id="BaseResultMap" type="com.mpic.evolution.chair.pojo.entity.EcmVipPaymentHistory">
     <id column="pk_id" jdbcType="INTEGER" property="pkId" />
     <result column="fk_userId" jdbcType="INTEGER" property="fkUserid" />
-    <result column="vip_payment_status" jdbcType="INTEGER" property="vipPaymentStatus" />
-    <result column="fk_vip_role_id" jdbcType="INTEGER" property="fkVipRoleId" />
+    <result column="vip_type" jdbcType="VARCHAR" property="vipType" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    pk_id, fk_userId, vip_payment_status, fk_vip_role_id, create_time
+    pk_id, fk_userId, vip_type, create_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -22,10 +21,10 @@
     where pk_id = #{pkId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyColumn="pk_id" keyProperty="pkId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmVipPaymentHistory" useGeneratedKeys="true">
-    insert into ecm_vip_payment_history (fk_userId, vip_payment_status, fk_vip_role_id, 
-      create_time)
-    values (#{fkUserid,jdbcType=INTEGER}, #{vipPaymentStatus,jdbcType=INTEGER}, #{fkVipRoleId,jdbcType=SMALLINT}, 
-      #{createTime,jdbcType=TIMESTAMP})
+    insert into ecm_vip_payment_history (fk_userId, vip_type, create_time
+      )
+    values (#{fkUserid,jdbcType=INTEGER}, #{vipType,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertSelective" keyColumn="pk_id" keyProperty="pkId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmVipPaymentHistory" useGeneratedKeys="true">
     insert into ecm_vip_payment_history
@@ -33,11 +32,8 @@
       <if test="fkUserid != null">
         fk_userId,
       </if>
-      <if test="vipPaymentStatus != null">
-        vip_payment_status,
-      </if>
-      <if test="fkVipRoleId != null">
-        fk_vip_role_id,
+      <if test="vipType != null">
+        vip_type,
       </if>
       <if test="createTime != null">
         create_time,
@@ -47,11 +43,8 @@
       <if test="fkUserid != null">
         #{fkUserid,jdbcType=INTEGER},
       </if>
-      <if test="vipPaymentStatus != null">
-        #{vipPaymentStatus,jdbcType=INTEGER},
-      </if>
-      <if test="fkVipRoleId != null">
-        #{fkVipRoleId,jdbcType=SMALLINT},
+      <if test="vipType != null">
+        #{vipType,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
@@ -64,11 +57,8 @@
       <if test="fkUserid != null">
         fk_userId = #{fkUserid,jdbcType=INTEGER},
       </if>
-      <if test="vipPaymentStatus != null">
-        vip_payment_status = #{vipPaymentStatus,jdbcType=INTEGER},
-      </if>
-      <if test="fkVipRoleId != null">
-        fk_vip_role_id = #{fkVipRoleId,jdbcType=SMALLINT},
+      <if test="vipType != null">
+        vip_type = #{vipType,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -79,8 +69,7 @@
   <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmVipPaymentHistory">
     update ecm_vip_payment_history
     set fk_userId = #{fkUserid,jdbcType=INTEGER},
-      vip_payment_status = #{vipPaymentStatus,jdbcType=INTEGER},
-      fk_vip_role_id = #{fkVipRoleId,jdbcType=SMALLINT},
+      vip_type = #{vipType,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP}
     where pk_id = #{pkId,jdbcType=INTEGER}
   </update>

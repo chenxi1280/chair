@@ -180,10 +180,10 @@ public class SqlTest {
 		DateTimeFormatter pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
 		extraflow.setCurrentDateTime(pattern.format(now));
 		extraflow.setFkUserId(1591);
-		List<EcmUserExtraflow> selectByExtraflow = ecmUserExtraflowDao.selectByExtraflow(extraflow);
-		selectByExtraflow.forEach(item->{
-			System.out.println(item);
-		});
+//		List<EcmUserExtraflow> selectByExtraflow = ecmUserExtraflowDao.selectByExtraflow(extraflow);
+//		selectByExtraflow.forEach(item->{
+//			System.out.println(item);
+//		});
 	}
 	
 	/**
