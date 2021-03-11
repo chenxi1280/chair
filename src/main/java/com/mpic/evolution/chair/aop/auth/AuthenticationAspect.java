@@ -1,9 +1,12 @@
 package com.mpic.evolution.chair.aop.auth;
 
+import com.mpic.evolution.chair.common.exception.EcmAuthenticationException;
 import com.mpic.evolution.chair.common.exception.EcmTokenException;
 import com.mpic.evolution.chair.config.annotation.EcmArtworkAuthentication;
 import com.mpic.evolution.chair.dao.EcmVipRoleAuthorityDao;
 import com.mpic.evolution.chair.dao.EcmVipRoleDao;
+import com.mpic.evolution.chair.dao.EcmVipUserInfoDao;
+import com.mpic.evolution.chair.pojo.entity.EcmVipUserInfo;
 import com.mpic.evolution.chair.util.JWTUtil;
 import com.qcloud.vod.common.StringUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -12,12 +15,16 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @author by cxd
@@ -25,10 +32,10 @@ import javax.servlet.http.HttpServletRequest;
  * @Description TODO
  * @Date 2021/3/10 20:05
  */
-//@Aspect
-//@Component
-////spring bean加载优先级注解
-//@Order(-10)
+@Aspect
+@Component
+//spring bean加载优先级注解
+@Order(-10)
 public class AuthenticationAspect {
 
     private static Logger logger = LoggerFactory.getLogger(AuthenticationAspect.class);
@@ -36,11 +43,13 @@ public class AuthenticationAspect {
     final
     EcmVipRoleDao ecmVipRoleDao;
     EcmVipRoleAuthorityDao ecmVipRoleAuthorityDao;
+    EcmVipUserInfoDao ecmVipUserInfoDao;
 
 
-    public AuthenticationAspect(EcmVipRoleDao ecmVipRoleDao, EcmVipRoleAuthorityDao ecmVipRoleAuthorityDao) {
+    public AuthenticationAspect(EcmVipRoleDao ecmVipRoleDao, EcmVipRoleAuthorityDao ecmVipRoleAuthorityDao, EcmVipUserInfoDao ecmVipUserInfoDao) {
         this.ecmVipRoleDao = ecmVipRoleDao;
         this.ecmVipRoleAuthorityDao = ecmVipRoleAuthorityDao;
+        this.ecmVipUserInfoDao = ecmVipUserInfoDao;
     }
 
     ThreadLocal<Long> beginTime = new ThreadLocal<Long>();
@@ -70,12 +79,19 @@ public class AuthenticationAspect {
             throw new EcmTokenException(603,"非法访问");
         }
 
+        List<EcmVipUserInfo> ecmVipUserInfo = ecmVipUserInfoDao.selectByUserId(Integer.valueOf(userId));
+        if (!CollectionUtils.isEmpty(ecmVipUserInfo)){
+            for (EcmVipUserInfo vipUserInfo : ecmVipUserInfo) {
+                int[] role = ecmArtworkAuthentication.role();
+                for (int i : role) {
+                    if ( i == vipUserInfo.getFkVipRoleId()) {
+                        return joinPoint.proceed();
+                    }
+                }
+            }
+        }
 
-
-
-
-
-        int[] role = ecmArtworkAuthentication.role();
+        throw new EcmAuthenticationException();
 
 
 //        String card = null;
@@ -112,7 +128,6 @@ public class AuthenticationAspect {
 //        }
 
 
-        return joinPoint.proceed();
     }
 
 }

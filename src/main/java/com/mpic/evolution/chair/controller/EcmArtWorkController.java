@@ -67,7 +67,7 @@ public class EcmArtWorkController extends BaseController{
      *     	保存失败: status 500  msg "error“
      *
      */
-    @EcmArtworkAuthentication(role = {1})
+    @EcmArtworkAuthentication(role = {1,2,3})
     @RequestMapping("/getArtWorks")
     @ResponseBody
     public ResponseDTO getArtWorks(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
@@ -121,6 +121,34 @@ public class EcmArtWorkController extends BaseController{
 
         return ecmArtWorkService.saveArtWorkNode(ecmArtworkNodes);
     }
+
+    /**
+	 * @param: [ecmArtworkNodes]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2021/3/11
+	 * 描述 : 保存定位
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
+	@ResponseBody
+	@RequestMapping("/saveLocationArtWorkNode")
+	public ResponseDTO saveLocationArtWorkNode(@RequestBody EcmArtworkNodesVo ecmArtworkNodes){
+
+		if (ecmArtworkNodes.getParentId() == null){
+			return ResponseDTO.fail("父节点id为空");
+		}
+		if (ecmArtworkNodes.getFkArtworkId() == null) {
+			return ResponseDTO.fail("作品错误");
+		}
+		int maxCount = 50;
+		if (StringUtils.isNotBlank(ecmArtworkNodes.getRevolutionId()) && ecmArtworkNodes.getRevolutionId().length() > maxCount) {
+			return ResponseDTO.fail("视频最多编排50层");
+		}
+		ecmArtworkNodes.setFkUserId(getUserIdByHandToken());
+
+		return ecmArtWorkService.saveArtWorkNode(ecmArtworkNodes);
+	}
 
 
     /**
@@ -388,7 +416,15 @@ public class EcmArtWorkController extends BaseController{
 
 		return ecmArtWorkService.saveArtworkEndingCondition(ecmArtworkNodesVo);
 	}
-
+	/**
+	 * @param: [ecmArtworkNodeBuoyQuery]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2021/3/11
+	 * 描述 : 获取浮标
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
 	@RequestMapping("/saveArtworkNodeBuoy")
 	@ResponseBody
 	public ResponseDTO saveArtworkNodeBuoy(@RequestBody EcmArtworkNodeBuoyQuery ecmArtworkNodeBuoyQuery){
@@ -401,7 +437,7 @@ public class EcmArtWorkController extends BaseController{
 	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
 	 * @author: cxd
 	 * @Date: 2021/2/20
-	 * 描述 :
+	 * 描述 : 删除浮标
 	 *       成功: status 200  msg "success”   date:
 	 *       失败: status 500  msg "error“
 	 */
@@ -412,7 +448,15 @@ public class EcmArtWorkController extends BaseController{
 		ecmArtworkNodeBuoyVO.setFkUserId(getUserIdByHandToken());
 		return ecmArtWorkService.deleteArtworkNodeBuoy(ecmArtworkNodeBuoyVO);
 	}
-
+	/**
+	 * @param: [ecmArtworkNodeBuoyQuery]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2021/3/11
+	 * 描述 : 获取浮标
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
 	@RequestMapping("/getArtworkNodeBuoy")
 	@ResponseBody
 	public ResponseDTO getArtworkNodeBuoy(@RequestBody EcmArtworkNodeBuoyQuery ecmArtworkNodeBuoyQuery){
@@ -421,6 +465,15 @@ public class EcmArtWorkController extends BaseController{
 		return ecmArtWorkService.getArtworkNodeBuoy(ecmArtworkNodeBuoyQuery);
 	}
 
+	/**
+	 * @param: [ecmArtworkNodesVo]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2021/3/11
+	 * 描述 : 更新浮标
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
 	@RequestMapping("/updateArtworkNodeBuoy")
 	@ResponseBody
 	public ResponseDTO updateArtworkBuoy(@RequestBody EcmArtworkNodesVo ecmArtworkNodesVo){
