@@ -158,13 +158,15 @@ public class EcmPayServiceImpl implements EcmPayService {
                 try {
                     System.err.println("正在执行执行业务逻辑");
                     // 调用 业务判断
-                    testController.savaVipPaymentInfo(out_trade_no);
+                    ecmOrderService.savaVipPaymentInfo(out_trade_no);
                     ecmOrderVO.setOrderState(2);
                 }catch (Exception e) {
-                    e.printStackTrace();
-                    ecmOrderVO.setOrderState(1);
-                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                     System.out.println("支付成功，业务执行失败!!  订单code："+out_trade_no);
+                    ecmOrderVO.setOrderState(1);
+
+                    e.printStackTrace();
+                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+
                 }finally {
                     ecmOrderHistoryService.insertOrderHistory(out_trade_no,total_fee);
                     ecmOrderService.updateOrderByPay(ecmOrderVO);

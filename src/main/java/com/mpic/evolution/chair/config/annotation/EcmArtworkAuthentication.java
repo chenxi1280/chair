@@ -17,5 +17,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EcmArtworkAuthentication {
     int[] role() default {};
-    int[] auth() default {};
+    String[] auth() default {};
 }

@@ -6,8 +6,11 @@ import com.mpic.evolution.chair.pojo.entity.EcmGoods;
 import com.mpic.evolution.chair.pojo.vo.EcmOrderVO;
 import com.mpic.evolution.chair.service.EcmGoodsService;
 import com.mpic.evolution.chair.service.EcmOrderService;
+import com.mpic.evolution.chair.service.vip.BeanConfig;
+import com.mpic.evolution.chair.service.vip.PaymentVipService;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
@@ -22,6 +25,10 @@ import static com.mpic.evolution.chair.common.constant.CommonField.*;
  */
 @Service
 public class EcmOrderServiceImpl implements EcmOrderService {
+
+    @Resource
+    private BeanConfig beanConfig;
+
     final
     EcmOrderDao ecmOrderDao;
     EcmGoodsService ecmGoodsService;
@@ -72,6 +79,15 @@ public class EcmOrderServiceImpl implements EcmOrderService {
     @Override
     public EcmOrderVO queryOrderInfo(String orderCode) {
         return ecmOrderDao.selectByOrderCode(orderCode);
+    }
+
+    @Override
+    public void savaVipPaymentInfo(String orderCode) {
+        EcmOrderVO ecmOrderVO = queryOrderInfo(orderCode);
+        EcmGoods goods = ecmGoodsService.getGoodsVOByPkId(ecmOrderVO.getFkGoodsId());
+        PaymentVipService updateVipDate = beanConfig.createQueryService(goods.getGoodsType());
+        System.out.println(updateVipDate.toString());
+        updateVipDate.operationRelateToPayment(goods.getGoodsActionNumber(),ecmOrderVO.getFkUserId(),goods.getGoodsName());
     }
 
 }

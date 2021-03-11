@@ -15,7 +15,7 @@
     create_time, update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from ecm_vip_role_authority
     where pk_id = #{pkId,jdbcType=INTEGER}
@@ -137,5 +137,13 @@
       and update_time = #{updateTime,jdbcType=TIMESTAMP}
     </if>
   </select>
+    <select id="selectByEcmVipRoleInfoList" resultType="com.mpic.evolution.chair.pojo.vo.EcmVipRoleAuthorityVO">
+      select <include refid="Base_Column_List" />
+      from ecm_vip_role_authority
+      where fk_vip_role_id in
+      <foreach collection="list" separator="," item="item" close=")" open="(" >
+        #{item.fkVipRoleId}
+      </foreach>
+    </select>
 
 </mapper>

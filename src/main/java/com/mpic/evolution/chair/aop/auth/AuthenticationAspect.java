@@ -6,7 +6,9 @@ import com.mpic.evolution.chair.config.annotation.EcmArtworkAuthentication;
 import com.mpic.evolution.chair.dao.EcmVipRoleAuthorityDao;
 import com.mpic.evolution.chair.dao.EcmVipRoleDao;
 import com.mpic.evolution.chair.dao.EcmVipUserInfoDao;
+import com.mpic.evolution.chair.pojo.entity.EcmVipRoleAuthority;
 import com.mpic.evolution.chair.pojo.entity.EcmVipUserInfo;
+import com.mpic.evolution.chair.pojo.vo.EcmVipRoleAuthorityVO;
 import com.mpic.evolution.chair.util.JWTUtil;
 import com.qcloud.vod.common.StringUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -81,14 +83,34 @@ public class AuthenticationAspect {
 
         List<EcmVipUserInfo> ecmVipUserInfo = ecmVipUserInfoDao.selectByUserId(Integer.valueOf(userId));
         if (!CollectionUtils.isEmpty(ecmVipUserInfo)){
-            for (EcmVipUserInfo vipUserInfo : ecmVipUserInfo) {
-                int[] role = ecmArtworkAuthentication.role();
-                for (int i : role) {
-                    if ( i == vipUserInfo.getFkVipRoleId()) {
-                        return joinPoint.proceed();
+
+            int[] role = ecmArtworkAuthentication.role();
+            if ( role.length > 0) {
+                for (EcmVipUserInfo vipUserInfo : ecmVipUserInfo) {
+                    for (int i : role) {
+                        if ( i == vipUserInfo.getFkVipRoleId()) {
+                            return joinPoint.proceed();
+                        }
                     }
                 }
             }
+
+            String[] auth = ecmArtworkAuthentication.auth();
+            if ( auth.length > 0) {
+                List<EcmVipRoleAuthorityVO> ecmVipRoleAuthorities = ecmVipRoleAuthorityDao.selectByEcmVipRoleInfoList(ecmVipUserInfo);
+                if (!CollectionUtils.isEmpty(ecmVipRoleAuthorities)) {
+                    for (EcmVipRoleAuthority ecmVipRoleAuthority : ecmVipRoleAuthorities) {
+                        for (String au : auth) {
+                            if (au.equals(ecmVipRoleAuthority.getVipAuthorityDescribe())) {
+                                return joinPoint.proceed();
+                            }
+                        }
+
+                    }
+                }
+
+            }
+
         }
 
         throw new EcmAuthenticationException();

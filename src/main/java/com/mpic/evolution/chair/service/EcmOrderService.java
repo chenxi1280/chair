@@ -50,4 +50,13 @@ public interface EcmOrderService {
      * 描述 : 查询订单信息
      */
     EcmOrderVO queryOrderInfo(String orderCode);
+
+    /**
+     * @param: [code] 订单好
+     * @return: void
+     * @author: cxd
+     * @Date: 2021/3/11
+     * 描述 : 做该订单号对应的业务
+     */
+    void savaVipPaymentInfo(String code);
 }
