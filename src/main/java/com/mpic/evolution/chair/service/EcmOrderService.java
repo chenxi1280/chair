@@ -41,4 +41,13 @@ public interface EcmOrderService {
      * 描述 : 查询订单结果
      */
     ResponseDTO queryOrderResult(EcmOrderVO ecmOrderVO);
+
+    /**
+     * @param: [ecmOrderVO]
+     * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+     * @author: cxd
+     * @Date: 2021/3/10
+     * 描述 : 查询订单信息
+     */
+    EcmOrderVO queryOrderInfo(String orderCode);
 }

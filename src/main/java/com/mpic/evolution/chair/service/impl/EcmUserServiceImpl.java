@@ -97,6 +97,7 @@ public class EcmUserServiceImpl implements EcmUserService {
 	 */
 	@Override
 	public EcmUserVo webGetUserInfo(EcmUser ecmUser) {
+		//TODO 1.查询用户流量的数据表变了 2.流量计算公式要加入超级会员的流量
 		EcmUserVo user = ecmUserDao.selectByPkUserId(ecmUser.getPkUserId());
 		if (user == null ){
 			return user;
@@ -120,10 +121,10 @@ public class EcmUserServiceImpl implements EcmUserService {
 			EcmUserFlowVO userFlow= new EcmUserFlowVO();
 			userFlow.setUserId(user.getPkUserId());
 			userFlow.setUpdateTime(new Date());
-			userFlow.setTotalFlow(512000);
+			userFlow.setTotalFlow(1024000);
 			userFlow.setCheckFlow(0);
 			userFlow.setUsedFlow(0);
-			userFlow.setPermanentFlow(512000);
+			userFlow.setPermanentFlow(1024000);
 			ecmUserFlowDao.insert(userFlow);
 			ecmUserFlow = userFlow;
 		}
@@ -171,6 +172,7 @@ public class EcmUserServiceImpl implements EcmUserService {
 	 */
 	@Override
 	public ResponseDTO inspectFlow(EcmUserFlowQuery ecmUserFlowQuery) {
+		//TODO 1.查询用户流量的数据表变了 2.流量计算公式要加入超级会员的流量
 		if (Integer.parseInt(ecmUserFlowQuery.getVideoFlow()) > FLOW_MAX ){
 			return ResponseDTO.fail("视频大于500M，请减小视频大小");
 		}
@@ -221,6 +223,7 @@ public class EcmUserServiceImpl implements EcmUserService {
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public ResponseDTO reduceFlow(EcmUserHistoryFlowVO ecmUserHistoryFlowVO) {
+		//TODO 1.查询用户流量的数据表变了 2.流量计算公式要加入超级会员的流量
 		EcmUserVo user = ecmUserDao.selectByPkUserId(ecmUserHistoryFlowVO.getUserId());
 		if (user == null ){
 			return ResponseDTO.fail(ErrorEnum.ERR_003.getText());

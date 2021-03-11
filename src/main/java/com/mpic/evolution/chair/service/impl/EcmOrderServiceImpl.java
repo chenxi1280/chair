@@ -68,4 +68,10 @@ public class EcmOrderServiceImpl implements EcmOrderService {
         }
         return ResponseDTO.fail("请等待","",470,470);
     }
+
+    @Override
+    public EcmOrderVO queryOrderInfo(String orderCode) {
+        return ecmOrderDao.selectByOrderCode(orderCode);
+    }
+
 }
