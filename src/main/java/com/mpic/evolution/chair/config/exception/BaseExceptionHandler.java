@@ -1,5 +1,6 @@
 package com.mpic.evolution.chair.config.exception;
 
+import com.mpic.evolution.chair.common.exception.EcmAuthenticationException;
 import com.mpic.evolution.chair.common.exception.EcmTokenException;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -29,7 +30,16 @@ public class BaseExceptionHandler {
     @ExceptionHandler(value = EcmTokenException.class)
     @ResponseBody
     ResponseDTO  tokenException(EcmTokenException e) {
-//        System.out.println("后台全局异常捕获发现异常");
+        System.out.println("token 不合法 ，非法访问");
+//        e.printStackTrace();
+        return ResponseDTO.fail(ERR_603.getText(),ERR_603.getText(),Integer.valueOf(ERR_603.getValue()),ERR_603.getValue());
+    }
+
+
+    @ExceptionHandler(value = EcmAuthenticationException.class)
+    @ResponseBody
+    ResponseDTO  ecmAuthenticationException(EcmAuthenticationException e) {
+        System.out.println("权限不够！");
 //        e.printStackTrace();
         return ResponseDTO.fail(ERR_603.getText(),ERR_603.getText(),Integer.valueOf(ERR_603.getValue()),ERR_603.getValue());
     }

@@ -67,6 +67,7 @@ public class EcmArtWorkController extends BaseController{
      *     	保存失败: status 500  msg "error“
      *
      */
+//	@EcmArtworkAuthentication(auth = {"浮标"})
     @RequestMapping("/getArtWorks")
     @ResponseBody
     public ResponseDTO getArtWorks(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
@@ -406,7 +407,7 @@ public class EcmArtWorkController extends BaseController{
 	 *       失败: status 500  msg "error“
 	 */
 	@EcmArtworkAuthentication(auth = {"条件设置"})
-	@RequestMapping("/saveArtworkNodeCondition")
+	@RequestMapping("saveArtworkNodeCondition")
 	@ResponseBody
 	public ResponseDTO saveArtworkNodeCondition(@RequestBody EcmArtworkNodesVo ecmArtworkNodesVo){
 

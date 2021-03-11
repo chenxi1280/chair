@@ -4,12 +4,12 @@ import com.mpic.evolution.chair.common.exception.EcmAuthenticationException;
 import com.mpic.evolution.chair.common.exception.EcmTokenException;
 import com.mpic.evolution.chair.config.annotation.EcmArtworkAuthentication;
 import com.mpic.evolution.chair.dao.EcmVipRoleAuthorityDao;
-import com.mpic.evolution.chair.dao.EcmVipRoleDao;
 import com.mpic.evolution.chair.dao.EcmVipUserInfoDao;
 import com.mpic.evolution.chair.pojo.entity.EcmVipRoleAuthority;
 import com.mpic.evolution.chair.pojo.entity.EcmVipUserInfo;
 import com.mpic.evolution.chair.pojo.vo.EcmVipRoleAuthorityVO;
 import com.mpic.evolution.chair.util.JWTUtil;
+import com.mpic.evolution.chair.util.RedisUtil;
 import com.qcloud.vod.common.StringUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -17,14 +17,13 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
@@ -42,14 +41,15 @@ public class AuthenticationAspect {
 
     private static Logger logger = LoggerFactory.getLogger(AuthenticationAspect.class);
 
+
+    @Resource
+    RedisUtil redisUtil;
+
     final
-    EcmVipRoleDao ecmVipRoleDao;
     EcmVipRoleAuthorityDao ecmVipRoleAuthorityDao;
     EcmVipUserInfoDao ecmVipUserInfoDao;
 
-
-    public AuthenticationAspect(EcmVipRoleDao ecmVipRoleDao, EcmVipRoleAuthorityDao ecmVipRoleAuthorityDao, EcmVipUserInfoDao ecmVipUserInfoDao) {
-        this.ecmVipRoleDao = ecmVipRoleDao;
+    public AuthenticationAspect(EcmVipRoleAuthorityDao ecmVipRoleAuthorityDao, EcmVipUserInfoDao ecmVipUserInfoDao) {
         this.ecmVipRoleAuthorityDao = ecmVipRoleAuthorityDao;
         this.ecmVipUserInfoDao = ecmVipUserInfoDao;
     }
@@ -80,8 +80,14 @@ public class AuthenticationAspect {
         if (StringUtil.isEmpty(userId)){
             throw new EcmTokenException(603,"非法访问");
         }
+        List<EcmVipUserInfo> ecmVipUserInfo;
+        if (redisUtil.hasKey(token + "AuthVipUserInfo") ){
+            ecmVipUserInfo = (List<EcmVipUserInfo>) redisUtil.get(token + "AuthVipUserInfo");
+        }else {
+            ecmVipUserInfo = ecmVipUserInfoDao.selectByUserId(Integer.valueOf(userId));
+            redisUtil.set(token+"AuthVipUserInfo",ecmVipUserInfo,60 * 60 * 6);
+        }
 
-        List<EcmVipUserInfo> ecmVipUserInfo = ecmVipUserInfoDao.selectByUserId(Integer.valueOf(userId));
         if (!CollectionUtils.isEmpty(ecmVipUserInfo)){
 
             int[] role = ecmArtworkAuthentication.role();
@@ -97,7 +103,15 @@ public class AuthenticationAspect {
 
             String[] auth = ecmArtworkAuthentication.auth();
             if ( auth.length > 0) {
-                List<EcmVipRoleAuthorityVO> ecmVipRoleAuthorities = ecmVipRoleAuthorityDao.selectByEcmVipRoleInfoList(ecmVipUserInfo);
+
+
+                List<EcmVipRoleAuthorityVO> ecmVipRoleAuthorities ;
+                if (redisUtil.hasKey(token + "AuthVipRoleAuthorities") ){
+                    ecmVipRoleAuthorities = (List<EcmVipRoleAuthorityVO>) redisUtil.get(token + "AuthVipRoleAuthorities");
+                }else {
+                    ecmVipRoleAuthorities = ecmVipRoleAuthorityDao.selectByEcmVipRoleInfoList(ecmVipUserInfo);
+                    redisUtil.set(token+"AuthVipRoleAuthorities",ecmVipRoleAuthorities,60 * 60 * 6);
+                }
                 if (!CollectionUtils.isEmpty(ecmVipRoleAuthorities)) {
                     for (EcmVipRoleAuthority ecmVipRoleAuthority : ecmVipRoleAuthorities) {
                         for (String au : auth) {
@@ -112,7 +126,7 @@ public class AuthenticationAspect {
             }
 
         }
-
+        logger.info("非法访问 ==》 拦截");
         throw new EcmAuthenticationException();
 
 
