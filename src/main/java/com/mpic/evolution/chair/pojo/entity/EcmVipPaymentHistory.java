@@ -27,5 +27,10 @@ public class EcmVipPaymentHistory implements Serializable {
      */
     private Date createTime;
 
+    /**
+     * vip购买月
+     */
+    private Integer vipMonth;
+
     private static final long serialVersionUID = 1L;
 }

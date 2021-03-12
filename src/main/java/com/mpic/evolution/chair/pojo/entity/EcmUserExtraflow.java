@@ -27,5 +27,10 @@ public class EcmUserExtraflow implements Serializable {
      */
     private Date extraflowCreateTime;
 
+    /**
+     * 购买流量数量 单位KB
+     */
+    private Integer extraflowNumber;
+
     private static final long serialVersionUID = 1L;
 }

@@ -25,6 +25,9 @@ public class UpdateVipDate implements PaymentVipService {
     @Resource
     EcmVipPaymentHistoryDao ecmVipPaymentHistoryDao;
 
+    // 在充值会员时需要先判断当前查出的会员信息的截至日期是否在当前日期之前
+    // 如果是当前日期之前的说明是重新充值那么此时就不能只修改会员截至时间  会员的起始时间也要修改
+    // 如果不是当前日期之前的说明是续费会员充值  此时只需要修改截至时间
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean operationRelateToPayment(Integer number,Integer fkUserId,String type) {
@@ -38,13 +41,26 @@ public class UpdateVipDate implements PaymentVipService {
         history.setCreateTime(new Date());
         history.setFkUserid(fkUserId);
         history.setVipType(type);
+        history.setVipMonth(number);
         if(ecmVipUserInfo != null){
             Date vipEndTime = ecmVipUserInfo.getVipEndTime();
             LocalDateTime endTime = VipDateUtil.formatToLocalDateTime(vipEndTime);
-            endTime.plusMonths(number);
-            Date date = VipDateUtil.formatToDate(endTime);
-            ecmVipUserInfo.setVipEndTime(date);
-            ecmVipUserInfo.setUpdateTime(new Date());
+            LocalDateTime now = LocalDateTime.now();
+            if(now.isAfter(endTime)){
+                //会员过期 再充值情况
+                ecmVipUserInfo.setVipStartTime(new Date());
+                LocalDateTime localDateTime = now.plusMonths(number);
+                Date date = VipDateUtil.formatToDate(localDateTime);
+                ecmVipUserInfo.setVipEndTime(date);
+                ecmVipUserInfo.setCreateTime(new Date());
+                ecmVipUserInfo.setUpdateTime(new Date());
+            }else{
+                //会员未过期 续费情况
+                LocalDateTime localDateTime = endTime.plusMonths(number);
+                Date date = VipDateUtil.formatToDate(localDateTime);
+                ecmVipUserInfo.setVipEndTime(date);
+                ecmVipUserInfo.setUpdateTime(new Date());
+            }
             try {
                 ecmVipUserInfoDao.updateByPrimaryKeySelective(ecmVipUserInfo);
                 ecmVipPaymentHistoryDao.insertSelective(history);

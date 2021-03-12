@@ -6,9 +6,10 @@
     <result column="fk_user_id" jdbcType="INTEGER" property="fkUserId" />
     <result column="extraflow_type" jdbcType="VARCHAR" property="extraflowType" />
     <result column="extraflow_create_time" jdbcType="TIMESTAMP" property="extraflowCreateTime" />
+    <result column="extraflow_number" jdbcType="INTEGER" property="extraflowNumber" />
   </resultMap>
   <sql id="Base_Column_List">
-    extraflow_id, fk_user_id, extraflow_type, extraflow_create_time
+    extraflow_id, fk_user_id, extraflow_type, extraflow_create_time, extraflow_number
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -21,10 +22,10 @@
     where extraflow_id = #{extraflowId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyColumn="extraflow_id" keyProperty="extraflowId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUserExtraflow" useGeneratedKeys="true">
-    insert into ecm_user_extraflow (fk_user_id, extraflow_type, extraflow_create_time
-      )
-    values (#{fkUserId,jdbcType=INTEGER}, #{extraflowType,jdbcType=VARCHAR}, #{extraflowCreateTime,jdbcType=TIMESTAMP}
-      )
+    insert into ecm_user_extraflow (fk_user_id, extraflow_type, extraflow_create_time, 
+      extraflow_number)
+    values (#{fkUserId,jdbcType=INTEGER}, #{extraflowType,jdbcType=VARCHAR}, #{extraflowCreateTime,jdbcType=TIMESTAMP}, 
+      #{extraflowNumber,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" keyColumn="extraflow_id" keyProperty="extraflowId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmUserExtraflow" useGeneratedKeys="true">
     insert into ecm_user_extraflow
@@ -38,6 +39,9 @@
       <if test="extraflowCreateTime != null">
         extraflow_create_time,
       </if>
+      <if test="extraflowNumber != null">
+        extraflow_number,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="fkUserId != null">
@@ -48,6 +52,9 @@
       </if>
       <if test="extraflowCreateTime != null">
         #{extraflowCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="extraflowNumber != null">
+        #{extraflowNumber,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -63,6 +70,9 @@
       <if test="extraflowCreateTime != null">
         extraflow_create_time = #{extraflowCreateTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="extraflowNumber != null">
+        extraflow_number = #{extraflowNumber,jdbcType=INTEGER},
+      </if>
     </set>
     where extraflow_id = #{extraflowId,jdbcType=INTEGER}
   </update>
@@ -70,7 +80,19 @@
     update ecm_user_extraflow
     set fk_user_id = #{fkUserId,jdbcType=INTEGER},
       extraflow_type = #{extraflowType,jdbcType=VARCHAR},
-      extraflow_create_time = #{extraflowCreateTime,jdbcType=TIMESTAMP}
+      extraflow_create_time = #{extraflowCreateTime,jdbcType=TIMESTAMP},
+      extraflow_number = #{extraflowNumber,jdbcType=INTEGER}
     where extraflow_id = #{extraflowId,jdbcType=INTEGER}
   </update>
+
+  <select id="selectByFkUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from ecm_user_extraflow
+    <where>
+      <if test="fkUserId != null">
+        fk_user_id = #{fkUserId,jdbcType=INTEGER}
+      </if>
+    </where>
+  </select>
 </mapper>

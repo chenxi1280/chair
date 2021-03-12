@@ -21,5 +21,10 @@ public class EcmVipRole implements Serializable {
 
     private Date updateTime;
 
+    /**
+     * 用户角色对应的流量上限 单位GB
+     */
+    private Integer flowLimit;
+
     private static final long serialVersionUID = 1L;
 }
