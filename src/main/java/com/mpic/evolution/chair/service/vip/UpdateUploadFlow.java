@@ -33,6 +33,7 @@ public class UpdateUploadFlow implements PaymentVipService {
         ecmUserExtraflow.setFkUserId(fkUserId);
         ecmUserExtraflow.setExtraflowCreateTime(new Date());
         ecmUserExtraflow.setExtraflowType(type);
+        ecmUserExtraflow.setExtraflowNumber(number);
         try {
             ecmUserFlowDao.updateByPrimaryKeySelective(ecmUserFlowVO);
             ecmUserExtraflowDao.insertSelective(ecmUserExtraflow);

@@ -6,9 +6,10 @@
     <result column="vip_role_describe" jdbcType="VARCHAR" property="vipRoleDescribe" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="flow_limit" jdbcType="INTEGER" property="flowLimit" />
   </resultMap>
   <sql id="Base_Column_List">
-    pk_role_id, vip_role_describe, create_time, update_time
+    pk_role_id, vip_role_describe, create_time, update_time, flow_limit
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -21,10 +22,10 @@
     where pk_role_id = #{pkRoleId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyColumn="pk_role_id" keyProperty="pkRoleId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmVipRole" useGeneratedKeys="true">
-    insert into ecm_vip_role (vip_role_describe, create_time, update_time
-      )
-    values (#{vipRoleDescribe,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
-      )
+    insert into ecm_vip_role (vip_role_describe, create_time, update_time, 
+      flow_limit)
+    values (#{vipRoleDescribe,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{flowLimit,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" keyColumn="pk_role_id" keyProperty="pkRoleId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmVipRole" useGeneratedKeys="true">
     insert into ecm_vip_role
@@ -38,6 +39,9 @@
       <if test="updateTime != null">
         update_time,
       </if>
+      <if test="flowLimit != null">
+        flow_limit,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="vipRoleDescribe != null">
@@ -48,6 +52,9 @@
       </if>
       <if test="updateTime != null">
         #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="flowLimit != null">
+        #{flowLimit,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -63,6 +70,9 @@
       <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="flowLimit != null">
+        flow_limit = #{flowLimit,jdbcType=INTEGER},
+      </if>
     </set>
     where pk_role_id = #{pkRoleId,jdbcType=INTEGER}
   </update>
@@ -70,7 +80,8 @@
     update ecm_vip_role
     set vip_role_describe = #{vipRoleDescribe,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      flow_limit = #{flowLimit,jdbcType=INTEGER}
     where pk_role_id = #{pkRoleId,jdbcType=INTEGER}
   </update>
 </mapper>

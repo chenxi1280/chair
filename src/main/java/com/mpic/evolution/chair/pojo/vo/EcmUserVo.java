@@ -11,6 +11,7 @@ import lombok.Data;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class EcmUserVo extends EcmUser {
+	//会员的日期 超级会员日期 当月会员总 会员已使用 会员剩余流量 永久流量总 永久流量已使用 永久流量剩余
 	//图片验证码
 	private String confirmCode;
 	//确认密码
@@ -39,5 +40,45 @@ public class EcmUserVo extends EcmUser {
 	private Integer totalFlow;
 
 	private Boolean logoChange;
+	/**
+	 * 会员的日期
+	 */
+	private String vipStartDate;
+	/**
+	 * 会员的日期
+	 */
+	private String vipEndDate;
+	/**
+	 * 超级会员日期
+	 */
+	private String superVipStartDate;
+	/**
+	 * 超级会员日期
+	 */
+	private String superVipEndDate;
+	/**
+	 * 当月会员总流量
+	 */
+	private Integer currentMothVipTotalFlow;
+	/**
+	 * 当月会员已使用流量
+	 */
+	private Integer	currentMothVipUserdFlow;
+	/**
+	 * 当月会员已剩余流量
+	 */
+	private Integer	currentMothVipsurplusFlow;
+	/**
+	 * 总永久流量
+	 */
+	private Integer totalPermanentFlow;
+	/**
+	 * 已使用永久流量
+	 */
+	private Integer usedPermanentFlow;
+	/**
+	 * 剩余永久流量
+	 */
+	private Integer surplusPermanentFlow;
 
 }
