@@ -34,14 +34,14 @@ public class EcmOrderHistoryServiceImpl implements EcmOrderHistoryService {
     }
 
     @Override
-    public void insertOrderHistory(String code ,String total) {
+    public void insertOrderHistory(String code, String total) {
         EcmOrderVO ecmOrderVO = ecmOrderDao.selectByOrderCode(code);
         EcmGoods ecmGoods = ecmGoodsDao.selectByPrimaryKey(ecmOrderVO.getFkGoodsId());
         EcmOrderHistory ecmOrderHistory = new EcmOrderHistory();
         BeanUtils.copyProperties(ecmOrderVO,ecmOrderHistory);
         BeanUtils.copyProperties( ecmGoods,ecmOrderHistory);
         ecmOrderHistory.setFkOrderId(ecmOrderVO.getPkOrderId());
-        ecmOrderHistory.setPayOrderPrice(BigDecimal.valueOf( Long.parseLong(total) / 100 ));
+        ecmOrderHistory.setPayOrderPrice(new BigDecimal(total).divide(BigDecimal.valueOf(100)));
         ecmOrderHistory.setCreateTime(new Date());
         ecmOrderHistoryDao.insertSelective(ecmOrderHistory);
 

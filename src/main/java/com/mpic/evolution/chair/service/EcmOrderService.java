@@ -1,6 +1,7 @@
 package com.mpic.evolution.chair.service;
 
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
+import com.mpic.evolution.chair.pojo.entity.EcmOrder;
 import com.mpic.evolution.chair.pojo.vo.EcmOrderVO;
 
 /**
@@ -58,5 +59,6 @@ public interface EcmOrderService {
      * @Date: 2021/3/11
      * 描述 : 做该订单号对应的业务
      */
-    void savaVipPaymentInfo(String code);
+    boolean savaVipPaymentInfo(String code);
+
 }

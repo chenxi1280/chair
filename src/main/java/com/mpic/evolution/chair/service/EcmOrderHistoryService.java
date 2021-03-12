@@ -14,5 +14,5 @@ public interface EcmOrderHistoryService {
      * @Date: 2021/3/10
      * 描述 : 完成对订单的存档
      */
-    void insertOrderHistory(String code,String total);
+    void insertOrderHistory(String code, String total);
 }
