@@ -79,13 +79,13 @@ public class AuthenticationAspect {
         if (StringUtil.isEmpty(userId)){
             throw new EcmTokenException(603,"非法访问");
         }
-        List<EcmVipUserInfo> ecmVipUserInfo;
-        if (redisUtil.hasKey(token + "AuthVipUserInfo") ){
-            ecmVipUserInfo = (List<EcmVipUserInfo>) redisUtil.get(token + "AuthVipUserInfo");
-        }else {
-            ecmVipUserInfo = ecmVipUserInfoDao.selectByUserId(Integer.valueOf(userId)) ;
-            redisUtil.set(token+"AuthVipUserInfo",ecmVipUserInfo,60 * 60 * 3);
-        }
+        List<EcmVipUserInfo> ecmVipUserInfo = (List<EcmVipUserInfo>) redisUtil.get(token + "AuthVipUserInfo");;
+//        if (redisUtil.hasKey(token + "AuthVipUserInfo") ){
+//            ecmVipUserInfo = (List<EcmVipUserInfo>) redisUtil.get(token + "AuthVipUserInfo");
+//        }else {
+//            ecmVipUserInfo = ecmVipUserInfoDao.selectByUserId(Integer.valueOf(userId)) ;
+//            redisUtil.set(token+"AuthVipUserInfo",ecmVipUserInfo,60 * 60 * 3);
+//        }
         if (!CollectionUtils.isEmpty(ecmVipUserInfo)){
             int[] role = ecmArtworkAuthentication.role();
             if ( role.length > 0) {
@@ -99,13 +99,13 @@ public class AuthenticationAspect {
             }
             String[] auth = ecmArtworkAuthentication.auth();
             if ( auth.length > 0) {
-                List<EcmVipRoleAuthorityVO> ecmVipRoleAuthorities ;
-                if (redisUtil.hasKey(token + "AuthVipRoleAuthorities") ){
-                    ecmVipRoleAuthorities = (List<EcmVipRoleAuthorityVO>) redisUtil.get(token + "AuthVipRoleAuthorities");
-                }else {
-                    ecmVipRoleAuthorities = ecmVipRoleAuthorityDao.selectByEcmVipRoleInfoList(ecmVipUserInfo);
-                    redisUtil.set(token+"AuthVipRoleAuthorities",ecmVipRoleAuthorities,60 * 60 * 3);
-                }
+                List<EcmVipRoleAuthorityVO> ecmVipRoleAuthorities = (List<EcmVipRoleAuthorityVO>) redisUtil.get(token + "AuthVipRoleAuthorities");
+//                if (redisUtil.hasKey(token + "AuthVipRoleAuthorities") ){
+//                    ecmVipRoleAuthorities = (List<EcmVipRoleAuthorityVO>) redisUtil.get(token + "AuthVipRoleAuthorities");
+//                }else {
+//                    ecmVipRoleAuthorities = ecmVipRoleAuthorityDao.selectByEcmVipRoleInfoList(ecmVipUserInfo);
+//                    redisUtil.set(token+"AuthVipRoleAuthorities",ecmVipRoleAuthorities,60 * 60 * 3);
+//                }
                 if (!CollectionUtils.isEmpty(ecmVipRoleAuthorities)) {
                     for (EcmVipRoleAuthority ecmVipRoleAuthority : ecmVipRoleAuthorities) {
                         for (String au : auth) {
