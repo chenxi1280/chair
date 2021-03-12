@@ -81,7 +81,7 @@ public class TestController {
 //		return ResponseDTO.ok(userVipInfo);
 //	}
 	@RequestMapping("/testVip")
-	public void savaVipPaymentInfo(String orderCode) {
+	public void savaVipPaymentInfo(String orderCode) throws Exception{
 		EcmOrderVO ecmOrderVO = ecmOrderService.queryOrderInfo(orderCode);
 		EcmGoods goods = ecmGoodsService.getGoodsVOByPkId(ecmOrderVO.getFkGoodsId());
 		PaymentVipService updateVipDate = beanConfig.createQueryService(goods.getGoodsType());

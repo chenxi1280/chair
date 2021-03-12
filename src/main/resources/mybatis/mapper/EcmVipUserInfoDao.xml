@@ -12,11 +12,11 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    pk_id, fk_userId, fk_vip_role_id, vip_status, vip_start_time, vip_end_time, create_time, 
+    pk_id, fk_userId, fk_vip_role_id, vip_status, vip_start_time, vip_end_time, create_time,
     update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from ecm_vip_user_info
     where pk_id = #{pkId,jdbcType=INTEGER}
@@ -26,11 +26,11 @@
     where pk_id = #{pkId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyColumn="pk_id" keyProperty="pkId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmVipUserInfo" useGeneratedKeys="true">
-    insert into ecm_vip_user_info (fk_userId, fk_vip_role_id, vip_status, 
-      vip_start_time, vip_end_time, create_time, 
+    insert into ecm_vip_user_info (fk_userId, fk_vip_role_id, vip_status,
+      vip_start_time, vip_end_time, create_time,
       update_time)
     values (#{fkUserid,jdbcType=INTEGER}, #{fkVipRoleId,jdbcType=INTEGER}, #{vipStatus,jdbcType=SMALLINT},
-      #{vipStartTime,jdbcType=TIMESTAMP}, #{vipEndTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{vipStartTime,jdbcType=TIMESTAMP}, #{vipEndTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP},
       #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" keyColumn="pk_id" keyProperty="pkId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmVipUserInfo" useGeneratedKeys="true">
@@ -152,4 +152,9 @@
     </if>
 
   </select>
+    <select id="selectByUserId" resultType="com.mpic.evolution.chair.pojo.entity.EcmVipUserInfo">
+      select <include refid="Base_Column_List" />
+      from ecm_vip_user_info
+      where fk_userId = #{fkUserId}
+    </select>
 </mapper>

@@ -1,10 +1,15 @@
 package com.mpic.evolution.chair.aop.auth;
 
+import com.mpic.evolution.chair.common.exception.EcmAuthenticationException;
 import com.mpic.evolution.chair.common.exception.EcmTokenException;
 import com.mpic.evolution.chair.config.annotation.EcmArtworkAuthentication;
 import com.mpic.evolution.chair.dao.EcmVipRoleAuthorityDao;
-import com.mpic.evolution.chair.dao.EcmVipRoleDao;
+import com.mpic.evolution.chair.dao.EcmVipUserInfoDao;
+import com.mpic.evolution.chair.pojo.entity.EcmVipRoleAuthority;
+import com.mpic.evolution.chair.pojo.entity.EcmVipUserInfo;
+import com.mpic.evolution.chair.pojo.vo.EcmVipRoleAuthorityVO;
 import com.mpic.evolution.chair.util.JWTUtil;
+import com.mpic.evolution.chair.util.RedisUtil;
 import com.qcloud.vod.common.StringUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -14,10 +19,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @author by cxd
@@ -25,22 +33,25 @@ import javax.servlet.http.HttpServletRequest;
  * @Description TODO
  * @Date 2021/3/10 20:05
  */
-//@Aspect
-//@Component
-////spring bean加载优先级注解
-//@Order(-10)
+@Aspect
+@Component
+// spring bean加载优先级注解
+@Order(-10)
 public class AuthenticationAspect {
 
     private static Logger logger = LoggerFactory.getLogger(AuthenticationAspect.class);
 
+
+    @Resource
+    RedisUtil redisUtil;
+
     final
-    EcmVipRoleDao ecmVipRoleDao;
     EcmVipRoleAuthorityDao ecmVipRoleAuthorityDao;
+    EcmVipUserInfoDao ecmVipUserInfoDao;
 
-
-    public AuthenticationAspect(EcmVipRoleDao ecmVipRoleDao, EcmVipRoleAuthorityDao ecmVipRoleAuthorityDao) {
-        this.ecmVipRoleDao = ecmVipRoleDao;
+    public AuthenticationAspect(EcmVipRoleAuthorityDao ecmVipRoleAuthorityDao, EcmVipUserInfoDao ecmVipUserInfoDao) {
         this.ecmVipRoleAuthorityDao = ecmVipRoleAuthorityDao;
+        this.ecmVipUserInfoDao = ecmVipUserInfoDao;
     }
 
     ThreadLocal<Long> beginTime = new ThreadLocal<Long>();
@@ -56,7 +67,6 @@ public class AuthenticationAspect {
     @Around("AuthenticationService(ecmArtworkAuthentication)")
     public Object doAround(ProceedingJoinPoint joinPoint, EcmArtworkAuthentication ecmArtworkAuthentication) throws Throwable {
         beginTime.set(System.currentTimeMillis());
-
         //获取RequestAttributes
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         //从获取RequestAttributes中获取HttpServletRequest的信息
@@ -69,50 +79,48 @@ public class AuthenticationAspect {
         if (StringUtil.isEmpty(userId)){
             throw new EcmTokenException(603,"非法访问");
         }
+        List<EcmVipUserInfo> ecmVipUserInfo;
+        if (redisUtil.hasKey(token + "AuthVipUserInfo") ){
+            ecmVipUserInfo = (List<EcmVipUserInfo>) redisUtil.get(token + "AuthVipUserInfo");
+        }else {
+            ecmVipUserInfo = ecmVipUserInfoDao.selectByUserId(Integer.valueOf(userId)) ;
+            redisUtil.set(token+"AuthVipUserInfo",ecmVipUserInfo,60 * 60 * 3);
+        }
+        if (!CollectionUtils.isEmpty(ecmVipUserInfo)){
+            int[] role = ecmArtworkAuthentication.role();
+            if ( role.length > 0) {
+                for (EcmVipUserInfo vipUserInfo : ecmVipUserInfo) {
+                    for (int i : role) {
+                        if ( i == vipUserInfo.getFkVipRoleId()) {
+                            return joinPoint.proceed();
+                        }
+                    }
+                }
+            }
+            String[] auth = ecmArtworkAuthentication.auth();
+            if ( auth.length > 0) {
+                List<EcmVipRoleAuthorityVO> ecmVipRoleAuthorities ;
+                if (redisUtil.hasKey(token + "AuthVipRoleAuthorities") ){
+                    ecmVipRoleAuthorities = (List<EcmVipRoleAuthorityVO>) redisUtil.get(token + "AuthVipRoleAuthorities");
+                }else {
+                    ecmVipRoleAuthorities = ecmVipRoleAuthorityDao.selectByEcmVipRoleInfoList(ecmVipUserInfo);
+                    redisUtil.set(token+"AuthVipRoleAuthorities",ecmVipRoleAuthorities,60 * 60 * 3);
+                }
+                if (!CollectionUtils.isEmpty(ecmVipRoleAuthorities)) {
+                    for (EcmVipRoleAuthority ecmVipRoleAuthority : ecmVipRoleAuthorities) {
+                        for (String au : auth) {
+                            if (au.equals(ecmVipRoleAuthority.getVipAuthorityDescribe())) {
+                                return joinPoint.proceed();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        logger.info("非法访问 ==》 拦截");
+        throw new EcmAuthenticationException();
 
 
-
-
-
-
-        int[] role = ecmArtworkAuthentication.role();
-
-
-//        String card = null;
-//        List<Long> roleList = new ArrayList<>();
-//        for (Object arg : joinPoint.getArgs()) {
-//            if (arg != null && arg.getClass() == RequestFacade.class) {
-//                RequestFacade request = (RequestFacade) arg;
-////                card = CookieUtils.getCardFromCookie(request);
-////                if (StringUtils.isEmpty(card)) {
-////                    return JsonResult.buildFailResult(-1, 1000, "权限验证未通过", null);
-////                }
-////                List<Role> roles = authDao.getRolesByCard(card);
-////                for (Role role : roles) {
-////                    roleList.add(role.getId());
-////                }
-//                break;
-//            }
-//        }
-//        logger.info("[authentication] user={}, roles={}", card, roleList);
-//        long[] aims = authentication.role();
-//        boolean isPass = false;
-//        for (long aim : aims) {
-//            if (roleList.contains(aim)) {
-//                isPass = true;
-//            }
-//        }
-//        if (isPass) {
-//            logger.info("[authentication] authentication pass, cost time: {}", System.currentTimeMillis() - beginTime.get());
-//            return joinPoint.proceed();
-//        } else {
-//            beginTime.set(System.currentTimeMillis());
-//            logger.info("[authentication] authentication reject, cost time: {}", System.currentTimeMillis() - beginTime.get());
-////            return JsonResult.buildFailResult(-1, 1000, "权限验证未通过", null);
-//        }
-
-
-        return joinPoint.proceed();
     }
 
 }

@@ -5,18 +5,15 @@ import com.github.wxpay.sdk.WXPayUtil;
 import com.mpic.evolution.chair.config.WxPayConfig;
 import com.mpic.evolution.chair.controller.TestController;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
-import com.mpic.evolution.chair.pojo.entity.EcmOrderHistory;
+import com.mpic.evolution.chair.pojo.entity.EcmOrder;
 import com.mpic.evolution.chair.pojo.vo.EcmOrderVO;
 import com.mpic.evolution.chair.service.EcmOrderHistoryService;
 import com.mpic.evolution.chair.service.EcmOrderService;
 import com.mpic.evolution.chair.service.EcmPayService;
 import com.mpic.evolution.chair.util.HttpClient;
 import com.mpic.evolution.chair.util.PayForUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,8 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static com.mpic.evolution.chair.common.constant.CommonField.STRING_REDIS_IP;
-import static com.mpic.evolution.chair.config.WxPayConfig.APIKEY;
-import static com.mpic.evolution.chair.config.WxPayConfig.getIpAddr;
+import static com.mpic.evolution.chair.config.WxPayConfig.*;
 
 
 /**
@@ -60,7 +56,7 @@ public class EcmPayServiceImpl implements EcmPayService {
     @Override
     public ResponseDTO wxPayQueryOrder(EcmOrderVO ecmOrderVO) {
 
-        if ( ecmOrderVO ==null ){
+        if (ecmOrderVO == null) {
             ResponseDTO.fail("非法商品");
         }
 
@@ -70,9 +66,10 @@ public class EcmPayServiceImpl implements EcmPayService {
             // 此处指定为扫码支付
             data.put("trade_type", "NATIVE");
             //2、将参数转成xml字符，并携带签名
-            String paramXml = WXPayUtil.generateSignedXml(data, "sb5cj6ovc3yhe96ypxlnictxhaoupohi");
+            String paramXml = WXPayUtil.generateSignedXml(data, API3_KEY);
             ///3、执行请求
-            HttpClient httpClient = new HttpClient("https://api.mch.weixin.qq.com/pay/unifiedorder");
+            String wxPayUrl = "https://api.mch.weixin.qq.com/pay/unifiedorder";
+            HttpClient httpClient = new HttpClient(wxPayUrl);
             httpClient.setHttps(true);
             httpClient.setXmlParam(paramXml);
             httpClient.post();
@@ -83,8 +80,8 @@ public class EcmPayServiceImpl implements EcmPayService {
             //5、获取部分页面所需参数
             Map<String, String> dataMap = new HashMap<String, String>();
             dataMap.put("codeUrl", stringMap.get("code_url"));
-            dataMap.put("orderCode",ecmOrderVO.getOrderCode());
-            dataMap.put("orderPrice",String.valueOf(ecmOrderVO.getOrderPrice()));
+            dataMap.put("orderCode", ecmOrderVO.getOrderCode());
+            dataMap.put("orderPrice", String.valueOf(ecmOrderVO.getOrderPrice()));
 
             return ResponseDTO.ok(dataMap);
 
@@ -96,7 +93,6 @@ public class EcmPayServiceImpl implements EcmPayService {
     }
 
     @Override
-    @Transactional
     public void wxPayNotify(HttpServletRequest request, HttpServletResponse response) throws Exception {
         // 读取回调数据
         InputStream inputStream;
@@ -110,10 +106,8 @@ public class EcmPayServiceImpl implements EcmPayService {
         in.close();
         inputStream.close();
 
-        EcmOrderHistory ecmOrderHistory = new EcmOrderHistory();
-
         // 解析xml成map
-        Map<String, Object> m= XmlUtil.xmlToMap(sb.toString());
+        Map<String, Object> m = XmlUtil.xmlToMap(sb.toString());
         // 过滤空 设置 TreeMap
         SortedMap<Object, Object> packageParams = new TreeMap<Object, Object>();
         Iterator<String> it = m.keySet().iterator();
@@ -148,32 +142,34 @@ public class EcmPayServiceImpl implements EcmPayService {
                 String total_fee = (String) packageParams.get("total_fee");
 //                // 微信支付订单号
                 String transaction_id = (String) packageParams.get("transaction_id");
+                EcmOrder ecmOrder = ecmOrderService.queryOrderInfo(out_trade_no);
+
                 ecmOrderVO.setOrderCode(out_trade_no);
                 ecmOrderVO.setUpdateTime(new Date());
                 ecmOrderVO.setOrderState(1);
                 ecmOrderVO.setOrderType(0);
                 ecmOrderVO.setPayOrderId(transaction_id);
-//                ecmOrderService.updateOrderByPay(ecmOrderVO);
-
-                try {
-                    System.err.println("正在执行执行业务逻辑");
-                    // 调用 业务判断
-                    testController.savaVipPaymentInfo(out_trade_no);
-                    ecmOrderVO.setOrderState(2);
-                }catch (Exception e) {
-                    e.printStackTrace();
-                    ecmOrderVO.setOrderState(1);
-                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-                    System.out.println("支付成功，业务执行失败!!  订单code："+out_trade_no);
-                }finally {
-                    ecmOrderHistoryService.insertOrderHistory(out_trade_no,total_fee);
-                    ecmOrderService.updateOrderByPay(ecmOrderVO);
-                    // 通知微信.异步确认成功.必写.不然会一直通知后台.八次之后就认为交易失败了.
-                    resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>"
-                            + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml> ";
-                    response.getWriter().write(resXml);
+                System.err.println("正在执行执行业务逻辑");
+                // 调用 业务判断
+                System.out.println("total_fee" + "/n" + total_fee + "/n" + ecmOrder.getOrderPrice());
+                if (ecmOrder.getOrderPrice().equals(new BigDecimal(total_fee).divide(BigDecimal.valueOf(100)))) {
+                    //执行业务并判断是否成功
+                    if (ecmOrderService.savaVipPaymentInfo(out_trade_no)) {
+                        ecmOrderVO.setOrderState(2);
+                    } else {
+                        System.out.println("支付成功，业务因为异常执行失败!!  订单code：" + out_trade_no);
+                        ecmOrderVO.setOrderState(1);
+                    }
+                } else {
+                    System.out.println("支付成功，业务执行错误!，订单金额和支付金额不符合！！订单code：" + out_trade_no);
+                    ecmOrderVO.setOrderState(3);
                 }
-
+                ecmOrderService.updateOrderByPay(ecmOrderVO);
+                ecmOrderHistoryService.insertOrderHistory(out_trade_no, total_fee);
+                // 通知微信.异步确认成功.必写.不然会一直通知后台.八次之后就认为交易失败了.
+                resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>"
+                        + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml> ";
+                response.getWriter().write(resXml);
                 System.err.println("--------------------------------------------");
             } else {
                 System.err.println("支付失败,错误信息：" + packageParams.get("err_code"));
@@ -186,10 +182,7 @@ public class EcmPayServiceImpl implements EcmPayService {
             System.err.println("通知签名验证失败");
         }
 
-
-
     }
-
 
 
     /**
@@ -231,15 +224,13 @@ public class EcmPayServiceImpl implements EcmPayService {
         data.put("spbill_create_ip", getIpAddr());
         //支付结果通知路径异步通知路径
 
-        if (!STRING_REDIS_IP.equals(redisHost)){
+        if (!STRING_REDIS_IP.equals(redisHost)) {
             data.put("notify_url", WxPayConfig.DOM_URL);
-        }else {
-            System.out.println("这是测试环境");
+        } else {
             data.put("notify_url", WxPayConfig.DOM_URL_TEST);
         }
 
-
-        data.put("attach",String.valueOf(order.getPkOrderId()));
+        data.put("attach", String.valueOf(order.getPkOrderId()));
 
         return data;
     }

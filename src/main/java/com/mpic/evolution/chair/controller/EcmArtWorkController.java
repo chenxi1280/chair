@@ -67,13 +67,11 @@ public class EcmArtWorkController extends BaseController{
      *     	保存失败: status 500  msg "error“
      *
      */
-    @EcmArtworkAuthentication(role = {1})
+//	@EcmArtworkAuthentication(auth = {"浮标"})
     @RequestMapping("/getArtWorks")
     @ResponseBody
     public ResponseDTO getArtWorks(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
 		ecmArtWorkQuery.setFkUserid(getUserIdByHandToken());
-//		ecmArtWorkQuery.setPage();
-//		ecmArtWorkQuery.setLimit(20);
         return ecmArtWorkService.getArtWorks(ecmArtWorkQuery);
     }
 
@@ -103,6 +101,7 @@ public class EcmArtWorkController extends BaseController{
      *       保存成功： status 200  msg “success”
      *       保存失败： status 500  msg ”error“
      */
+//	@EcmArtworkAuthentication(role = {1,2,3})
     @ResponseBody
     @RequestMapping("/saveArtWorkNode")
     public ResponseDTO saveArtWorkNod(@RequestBody EcmArtworkNodesVo ecmArtworkNodes){
@@ -122,6 +121,35 @@ public class EcmArtWorkController extends BaseController{
         return ecmArtWorkService.saveArtWorkNode(ecmArtworkNodes);
     }
 
+    /**
+	 * @param: [ecmArtworkNodes]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2021/3/11
+	 * 描述 : 保存定位
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
+	@EcmArtworkAuthentication(auth = {"定位"})
+	@ResponseBody
+	@RequestMapping("saveLocationArtWorkNode")
+	public ResponseDTO saveLocationArtWorkNode(@RequestBody EcmArtworkNodesVo ecmArtworkNodes){
+
+		if (ecmArtworkNodes.getParentId() == null){
+			return ResponseDTO.fail("父节点id为空");
+		}
+		if (ecmArtworkNodes.getFkArtworkId() == null) {
+			return ResponseDTO.fail("作品错误");
+		}
+		int maxCount = 50;
+		if (StringUtils.isNotBlank(ecmArtworkNodes.getRevolutionId()) && ecmArtworkNodes.getRevolutionId().length() > maxCount) {
+			return ResponseDTO.fail("视频最多编排50层");
+		}
+		ecmArtworkNodes.setFkUserId(getUserIdByHandToken());
+
+		return ecmArtWorkService.saveArtWorkNode(ecmArtworkNodes);
+	}
+
 
     /**
      * @param: [ecmArtworkNodesVo]  json 格式的 作品详情类（树状）
@@ -132,6 +160,7 @@ public class EcmArtWorkController extends BaseController{
      *       保存成功: status 200  msg "success”
      *       保存失败: status 500  msg "error“
      */
+	@EcmArtworkAuthentication(role = {1,2,3})
     @RequestMapping("/addArtWork")
     @ResponseBody
     public ResponseDTO addArtWork(@RequestBody EcmArtworkNodesVo ecmArtworkNodesVo){
@@ -148,6 +177,7 @@ public class EcmArtWorkController extends BaseController{
 	 *       成功: status 200  msg "success”
 	 *       失败: status 500  msg "error“
 	 */
+	@EcmArtworkAuthentication(role = {1,2,3})
 	@RequestMapping("/removeNode")
 	@ResponseBody
 	public ResponseDTO removeNode(@RequestBody EcmArtworkNodesVo ecmArtworkNodesVo){
@@ -165,6 +195,7 @@ public class EcmArtWorkController extends BaseController{
 	 *       成功: status 200  msg "success”   date:
 	 *       失败: status 500  msg "error“
 	 */
+	@EcmArtworkAuthentication(auth = {"数值"})
 	@RequestMapping("/saveArtworkNodeNumberCondition")
 	@ResponseBody
 	public ResponseDTO saveArtworkNodeNumberCondition(@RequestBody EcmArtworkNodeNumberConditionVO ecmArtworkNodeNumberConditionVO){
@@ -181,6 +212,7 @@ public class EcmArtWorkController extends BaseController{
 	 *       成功: status 200  msg "success”   date:
 	 *       失败: status 500  msg "error“
 	 */
+	@EcmArtworkAuthentication(auth = {"数值"})
 	@RequestMapping("/saveAllNodeNameFlagChange")
 	@ResponseBody
 	public ResponseDTO saveAllNodeNameFlagChange(@RequestBody EcmArtworkNodeNumberConditionVO ecmArtworkNodeNumberConditionVO){
@@ -197,6 +229,7 @@ public class EcmArtWorkController extends BaseController{
 	 *       成功: status 200  msg "success”   date:
 	 *       失败: status 500  msg "error“
 	 */
+	@EcmArtworkAuthentication(auth = {"多结局"})
 	@RequestMapping("/saveArtworkEndings")
 	@ResponseBody
 	public ResponseDTO saveArtworkEndings(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
@@ -227,6 +260,7 @@ public class EcmArtWorkController extends BaseController{
 	 *       成功: status 200  msg "success”   date:
 	 *       失败: status 500  msg "error“
 	 */
+	@EcmArtworkAuthentication(auth = {"多结局"})
 	@RequestMapping("/saveArtworkEndingState")
 	@ResponseBody
 	public ResponseDTO saveArtworkEndingState(@RequestBody EcmArtworkVo ecmArtworkVo){
@@ -243,6 +277,7 @@ public class EcmArtWorkController extends BaseController{
 	 *       成功: status 200  msg "success”   date:
 	 *       失败: status 500  msg "error“
 	 */
+	@EcmArtworkAuthentication(auth = {"多结局"})
 	@RequestMapping("/saveArtworkEndingList")
 	@ResponseBody
 	public ResponseDTO saveArtworkEndingList(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
@@ -258,6 +293,7 @@ public class EcmArtWorkController extends BaseController{
 	 * 描述 :  多结局 多节点 更新
 	 *
 	 */
+	@EcmArtworkAuthentication(auth = {"多结局"})
 	@RequestMapping("updateArtworkEndingList")
 	@ResponseBody
 	public ResponseDTO updateArtworkEndingList(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
@@ -272,6 +308,7 @@ public class EcmArtWorkController extends BaseController{
 	 * @Date: 2020/12/25
 	 * 描述 : 多结局 节点 删除
 	 */
+	@EcmArtworkAuthentication(auth = {"多结局"})
 	@RequestMapping("/deleteArtworkEnding")
 	@ResponseBody
 	public ResponseDTO deleteArtworkEnding(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
@@ -288,6 +325,7 @@ public class EcmArtWorkController extends BaseController{
 	 *       成功: status 200  msg "success”   date:ecmArtworkEndingsVOList
 	 *       失败: status 500  msg "error“
 	 */
+	@EcmArtworkAuthentication(auth = {"多结局"})
 	@RequestMapping("/getArtworkEndingList")
 	@ResponseBody
 	public ResponseDTO getArtworkEndingList(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
@@ -304,6 +342,7 @@ public class EcmArtWorkController extends BaseController{
 	 *       成功: status 200  msg "success”   date:
 	 *       失败: status 500  msg "error“
 	 */
+	@EcmArtworkAuthentication(auth = {"多结局"})
 	@RequestMapping("/saveArtworkEndingAll")
 	@ResponseBody
 	public ResponseDTO saveArtworkEndingAll(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
@@ -329,6 +368,7 @@ public class EcmArtWorkController extends BaseController{
 	 *       成功: status 200  msg "success”   date:
 	 *       失败: status 500  msg "error“
 	 */
+	@EcmArtworkAuthentication(auth = {"多结局"})
 	@RequestMapping("/deleteArtworkEndingList")
 	@ResponseBody
 	public ResponseDTO deleteArtworkEndingList(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
@@ -346,6 +386,7 @@ public class EcmArtWorkController extends BaseController{
 	 *       成功: status 200  msg "success”   date:
 	 *       失败: status 500  msg "error“
 	 */
+	@EcmArtworkAuthentication(auth = {"弹窗"})
 	@RequestMapping("/saveArtworkNodePopupSettings")
 	@ResponseBody
 	public ResponseDTO saveArtworkNodePopupSettings(@RequestBody EcmArtworkNodePopupSettingsVO ecmArtworkNodePopupSettingsVO){
@@ -363,7 +404,8 @@ public class EcmArtWorkController extends BaseController{
 	 *       成功: status 200  msg "success”   date:
 	 *       失败: status 500  msg "error“
 	 */
-	@RequestMapping("/saveArtworkNodeCondition")
+	@EcmArtworkAuthentication(auth = {"条件设置"})
+	@RequestMapping("saveArtworkNodeCondition")
 	@ResponseBody
 	public ResponseDTO saveArtworkNodeCondition(@RequestBody EcmArtworkNodesVo ecmArtworkNodesVo){
 
@@ -381,6 +423,7 @@ public class EcmArtWorkController extends BaseController{
 	 *       成功: status 200  msg "success”   date:
 	 *       失败: status 500  msg "error“
 	 */
+	@EcmArtworkAuthentication(role = {2})
 	@RequestMapping("/saveArtworkEndingCondition")
 	@ResponseBody
 	public ResponseDTO saveArtworkEndingCondition(@RequestBody EcmArtworkNodesVo ecmArtworkNodesVo){
@@ -388,7 +431,16 @@ public class EcmArtWorkController extends BaseController{
 
 		return ecmArtWorkService.saveArtworkEndingCondition(ecmArtworkNodesVo);
 	}
-
+	/**
+	 * @param: [ecmArtworkNodeBuoyQuery]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2021/3/11
+	 * 描述 : 获取浮标
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
+	@EcmArtworkAuthentication(auth = {"浮标"})
 	@RequestMapping("/saveArtworkNodeBuoy")
 	@ResponseBody
 	public ResponseDTO saveArtworkNodeBuoy(@RequestBody EcmArtworkNodeBuoyQuery ecmArtworkNodeBuoyQuery){
@@ -401,10 +453,11 @@ public class EcmArtWorkController extends BaseController{
 	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
 	 * @author: cxd
 	 * @Date: 2021/2/20
-	 * 描述 :
+	 * 描述 : 删除浮标
 	 *       成功: status 200  msg "success”   date:
 	 *       失败: status 500  msg "error“
 	 */
+	@EcmArtworkAuthentication(auth = {"浮标"})
 	@RequestMapping("/deleteArtworkNodeBuoy")
 	@ResponseBody
 	public ResponseDTO deleteArtworkNodeBuoy(@RequestBody EcmArtworkNodeBuoyVO ecmArtworkNodeBuoyVO){
@@ -412,7 +465,16 @@ public class EcmArtWorkController extends BaseController{
 		ecmArtworkNodeBuoyVO.setFkUserId(getUserIdByHandToken());
 		return ecmArtWorkService.deleteArtworkNodeBuoy(ecmArtworkNodeBuoyVO);
 	}
-
+	/**
+	 * @param: [ecmArtworkNodeBuoyQuery]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2021/3/11
+	 * 描述 : 获取浮标
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
+	@EcmArtworkAuthentication(auth = {"浮标"})
 	@RequestMapping("/getArtworkNodeBuoy")
 	@ResponseBody
 	public ResponseDTO getArtworkNodeBuoy(@RequestBody EcmArtworkNodeBuoyQuery ecmArtworkNodeBuoyQuery){
@@ -421,6 +483,16 @@ public class EcmArtWorkController extends BaseController{
 		return ecmArtWorkService.getArtworkNodeBuoy(ecmArtworkNodeBuoyQuery);
 	}
 
+	/**
+	 * @param: [ecmArtworkNodesVo]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2021/3/11
+	 * 描述 : 更新浮标
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
+	@EcmArtworkAuthentication(auth = {"浮标"})
 	@RequestMapping("/updateArtworkNodeBuoy")
 	@ResponseBody
 	public ResponseDTO updateArtworkBuoy(@RequestBody EcmArtworkNodesVo ecmArtworkNodesVo){
