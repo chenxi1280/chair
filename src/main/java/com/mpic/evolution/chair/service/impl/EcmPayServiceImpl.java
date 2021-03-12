@@ -27,8 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static com.mpic.evolution.chair.common.constant.CommonField.STRING_REDIS_IP;
-import static com.mpic.evolution.chair.config.WxPayConfig.APIKEY;
-import static com.mpic.evolution.chair.config.WxPayConfig.getIpAddr;
+import static com.mpic.evolution.chair.config.WxPayConfig.*;
 
 
 /**
@@ -69,9 +68,10 @@ public class EcmPayServiceImpl implements EcmPayService {
             // 此处指定为扫码支付
             data.put("trade_type", "NATIVE");
             //2、将参数转成xml字符，并携带签名
-            String paramXml = WXPayUtil.generateSignedXml(data, "sb5cj6ovc3yhe96ypxlnictxhaoupohi");
+            String paramXml = WXPayUtil.generateSignedXml(data, API3_KEY);
             ///3、执行请求
-            HttpClient httpClient = new HttpClient("https://api.mch.weixin.qq.com/pay/unifiedorder");
+            String wxPayUrl = "https://api.mch.weixin.qq.com/pay/unifiedorder";
+            HttpClient httpClient = new HttpClient(wxPayUrl);
             httpClient.setHttps(true);
             httpClient.setXmlParam(paramXml);
             httpClient.post();
@@ -108,8 +108,6 @@ public class EcmPayServiceImpl implements EcmPayService {
         }
         in.close();
         inputStream.close();
-
-        EcmOrderHistory ecmOrderHistory = new EcmOrderHistory();
 
         // 解析xml成map
         Map<String, Object> m= XmlUtil.xmlToMap(sb.toString());
@@ -187,8 +185,6 @@ public class EcmPayServiceImpl implements EcmPayService {
             System.err.println("通知签名验证失败");
         }
 
-
-
     }
 
 
@@ -238,7 +234,6 @@ public class EcmPayServiceImpl implements EcmPayService {
             System.out.println("这是测试环境");
             data.put("notify_url", WxPayConfig.DOM_URL_TEST);
         }
-
 
         data.put("attach",String.valueOf(order.getPkOrderId()));
 
