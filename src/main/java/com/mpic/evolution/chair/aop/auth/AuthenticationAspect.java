@@ -67,7 +67,6 @@ public class AuthenticationAspect {
     @Around("AuthenticationService(ecmArtworkAuthentication)")
     public Object doAround(ProceedingJoinPoint joinPoint, EcmArtworkAuthentication ecmArtworkAuthentication) throws Throwable {
         beginTime.set(System.currentTimeMillis());
-
         //获取RequestAttributes
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         //从获取RequestAttributes中获取HttpServletRequest的信息
@@ -84,12 +83,10 @@ public class AuthenticationAspect {
         if (redisUtil.hasKey(token + "AuthVipUserInfo") ){
             ecmVipUserInfo = (List<EcmVipUserInfo>) redisUtil.get(token + "AuthVipUserInfo");
         }else {
-            ecmVipUserInfo = ecmVipUserInfoDao.selectByUserId(Integer.valueOf(userId));
-            redisUtil.set(token+"AuthVipUserInfo",ecmVipUserInfo,60 * 60 * 6);
+            ecmVipUserInfo = ecmVipUserInfoDao.selectByUserId(Integer.valueOf(userId)) ;
+            redisUtil.set(token+"AuthVipUserInfo",ecmVipUserInfo,60 * 60 * 3);
         }
-
         if (!CollectionUtils.isEmpty(ecmVipUserInfo)){
-
             int[] role = ecmArtworkAuthentication.role();
             if ( role.length > 0) {
                 for (EcmVipUserInfo vipUserInfo : ecmVipUserInfo) {
@@ -100,11 +97,8 @@ public class AuthenticationAspect {
                     }
                 }
             }
-
             String[] auth = ecmArtworkAuthentication.auth();
             if ( auth.length > 0) {
-
-
                 List<EcmVipRoleAuthorityVO> ecmVipRoleAuthorities ;
                 if (redisUtil.hasKey(token + "AuthVipRoleAuthorities") ){
                     ecmVipRoleAuthorities = (List<EcmVipRoleAuthorityVO>) redisUtil.get(token + "AuthVipRoleAuthorities");
@@ -119,12 +113,9 @@ public class AuthenticationAspect {
                                 return joinPoint.proceed();
                             }
                         }
-
                     }
                 }
-
             }
-
         }
         logger.info("非法访问 ==》 拦截");
         throw new EcmAuthenticationException();

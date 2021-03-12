@@ -72,8 +72,6 @@ public class EcmArtWorkController extends BaseController{
     @ResponseBody
     public ResponseDTO getArtWorks(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
 		ecmArtWorkQuery.setFkUserid(getUserIdByHandToken());
-//		ecmArtWorkQuery.setPage();
-//		ecmArtWorkQuery.setLimit(20);
         return ecmArtWorkService.getArtWorks(ecmArtWorkQuery);
     }
 
@@ -103,7 +101,7 @@ public class EcmArtWorkController extends BaseController{
      *       保存成功： status 200  msg “success”
      *       保存失败： status 500  msg ”error“
      */
-	@EcmArtworkAuthentication(role = {1,2,3})
+//	@EcmArtworkAuthentication(role = {1,2,3})
     @ResponseBody
     @RequestMapping("/saveArtWorkNode")
     public ResponseDTO saveArtWorkNod(@RequestBody EcmArtworkNodesVo ecmArtworkNodes){
@@ -134,7 +132,7 @@ public class EcmArtWorkController extends BaseController{
 	 */
 	@EcmArtworkAuthentication(auth = {"定位"})
 	@ResponseBody
-	@RequestMapping("/saveLocationArtWorkNode")
+	@RequestMapping("saveLocationArtWorkNode")
 	public ResponseDTO saveLocationArtWorkNode(@RequestBody EcmArtworkNodesVo ecmArtworkNodes){
 
 		if (ecmArtworkNodes.getParentId() == null){
