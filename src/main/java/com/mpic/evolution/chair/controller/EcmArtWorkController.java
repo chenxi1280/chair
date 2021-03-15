@@ -436,7 +436,7 @@ public class EcmArtWorkController extends BaseController{
 	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
 	 * @author: cxd
 	 * @Date: 2021/3/11
-	 * 描述 : 获取浮标
+	 * 描述 : 保存浮标
 	 *       成功: status 200  msg "success”   date:
 	 *       失败: status 500  msg "error“
 	 */
