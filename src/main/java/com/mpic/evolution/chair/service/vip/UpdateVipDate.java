@@ -36,13 +36,13 @@ public class UpdateVipDate implements PaymentVipService {
         ecmVipUserInfo.setFkVipRoleId(1);
         ecmVipUserInfo.setVipStatus((short)1);
         List<EcmVipUserInfo> ecmVipUserInfos = ecmVipUserInfoDao.selectByUserInfo(ecmVipUserInfo);
-        ecmVipUserInfo = ecmVipUserInfos.get(0);
         EcmVipPaymentHistory history = new EcmVipPaymentHistory();
         history.setCreateTime(new Date());
         history.setFkUserid(fkUserId);
         history.setVipType(type);
         history.setVipMonth(number);
-        if(ecmVipUserInfo != null){
+        if(ecmVipUserInfos != null && ecmVipUserInfos.size() > 0){
+            ecmVipUserInfo = ecmVipUserInfos.get(0);
             Date vipEndTime = ecmVipUserInfo.getVipEndTime();
             LocalDateTime endTime = VipDateUtil.formatToLocalDateTime(vipEndTime);
             LocalDateTime now = LocalDateTime.now();
@@ -73,8 +73,8 @@ public class UpdateVipDate implements PaymentVipService {
         }else{
             LocalDateTime now = LocalDateTime.now();
             Date sdate = VipDateUtil.formatToDate(now);
-            now.plusMonths(number);
-            Date edate = VipDateUtil.formatToDate(now);
+            LocalDateTime localDateTime = now.plusMonths(number);
+            Date edate = VipDateUtil.formatToDate(localDateTime);
             ecmVipUserInfo.setVipStartTime(sdate);
             ecmVipUserInfo.setVipEndTime(edate);
             ecmVipUserInfo.setCreateTime(new Date());
