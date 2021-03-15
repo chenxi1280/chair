@@ -149,6 +149,7 @@ public class EcmPayServiceImpl implements EcmPayService {
                 ecmOrderVO.setOrderState(1);
                 ecmOrderVO.setOrderType(0);
                 ecmOrderVO.setPayOrderId(transaction_id);
+                ecmOrderService.updateOrderByPay(ecmOrderVO);
                 System.err.println("正在执行执行业务逻辑");
                 // 调用 业务判断
                 System.out.println("total_fee" + "/n" + total_fee + "/n" + ecmOrder.getOrderPrice());

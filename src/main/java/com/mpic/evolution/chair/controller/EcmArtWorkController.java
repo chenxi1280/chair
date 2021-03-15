@@ -130,7 +130,7 @@ public class EcmArtWorkController extends BaseController{
 	 *       成功: status 200  msg "success”   date:
 	 *       失败: status 500  msg "error“
 	 */
-//	@EcmArtworkAuthentication(auth = {"定位"})
+	@EcmArtworkAuthentication(auth = {"定位"})
 	@ResponseBody
 	@RequestMapping("saveLocationArtWorkNode")
 	public ResponseDTO saveLocationArtWorkNode(@RequestBody EcmArtworkNodesVo ecmArtworkNodes){
@@ -445,7 +445,6 @@ public class EcmArtWorkController extends BaseController{
 	@ResponseBody
 	public ResponseDTO saveArtworkNodeBuoy(@RequestBody EcmArtworkNodeBuoyQuery ecmArtworkNodeBuoyQuery){
 		ecmArtworkNodeBuoyQuery.setFkUserId(getUserIdByHandToken());
-
 		return ecmArtWorkService.saveArtworkNodeBuoy(ecmArtworkNodeBuoyQuery);
 	}
 	/**

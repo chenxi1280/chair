@@ -79,7 +79,7 @@ public class AuthenticationAspect {
         if (StringUtil.isEmpty(userId)){
             throw new EcmTokenException(603,"非法访问");
         }
-        List<EcmVipUserInfo> ecmVipUserInfo = (List<EcmVipUserInfo>) redisUtil.get(token + "AuthVipUserInfo");;
+        List<EcmVipUserInfo> ecmVipUserInfo =  ecmVipUserInfoDao.selectByUserId(Integer.valueOf(userId));;
 //        if (redisUtil.hasKey(token + "AuthVipUserInfo") ){
 //            ecmVipUserInfo = (List<EcmVipUserInfo>) redisUtil.get(token + "AuthVipUserInfo");
 //        }else {
@@ -99,7 +99,7 @@ public class AuthenticationAspect {
             }
             String[] auth = ecmArtworkAuthentication.auth();
             if ( auth.length > 0) {
-                List<EcmVipRoleAuthorityVO> ecmVipRoleAuthorities = (List<EcmVipRoleAuthorityVO>) redisUtil.get(token + "AuthVipRoleAuthorities");
+                List<EcmVipRoleAuthorityVO> ecmVipRoleAuthorities = ecmVipRoleAuthorityDao.selectByEcmVipRoleInfoList(ecmVipUserInfo);
 //                if (redisUtil.hasKey(token + "AuthVipRoleAuthorities") ){
 //                    ecmVipRoleAuthorities = (List<EcmVipRoleAuthorityVO>) redisUtil.get(token + "AuthVipRoleAuthorities");
 //                }else {
