@@ -165,7 +165,7 @@ public class EcmUserServiceImpl implements EcmUserService {
 			//会员未到当月截止日期 并且是超级会员
 			if(vip.getFkVipRoleId() == 2){
 				//如果是超级会员一定有普通会员得的信息 只展示超级会员的相关信息
-				/*for (int i = 0; i < ecmVipUserInfos.size(); i++){
+				for (int i = 0; i < ecmVipUserInfos.size(); i++){
 					if(ecmVipUserInfos.get(i).getFkVipRoleId() == 1){
 						//循环遍历找出普通会员的信息
 						//common vip数据
@@ -174,9 +174,7 @@ public class EcmUserServiceImpl implements EcmUserService {
 						String startTime = format.format(ecmVipUserInfos.get(i).getVipStartTime());
 						user.setVipStartDate(startTime);
 					}
-				}*/
-				user.setVipEndDate(null);
-				user.setVipStartDate(null);
+				}
 				//超级vip的数据 当前对象是superVip
 				String endTime = format.format(vip.getVipEndTime());
 				user.setSuperVipEndDate(endTime);
