@@ -58,14 +58,7 @@ public class EcmVipServiceImpl implements EcmVipService {
             data.put("allAuthority",list);
             return data;
         }else{
-            // 获取用户的有效身份 有效身份是指在有效期内权限最高的身份
-            ecmVipUserInfo = this.getEffectiveVipInfo(ecmVipUserInfos);
-            Integer fkVipRoleId = ecmVipUserInfo.getFkVipRoleId();
-            EcmVipRole ecmVipRole = ecmVipRoleDao.selectByPrimaryKey(fkVipRoleId);
-            EcmVipRoleAuthority ecmVipRoleAuthority = new EcmVipRoleAuthority();
-            ecmVipRoleAuthority.setFkVipRoleId(fkVipRoleId);
-            ecmVipRoleAuthority.setVipRoleDescribe(ecmVipRole.getVipRoleDescribe());
-            List<EcmVipRoleAuthority> ecmVipRoleAuthorities = ecmVipRoleAuthorityDao.selectByEcmVipRoleAuthority(ecmVipRoleAuthority);
+            //组装所有权限对应低等级得角色信息
             List<EcmVipAuthority> ecmVipAuthorities = ecmVipAuthorityDao.selectByAll();
             ArrayList<EcmVipRoleAuthority> list = new ArrayList<>();
             ecmVipAuthorities.stream().forEach(obj->{
@@ -76,9 +69,29 @@ public class EcmVipServiceImpl implements EcmVipService {
                 EcmVipRoleAuthority lowRoleAuthority = this.getLowRoleAuthority(ecmVipRoleAuthoritiesList);
                 list.add(lowRoleAuthority);
             });
-            data.put("role",ecmVipRole.getVipRoleDescribe());
-            data.put("authority",ecmVipRoleAuthorities);
-            data.put("allAuthority",list);
+            // 获取用户的有效身份 有效身份是指在有效期内权限最高的身份
+            ecmVipUserInfo = this.getEffectiveVipInfo(ecmVipUserInfos);
+            //若查询角色会员信息为空 则说明是非会员得普通用户
+            if(ecmVipUserInfo == null){
+                EcmVipRole ecmVipRole = ecmVipRoleDao.selectByPrimaryKey(3);
+                EcmVipRoleAuthority ecmVipRoleAuthority = new EcmVipRoleAuthority();
+                ecmVipRoleAuthority.setFkVipRoleId(ecmVipRole.getPkRoleId());
+                ecmVipRoleAuthority.setVipRoleDescribe(ecmVipRole.getVipRoleDescribe());
+                List<EcmVipRoleAuthority> ecmVipRoleAuthorities = ecmVipRoleAuthorityDao.selectByEcmVipRoleAuthority(ecmVipRoleAuthority);
+                data.put("role",ecmVipRole.getVipRoleDescribe());
+                data.put("authority",ecmVipRoleAuthorities);
+                data.put("allAuthority",list);
+            }else{
+                Integer fkVipRoleId = ecmVipUserInfo.getFkVipRoleId();
+                EcmVipRole ecmVipRole = ecmVipRoleDao.selectByPrimaryKey(fkVipRoleId);
+                EcmVipRoleAuthority ecmVipRoleAuthority = new EcmVipRoleAuthority();
+                ecmVipRoleAuthority.setFkVipRoleId(fkVipRoleId);
+                ecmVipRoleAuthority.setVipRoleDescribe(ecmVipRole.getVipRoleDescribe());
+                List<EcmVipRoleAuthority> ecmVipRoleAuthorities = ecmVipRoleAuthorityDao.selectByEcmVipRoleAuthority(ecmVipRoleAuthority);
+                data.put("role",ecmVipRole.getVipRoleDescribe());
+                data.put("authority",ecmVipRoleAuthorities);
+                data.put("allAuthority",list);
+            }
         }
         return data;
     }

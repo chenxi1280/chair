@@ -125,6 +125,7 @@ public class EcmUserServiceImpl implements EcmUserService {
 			userFlow.setTotalFlow(newVipUserFlow);
 			userFlow.setCheckFlow(0);
 			userFlow.setUsedFlow(0);
+			userFlow.setPermanentFlow(0);
 			ecmUserFlowDao.insert(userFlow);
 			//更新操作对象
 			ecmUserFlow = userFlow;
