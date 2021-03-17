@@ -85,5 +85,10 @@ public class EcmArtworkNodeBuoy implements Serializable {
      */
     private String buoyEvent;
 
+    /**
+     * 浮标context
+     */
+    private String buoyContext;
+
     private static final long serialVersionUID = 1L;
 }

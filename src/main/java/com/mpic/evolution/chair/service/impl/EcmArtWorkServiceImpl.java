@@ -925,6 +925,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         Iterator<EcmArtworkNodeBuoy> iterator = ecmArtworkNodeBuoyList.iterator();
         while (iterator.hasNext()) {
             EcmArtworkNodeBuoy next = iterator.next();
+//            next.setBuoyStatus("0");
             for (EcmArtworkNodeBuoy ecmArtworkNodeBuoy : ecmArtworkNodeBuoyVOList) {
                 ecmArtworkNodeBuoy.setFkArtworkId(ecmArtworkNodeBuoyQuery.getFkArtworkId());
                 if (ecmArtworkNodeBuoy.getPkBuoyId().equals(next.getPkBuoyId())) {
@@ -946,6 +947,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             ecmArtworkNodesDao.updateArtworkNodeBuoyByFkNodeId(ecmArtworkNodes.getParentId());
         } catch (Exception e) {
             e.printStackTrace();
+            return ResponseDTO.fail("10086");
         }
         // 合并集合 前端需要插入过的主键信息
         upDataEcmArtworkNodeBuoyVOList.addAll(ecmArtworkNodeBuoyList);

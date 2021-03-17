@@ -17,11 +17,12 @@
     <result column="buoy_pop_type" jdbcType="INTEGER" property="buoyPopType" />
     <result column="buoy_pop_app_id" jdbcType="VARCHAR" property="buoyPopAppId" />
     <result column="buoy_event" jdbcType="VARCHAR" property="buoyEvent" />
+    <result column="buoy_context" jdbcType="VARCHAR" property="buoyContext" />
   </resultMap>
   <sql id="Base_Column_List">
     pk_buoy_id, fk_node_id, fk_artwork_id, buoy_wide, buoy_high, buoy_opacity, buoy_section_time,
     buoy_coordinate_x, buoy_coordinate_y, buoy_type, buoy_status, buoy_pop_context, buoy_pop_type,
-    buoy_pop_app_id, buoy_event
+    buoy_pop_app_id, buoy_event, buoy_context
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
@@ -38,12 +39,14 @@
       buoy_high, buoy_opacity, buoy_section_time,
       buoy_coordinate_x, buoy_coordinate_y, buoy_type,
       buoy_status, buoy_pop_context, buoy_pop_type,
-      buoy_pop_app_id, buoy_event)
+      buoy_pop_app_id, buoy_event, buoy_context
+      )
     values (#{fkNodeId,jdbcType=INTEGER}, #{fkArtworkId,jdbcType=INTEGER}, #{buoyWide,jdbcType=VARCHAR},
       #{buoyHigh,jdbcType=VARCHAR}, #{buoyOpacity,jdbcType=VARCHAR}, #{buoySectionTime,jdbcType=VARCHAR},
       #{buoyCoordinateX,jdbcType=VARCHAR}, #{buoyCoordinateY,jdbcType=VARCHAR}, #{buoyType,jdbcType=INTEGER},
       #{buoyStatus,jdbcType=INTEGER}, #{buoyPopContext,jdbcType=VARCHAR}, #{buoyPopType,jdbcType=INTEGER},
-      #{buoyPopAppId,jdbcType=VARCHAR}, #{buoyEvent,jdbcType=VARCHAR})
+      #{buoyPopAppId,jdbcType=VARCHAR}, #{buoyEvent,jdbcType=VARCHAR}, #{buoyContext,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" keyColumn="pk_buoy_id" keyProperty="pkBuoyId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeBuoy" useGeneratedKeys="true">
     insert into ecm_artwork_node_buoy
@@ -90,6 +93,9 @@
       <if test="buoyEvent != null">
         buoy_event,
       </if>
+      <if test="buoyContext != null">
+        buoy_context,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="fkNodeId != null">
@@ -133,6 +139,9 @@
       </if>
       <if test="buoyEvent != null">
         #{buoyEvent,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyContext != null">
+        #{buoyContext,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -181,6 +190,9 @@
       <if test="buoyEvent != null">
         buoy_event = #{buoyEvent,jdbcType=VARCHAR},
       </if>
+      <if test="buoyContext != null">
+        buoy_context = #{buoyContext,jdbcType=VARCHAR},
+      </if>
     </set>
     where pk_buoy_id = #{pkBuoyId,jdbcType=INTEGER}
   </update>
@@ -199,9 +211,12 @@
       buoy_pop_context = #{buoyPopContext,jdbcType=VARCHAR},
       buoy_pop_type = #{buoyPopType,jdbcType=INTEGER},
       buoy_pop_app_id = #{buoyPopAppId,jdbcType=VARCHAR},
-      buoy_event = #{buoyEvent,jdbcType=VARCHAR}
+      buoy_event = #{buoyEvent,jdbcType=VARCHAR},
+      buoy_context = #{buoyContext,jdbcType=VARCHAR}
     where pk_buoy_id = #{pkBuoyId,jdbcType=INTEGER}
   </update>
+
+
 
 
   <!--  sql-->
@@ -233,20 +248,79 @@
     delete from ecm_artwork_node_buoy
     where fk_artwork_id = #{fkArtworkId}
   </delete>
+
+<!--  values-->
+<!--  <foreach collection="list" separator="," index="index" item="item" >-->
+<!--    (#{item.fkNodeId}, #{item.fkArtworkId}, #{item.buoyWide}, #{item.buoyHigh}, #{item.buoyOpacity},-->
+<!--    #{item.buoySectionTime}, #{item.buoyCoordinateX}, #{item.buoyCoordinateY}, #{item.buoyType},-->
+<!--    #{buoyStatus,jdbcType=VARCHAR}, #{buoyPopContext,jdbcType=VARCHAR}, #{buoyPopType,jdbcType=INTEGER},-->
+<!--    #{buoyPopAppId,jdbcType=VARCHAR})-->
+<!--  </foreach>-->
+
   <insert id="insertSelectiveList"  keyColumn="pk_buoy_id" keyProperty="pkBuoyId"  useGeneratedKeys="true">
     insert into ecm_artwork_node_buoy
     (fk_node_id, fk_artwork_id, buoy_wide, buoy_high, buoy_opacity,
      buoy_section_time, buoy_coordinate_x, buoy_coordinate_y, buoy_type,
      buoy_status, buoy_pop_context, buoy_pop_type,buoy_pop_app_id )
-    values
-    <foreach collection="list" separator="," index="index" item="item" >
-      (#{item.fkNodeId}, #{item.fkArtworkId}, #{item.buoyWide}, #{item.buoyHigh}, #{item.buoyOpacity},
-       #{item.buoySectionTime}, #{item.buoyCoordinateX}, #{item.buoyCoordinateY}, #{item.buoyType},
-       #{buoyStatus,jdbcType=INTEGER}, #{buoyPopContext,jdbcType=VARCHAR}, #{buoyPopType,jdbcType=INTEGER},
-       #{buoyPopAppId,jdbcType=VARCHAR})
-    </foreach>
+
+      values
+      <foreach collection="list" separator="," index="index" item="item" >
+        (#{item.fkNodeId}, #{item.fkArtworkId}, #{item.buoyWide}, #{item.buoyHigh}, #{item.buoyOpacity},
+        #{item.buoySectionTime}, #{item.buoyCoordinateX}, #{item.buoyCoordinateY}, #{item.buoyType},
+        #{item.buoyStatus,jdbcType=VARCHAR}, #{item.buoyPopContext,jdbcType=VARCHAR}, #{item.buoyPopType,jdbcType=INTEGER},
+        #{item.buoyPopAppId,jdbcType=VARCHAR})
+      </foreach>
+
+<!--    <foreach collection="list" item="item" index="index" separator=",">-->
+
+<!--      <trim prefix="values (" suffix=")" suffixOverrides=",">-->
+
+<!--        <if test="item.fkNodeId != null">-->
+<!--          #{item.fkNodeId},-->
+<!--        </if>-->
+<!--        <if test="item.fkArtworkId != null">-->
+<!--          #{item.fkArtworkId},-->
+<!--        </if>-->
+<!--        <if test="item.buoyWide != null">-->
+<!--          #{item.buoyWide},-->
+<!--        </if>-->
+<!--        <if test="item.buoyHigh != null">-->
+<!--          #{item.buoyHigh},-->
+<!--        </if>-->
+<!--        <if test="item.buoyOpacity != null">-->
+<!--          #{item.buoyOpacity},-->
+<!--        </if>-->
+<!--        <if test="item.buoySectionTime != null">-->
+<!--          #{item.buoySectionTime},-->
+<!--        </if>-->
+<!--        <if test="item.buoyCoordinateX != null">-->
+<!--          #{item.buoyCoordinateX},-->
+<!--        </if>-->
+<!--        <if test="item.buoyCoordinateY != null">-->
+<!--          #{item.buoyCoordinateY},-->
+<!--        </if>-->
+<!--        <if test="item.buoyType != null">-->
+<!--          #{item.buoyType},-->
+<!--        </if>-->
+<!--        <if test="item.buoyStatus != null">-->
+<!--          #{item.buoyStatus},-->
+<!--        </if>-->
+<!--        <if test="item.buoyPopContext != null">-->
+<!--          #{item.buoyPopContext},-->
+<!--        </if>-->
+<!--        <if test="item.buoyPopType != null">-->
+<!--          #{item.buoyPopType},-->
+<!--        </if>-->
+<!--        <if test="item.buoyPopAppId != null">-->
+<!--          #{item.buoyPopAppId}-->
+<!--        </if>-->
+<!--      </trim>-->
+
+
+<!--    </foreach>-->
 
   </insert>
+
   <update id="updateByPrimaryKeySelectiveList">
     update ecm_artwork_node_buoy
 
