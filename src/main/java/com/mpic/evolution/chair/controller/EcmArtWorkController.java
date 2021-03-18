@@ -67,7 +67,7 @@ public class EcmArtWorkController extends BaseController{
      *     	保存失败: status 500  msg "error“
      *
      */
-	@EcmArtworkAuthentication(auth = {"浮标"})
+//	@EcmArtworkAuthentication(auth = {"浮标"})
     @RequestMapping("/getArtWorks")
     @ResponseBody
     public ResponseDTO getArtWorks(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
