@@ -25,6 +25,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -79,7 +80,7 @@ public class AuthenticationAspect {
         if (StringUtil.isEmpty(userId)){
             throw new EcmTokenException(603,"非法访问");
         }
-        List<EcmVipUserInfo> ecmVipUserInfo =  ecmVipUserInfoDao.selectByUserId(Integer.valueOf(userId));;
+        List<EcmVipUserInfo> ecmVipUserInfo =  ecmVipUserInfoDao.selectByUserId(Integer.valueOf(userId),new Date());;
 //        if (redisUtil.hasKey(token + "AuthVipUserInfo") ){
 //            ecmVipUserInfo = (List<EcmVipUserInfo>) redisUtil.get(token + "AuthVipUserInfo");
 //        }else {

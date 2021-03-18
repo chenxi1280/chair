@@ -1,8 +1,10 @@
 package com.mpic.evolution.chair.dao;
 
 import com.mpic.evolution.chair.pojo.entity.EcmVipUserInfo;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -22,5 +24,5 @@ public interface EcmVipUserInfoDao {
 
     int updateByPrimaryKey(EcmVipUserInfo record);
 
-    List<EcmVipUserInfo> selectByUserId(Integer fkUserId);
+    List<EcmVipUserInfo> selectByUserId(@Param("fkUserId") Integer fkUserId,@Param("vipEndTime") Date vipEndTime );
 }
