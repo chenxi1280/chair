@@ -394,6 +394,15 @@ public class EcmArtWorkController extends BaseController{
 		return ecmArtWorkService.deleteArtworkEndingList(ecmArtworkEndingsQuery);
 	}
 
+	/**
+	 * @param: [ecmArtworkNodePopupSettingsVO]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2021/2/20
+	 * 描述 : 保存节点 弹窗设置
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
 	@RequestMapping("/saveArtworkNodePopupSettings")
 	@ResponseBody
 	public ResponseDTO saveArtworkNodePopupSettings(@RequestBody EcmArtworkNodePopupSettingsVO ecmArtworkNodePopupSettingsVO){
@@ -406,6 +415,15 @@ public class EcmArtWorkController extends BaseController{
 		return ecmArtWorkService.saveArtworkNodePopupSettings(ecmArtworkNodePopupSettingsVO);
 	}
 
+	/**
+	 * @param: [ecmArtworkNodesVo]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2021/2/20
+	 * 描述 : 保存节点条件设置
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
 	@RequestMapping("/saveArtworkNodeCondition")
 	@ResponseBody
 	public ResponseDTO saveArtworkNodeCondition(@RequestBody EcmArtworkNodesVo ecmArtworkNodesVo){
@@ -418,6 +436,15 @@ public class EcmArtWorkController extends BaseController{
 		return ecmArtWorkService.saveArtworkNodeCondition(ecmArtworkNodesVo);
 	}
 
+	/**
+	 * @param: [ecmArtworkNodesVo]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2021/2/20
+	 * 描述 : 保存节点多结局条件
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
 	@RequestMapping("/saveArtworkEndingCondition")
 	@ResponseBody
 	public ResponseDTO saveArtworkEndingCondition(@RequestBody EcmArtworkNodesVo ecmArtworkNodesVo){
@@ -441,7 +468,15 @@ public class EcmArtWorkController extends BaseController{
 
 		return ecmArtWorkService.saveArtworkNodeBuoy(ecmArtworkNodeBuoyQuery);
 	}
-
+	/**
+	 * @param: [ecmArtworkNodeBuoyVO]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2021/2/20
+	 * 描述 :
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
 	@RequestMapping("/deleteArtworkNodeBuoy")
 	@ResponseBody
 	public ResponseDTO deleteArtworkNodeBuoy(@RequestBody EcmArtworkNodeBuoyVO ecmArtworkNodeBuoyVO){

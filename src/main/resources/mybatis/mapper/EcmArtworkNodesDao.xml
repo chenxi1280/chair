@@ -541,7 +541,7 @@
     where fk_artwork_id = #{fkArtworkId} and parent_id = -1
   </update>
 
-    <insert id="insertEndingList" keyColumn="pk_detail_id" keyProperty="pkDetailId"  useGeneratedKeys="true" >
+  <insert id="insertEndingList" keyColumn="pk_detail_id" keyProperty="pkDetailId"  useGeneratedKeys="true" >
     insert into ecm_artwork_nodes  (parent_id, video_code,
     video_url,
     video_text, fk_artwork_id, items_bak_text,
