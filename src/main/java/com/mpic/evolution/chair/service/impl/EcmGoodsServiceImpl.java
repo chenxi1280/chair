@@ -9,9 +9,7 @@ import com.mpic.evolution.chair.pojo.vo.EcmGoodsVO;
 import com.mpic.evolution.chair.service.EcmGoodsService;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -37,7 +35,13 @@ public class EcmGoodsServiceImpl implements EcmGoodsService {
         List<EcmGoodsVO> list = ecmGoodsDao.selectListByEcmGoodsQuery(ecmGoodsQuery);
         List<EcmGoodsVO> ecmGoodsVOList = list.stream().sorted(Comparator.comparing(EcmGoodsVO::getGoodsSort)).collect(Collectors.toList());
         Map<String, List<EcmGoodsVO>> collect = ecmGoodsVOList.stream().collect(Collectors.groupingBy(EcmGoodsVO::getCategoryName));
-        return ResponseDTO.ok(collect);
+        Set<String> strings = collect.keySet();
+        HashMap<Integer, Object> integerComparatorHashMap = new HashMap<>(2);
+        integerComparatorHashMap.put(0,strings);
+        integerComparatorHashMap.put(1,collect);
+//        Map<Integer, List<EcmGoodsVO>> collect = ecmGoodsVOList.stream().collect(Collectors.groupingBy(EcmGoodsVO::getFkGoodsCategoryId));
+
+        return ResponseDTO.ok(integerComparatorHashMap);
     }
 
     @Override
