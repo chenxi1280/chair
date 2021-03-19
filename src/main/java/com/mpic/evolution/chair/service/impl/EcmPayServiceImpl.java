@@ -153,7 +153,7 @@ public class EcmPayServiceImpl implements EcmPayService {
                 System.err.println("正在执行执行业务逻辑");
                 // 调用 业务判断
                 System.out.println("total_fee" + "/n" + total_fee + "/n" + ecmOrder.getOrderPrice());
-                if (ecmOrder.getOrderPrice().equals(new BigDecimal(total_fee).divide(BigDecimal.valueOf(100)))) {
+//                if (ecmOrder.getOrderPrice().equals(new BigDecimal(total_fee).divide(BigDecimal.valueOf(100)))) {
                     //执行业务并判断是否成功
                     if (ecmOrderService.savaVipPaymentInfo(out_trade_no)) {
                         ecmOrderVO.setOrderState(2);
@@ -161,10 +161,10 @@ public class EcmPayServiceImpl implements EcmPayService {
                         System.out.println("支付成功，业务因为异常执行失败!!  订单code：" + out_trade_no);
                         ecmOrderVO.setOrderState(1);
                     }
-                } else {
-                    System.out.println("支付成功，业务执行错误!，订单金额和支付金额不符合！！订单code：" + out_trade_no);
-                    ecmOrderVO.setOrderState(3);
-                }
+//                } else {
+//                    System.out.println("支付成功，业务执行错误!，订单金额和支付金额不符合！！订单code：" + out_trade_no);
+//                    ecmOrderVO.setOrderState(3);
+//                }
                 ecmOrderService.updateOrderByPay(ecmOrderVO);
                 ecmOrderHistoryService.insertOrderHistory(out_trade_no, total_fee);
                 // 通知微信.异步确认成功.必写.不然会一直通知后台.八次之后就认为交易失败了.
