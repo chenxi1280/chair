@@ -152,7 +152,7 @@ public class EcmPayServiceImpl implements EcmPayService {
                 ecmOrderService.updateOrderByPay(ecmOrderVO);
                 System.err.println("正在执行执行业务逻辑");
                 // 调用 业务判断
-                System.out.println("total_fee" + "/n" + total_fee + "/n" + ecmOrder.getOrderPrice());
+                System.out.println("total_fee" + "/n" + new BigDecimal(total_fee).divide(BigDecimal.valueOf(100)) + "/n" + ecmOrder.getOrderPrice());
 //                if (ecmOrder.getOrderPrice().equals(new BigDecimal(total_fee).divide(BigDecimal.valueOf(100)))) {
                     //执行业务并判断是否成功
                     if (ecmOrderService.savaVipPaymentInfo(out_trade_no)) {
