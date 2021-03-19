@@ -1,9 +1,8 @@
 package com.mpic.evolution.chair.dao;
 
-import java.util.List;
-
 import com.mpic.evolution.chair.pojo.entity.EcmUserExtraflow;
-import com.mpic.evolution.chair.pojo.query.EcmUserExtraflowQuery;
+
+import java.util.List;
 
 public interface EcmUserExtraflowDao {
     int deleteByPrimaryKey(Integer extraflowId);
@@ -13,9 +12,9 @@ public interface EcmUserExtraflowDao {
     int insertSelective(EcmUserExtraflow record);
 
     EcmUserExtraflow selectByPrimaryKey(Integer extraflowId);
-    
-    List<EcmUserExtraflow> selectByExtraflow(EcmUserExtraflowQuery record);
-    
+
+    List<EcmUserExtraflow> selectByFkUserId(Integer fkUserId);
+
     int updateByPrimaryKeySelective(EcmUserExtraflow record);
 
     int updateByPrimaryKey(EcmUserExtraflow record);

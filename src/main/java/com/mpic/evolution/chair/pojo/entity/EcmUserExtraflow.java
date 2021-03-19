@@ -18,19 +18,19 @@ public class EcmUserExtraflow implements Serializable {
     private Integer fkUserId;
 
     /**
-     * 加油包状态 0停用 1可用
+     * 加油包购买时间
      */
-    private Short extraflowStatus;
+    private String extraflowType;
 
     /**
-     * 加油包购买时间
+     * 购买时间
      */
     private Date extraflowCreateTime;
 
     /**
-     * 记录更新时间
+     * 购买流量数量 单位KB
      */
-    private Date extraflowUpdateTime;
+    private Integer extraflowNumber;
 
     private static final long serialVersionUID = 1L;
 }

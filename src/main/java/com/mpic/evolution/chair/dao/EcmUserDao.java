@@ -20,9 +20,9 @@ public interface EcmUserDao {
     int updateByPrimaryKeySelective(EcmUser record);
 
     int updateByPrimaryKey(EcmUser record);
-	
+
     EcmUser selectByRecord(EcmUser record);
-    
+
     /**
      * @author SJ
      * @param record
@@ -34,4 +34,6 @@ public interface EcmUserDao {
     List<EcmUserVo> selectUserByEcmArtworkList(@Param("ids") List<EcmArtworkVo> list);
 
     EcmUserVo selectByPkUserId(Integer pkUserId);
+
+    EcmUserVo selectByPhone(String mobile);
 }

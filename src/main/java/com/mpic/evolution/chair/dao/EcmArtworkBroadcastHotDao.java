@@ -5,9 +5,11 @@ import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkBroadcastHotVO;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface EcmArtworkBroadcastHotDao {
     int deleteByPrimaryKey(Integer pkBroadcastHotId);
 

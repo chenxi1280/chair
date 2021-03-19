@@ -414,4 +414,9 @@
         from ecm_user
         where pk_user_id = #{pkUserId}
     </select>
+    <select id="selectByPhone" resultType="com.mpic.evolution.chair.pojo.vo.EcmUserVo">
+        select <include refid="Base_Column_List" />
+        from ecm_user
+        where  mobile = #{mobile}
+    </select>
 </mapper>

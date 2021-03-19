@@ -1,6 +1,6 @@
 package com.mpic.evolution.chair.controller;
 
-import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
+import com.mpic.evolution.chair.common.exception.EcmTokenException;
 import com.mpic.evolution.chair.util.JWTUtil;
 import com.qcloud.vod.common.StringUtil;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -61,15 +61,13 @@ public class BaseController {
      */
     public Integer getUserIdByHandToken(){
         String token = this.getRequest().getHeader("Authorization");
-        if (StringUtil.isEmpty(token)){
-            return null;
+        if (!StringUtil.isEmpty(token)){
+            String userId = JWTUtil.getUserId(token);
+            if (!StringUtil.isEmpty(userId)){
+                return  Integer.valueOf(userId);
+            }
         }
-        String userId = JWTUtil.getUserId(token);
-        if (!StringUtil.isEmpty(userId)){
-           return  Integer.valueOf(userId);
-        }
-        return null;
-
+        throw new EcmTokenException(603,"非法访问");
     }
 
 }

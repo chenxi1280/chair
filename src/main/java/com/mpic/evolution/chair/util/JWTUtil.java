@@ -119,7 +119,7 @@ public class JWTUtil {
     }
 
     public static void main(String[] args) {
-		String token = JWTUtil.sign("1506", "codeWhy", SecretKeyConstants.JWT_SECRET_KEY);
+		String token = JWTUtil.sign("1506", "222222", SecretKeyConstants.JWT_SECRET_KEY);
 		System.out.println(token);
 		String userId = JWTUtil.getUserId(token);
 		System.out.println(userId);

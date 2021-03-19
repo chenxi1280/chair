@@ -1,9 +1,13 @@
 package com.mpic.evolution.chair.config.exception;
 
+import com.mpic.evolution.chair.common.exception.EcmAuthenticationException;
+import com.mpic.evolution.chair.common.exception.EcmTokenException;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import static com.mpic.evolution.chair.common.returnvo.ErrorEnum.ERR_603;
 
 /**
  * @author by cxd
@@ -22,4 +26,21 @@ public class BaseExceptionHandler {
         return ResponseDTO.fail(e.getMessage(),"后台错误",550,550);
     }
 
+
+    @ExceptionHandler(value = EcmTokenException.class)
+    @ResponseBody
+    ResponseDTO  tokenException(EcmTokenException e) {
+        System.out.println("token 不合法 ，非法访问");
+//        e.printStackTrace();
+        return ResponseDTO.fail(ERR_603.getText(),ERR_603.getText(),Integer.valueOf(ERR_603.getValue()),ERR_603.getValue());
+    }
+
+
+    @ExceptionHandler(value = EcmAuthenticationException.class)
+    @ResponseBody
+    ResponseDTO  ecmAuthenticationException(EcmAuthenticationException e) {
+        System.out.println("权限不够！");
+//        e.printStackTrace();
+        return ResponseDTO.fail(ERR_603.getText(),ERR_603.getText(),Integer.valueOf(ERR_603.getValue()),ERR_603.getValue());
+    }
 }

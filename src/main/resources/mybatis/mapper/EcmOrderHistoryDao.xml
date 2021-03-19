@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mpic.evolution.chair.dao.EcmOrderHistoryDao">
+  <resultMap id="BaseResultMap" type="com.mpic.evolution.chair.pojo.entity.EcmOrderHistory">
+    <id column="pk_order_history_id" jdbcType="INTEGER" property="pkOrderHistoryId" />
+    <result column="pay_order_id" jdbcType="VARCHAR" property="payOrderId" />
+    <result column="pay_order_price" jdbcType="DECIMAL" property="payOrderPrice" />
+    <result column="order_type" jdbcType="INTEGER" property="orderType" />
+    <result column="order_code" jdbcType="VARCHAR" property="orderCode" />
+    <result column="fk_order_id" jdbcType="INTEGER" property="fkOrderId" />
+    <result column="goods_name" jdbcType="VARCHAR" property="goodsName" />
+    <result column="fk_goods_id" jdbcType="INTEGER" property="fkGoodsId" />
+    <result column="goods_price" jdbcType="DECIMAL" property="goodsPrice" />
+    <result column="goods_action_number" jdbcType="INTEGER" property="goodsActionNumber" />
+    <result column="goods_type" jdbcType="VARCHAR" property="goodsType" />
+    <result column="fk_user_id" jdbcType="INTEGER" property="fkUserId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pk_order_history_id, pay_order_id, pay_order_price, order_type, order_code, fk_order_id,
+    goods_name, fk_goods_id, goods_price, goods_action_number, goods_type, fk_user_id,
+    create_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from ecm_order_history
+    where pk_order_history_id = #{pkOrderHistoryId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ecm_order_history
+    where pk_order_history_id = #{pkOrderHistoryId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="pk_order_history_id" keyProperty="pkOrderHistoryId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmOrderHistory" useGeneratedKeys="true">
+    insert into ecm_order_history (pay_order_id, pay_order_price, order_type,
+      order_code, fk_order_id, goods_name,
+      fk_goods_id, goods_price, goods_action_number,
+      goods_type, fk_user_id, create_time
+      )
+    values (#{payOrderId,jdbcType=VARCHAR}, #{payOrderPrice,jdbcType=DECIMAL}, #{orderType,jdbcType=INTEGER},
+      #{orderCode,jdbcType=VARCHAR}, #{fkOrderId,jdbcType=INTEGER}, #{goodsName,jdbcType=VARCHAR},
+      #{fkGoodsId,jdbcType=INTEGER}, #{goodsPrice,jdbcType=DECIMAL}, #{goodsActionNumber,jdbcType=INTEGER},
+      #{goodsType,jdbcType=VARCHAR}, #{fkUserId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="pk_order_history_id" keyProperty="pkOrderHistoryId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmOrderHistory" useGeneratedKeys="true">
+    insert into ecm_order_history
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="payOrderId != null">
+        pay_order_id,
+      </if>
+      <if test="payOrderPrice != null">
+        pay_order_price,
+      </if>
+      <if test="orderType != null">
+        order_type,
+      </if>
+      <if test="orderCode != null">
+        order_code,
+      </if>
+      <if test="fkOrderId != null">
+        fk_order_id,
+      </if>
+      <if test="goodsName != null">
+        goods_name,
+      </if>
+      <if test="fkGoodsId != null">
+        fk_goods_id,
+      </if>
+      <if test="goodsPrice != null">
+        goods_price,
+      </if>
+      <if test="goodsActionNumber != null">
+        goods_action_number,
+      </if>
+      <if test="goodsType != null">
+        goods_type,
+      </if>
+      <if test="fkUserId != null">
+        fk_user_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="payOrderId != null">
+        #{payOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="payOrderPrice != null">
+        #{payOrderPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="orderType != null">
+        #{orderType,jdbcType=INTEGER},
+      </if>
+      <if test="orderCode != null">
+        #{orderCode,jdbcType=VARCHAR},
+      </if>
+      <if test="fkOrderId != null">
+        #{fkOrderId,jdbcType=INTEGER},
+      </if>
+      <if test="goodsName != null">
+        #{goodsName,jdbcType=VARCHAR},
+      </if>
+      <if test="fkGoodsId != null">
+        #{fkGoodsId,jdbcType=INTEGER},
+      </if>
+      <if test="goodsPrice != null">
+        #{goodsPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="goodsActionNumber != null">
+        #{goodsActionNumber,jdbcType=INTEGER},
+      </if>
+      <if test="goodsType != null">
+        #{goodsType,jdbcType=VARCHAR},
+      </if>
+      <if test="fkUserId != null">
+        #{fkUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmOrderHistory">
+    update ecm_order_history
+    <set>
+      <if test="payOrderId != null">
+        pay_order_id = #{payOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="payOrderPrice != null">
+        pay_order_price = #{payOrderPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="orderType != null">
+        order_type = #{orderType,jdbcType=INTEGER},
+      </if>
+      <if test="orderCode != null">
+        order_code = #{orderCode,jdbcType=VARCHAR},
+      </if>
+      <if test="fkOrderId != null">
+        fk_order_id = #{fkOrderId,jdbcType=INTEGER},
+      </if>
+      <if test="goodsName != null">
+        goods_name = #{goodsName,jdbcType=VARCHAR},
+      </if>
+      <if test="fkGoodsId != null">
+        fk_goods_id = #{fkGoodsId,jdbcType=INTEGER},
+      </if>
+      <if test="goodsPrice != null">
+        goods_price = #{goodsPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="goodsActionNumber != null">
+        goods_action_number = #{goodsActionNumber,jdbcType=INTEGER},
+      </if>
+      <if test="goodsType != null">
+        goods_type = #{goodsType,jdbcType=VARCHAR},
+      </if>
+      <if test="fkUserId != null">
+        fk_user_id = #{fkUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where pk_order_history_id = #{pkOrderHistoryId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmOrderHistory">
+    update ecm_order_history
+    set pay_order_id = #{payOrderId,jdbcType=VARCHAR},
+      pay_order_price = #{payOrderPrice,jdbcType=DECIMAL},
+      order_type = #{orderType,jdbcType=INTEGER},
+      order_code = #{orderCode,jdbcType=VARCHAR},
+      fk_order_id = #{fkOrderId,jdbcType=INTEGER},
+      goods_name = #{goodsName,jdbcType=VARCHAR},
+      fk_goods_id = #{fkGoodsId,jdbcType=INTEGER},
+      goods_price = #{goodsPrice,jdbcType=DECIMAL},
+      goods_action_number = #{goodsActionNumber,jdbcType=INTEGER},
+      goods_type = #{goodsType,jdbcType=VARCHAR},
+      fk_user_id = #{fkUserId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where pk_order_history_id = #{pkOrderHistoryId,jdbcType=INTEGER}
+  </update>
+</mapper>

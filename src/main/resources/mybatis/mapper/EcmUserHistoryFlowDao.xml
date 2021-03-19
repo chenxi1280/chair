@@ -120,4 +120,18 @@
       remarks = #{remarks,jdbcType=VARCHAR}
     where flow_history_id = #{flowHistoryId,jdbcType=INTEGER}
   </update>
+
+  <select id="selectByVipTimeZone" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from ecm_user_history_flow
+    <where>
+      <if test="startDate != null and endDate != null">
+        and creat_time between #{startDate} and #{endDate}
+      </if>
+      <if test="fkUserId != null">
+        and user_id = #{fkUserId,jdbcType=INTEGER}
+      </if>
+    </where>
+  </select>
 </mapper>

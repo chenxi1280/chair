@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
  * @Description TODO
  * @Date 2021/1/8 9:26
  */
-//@Component
+@Component
 public class BaseInterceptor implements HandlerInterceptor {
     Logger logger = LoggerFactory.getLogger(BaseInterceptor.class);
 

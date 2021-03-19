@@ -61,19 +61,34 @@ public class EcmArtworkNodeBuoy implements Serializable {
     private Integer buoyType;
 
     /**
-     * 状态
+     * 状态 0不启用跳转，1启用跳转
      */
     private Integer buoyStatus;
 
     /**
-     * 备注
+     * 浮标 弹窗 内容
      */
-    private String buoyContext;
+    private String buoyPopContext;
+
+    /**
+     * 0 其他小程序 1文字 2 图片
+     */
+    private Integer buoyPopType;
+
+    /**
+     * appid
+     */
+    private String buoyPopAppId;
 
     /**
      * 事件
      */
     private String buoyEvent;
+
+    /**
+     * 浮标context
+     */
+    private String buoyContext;
 
     private static final long serialVersionUID = 1L;
 }

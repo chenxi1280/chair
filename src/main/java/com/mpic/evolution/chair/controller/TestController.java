@@ -7,7 +7,17 @@ import java.util.concurrent.Executors;
 
 import javax.annotation.Resource;
 
+import com.alibaba.fastjson.JSONObject;
+import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
+import com.mpic.evolution.chair.pojo.entity.EcmGoods;
+import com.mpic.evolution.chair.pojo.vo.EcmOrderVO;
+import com.mpic.evolution.chair.service.EcmGoodsService;
+import com.mpic.evolution.chair.service.EcmOrderService;
+import com.mpic.evolution.chair.service.EcmVipService;
+import com.mpic.evolution.chair.service.vip.BeanConfig;
+import com.mpic.evolution.chair.service.vip.PaymentVipService;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -25,31 +35,58 @@ public class TestController {
 	@Resource
 	private RedisLock redisLock;
 
-	private int count = 0;
+	@Resource
+	private EcmVipService ecmVipService;
 
-//	@RequestMapping("/testRedisLock")
+	@Resource
+	private BeanConfig beanConfig;
+
+	@Resource
+	private EcmOrderService ecmOrderService;
+
+	@Resource
+	private EcmGoodsService ecmGoodsService;
+
+//	private int count = 0;
+
+	/*@RequestMapping("/testRedisLock")
+	@ResponseBody
+	public void  testRedisLock() throws InterruptedException {
+		int clientcount = 100000;
+		CountDownLatch countDownLatch = new CountDownLatch(clientcount);
+		ExecutorService threadPool = Executors.newFixedThreadPool(1000);
+		long start = System.currentTimeMillis();
+		for (int i = 0; i < clientcount; i++) {
+			threadPool.execute(()->{
+				String id = UUID.randomUUID().toString();
+				try {
+					redisLock.lock(id);
+					count++;
+					System.out.println("count值为："+ count);
+				} finally {
+					redisLock.unlock(id);
+				}
+				countDownLatch.countDown();
+			});
+		}
+		countDownLatch.await();
+		long end = System.currentTimeMillis();
+		System.out.println(String.format("执行线程数:%d,总耗时:%d,count数为:%d",1000,end-start,count));
+	}*/
+
+//	@RequestMapping("/testVip")
 //	@ResponseBody
-//	public void  testRedisLock() throws InterruptedException {
-//		int clientcount = 100000;
-//		CountDownLatch countDownLatch = new CountDownLatch(clientcount);
-//		ExecutorService threadPool = Executors.newFixedThreadPool(1000);
-//		long start = System.currentTimeMillis();
-//		for (int i = 0; i < clientcount; i++) {
-//			threadPool.execute(()->{
-//				String id = UUID.randomUUID().toString();
-//				try {
-//					redisLock.lock(id);
-//					count++;
-//					System.out.println("count值为："+ count);
-//				} finally {
-//					redisLock.unlock(id);
-//				}
-//				countDownLatch.countDown();
-//			});
-//		}
-//		countDownLatch.await();
-//		long end = System.currentTimeMillis();
-//		System.out.println(String.format("执行线程数:%d,总耗时:%d,count数为:%d",1000,end-start,count));
+//	public ResponseDTO testVip() {
+//		JSONObject userVipInfo = ecmVipService.getUserVipInfo(1617);
+//		return ResponseDTO.ok(userVipInfo);
 //	}
+	@RequestMapping("/testVip")
+	public void savaVipPaymentInfo(String orderCode) throws Exception{
+		EcmOrderVO ecmOrderVO = ecmOrderService.queryOrderInfo(orderCode);
+		EcmGoods goods = ecmGoodsService.getGoodsVOByPkId(ecmOrderVO.getFkGoodsId());
+		PaymentVipService updateVipDate = beanConfig.createQueryService(goods.getGoodsType());
+		System.out.println(updateVipDate.toString());
+		updateVipDate.operationRelateToPayment(goods.getGoodsActionNumber(),ecmOrderVO.getFkUserId(),goods.getGoodsName());
+	}
 
 }

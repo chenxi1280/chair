@@ -5,9 +5,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.HttpKit;
 import com.mpic.evolution.chair.common.constant.PublishConstants;
 import com.mpic.evolution.chair.common.constant.TiktokConstant;
-import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
+import com.mpic.evolution.chair.common.exception.EcmTokenException;
+import com.mpic.evolution.chair.config.annotation.EcmArtworkAuthentication;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
-import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
 import com.mpic.evolution.chair.pojo.query.EcmArtworkEndingsQuery;
 import com.mpic.evolution.chair.pojo.query.EcmArtworkNodeBuoyQuery;
@@ -67,16 +67,11 @@ public class EcmArtWorkController extends BaseController{
      *     	保存失败: status 500  msg "error“
      *
      */
+//	@EcmArtworkAuthentication(auth = {"浮标"})
     @RequestMapping("/getArtWorks")
     @ResponseBody
     public ResponseDTO getArtWorks(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
-		Integer userIdByHandToken = getUserIdByHandToken();
-		if (userIdByHandToken == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
-		}
-		ecmArtWorkQuery.setFkUserid(userIdByHandToken);
-//		ecmArtWorkQuery.setPage();
-//		ecmArtWorkQuery.setLimit(20);
+		ecmArtWorkQuery.setFkUserid(getUserIdByHandToken());
         return ecmArtWorkService.getArtWorks(ecmArtWorkQuery);
     }
 
@@ -93,12 +88,7 @@ public class EcmArtWorkController extends BaseController{
     @RequestMapping("/getArtWork")
     @ResponseBody
     public ResponseDTO getArtWork(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
-
-		Integer userIdByHandToken = getUserIdByHandToken();
-		if (userIdByHandToken == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
-		}
-		ecmArtWorkQuery.setFkUserid(userIdByHandToken);
+		ecmArtWorkQuery.setFkUserid(getUserIdByHandToken());
 		return ecmArtWorkService.getArtWork(ecmArtWorkQuery);
     }
 
@@ -111,14 +101,11 @@ public class EcmArtWorkController extends BaseController{
      *       保存成功： status 200  msg “success”
      *       保存失败： status 500  msg ”error“
      */
+//	@EcmArtworkAuthentication(role = {1,2,3})
     @ResponseBody
     @RequestMapping("/saveArtWorkNode")
     public ResponseDTO saveArtWorkNod(@RequestBody EcmArtworkNodesVo ecmArtworkNodes){
-		Integer userId = getUserIdByHandToken();
 
-		if (userId== null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
-		}
 		if (ecmArtworkNodes.getParentId() == null){
             return ResponseDTO.fail("父节点id为空");
         }
@@ -129,10 +116,39 @@ public class EcmArtWorkController extends BaseController{
 		if (StringUtils.isNotBlank(ecmArtworkNodes.getRevolutionId()) && ecmArtworkNodes.getRevolutionId().length() > maxCount) {
 			return ResponseDTO.fail("视频最多编排50层");
 		}
-		ecmArtworkNodes.setFkUserId(userId);
+		ecmArtworkNodes.setFkUserId(getUserIdByHandToken());
 
         return ecmArtWorkService.saveArtWorkNode(ecmArtworkNodes);
     }
+
+    /**
+	 * @param: [ecmArtworkNodes]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2021/3/11
+	 * 描述 : 保存定位
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
+	@EcmArtworkAuthentication(auth = {"定位"})
+	@ResponseBody
+	@RequestMapping("saveLocationArtWorkNode")
+	public ResponseDTO saveLocationArtWorkNode(@RequestBody EcmArtworkNodesVo ecmArtworkNodes){
+
+		if (ecmArtworkNodes.getParentId() == null){
+			return ResponseDTO.fail("父节点id为空");
+		}
+		if (ecmArtworkNodes.getFkArtworkId() == null) {
+			return ResponseDTO.fail("作品错误");
+		}
+		int maxCount = 50;
+		if (StringUtils.isNotBlank(ecmArtworkNodes.getRevolutionId()) && ecmArtworkNodes.getRevolutionId().length() > maxCount) {
+			return ResponseDTO.fail("视频最多编排50层");
+		}
+		ecmArtworkNodes.setFkUserId(getUserIdByHandToken());
+
+		return ecmArtWorkService.saveArtWorkNode(ecmArtworkNodes);
+	}
 
 
     /**
@@ -144,13 +160,11 @@ public class EcmArtWorkController extends BaseController{
      *       保存成功: status 200  msg "success”
      *       保存失败: status 500  msg "error“
      */
+	@EcmArtworkAuthentication(role = {1,2,3})
     @RequestMapping("/addArtWork")
     @ResponseBody
     public ResponseDTO addArtWork(@RequestBody EcmArtworkNodesVo ecmArtworkNodesVo){
-		String token = getRequest().getHeader("Authorization");
-		if (StringUtil.isEmpty(token)){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
-		}
+		ecmArtworkNodesVo.setFkUserId(getUserIdByHandToken());
         return ecmArtWorkService.addArtWork(ecmArtworkNodesVo);
     }
 
@@ -163,14 +177,11 @@ public class EcmArtWorkController extends BaseController{
 	 *       成功: status 200  msg "success”
 	 *       失败: status 500  msg "error“
 	 */
+	@EcmArtworkAuthentication(role = {1,2,3})
 	@RequestMapping("/removeNode")
 	@ResponseBody
 	public ResponseDTO removeNode(@RequestBody EcmArtworkNodesVo ecmArtworkNodesVo){
-		Integer userId = getUserIdByHandToken();
-		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
-		}
-		ecmArtworkNodesVo.setFkUserId(userId);
+		ecmArtworkNodesVo.setFkUserId(getUserIdByHandToken());
 
 		return ecmArtWorkService.removeNode(ecmArtworkNodesVo);
 	}
@@ -184,14 +195,11 @@ public class EcmArtWorkController extends BaseController{
 	 *       成功: status 200  msg "success”   date:
 	 *       失败: status 500  msg "error“
 	 */
+	@EcmArtworkAuthentication(auth = {"数值"})
 	@RequestMapping("/saveArtworkNodeNumberCondition")
 	@ResponseBody
 	public ResponseDTO saveArtworkNodeNumberCondition(@RequestBody EcmArtworkNodeNumberConditionVO ecmArtworkNodeNumberConditionVO){
-		Integer userId = getUserIdByHandToken();
-		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
-		}
-		ecmArtworkNodeNumberConditionVO.setFkUserId(userId);
+		ecmArtworkNodeNumberConditionVO.setFkUserId(getUserIdByHandToken());
 
 		return ecmArtWorkService.saveArtworkNodeNumberCondition(ecmArtworkNodeNumberConditionVO);
 	}
@@ -204,15 +212,11 @@ public class EcmArtWorkController extends BaseController{
 	 *       成功: status 200  msg "success”   date:
 	 *       失败: status 500  msg "error“
 	 */
+	@EcmArtworkAuthentication(auth = {"数值"})
 	@RequestMapping("/saveAllNodeNameFlagChange")
 	@ResponseBody
 	public ResponseDTO saveAllNodeNameFlagChange(@RequestBody EcmArtworkNodeNumberConditionVO ecmArtworkNodeNumberConditionVO){
-		Integer userId = getUserIdByHandToken();
-		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
-		}
-		ecmArtworkNodeNumberConditionVO.setFkUserId(userId);
-
+		ecmArtworkNodeNumberConditionVO.setFkUserId(getUserIdByHandToken());
 		return ecmArtWorkService.saveAllNodeNameFlagChange(ecmArtworkNodeNumberConditionVO);
 	}
 
@@ -225,14 +229,12 @@ public class EcmArtWorkController extends BaseController{
 	 *       成功: status 200  msg "success”   date:
 	 *       失败: status 500  msg "error“
 	 */
+	@EcmArtworkAuthentication(auth = {"多结局"})
 	@RequestMapping("/saveArtworkEndings")
 	@ResponseBody
 	public ResponseDTO saveArtworkEndings(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
 		Integer userId = getUserIdByHandToken();
-		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
-		}
-		ecmArtworkEndingsQuery.setFkUserId(userId);
+		ecmArtworkEndingsQuery.setFkUserId(getUserIdByHandToken());
 		String saveArtworkEndings = "saveArtworkEndings";
 		Long o = (Long) redisUtil.get(userId + saveArtworkEndings);
 		if ( o != null) {
@@ -258,14 +260,11 @@ public class EcmArtWorkController extends BaseController{
 	 *       成功: status 200  msg "success”   date:
 	 *       失败: status 500  msg "error“
 	 */
+	@EcmArtworkAuthentication(auth = {"多结局"})
 	@RequestMapping("/saveArtworkEndingState")
 	@ResponseBody
 	public ResponseDTO saveArtworkEndingState(@RequestBody EcmArtworkVo ecmArtworkVo){
-		Integer userId = getUserIdByHandToken();
-		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
-		}
-		ecmArtworkVo.setFkUserid(userId);
+		ecmArtworkVo.setFkUserid(getUserIdByHandToken());
 
 		return ecmArtWorkService.saveArtworkEndingState(ecmArtworkVo);
 	}
@@ -278,14 +277,11 @@ public class EcmArtWorkController extends BaseController{
 	 *       成功: status 200  msg "success”   date:
 	 *       失败: status 500  msg "error“
 	 */
+	@EcmArtworkAuthentication(auth = {"多结局"})
 	@RequestMapping("/saveArtworkEndingList")
 	@ResponseBody
 	public ResponseDTO saveArtworkEndingList(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
-		Integer userId = getUserIdByHandToken();
-		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
-		}
-		ecmArtworkEndingsQuery.setFkUserId(userId);
+		ecmArtworkEndingsQuery.setFkUserId(getUserIdByHandToken());
 		return ecmArtWorkService.saveArtworkEndingList(ecmArtworkEndingsQuery);
 	}
 
@@ -297,14 +293,11 @@ public class EcmArtWorkController extends BaseController{
 	 * 描述 :  多结局 多节点 更新
 	 *
 	 */
+	@EcmArtworkAuthentication(auth = {"多结局"})
 	@RequestMapping("updateArtworkEndingList")
 	@ResponseBody
 	public ResponseDTO updateArtworkEndingList(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
-		Integer userId = getUserIdByHandToken();
-		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
-		}
-		ecmArtworkEndingsQuery.setFkUserId(userId);
+		ecmArtworkEndingsQuery.setFkUserId(getUserIdByHandToken());
 		return ecmArtWorkService.updateArtworkEndingList(ecmArtworkEndingsQuery);
 	}
 
@@ -315,14 +308,11 @@ public class EcmArtWorkController extends BaseController{
 	 * @Date: 2020/12/25
 	 * 描述 : 多结局 节点 删除
 	 */
+	@EcmArtworkAuthentication(auth = {"多结局"})
 	@RequestMapping("/deleteArtworkEnding")
 	@ResponseBody
 	public ResponseDTO deleteArtworkEnding(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
-		Integer userId = getUserIdByHandToken();
-		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
-		}
-		ecmArtworkEndingsQuery.setFkUserId(userId);
+		ecmArtworkEndingsQuery.setFkUserId(getUserIdByHandToken());
 		return ecmArtWorkService.deleteArtworkEnding(ecmArtworkEndingsQuery);
 	}
 
@@ -335,14 +325,11 @@ public class EcmArtWorkController extends BaseController{
 	 *       成功: status 200  msg "success”   date:ecmArtworkEndingsVOList
 	 *       失败: status 500  msg "error“
 	 */
+	@EcmArtworkAuthentication(auth = {"多结局"})
 	@RequestMapping("/getArtworkEndingList")
 	@ResponseBody
 	public ResponseDTO getArtworkEndingList(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
-		Integer userId = getUserIdByHandToken();
-		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
-		}
-		ecmArtworkEndingsQuery.setFkUserId(userId);
+		ecmArtworkEndingsQuery.setFkUserId(getUserIdByHandToken());
 		return ecmArtWorkService.getArtworkEndingList(ecmArtworkEndingsQuery);
 	}
 
@@ -355,13 +342,11 @@ public class EcmArtWorkController extends BaseController{
 	 *       成功: status 200  msg "success”   date:
 	 *       失败: status 500  msg "error“
 	 */
+	@EcmArtworkAuthentication(auth = {"多结局"})
 	@RequestMapping("/saveArtworkEndingAll")
 	@ResponseBody
 	public ResponseDTO saveArtworkEndingAll(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
-		Integer userId = getUserIdByHandToken();
-		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
-		}
+
 		if (ecmArtworkEndingsQuery.getNodeNum() == null  ) {
 			return ResponseDTO.fail("无多结局");
 		}
@@ -370,7 +355,7 @@ public class EcmArtWorkController extends BaseController{
 			return ResponseDTO.fail("结局数过多",null,490,490);
 		}
 
-		ecmArtworkEndingsQuery.setFkUserId(userId);
+		ecmArtworkEndingsQuery.setFkUserId(getUserIdByHandToken());
 		return ecmArtWorkService.saveArtworkEndingAll(ecmArtworkEndingsQuery);
 	}
 
@@ -383,14 +368,12 @@ public class EcmArtWorkController extends BaseController{
 	 *       成功: status 200  msg "success”   date:
 	 *       失败: status 500  msg "error“
 	 */
+	@EcmArtworkAuthentication(auth = {"多结局"})
 	@RequestMapping("/deleteArtworkEndingList")
 	@ResponseBody
 	public ResponseDTO deleteArtworkEndingList(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
-		Integer userId = getUserIdByHandToken();
-		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
-		}
-		ecmArtworkEndingsQuery.setFkUserId(userId);
+
+		ecmArtworkEndingsQuery.setFkUserId(getUserIdByHandToken());
 		return ecmArtWorkService.deleteArtworkEndingList(ecmArtworkEndingsQuery);
 	}
 
@@ -403,14 +386,11 @@ public class EcmArtWorkController extends BaseController{
 	 *       成功: status 200  msg "success”   date:
 	 *       失败: status 500  msg "error“
 	 */
+	@EcmArtworkAuthentication(auth = {"弹窗"})
 	@RequestMapping("/saveArtworkNodePopupSettings")
 	@ResponseBody
 	public ResponseDTO saveArtworkNodePopupSettings(@RequestBody EcmArtworkNodePopupSettingsVO ecmArtworkNodePopupSettingsVO){
-		Integer userId = getUserIdByHandToken();
-		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
-		}
-		ecmArtworkNodePopupSettingsVO.setFkUserId(userId);
+		ecmArtworkNodePopupSettingsVO.setFkUserId(getUserIdByHandToken());
 
 		return ecmArtWorkService.saveArtworkNodePopupSettings(ecmArtworkNodePopupSettingsVO);
 	}
@@ -424,14 +404,12 @@ public class EcmArtWorkController extends BaseController{
 	 *       成功: status 200  msg "success”   date:
 	 *       失败: status 500  msg "error“
 	 */
-	@RequestMapping("/saveArtworkNodeCondition")
+	@EcmArtworkAuthentication(auth = {"条件设置"})
+	@RequestMapping("saveArtworkNodeCondition")
 	@ResponseBody
 	public ResponseDTO saveArtworkNodeCondition(@RequestBody EcmArtworkNodesVo ecmArtworkNodesVo){
-		Integer userId = getUserIdByHandToken();
-		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
-		}
-		ecmArtworkNodesVo.setFkUserId(userId);
+
+		ecmArtworkNodesVo.setFkUserId(getUserIdByHandToken());
 
 		return ecmArtWorkService.saveArtworkNodeCondition(ecmArtworkNodesVo);
 	}
@@ -445,27 +423,28 @@ public class EcmArtWorkController extends BaseController{
 	 *       成功: status 200  msg "success”   date:
 	 *       失败: status 500  msg "error“
 	 */
+	@EcmArtworkAuthentication(role = {2})
 	@RequestMapping("/saveArtworkEndingCondition")
 	@ResponseBody
 	public ResponseDTO saveArtworkEndingCondition(@RequestBody EcmArtworkNodesVo ecmArtworkNodesVo){
-		Integer userId = getUserIdByHandToken();
-		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
-		}
-		ecmArtworkNodesVo.setFkUserId(userId);
+		ecmArtworkNodesVo.setFkUserId(getUserIdByHandToken());
 
 		return ecmArtWorkService.saveArtworkEndingCondition(ecmArtworkNodesVo);
 	}
-
+	/**
+	 * @param: [ecmArtworkNodeBuoyQuery]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2021/3/11
+	 * 描述 : 保存浮标
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
+	@EcmArtworkAuthentication(auth = {"浮标"})
 	@RequestMapping("/saveArtworkNodeBuoy")
 	@ResponseBody
 	public ResponseDTO saveArtworkNodeBuoy(@RequestBody EcmArtworkNodeBuoyQuery ecmArtworkNodeBuoyQuery){
-		Integer userId = getUserIdByHandToken();
-		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
-		}
-		ecmArtworkNodeBuoyQuery.setFkUserId(userId);
-
+		ecmArtworkNodeBuoyQuery.setFkUserId(getUserIdByHandToken());
 		return ecmArtWorkService.saveArtworkNodeBuoy(ecmArtworkNodeBuoyQuery);
 	}
 	/**
@@ -473,40 +452,51 @@ public class EcmArtWorkController extends BaseController{
 	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
 	 * @author: cxd
 	 * @Date: 2021/2/20
-	 * 描述 :
+	 * 描述 : 删除浮标
 	 *       成功: status 200  msg "success”   date:
 	 *       失败: status 500  msg "error“
 	 */
+	@EcmArtworkAuthentication(auth = {"浮标"})
 	@RequestMapping("/deleteArtworkNodeBuoy")
 	@ResponseBody
 	public ResponseDTO deleteArtworkNodeBuoy(@RequestBody EcmArtworkNodeBuoyVO ecmArtworkNodeBuoyVO){
-		Integer userId = getUserIdByHandToken();
-		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
-		}
-		ecmArtworkNodeBuoyVO.setFkUserId(userId);
+
+		ecmArtworkNodeBuoyVO.setFkUserId(getUserIdByHandToken());
 		return ecmArtWorkService.deleteArtworkNodeBuoy(ecmArtworkNodeBuoyVO);
 	}
-
+	/**
+	 * @param: [ecmArtworkNodeBuoyQuery]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2021/3/11
+	 * 描述 : 获取浮标
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
+	@EcmArtworkAuthentication(auth = {"浮标"})
 	@RequestMapping("/getArtworkNodeBuoy")
 	@ResponseBody
 	public ResponseDTO getArtworkNodeBuoy(@RequestBody EcmArtworkNodeBuoyQuery ecmArtworkNodeBuoyQuery){
-		Integer userId = getUserIdByHandToken();
-		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
-		}
-		ecmArtworkNodeBuoyQuery.setFkUserId(userId);
+
+		ecmArtworkNodeBuoyQuery.setFkUserId(getUserIdByHandToken());
 		return ecmArtWorkService.getArtworkNodeBuoy(ecmArtworkNodeBuoyQuery);
 	}
 
+	/**
+	 * @param: [ecmArtworkNodesVo]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2021/3/11
+	 * 描述 : 更新浮标
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
+	@EcmArtworkAuthentication(auth = {"浮标"})
 	@RequestMapping("/updateArtworkNodeBuoy")
 	@ResponseBody
 	public ResponseDTO updateArtworkBuoy(@RequestBody EcmArtworkNodesVo ecmArtworkNodesVo){
-		Integer userId = getUserIdByHandToken();
-		if (userId == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
-		}
-		ecmArtworkNodesVo.setFkUserId(userId);
+
+		ecmArtworkNodesVo.setFkUserId(getUserIdByHandToken());
 		return ecmArtWorkService.updateArtworkNodeBuoy(ecmArtworkNodesVo);
 	}
 
@@ -525,7 +515,7 @@ public class EcmArtWorkController extends BaseController{
     	String userId = JWTUtil.getUserId(token);
     	JSONObject data = new JSONObject();
     	if (StringUtil.isEmpty(userId)){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+			throw new EcmTokenException(603,"非法访问");
 		}
     	//如果是null返回false
     	boolean hasKey = redisUtil.hasKey("WxQRCode");
@@ -575,9 +565,7 @@ public class EcmArtWorkController extends BaseController{
 	public ResponseDTO getDyCode (@RequestBody EcmArtWorkQuery ecmArtWorkQuery) {
 
 		Integer userIdByHandToken = getUserIdByHandToken();
-		if (userIdByHandToken == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
-		}
+
 		//如果是null返回false
 		JSONObject data = new JSONObject();
 		boolean hasKey = redisUtil.hasKey("DyQRCode");
@@ -621,9 +609,7 @@ public class EcmArtWorkController extends BaseController{
 
 		Integer userIdByHandToken = getUserIdByHandToken();
 
-		if (userIdByHandToken == null){
-			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
-		}
+
 		JSONObject data = new JSONObject();
 
 		//如果是null返回false
