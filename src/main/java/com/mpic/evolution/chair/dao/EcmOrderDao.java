@@ -29,4 +29,5 @@ public interface EcmOrderDao {
      */
     EcmOrderVO selectByOrderCode(String code);
 
+    EcmOrderVO selectOrderInfoByPrimaryKey(Integer pkOrderId);
 }

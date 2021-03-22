@@ -1,12 +1,20 @@
 package com.mpic.evolution.chair.service.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.alibaba.fastjson.JSONObject;
+import com.mpic.evolution.chair.dao.EcmOrderDao;
+import com.mpic.evolution.chair.dao.EcmTemplateDao;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
+import com.mpic.evolution.chair.pojo.entity.EcmOrder;
+import com.mpic.evolution.chair.pojo.entity.EcmTemplate;
+import com.mpic.evolution.chair.pojo.entity.EcmUser;
 import com.mpic.evolution.chair.pojo.query.EcmInnerMessageQurey;
+import com.mpic.evolution.chair.pojo.vo.EcmOrderVO;
+import com.mpic.evolution.chair.util.Parser;
 import com.qcloud.vod.common.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -35,6 +43,12 @@ public class EcmInnerMessageServiceImpl implements EcmInnerMessageService{
 
 	@Resource
 	EcmInnerMessageDao ecmInnerMessageDao;
+	@Resource
+	EcmOrderDao ecmOrderDao;
+	@Resource
+	EcmTemplateDao ecmTemplateDao;
+
+
 
 	@Override
 	public List<EcmInnerMessage> getInnerMessage(EcmUserVo user) {
@@ -110,6 +124,33 @@ public class EcmInnerMessageServiceImpl implements EcmInnerMessageService{
 	@Override
 	public EcmInnerMessageVo getUserMsgByMsgId(Integer pkMessageId) {
 		return ecmInnerMessageDao.getUserMsgByMsgId(pkMessageId);
+	}
+
+    @Override
+    public ResponseDTO sendMsgByOrder(EcmOrder ecmOrder) {
+
+		EcmOrderVO ecmOrderVO = ecmOrderDao.selectOrderInfoByPrimaryKey(ecmOrder.getPkOrderId());
+		EcmTemplate ecmTemplate = ecmTemplateDao.selectByPrimaryKey(19);
+		EcmInnerMessageVo insertMsgVO = getInsertMsgVO(ecmTemplate.getContent(), ecmOrderVO);
+		insertMsgVO.setFkTemplateId(ecmTemplate.getPkTemplateId());
+		ecmInnerMessageDao.insertSelective(insertMsgVO);
+		return ResponseDTO.ok();
+    }
+
+	// 站内信 msg 模板替换方法
+	private EcmInnerMessageVo getInsertMsgVO(String content,EcmOrderVO ecmOrderVO){
+		EcmInnerMessageVo ecmInnerMessageVO = new EcmInnerMessageVo();
+		// ${} 替换名字
+		ecmInnerMessageVO.setContent(Parser.parse0(content, ecmOrderVO.getUsername()));
+//         !{} 替换作品
+		ecmInnerMessageVO.setContent(Parser.parse("&{","}", ecmInnerMessageVO.getContent(),ecmOrderVO.getGoodsName() ));
+//         @{}替换节点名字
+
+		ecmInnerMessageVO.setMessageStatus((short) 0);
+		ecmInnerMessageVO.setSendDate(new Date());
+		ecmInnerMessageVO.setReviewerId(0);
+		ecmInnerMessageVO.setFkUserId(ecmOrderVO.getFkUserId());
+		return ecmInnerMessageVO;
 	}
 
 }

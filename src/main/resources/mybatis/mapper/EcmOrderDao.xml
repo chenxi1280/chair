@@ -173,7 +173,13 @@
       where order_code = #{code}
 
     </select>
-
+    <select id="selectOrderInfoByPrimaryKey" resultType="com.mpic.evolution.chair.pojo.vo.EcmOrderVO">
+     select pk_order_id, order_code, order_type, order_price, order_state, order_goods_number,
+        fk_goods_id, fk_user_id, ecm_order.create_time, ecm_order.update_time,username,goods_name, category_name
+        from  ecm_order inner join  ecm_goods_category  inner join  ecm_goods   inner join ecm_user
+        on fk_user_id = pk_user_id and fk_goods_id = pk_goods_id and fk_goods_category_id = pk_category_id
+    where pk_order_id = #{pkOrderId}
+    </select>
 
 
 </mapper>
