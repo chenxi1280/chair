@@ -121,6 +121,25 @@ public class EcmArtWorkController extends BaseController{
         return ecmArtWorkService.saveArtWorkNode(ecmArtworkNodes);
     }
 
+	@ResponseBody
+	@RequestMapping("/saveArtPercentageWorkNode")
+	public ResponseDTO saveArtPercentageWorkNode(@RequestBody EcmArtworkNodesVo ecmArtworkNodes){
+
+		if (ecmArtworkNodes.getParentId() == null){
+			return ResponseDTO.fail("父节点id为空");
+		}
+		if (ecmArtworkNodes.getFkArtworkId() == null) {
+			return ResponseDTO.fail("作品错误");
+		}
+		int maxCount = 50;
+		if (StringUtils.isNotBlank(ecmArtworkNodes.getRevolutionId()) && ecmArtworkNodes.getRevolutionId().length() > maxCount) {
+			return ResponseDTO.fail("视频最多编排50层");
+		}
+		ecmArtworkNodes.setFkUserId(getUserIdByHandToken());
+
+		return ecmArtWorkService.saveArtWorkNode(ecmArtworkNodes);
+	}
+
     /**
 	 * @param: [ecmArtworkNodes]
 	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
