@@ -122,8 +122,8 @@ public class EcmArtWorkController extends BaseController{
     }
 
 	@ResponseBody
-	@RequestMapping("/saveArtPercentageWorkNode")
-	public ResponseDTO saveArtPercentageWorkNode(@RequestBody EcmArtworkNodesVo ecmArtworkNodes){
+	@RequestMapping("/savePercentageArtWorkNode")
+	public ResponseDTO savePercentageArtWorkNode(@RequestBody EcmArtworkNodesVo ecmArtworkNodes){
 
 		if (ecmArtworkNodes.getParentId() == null){
 			return ResponseDTO.fail("父节点id为空");
