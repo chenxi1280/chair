@@ -295,7 +295,11 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         //是更新节点时
         if (JudgeConstant.Y.equals(ecmArtworkNodes.getIsleaf())) {
             ecmArtworkNodes.setIsleaf("");
+            if (INTEGER_ONE.equals(ecmArtworkNodes.getBranchPre()) &&  INTEGER_TWO.equals(ecmArtworkNodesDao.selectByPrimaryKey(ecmArtworkNodes.getPkDetailId()).getBranchPre())) {
+                ecmArtworkNodesDao.updateLocationByPrimaryKeyBuoy(ecmArtworkNodes);
+            }
             ecmArtworkNodesDao.updateByPrimaryKeySelective(ecmArtworkNodes);
+
             // 跳转节点的数据
             if (!StringUtils.isEmpty(ecmArtworkNodes.getItems())) {
                 EcmArtworkNodes ecmArtworkNode = ecmArtworkNodesDao.selectByPrimaryKey(Integer.valueOf(ecmArtworkNodes.getItems()));
@@ -304,6 +308,9 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                 BeanUtils.copyProperties(ecmArtworkNode, ecmArtworkNodesDTO);
                 ecmArtworkNodes.setLinkNode(ecmArtworkNodesDTO);
             }
+
+
+
             return ResponseDTO.ok("成功", ecmArtworkNodes);
         }
         //默认图片地址
