@@ -418,9 +418,14 @@
 
       <trim prefix="buoy_pop_app_id = case" suffix="end,">
         <foreach collection="list" item="item" index="index">
-          <if test="item.buoyPopAppId!=null">
+          <if test="item.buoyPopAppId != null">
             when pk_buoy_id =#{item.pkBuoyId}
             then #{item.buoyPopAppId}
+          </if>
+
+          <if test="item.buoyPopAppId == '' and item.buoyPopAppId == null ">
+            when pk_buoy_id =#{item.pkBuoyId}
+            then #{item.buoyContext}
           </if>
         </foreach>
       </trim>
