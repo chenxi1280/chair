@@ -295,9 +295,10 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         //是更新节点时
         if (JudgeConstant.Y.equals(ecmArtworkNodes.getIsleaf())) {
             ecmArtworkNodes.setIsleaf("");
-            if (INTEGER_ONE.equals(ecmArtworkNodes.getBranchPre()) &&  INTEGER_TWO.equals(ecmArtworkNodesDao.selectByPrimaryKey(ecmArtworkNodes.getPkDetailId()).getBranchPre())) {
-                ecmArtworkNodesDao.updateLocationByPrimaryKeyBuoy(ecmArtworkNodes);
-            }
+            // 无效修改
+//            if (INTEGER_ONE.equals(ecmArtworkNodes.getBranchPre()) &&  INTEGER_TWO.equals(ecmArtworkNodesDao.selectByPrimaryKey(ecmArtworkNodes.getPkDetailId()).getBranchPre())) {
+//                ecmArtworkNodesDao.updateLocationByPrimaryKeyBuoy(ecmArtworkNodes);
+//            }
             ecmArtworkNodesDao.updateByPrimaryKeySelective(ecmArtworkNodes);
 
             // 跳转节点的数据
