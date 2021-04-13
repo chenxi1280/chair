@@ -690,5 +690,11 @@
     where pk_detail_id = #{pkDetailId}
   </update>
 
+  <update id="updateLocationByPrimaryKeyBuoy">
+    update ecm_artwork_nodes
+    set  branch_pre = #{branchPre}
+    where parent_id = #{pkDetailId}
+  </update>
+
 
 </mapper>

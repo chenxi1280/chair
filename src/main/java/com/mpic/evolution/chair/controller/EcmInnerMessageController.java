@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 
 import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
+import com.mpic.evolution.chair.pojo.entity.EcmOrder;
 import com.mpic.evolution.chair.pojo.query.EcmInnerMessageQurey;
 import com.mpic.evolution.chair.util.JWTUtil;
 import com.mpic.evolution.chair.util.StringUtils;
@@ -26,18 +27,18 @@ import com.mpic.evolution.chair.service.EcmInnerMessageService;
 
 import lombok.extern.slf4j.Slf4j;
 
-/** 
-* @author 作者 SJ: 
-* @date 创建时间：2020-8-20 10:48:54 
+/**
+* @author 作者 SJ:
+* @date 创建时间：2020-8-20 10:48:54
 */
 @Slf4j
 @Controller
 @RequestMapping("/EcmInnerMessage")
 public class EcmInnerMessageController extends BaseController{
-	
+
 	@Resource
 	EcmInnerMessageService ecmInnerMessageService;
-	
+
 
 	/**
 	 * @param: [user]
@@ -58,7 +59,7 @@ public class EcmInnerMessageController extends BaseController{
 		user.setPkUserId(userIdByHandToken);
 		return ecmInnerMessageService.getMsg(user);
     }
-    
+
 	/**
 	 * @param: [ecmInnerMessageQurey]
 	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
@@ -81,7 +82,7 @@ public class EcmInnerMessageController extends BaseController{
 		ecmInnerMessageQurey.setPkUserId(Integer.valueOf(userId));
 		return ecmInnerMessageService.batchDelete(ecmInnerMessageQurey);
     }
-    
+
 
     /**
 	 * @param: [ecmInnerMessageQurey]
@@ -103,4 +104,11 @@ public class EcmInnerMessageController extends BaseController{
 		return ecmInnerMessageService.batchModifyRead(ecmInnerMessageQurey);
 
 	}
-}	
+
+
+	@RequestMapping("/sendMsgByOrder")
+	@ResponseBody
+	public ResponseDTO sendMsgByOrder(@RequestBody EcmOrder ecmOrder) {
+		return ecmInnerMessageService.sendMsgByOrder(ecmOrder);
+	}
+}

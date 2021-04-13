@@ -65,4 +65,6 @@ public interface EcmArtworkNodesDao {
     int updateArtworkNodeBuoy(EcmArtworkNodesVo ecmArtworkNodesVo);
 
     int updateArtworkNodeBuoyByFkNodeId(Integer parentId);
+
+    int updateLocationByPrimaryKeyBuoy(EcmArtworkNodesVo ecmArtworkNodes);
 }
