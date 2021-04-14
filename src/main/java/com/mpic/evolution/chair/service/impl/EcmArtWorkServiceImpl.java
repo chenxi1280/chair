@@ -295,7 +295,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         //是更新节点时
         if (JudgeConstant.Y.equals(ecmArtworkNodes.getIsleaf())) {
             ecmArtworkNodes.setIsleaf("");
-            // 无效修改
+            ecmArtworkNodes.setFkEndingId(10);
             ecmArtworkNodesDao.updateByPrimaryKeySelective(ecmArtworkNodes);
 
             // 跳转节点的数据
