@@ -8,8 +8,10 @@ import com.mpic.evolution.chair.common.constant.TiktokConstant;
 import com.mpic.evolution.chair.common.exception.EcmTokenException;
 import com.mpic.evolution.chair.config.annotation.EcmArtworkAuthentication;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
+import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeAction;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
 import com.mpic.evolution.chair.pojo.query.EcmArtworkEndingsQuery;
+import com.mpic.evolution.chair.pojo.query.EcmArtworkNodeActionQuery;
 import com.mpic.evolution.chair.pojo.query.EcmArtworkNodeBuoyQuery;
 import com.mpic.evolution.chair.pojo.vo.*;
 import com.mpic.evolution.chair.service.EcmArtWorkService;
@@ -519,7 +521,32 @@ public class EcmArtWorkController extends BaseController{
 		return ecmArtWorkService.updateArtworkNodeBuoy(ecmArtworkNodesVo);
 	}
 
-    /**
+
+
+//	@EcmArtworkAuthentication(auth = {"更新节点"})
+	@RequestMapping("/migrateArtworkNode")
+	@ResponseBody
+	public ResponseDTO migrateArtworkNode(@RequestBody EcmArtworkNodesVo ecmArtworkNodesVo){
+		ecmArtworkNodesVo.setFkUserId(getUserIdByHandToken());
+		return ecmArtWorkService.migrateArtworkNode(ecmArtworkNodesVo);
+	}
+
+	@RequestMapping("/saveArtworkNodeAction")
+	@ResponseBody
+	public ResponseDTO saveArtworkNodeAction(@RequestBody EcmArtworkNodeActionQuery ecmArtworkNodeActionQuery){
+		ecmArtworkNodeActionQuery.setFkUserId(getUserIdByHandToken());
+		return ecmArtWorkService.saveArtworkNodeAction(ecmArtworkNodeActionQuery);
+	}
+
+	@RequestMapping("/getArtworkNodeAction")
+	@ResponseBody
+	public ResponseDTO getArtworkNodeAction(@RequestBody EcmArtworkNodeActionQuery ecmArtworkNodeActionQuery){
+		ecmArtworkNodeActionQuery.setFkUserId(getUserIdByHandToken());
+		return ecmArtWorkService.getArtworkNodeAction(ecmArtworkNodeActionQuery);
+	}
+
+
+	/**
      * 	获取发布微信二维码
      * 	这里面的 scene 参数是前台要传过来的videoId
      *
@@ -852,6 +879,8 @@ public class EcmArtWorkController extends BaseController{
 	public ResponseDTO getArtWorkNodes(@RequestBody EcmArtWorkQuery ecmArtWorkQuery){
 		return ecmArtWorkService.getArtWorkNodes(ecmArtWorkQuery);
 	}
+
+
 
 
 }

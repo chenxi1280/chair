@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mpic.evolution.chair.dao.EcmArtworkNodeActionDao">
+  <resultMap id="BaseResultMap" type="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeAction">
+    <id column="pk_action_id" jdbcType="INTEGER" property="pkActionId" />
+    <result column="fk_node_id" jdbcType="INTEGER" property="fkNodeId" />
+    <result column="fk_artwork_id" jdbcType="INTEGER" property="fkArtworkId" />
+    <result column="action_wide" jdbcType="VARCHAR" property="actionWide" />
+    <result column="action_high" jdbcType="VARCHAR" property="actionHigh" />
+    <result column="action_opacity" jdbcType="VARCHAR" property="actionOpacity" />
+    <result column="action_section_time" jdbcType="VARCHAR" property="actionSectionTime" />
+    <result column="action_end_time" jdbcType="VARCHAR" property="actionEndTime" />
+    <result column="action_coordinate_x" jdbcType="VARCHAR" property="actionCoordinateX" />
+    <result column="action_coordinate_y" jdbcType="VARCHAR" property="actionCoordinateY" />
+    <result column="action_type" jdbcType="INTEGER" property="actionType" />
+    <result column="action_play_end_type" jdbcType="INTEGER" property="actionPlayEndType" />
+    <result column="action_event_type" jdbcType="INTEGER" property="actionEventType" />
+    <result column="action_transform" jdbcType="VARCHAR" property="actionTransform" />
+    <result column="action_scale" jdbcType="VARCHAR" property="actionScale" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pk_action_id, fk_node_id, fk_artwork_id, action_wide, action_high, action_opacity,
+    action_section_time, action_end_time, action_coordinate_x, action_coordinate_y, action_type,
+    action_play_end_type, action_event_type, action_transform, action_scale
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from ecm_artwork_node_action
+    where pk_action_id = #{pkActionId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ecm_artwork_node_action
+    where pk_action_id = #{pkActionId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="pk_action_id" keyProperty="pkActionId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeAction" useGeneratedKeys="true">
+    insert into ecm_artwork_node_action (fk_node_id, fk_artwork_id, action_wide,
+      action_high, action_opacity, action_section_time,
+      action_end_time, action_coordinate_x, action_coordinate_y,
+      action_type, action_play_end_type, action_event_type,
+      action_transform, action_scale)
+    values (#{fkNodeId,jdbcType=INTEGER}, #{fkArtworkId,jdbcType=INTEGER}, #{actionWide,jdbcType=VARCHAR},
+      #{actionHigh,jdbcType=VARCHAR}, #{actionOpacity,jdbcType=VARCHAR}, #{actionSectionTime,jdbcType=VARCHAR},
+      #{actionEndTime,jdbcType=VARCHAR}, #{actionCoordinateX,jdbcType=VARCHAR}, #{actionCoordinateY,jdbcType=VARCHAR},
+      #{actionType,jdbcType=INTEGER}, #{actionPlayEndType,jdbcType=INTEGER}, #{actionEventType,jdbcType=INTEGER},
+      #{actionTransform,jdbcType=VARCHAR}, #{actionScale,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="pk_action_id" keyProperty="pkActionId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeAction" useGeneratedKeys="true">
+    insert into ecm_artwork_node_action
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="fkNodeId != null">
+        fk_node_id,
+      </if>
+      <if test="fkArtworkId != null">
+        fk_artwork_id,
+      </if>
+      <if test="actionWide != null">
+        action_wide,
+      </if>
+      <if test="actionHigh != null">
+        action_high,
+      </if>
+      <if test="actionOpacity != null">
+        action_opacity,
+      </if>
+      <if test="actionSectionTime != null">
+        action_section_time,
+      </if>
+      <if test="actionEndTime != null">
+        action_end_time,
+      </if>
+      <if test="actionCoordinateX != null">
+        action_coordinate_x,
+      </if>
+      <if test="actionCoordinateY != null">
+        action_coordinate_y,
+      </if>
+      <if test="actionType != null">
+        action_type,
+      </if>
+      <if test="actionPlayEndType != null">
+        action_play_end_type,
+      </if>
+      <if test="actionEventType != null">
+        action_event_type,
+      </if>
+      <if test="actionTransform != null">
+        action_transform,
+      </if>
+      <if test="actionScale != null">
+        action_scale,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="fkNodeId != null">
+        #{fkNodeId,jdbcType=INTEGER},
+      </if>
+      <if test="fkArtworkId != null">
+        #{fkArtworkId,jdbcType=INTEGER},
+      </if>
+      <if test="actionWide != null">
+        #{actionWide,jdbcType=VARCHAR},
+      </if>
+      <if test="actionHigh != null">
+        #{actionHigh,jdbcType=VARCHAR},
+      </if>
+      <if test="actionOpacity != null">
+        #{actionOpacity,jdbcType=VARCHAR},
+      </if>
+      <if test="actionSectionTime != null">
+        #{actionSectionTime,jdbcType=VARCHAR},
+      </if>
+      <if test="actionEndTime != null">
+        #{actionEndTime,jdbcType=VARCHAR},
+      </if>
+      <if test="actionCoordinateX != null">
+        #{actionCoordinateX,jdbcType=VARCHAR},
+      </if>
+      <if test="actionCoordinateY != null">
+        #{actionCoordinateY,jdbcType=VARCHAR},
+      </if>
+      <if test="actionType != null">
+        #{actionType,jdbcType=INTEGER},
+      </if>
+      <if test="actionPlayEndType != null">
+        #{actionPlayEndType,jdbcType=INTEGER},
+      </if>
+      <if test="actionEventType != null">
+        #{actionEventType,jdbcType=INTEGER},
+      </if>
+      <if test="actionTransform != null">
+        #{actionTransform,jdbcType=VARCHAR},
+      </if>
+      <if test="actionScale != null">
+        #{actionScale,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeAction">
+    update ecm_artwork_node_action
+    <set>
+      <if test="fkNodeId != null">
+        fk_node_id = #{fkNodeId,jdbcType=INTEGER},
+      </if>
+      <if test="fkArtworkId != null">
+        fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER},
+      </if>
+      <if test="actionWide != null">
+        action_wide = #{actionWide,jdbcType=VARCHAR},
+      </if>
+      <if test="actionHigh != null">
+        action_high = #{actionHigh,jdbcType=VARCHAR},
+      </if>
+      <if test="actionOpacity != null">
+        action_opacity = #{actionOpacity,jdbcType=VARCHAR},
+      </if>
+      <if test="actionSectionTime != null">
+        action_section_time = #{actionSectionTime,jdbcType=VARCHAR},
+      </if>
+      <if test="actionEndTime != null">
+        action_end_time = #{actionEndTime,jdbcType=VARCHAR},
+      </if>
+      <if test="actionCoordinateX != null">
+        action_coordinate_x = #{actionCoordinateX,jdbcType=VARCHAR},
+      </if>
+      <if test="actionCoordinateY != null">
+        action_coordinate_y = #{actionCoordinateY,jdbcType=VARCHAR},
+      </if>
+      <if test="actionType != null">
+        action_type = #{actionType,jdbcType=INTEGER},
+      </if>
+      <if test="actionPlayEndType != null">
+        action_play_end_type = #{actionPlayEndType,jdbcType=INTEGER},
+      </if>
+      <if test="actionEventType != null">
+        action_event_type = #{actionEventType,jdbcType=INTEGER},
+      </if>
+      <if test="actionTransform != null">
+        action_transform = #{actionTransform,jdbcType=VARCHAR},
+      </if>
+      <if test="actionScale != null">
+        action_scale = #{actionScale,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where pk_action_id = #{pkActionId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeAction">
+    update ecm_artwork_node_action
+    set fk_node_id = #{fkNodeId,jdbcType=INTEGER},
+      fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER},
+      action_wide = #{actionWide,jdbcType=VARCHAR},
+      action_high = #{actionHigh,jdbcType=VARCHAR},
+      action_opacity = #{actionOpacity,jdbcType=VARCHAR},
+      action_section_time = #{actionSectionTime,jdbcType=VARCHAR},
+      action_end_time = #{actionEndTime,jdbcType=VARCHAR},
+      action_coordinate_x = #{actionCoordinateX,jdbcType=VARCHAR},
+      action_coordinate_y = #{actionCoordinateY,jdbcType=VARCHAR},
+      action_type = #{actionType,jdbcType=INTEGER},
+      action_play_end_type = #{actionPlayEndType,jdbcType=INTEGER},
+      action_event_type = #{actionEventType,jdbcType=INTEGER},
+      action_transform = #{actionTransform,jdbcType=VARCHAR},
+      action_scale = #{actionScale,jdbcType=VARCHAR}
+    where pk_action_id = #{pkActionId,jdbcType=INTEGER}
+  </update>
+
+
+  <!--  sql-->
+  <select id="selectByFkArtworkId" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkNodeActionVO">
+    select <include refid="Base_Column_List" />
+    from ecm_artwork_node_action
+    where fk_artwork_id =#{fkArtworkId}
+
+  </select>
+  <select id="selectByEcmNodeIdList" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkNodeActionVO">
+    select <include refid="Base_Column_List" />
+    from ecm_artwork_node_action
+    where pk_action_id in <foreach collection="list" open="(" close=")" item="item" separator=",">
+    #{item}
+  </foreach>
+  </select>
+
+  <insert id="insertSelectiveList">
+    insert into ecm_artwork_node_buoy
+    (fk_node_id, fk_artwork_id, action_wide,
+    action_high, action_opacity, action_section_time,
+    action_end_time, action_coordinate_x, action_coordinate_y,
+    action_type, action_play_end_type, action_event_type,
+    action_transform, action_scale)
+
+    values
+    <foreach collection="list" separator="," index="index" item="item" >
+      (#{item.fkNodeId,jdbcType=INTEGER}, #{item.fkArtworkId,jdbcType=INTEGER}, #{item.actionWide,jdbcType=VARCHAR},
+      #{item.actionHigh,jdbcType=VARCHAR}, #{item.actionOpacity,jdbcType=VARCHAR}, #{item.actionSectionTime,jdbcType=VARCHAR},
+      #{item.actionEndTime,jdbcType=VARCHAR}, #{item.actionCoordinateX,jdbcType=VARCHAR}, #{item.actionCoordinateY,jdbcType=VARCHAR},
+      #{item.actionType,jdbcType=INTEGER}, #{item.actionPlayEndType,jdbcType=INTEGER}, #{item.actionEventType,jdbcType=INTEGER},
+      #{item.actionTransform,jdbcType=VARCHAR}, #{item.actionScale,jdbcType=VARCHAR})
+    </foreach>
+
+
+  </insert>
+
+  <update id="updateByPrimaryKeySelectiveList">
+    update ecm_artwork_node_buoy
+
+    <trim prefix="set" suffixOverrides=",">
+
+      <trim prefix="action_wide =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.actionWide!=null">
+            when pk_action_id =#{item.pkActionId}
+            then #{item.actionWide}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="action_high =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.actionHigh!=null">
+            when pk_action_id =#{item.pkActionId}
+            then #{item.actionHigh}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="action_opacity =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.actionOpacity!=null">
+            when pk_action_id =#{item.pkActionId}
+            then #{item.actionOpacity}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="action_end_time =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.actionEndTime!=null">
+            when pk_action_id =#{item.pkActionId}
+            then #{item.actionEndTime}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="action_section_time =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.actionSectionTime!=null">
+            when pk_action_id =#{item.pkActionId}
+            then #{item.actionSectionTime}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="action_coordinate_x =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.actionCoordinateX!=null">
+            when pk_action_id =#{item.pkActionId}
+            then #{item.actionCoordinateX}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="action_coordinate_y =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.actionCoordinateY!=null">
+            when pk_action_id =#{item.pkActionId}
+            then #{item.actionCoordinateY}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="action_type = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.actionType!=null">
+            when pk_action_id =#{item.pkActionId}
+            then #{item.actionType}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="action_play_end_type = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.actionPlayEndType!=null">
+            when pk_action_id =#{item.pkActionId}
+            then #{item.actionPlayEndType}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="action_event_type = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.actionEventType!=null">
+            when pk_action_id =#{item.pkActionId}
+            then #{item.actionEventType}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="action_transform = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.actionTransform!=null">
+            when pk_action_id =#{item.pkActionId}
+            then #{item.actionTransform}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="action_scale = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.actionScale!=null">
+            when pk_action_id =#{item.pkActionId}
+            then #{item.actionScale}
+          </if>
+        </foreach>
+      </trim>
+
+
+
+    </trim>
+    where pk_action_id in
+    <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+      #{item.pkActionId}
+    </foreach>
+
+  </update>
+
+
+
+</mapper>

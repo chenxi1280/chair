@@ -106,4 +106,17 @@ public class EcmArtworkNodesVo extends EcmArtworkNodes  {
     private Integer endingConditionState;
 
     private  List<EcmArtworkNodeBuoyVO> ecmArtworkNodeBuoyVOList;
+
+    /**
+     *  迁移到的新 父亲节点 id
+     */
+    private Integer newParentsId;
+
+    /**
+     *  迁移到的新 作品节点
+     */
+    private  Integer newFkArtworkId;
+
+    private String newRevolutionId;
+
 }

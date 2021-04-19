@@ -695,6 +695,48 @@
     set  branch_pre = #{branchPre}
     where parent_id = #{pkDetailId}
   </update>
+  <update id="updateArtworkNode">
+    update ecm_artwork_nodes
+    <set>
+      <if test="newParentsId != null">
+        parent_id = #{newParentsId}
+      </if>
+      <if test="newRevolutionId != null">
+        revolution_id = #{newRevolutionId}
+      </if>
+    </set>
+    where pk_detail_id = #{pkDetailId}
+
+  </update>
+  <update id="updateMigrateByEcmArtworkNodesList">
+
+    update ecm_artwork_nodes
+    <trim prefix="set" suffixOverrides=",">
+
+      <trim prefix="parent_id =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.parentId!=null">
+            when pk_detail_id=#{item.pkDetailId}
+            then #{item.parentId}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="revolution_id =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.revolutionId!=null">
+            when pk_detail_id=#{item.pkDetailId}
+            then #{item.revolutionId}
+          </if>
+        </foreach>
+      </trim>
+
+    </trim>
+    where pk_detail_id in
+    <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+      #{item.pkDetailId}
+    </foreach>
+  </update>
 
 
 </mapper>

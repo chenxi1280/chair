@@ -12,6 +12,7 @@
     <result column="buoy_coordinate_x" jdbcType="VARCHAR" property="buoyCoordinateX" />
     <result column="buoy_coordinate_y" jdbcType="VARCHAR" property="buoyCoordinateY" />
     <result column="buoy_type" jdbcType="INTEGER" property="buoyType" />
+    <result column="buoy_play_end_type" jdbcType="INTEGER" property="buoyPlayEndType" />
     <result column="buoy_status" jdbcType="INTEGER" property="buoyStatus" />
     <result column="buoy_pop_context" jdbcType="VARCHAR" property="buoyPopContext" />
     <result column="buoy_pop_type" jdbcType="INTEGER" property="buoyPopType" />
@@ -21,8 +22,8 @@
   </resultMap>
   <sql id="Base_Column_List">
     pk_buoy_id, fk_node_id, fk_artwork_id, buoy_wide, buoy_high, buoy_opacity, buoy_section_time,
-    buoy_coordinate_x, buoy_coordinate_y, buoy_type, buoy_status, buoy_pop_context, buoy_pop_type,
-    buoy_pop_app_id, buoy_event, buoy_context
+    buoy_coordinate_x, buoy_coordinate_y, buoy_type, buoy_play_end_type, buoy_status,
+    buoy_pop_context, buoy_pop_type, buoy_pop_app_id, buoy_event, buoy_context
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
@@ -38,15 +39,15 @@
     insert into ecm_artwork_node_buoy (fk_node_id, fk_artwork_id, buoy_wide,
       buoy_high, buoy_opacity, buoy_section_time,
       buoy_coordinate_x, buoy_coordinate_y, buoy_type,
-      buoy_status, buoy_pop_context, buoy_pop_type,
-      buoy_pop_app_id, buoy_event, buoy_context
-      )
+      buoy_play_end_type, buoy_status, buoy_pop_context,
+      buoy_pop_type, buoy_pop_app_id, buoy_event,
+      buoy_context)
     values (#{fkNodeId,jdbcType=INTEGER}, #{fkArtworkId,jdbcType=INTEGER}, #{buoyWide,jdbcType=VARCHAR},
       #{buoyHigh,jdbcType=VARCHAR}, #{buoyOpacity,jdbcType=VARCHAR}, #{buoySectionTime,jdbcType=VARCHAR},
       #{buoyCoordinateX,jdbcType=VARCHAR}, #{buoyCoordinateY,jdbcType=VARCHAR}, #{buoyType,jdbcType=INTEGER},
-      #{buoyStatus,jdbcType=INTEGER}, #{buoyPopContext,jdbcType=VARCHAR}, #{buoyPopType,jdbcType=INTEGER},
-      #{buoyPopAppId,jdbcType=VARCHAR}, #{buoyEvent,jdbcType=VARCHAR}, #{buoyContext,jdbcType=VARCHAR}
-      )
+      #{buoyPlayEndType,jdbcType=INTEGER}, #{buoyStatus,jdbcType=INTEGER}, #{buoyPopContext,jdbcType=VARCHAR},
+      #{buoyPopType,jdbcType=INTEGER}, #{buoyPopAppId,jdbcType=VARCHAR}, #{buoyEvent,jdbcType=VARCHAR},
+      #{buoyContext,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" keyColumn="pk_buoy_id" keyProperty="pkBuoyId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeBuoy" useGeneratedKeys="true">
     insert into ecm_artwork_node_buoy
@@ -77,6 +78,9 @@
       </if>
       <if test="buoyType != null">
         buoy_type,
+      </if>
+      <if test="buoyPlayEndType != null">
+        buoy_play_end_type,
       </if>
       <if test="buoyStatus != null">
         buoy_status,
@@ -124,6 +128,9 @@
       </if>
       <if test="buoyType != null">
         #{buoyType,jdbcType=INTEGER},
+      </if>
+      <if test="buoyPlayEndType != null">
+        #{buoyPlayEndType,jdbcType=INTEGER},
       </if>
       <if test="buoyStatus != null">
         #{buoyStatus,jdbcType=INTEGER},
@@ -175,6 +182,9 @@
       <if test="buoyType != null">
         buoy_type = #{buoyType,jdbcType=INTEGER},
       </if>
+      <if test="buoyPlayEndType != null">
+        buoy_play_end_type = #{buoyPlayEndType,jdbcType=INTEGER},
+      </if>
       <if test="buoyStatus != null">
         buoy_status = #{buoyStatus,jdbcType=INTEGER},
       </if>
@@ -207,6 +217,7 @@
       buoy_coordinate_x = #{buoyCoordinateX,jdbcType=VARCHAR},
       buoy_coordinate_y = #{buoyCoordinateY,jdbcType=VARCHAR},
       buoy_type = #{buoyType,jdbcType=INTEGER},
+      buoy_play_end_type = #{buoyPlayEndType,jdbcType=INTEGER},
       buoy_status = #{buoyStatus,jdbcType=INTEGER},
       buoy_pop_context = #{buoyPopContext,jdbcType=VARCHAR},
       buoy_pop_type = #{buoyPopType,jdbcType=INTEGER},
@@ -261,14 +272,14 @@
     insert into ecm_artwork_node_buoy
     (fk_node_id, fk_artwork_id, buoy_wide, buoy_high, buoy_opacity,
      buoy_section_time, buoy_coordinate_x, buoy_coordinate_y, buoy_type,
-     buoy_status, buoy_pop_context, buoy_pop_type,buoy_pop_app_id )
+     buoy_status, buoy_pop_context, buoy_pop_type,buoy_pop_app_id,buoy_play_end_type )
 
       values
       <foreach collection="list" separator="," index="index" item="item" >
         (#{item.fkNodeId}, #{item.fkArtworkId}, #{item.buoyWide}, #{item.buoyHigh}, #{item.buoyOpacity},
         #{item.buoySectionTime}, #{item.buoyCoordinateX}, #{item.buoyCoordinateY}, #{item.buoyType},
         #{item.buoyStatus,jdbcType=VARCHAR}, #{item.buoyPopContext,jdbcType=VARCHAR}, #{item.buoyPopType,jdbcType=INTEGER},
-        #{item.buoyPopAppId,jdbcType=VARCHAR})
+        #{item.buoyPopAppId,jdbcType=VARCHAR},#{item.buoyPlayEndType,jdbcType=INTEGER})
       </foreach>
 
 <!--    <foreach collection="list" item="item" index="index" separator=",">-->
@@ -412,6 +423,15 @@
           <if test="item.buoyPopType!=null">
             when pk_buoy_id =#{item.pkBuoyId}
             then #{item.buoyPopType}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="buoy_play_end_type = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.buoyPlayEndType!=null">
+            when pk_buoy_id =#{item.pkBuoyId}
+            then #{item.buoyPlayEndType}
           </if>
         </foreach>
       </trim>

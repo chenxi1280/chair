@@ -61,6 +61,11 @@ public class EcmArtworkNodeBuoy implements Serializable {
     private Integer buoyType;
 
     /**
+     * 播放到结尾的时候 重播还是 自动选择 某一个
+     */
+    private Integer buoyPlayEndType;
+
+    /**
      * 状态 0不启用跳转，1启用跳转
      */
     private Integer buoyStatus;
