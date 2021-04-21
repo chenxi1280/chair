@@ -934,6 +934,10 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         while (iterator.hasNext()) {
             EcmArtworkNodeBuoy next = iterator.next();
 //            next.setBuoyStatus("0");
+            if (next.getBuoyType().equals(0)) {
+                next.setBuoyPlayEndType(ecmArtworkNodeBuoyQuery.getBuoyPlayEndType());
+            }
+
             for (EcmArtworkNodeBuoy ecmArtworkNodeBuoy : ecmArtworkNodeBuoyVOList) {
                 ecmArtworkNodeBuoy.setFkArtworkId(ecmArtworkNodeBuoyQuery.getFkArtworkId());
                 if (ecmArtworkNodeBuoy.getPkBuoyId().equals(next.getPkBuoyId())) {
@@ -996,8 +1000,15 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         ecmArtworkNodeBuoyVOList.forEach(v -> v.setComparingTime(Integer.valueOf(v.getBuoySectionTime())));
         // 排序
         List<EcmArtworkNodeBuoyVO> sortEcmArtworkNodeBuoyVOList = ecmArtworkNodeBuoyVOList.stream().sorted(Comparator.comparing(EcmArtworkNodeBuoyVO::getBuoyType).thenComparing(EcmArtworkNodeBuoyVO::getComparingTime)).collect(Collectors.toList());
+        HashMap<String, Object> stringObjectHashMap = new HashMap<>(2);
+        stringObjectHashMap.put("list",sortEcmArtworkNodeBuoyVOList);
+        if (!CollectionUtils.isEmpty(sortEcmArtworkNodeBuoyVOList)) {
+            stringObjectHashMap.put("buoyPlayEndType",sortEcmArtworkNodeBuoyVOList.get(0).getBuoyPlayEndType());
+        }else {
+            stringObjectHashMap.put("buoyPlayEndType",-1);
+        }
 
-        return ResponseDTO.ok(sortEcmArtworkNodeBuoyVOList);
+        return ResponseDTO.ok(stringObjectHashMap);
     }
 
     @Override
@@ -1017,9 +1028,6 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         EcmArtwork ecmArtworkVo = ecmArtworkDao.selectByPrimaryKey(ecmArtworkNodesVo.getFkArtworkId());
         if (ecmArtworkVo == null) {
             return ResponseDTO.fail("作品错误");
-        }
-        if (ecmArtworkNodesVo.getFkUserId().equals(ecmArtworkVo.getFkUserid())) {
-            return ResponseDTO.fail("非法访问");
         }
 
 

@@ -21,4 +21,9 @@ public class EcmArtworkNodeBuoyQuery {
     private List<EcmArtworkNodeBuoy> ecmArtworkNodeBuoyList;
 
     private List<Integer> fkNodeIdList;
+
+    /**
+     * 播放到结尾的时候 重播还是 自动选择 某一个
+     */
+    private Integer buoyPlayEndType;
 }

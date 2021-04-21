@@ -253,7 +253,7 @@
     from ecm_artwork_node_buoy
     where fk_node_id in  <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
     #{item}
-  </foreach>
+     </foreach>
   </select>
   <delete id="deleteByEcmArtworkId">
     delete from ecm_artwork_node_buoy
