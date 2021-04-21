@@ -117,7 +117,7 @@ public class EcmUserServiceImpl implements EcmUserService {
 			PaymentVipService updateVipDate = beanConfig.createQueryService("UpdateVipDate");
 			updateVipDate.operationRelateToPayment(1,ecmUser.getPkUserId(),"新用户赠送一个普通月会员");
 			EcmVipRole commonRole = ecmVipRoleDao.selectByPrimaryKey(1);
-			int newVipUserFlow =  commonRole.getFlowLimit()*1024*1024;
+			int newVipUserFlow =  commonRole.getFlowLimit()*1000*1000;
 			EcmUserFlowVO userFlow= new EcmUserFlowVO();
 			userFlow.setUserId(user.getPkUserId());
 			userFlow.setUpdateTime(new Date());
@@ -144,7 +144,7 @@ public class EcmUserServiceImpl implements EcmUserService {
 			//根据角色id 获取角色相关信息: 会员赠送流量上限
 			EcmVipRole ecmVipRole = ecmVipRoleDao.selectByPrimaryKey(vip.getFkVipRoleId());
 			//此处只有是有效会员才会给其加上会员流量 不是会员或者会员过期不关心 vipflow为默认0
-			vipflow += ecmVipRole.getFlowLimit()*1024*1024;
+			vipflow += ecmVipRole.getFlowLimit()*1000*1000;
 		}
 		//无效信息置空
 		user.setPassword(null);
@@ -200,44 +200,30 @@ public class EcmUserServiceImpl implements EcmUserService {
 		//有会员过了当前月的截止期 重置已使用流量为0
 		if (symbol == INT_ONE) {
 			if(vip.getFkVipRoleId() == 2){
-				user.setCurrentMothVipUserdFlow(0);
-				user.setCurrentMothVipsurplusFlow(vipflow);
-				user.setCurrentMothVipTotalFlow(vipflow);
-				user.setSuperVipStartDate(format.format(vip.getVipStartTime()));
-				user.setSuperVipEndDate(format.format(vip.getVipEndTime()));
 				//如果用户是超级会员则展示超级会员的相关信息
 				user.setVipStartDate(null);
 				user.setVipEndDate(null);
-				//查询用户永久流量充值记录
-				int totalPermanentFlow = 0;
-				List<EcmUserExtraflow> ecmUserExtraflows = ecmUserExtraflowDao.selectByFkUserId(user.getPkUserId());
-				for (int i = 0; i < ecmUserExtraflows.size(); i++){
-					EcmUserExtraflow ecmUserExtraflow = ecmUserExtraflows.get(i);
-					totalPermanentFlow += ecmUserExtraflow.getExtraflowNumber();
-				}
-				user.setUsedPermanentFlow(totalPermanentFlow - ecmUserFlow.getPermanentFlow());
-				user.setSurplusPermanentFlow(ecmUserFlow.getPermanentFlow());
-				user.setTotalPermanentFlow(totalPermanentFlow);
 			}
 			if(vip.getFkVipRoleId() == 1){
-				user.setCurrentMothVipUserdFlow(0);
-				user.setCurrentMothVipsurplusFlow(vipflow);
-				user.setCurrentMothVipTotalFlow(vipflow);
 				user.setSuperVipStartDate(null);
 				user.setSuperVipEndDate(null);
-				user.setVipStartDate(format.format(vip.getVipStartTime()));
-				user.setVipEndDate(format.format(vip.getVipEndTime()));
-				//查询用户永久流量充值记录
-				int totalPermanentFlow = 0;
-				List<EcmUserExtraflow> ecmUserExtraflows = ecmUserExtraflowDao.selectByFkUserId(user.getPkUserId());
-				for (int i = 0; i < ecmUserExtraflows.size(); i++){
-					EcmUserExtraflow ecmUserExtraflow = ecmUserExtraflows.get(i);
-					totalPermanentFlow += ecmUserExtraflow.getExtraflowNumber();
-				}
-				user.setUsedPermanentFlow(totalPermanentFlow - ecmUserFlow.getPermanentFlow());
-				user.setSurplusPermanentFlow(ecmUserFlow.getPermanentFlow());
-				user.setTotalPermanentFlow(totalPermanentFlow);
 			}
+			int usedFlowBySymbolEqualsOne = this.getUsedFlowBySymbolEqualsOne(vip.getVipStartTime(),ecmUser.getPkUserId(),format);
+			user.setCurrentMothVipUserdFlow(usedFlowBySymbolEqualsOne);
+			user.setCurrentMothVipsurplusFlow(vipflow - usedFlowBySymbolEqualsOne);
+			user.setCurrentMothVipTotalFlow(vipflow);
+			user.setSuperVipStartDate(format.format(vip.getVipStartTime()));
+			user.setSuperVipEndDate(format.format(vip.getVipEndTime()));
+			//查询用户永久流量充值记录
+			int totalPermanentFlow = 0;
+			List<EcmUserExtraflow> ecmUserExtraflows = ecmUserExtraflowDao.selectByFkUserId(user.getPkUserId());
+			for (int i = 0; i < ecmUserExtraflows.size(); i++){
+				EcmUserExtraflow ecmUserExtraflow = ecmUserExtraflows.get(i);
+				totalPermanentFlow += ecmUserExtraflow.getExtraflowNumber();
+			}
+			user.setUsedPermanentFlow(totalPermanentFlow - ecmUserFlow.getPermanentFlow());
+			user.setSurplusPermanentFlow(ecmUserFlow.getPermanentFlow());
+			user.setTotalPermanentFlow(totalPermanentFlow);
 			user.setUserFlow(ecmUserFlow.getPermanentFlow());
 			user.setTotalFlow(vipflow);
 		}
@@ -268,6 +254,7 @@ public class EcmUserServiceImpl implements EcmUserService {
 	 */
 	@Override
 	public ResponseDTO inspectFlow(EcmUserFlowQuery ecmUserFlowQuery) {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		//TODO 1.查询用户流量的数据表变了 2.流量计算公式要加入超级会员的流量
 		if (Integer.parseInt(ecmUserFlowQuery.getVideoFlow()) > FLOW_MAX ){
 			return ResponseDTO.fail("视频大于500M，请减小视频大小");
@@ -288,7 +275,7 @@ public class EcmUserServiceImpl implements EcmUserService {
 			//根据角色id 获取角色相关信息: 会员赠送流量上限
 			EcmVipRole ecmVipRole = ecmVipRoleDao.selectByPrimaryKey(vipInfo.getFkVipRoleId());
 			//此处只有是有效会员才会给其加上会员流量 不是会员或者会员过期不关心 vipflow为默认0
-			vipflow += ecmVipRole.getFlowLimit()*1024*1024;
+			vipflow += ecmVipRole.getFlowLimit()*1000*1000;
 		}
 		EcmUserFlowVO userFlow = ecmUserFlowDao.selectByPkUserId(ecmUserFlowQuery.getPkUserId());
 		int surplusFlow = 0;
@@ -298,7 +285,8 @@ public class EcmUserServiceImpl implements EcmUserService {
 		}
 		//有会员 到本月截止日期了 会员赠送+剩余永久流量
 		if (symbol == INT_ONE) {
-			surplusFlow = vipflow + userFlow.getPermanentFlow();
+			int usedFlowBySymbolEqualsOne = this.getUsedFlowBySymbolEqualsOne(vipInfo.getVipStartTime(),ecmUserFlowQuery.getPkUserId(),format);
+			surplusFlow = vipflow + userFlow.getPermanentFlow() - usedFlowBySymbolEqualsOne;
 		}
 		//有会员未到本月截止日期 会员赠送+剩余永久流量-已使用会员流量
 		if (symbol == INT_ZORE) {
@@ -339,7 +327,7 @@ public class EcmUserServiceImpl implements EcmUserService {
 			//根据角色id 获取角色相关信息: 会员赠送流量上限
 			EcmVipRole ecmVipRole = ecmVipRoleDao.selectByPrimaryKey(vipInfo.getFkVipRoleId());
 			//此处只有是有效会员才会给其加上会员流量 不是会员或者会员过期不关心 vipflow为默认0
-			vipflow += ecmVipRole.getFlowLimit()*1024*1024;
+			vipflow += ecmVipRole.getFlowLimit()*1000*1000;
 		}
 		//判断此次上传流量该如何去扣取 先扣vip流量
 		EcmUserFlowVO userFlow = ecmUserFlowDao.selectByPkUserId(ecmUserHistoryFlowVO.getUserId());
@@ -362,10 +350,13 @@ public class EcmUserServiceImpl implements EcmUserService {
 			}
 			userFlow.setTotalFlow(vipflow + userFlow.getPermanentFlow()-userFlow.getUsedFlow());
 		}
+		//TODO 重置已使用流量只能在会员日期内的第一次扣流量时清除 并且当月会员期内只能执行一次清除
 		//有会员过了当前月的截止期 重置已使用流量为0
 		if (symbol == INT_ONE) {
-			userFlow.setTotalFlow(vipflow + userFlow.getPermanentFlow());
-			userFlow.setUsedFlow(0);
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			int usedFlowBySymbolEqualsOne = this.getUsedFlowBySymbolEqualsOne(vipInfo.getVipStartTime(),ecmUserHistoryFlowVO.getUserId(),format);
+			userFlow.setTotalFlow(vipflow + userFlow.getPermanentFlow() - usedFlowBySymbolEqualsOne);
+			userFlow.setUsedFlow(ecmUserHistoryFlowVO.getVideoFlow() + usedFlowBySymbolEqualsOne);
 		}
 		//会员到期
 		if (symbol == INT_THREE) {
@@ -418,6 +409,12 @@ public class EcmUserServiceImpl implements EcmUserService {
 			return 1;
 		}
 	}
+
+	/**
+	 * 判断	会员信息是否有效
+	 * @param ecmVipUserInfos
+	 * @return
+	 */
 
 	private EcmVipUserInfo getEffectiveVipInfo(List<EcmVipUserInfo> ecmVipUserInfos){
 		HashMap<Integer,Integer> map = new HashMap<>();
@@ -515,6 +512,43 @@ public class EcmUserServiceImpl implements EcmUserService {
 		map.put("endDate",VipDateUtil.formatToDate(sDate.plusMonths(difference+1)));
 		return map;
 	}
+
+	private int getUsedFlowBySymbolEqualsOne(Date vipStartTime,Integer pkUserId,SimpleDateFormat format) {
+		HashMap<String, Date> vipzoneBySymbolEqualsOneone = this.getVipZoneBySymbolEqualsOne(vipStartTime);
+		java.sql.Date param1 = new java.sql.Date(vipzoneBySymbolEqualsOneone.get("startDate").getTime());
+		java.sql.Date param2 = new java.sql.Date(vipzoneBySymbolEqualsOneone.get("endDate").getTime());
+		String format1 = format.format(param1);
+		String format2 = format.format(param2);
+		//查出会员已使用流量
+		List<EcmUserHistoryFlow> ecmUserHistoryFlows = ecmUserHistoryFlowDao.selectByVipTimeZone(format1, format2, pkUserId);
+		int currentMothVipUserdFlow = 0;
+		for (int i = 0; i < ecmUserHistoryFlows.size(); i++) {
+			EcmUserHistoryFlow ecmUserHistoryFlow = ecmUserHistoryFlows.get(i);
+			currentMothVipUserdFlow += ecmUserHistoryFlow.getVideoFlow();
+		}
+		return currentMothVipUserdFlow;
+	}
+
+	private HashMap<String,Date> getVipZoneBySymbolEqualsOne(Date vipStartTime) {
+
+		HashMap<String,Date> map = new HashMap<>();
+		//date 转 LocalDateTime方法
+		LocalDateTime now = LocalDateTime.now();
+		Instant instant = vipStartTime.toInstant();
+		ZoneId zoneId = ZoneId.systemDefault();
+		LocalDateTime sDate = instant.atZone(zoneId).toLocalDateTime();
+		map.put("startDate",VipDateUtil.formatToDate(sDate.plusMonths(1)));
+		map.put("endDate",VipDateUtil.formatToDate(sDate.plusMonths(2)));int startMonth = sDate.getMonthValue();
+		int currentMonth = now.getMonthValue();
+		int difference = currentMonth - startMonth;
+
+		//TODO 可能推算的超出了会员的截止日期 待观察
+		// 也可能不会 因为我查询的时候是查询到是否有效会员就算超出当前月，但是再当前时间他是有效会员所以即使推出的截止日期是一定存在的
+		map.put("startDate",VipDateUtil.formatToDate(sDate.plusMonths(difference)));
+		map.put("endDate",VipDateUtil.formatToDate(sDate.plusMonths(difference+1)));
+		return map;
+	}
+
 
 	private EcmUserVo makeUserFlowData(EcmVipUserInfo vip, EcmUserVo user, EcmUserFlowVO ecmUserFlow,
 									   int vipflow, String param1, String param2){
