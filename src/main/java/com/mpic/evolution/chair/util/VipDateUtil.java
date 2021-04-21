@@ -58,6 +58,7 @@ public class VipDateUtil {
 		ZoneId zoneId = ZoneId.systemDefault();
 		LocalDateTime sDate = instant.atZone(zoneId).toLocalDateTime();
 		int startMonth = sDate.getMonthValue();
+		//TODO 判断当前时间有没有超过当前月的会员到期时间如果到期则查询下个月的到期时间 比如4月的到期时间是18号 现在是20号 那么我需要的到期时间不是4月18号 而是5月18号
 		int currentMonth = now.getMonthValue();
 		int difference = currentMonth - startMonth;
 		//若 different为0说明充值会员的时间和当前时间是同一个月
