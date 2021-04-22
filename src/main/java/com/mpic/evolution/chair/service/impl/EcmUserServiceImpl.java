@@ -115,9 +115,9 @@ public class EcmUserServiceImpl implements EcmUserService {
 		EcmUserFlowVO ecmUserFlow = ecmUserFlowDao.selectByPkUserId(ecmUser.getPkUserId());
 		if (ecmUserFlow == null || ecmUserFlow.getUserFlowId() == null){
 			PaymentVipService updateVipDate = beanConfig.createQueryService("UpdateVipDate");
-			updateVipDate.operationRelateToPayment(1,ecmUser.getPkUserId(),"新用户赠送一个普通月会员");
-			EcmVipRole commonRole = ecmVipRoleDao.selectByPrimaryKey(1);
-			int newVipUserFlow =  commonRole.getFlowLimit()*1024*1024;
+			updateVipDate.operationRelateToPayment(6,ecmUser.getPkUserId(),"新用户赠送一个普通月会员");
+			EcmVipRole commonRole = ecmVipRoleDao.selectByPrimaryKey(2);
+			int newVipUserFlow =  commonRole.getFlowLimit()*1000*1000;
 			EcmUserFlowVO userFlow= new EcmUserFlowVO();
 			userFlow.setUserId(user.getPkUserId());
 			userFlow.setUpdateTime(new Date());
@@ -144,7 +144,7 @@ public class EcmUserServiceImpl implements EcmUserService {
 			//根据角色id 获取角色相关信息: 会员赠送流量上限
 			EcmVipRole ecmVipRole = ecmVipRoleDao.selectByPrimaryKey(vip.getFkVipRoleId());
 			//此处只有是有效会员才会给其加上会员流量 不是会员或者会员过期不关心 vipflow为默认0
-			vipflow += ecmVipRole.getFlowLimit()*1024*1024;
+			vipflow += ecmVipRole.getFlowLimit()*1000*1000;
 		}
 		//无效信息置空
 		user.setPassword(null);
@@ -288,7 +288,7 @@ public class EcmUserServiceImpl implements EcmUserService {
 			//根据角色id 获取角色相关信息: 会员赠送流量上限
 			EcmVipRole ecmVipRole = ecmVipRoleDao.selectByPrimaryKey(vipInfo.getFkVipRoleId());
 			//此处只有是有效会员才会给其加上会员流量 不是会员或者会员过期不关心 vipflow为默认0
-			vipflow += ecmVipRole.getFlowLimit()*1024*1024;
+			vipflow += ecmVipRole.getFlowLimit()*1000*1000;
 		}
 		EcmUserFlowVO userFlow = ecmUserFlowDao.selectByPkUserId(ecmUserFlowQuery.getPkUserId());
 		int surplusFlow = 0;
@@ -339,7 +339,7 @@ public class EcmUserServiceImpl implements EcmUserService {
 			//根据角色id 获取角色相关信息: 会员赠送流量上限
 			EcmVipRole ecmVipRole = ecmVipRoleDao.selectByPrimaryKey(vipInfo.getFkVipRoleId());
 			//此处只有是有效会员才会给其加上会员流量 不是会员或者会员过期不关心 vipflow为默认0
-			vipflow += ecmVipRole.getFlowLimit()*1024*1024;
+			vipflow += ecmVipRole.getFlowLimit()*1000*1000;
 		}
 		//判断此次上传流量该如何去扣取 先扣vip流量
 		EcmUserFlowVO userFlow = ecmUserFlowDao.selectByPkUserId(ecmUserHistoryFlowVO.getUserId());
