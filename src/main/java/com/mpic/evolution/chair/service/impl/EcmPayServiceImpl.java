@@ -7,11 +7,13 @@ import com.mpic.evolution.chair.controller.TestController;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmOrder;
 import com.mpic.evolution.chair.pojo.vo.EcmOrderVO;
+import com.mpic.evolution.chair.service.EcmInnerMessageService;
 import com.mpic.evolution.chair.service.EcmOrderHistoryService;
 import com.mpic.evolution.chair.service.EcmOrderService;
 import com.mpic.evolution.chair.service.EcmPayService;
 import com.mpic.evolution.chair.util.HttpClient;
 import com.mpic.evolution.chair.util.PayForUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -44,12 +46,12 @@ public class EcmPayServiceImpl implements EcmPayService {
     final
     EcmOrderService ecmOrderService;
     EcmOrderHistoryService ecmOrderHistoryService;
-    TestController testController;
+    EcmInnerMessageService ecmInnerMessageService;
 
-    public EcmPayServiceImpl(EcmOrderService ecmOrderService, EcmOrderHistoryService ecmOrderHistoryService, TestController testController) {
+    public EcmPayServiceImpl(EcmOrderService ecmOrderService, EcmOrderHistoryService ecmOrderHistoryService, EcmInnerMessageService ecmInnerMessageService) {
         this.ecmOrderService = ecmOrderService;
         this.ecmOrderHistoryService = ecmOrderHistoryService;
-        this.testController = testController;
+        this.ecmInnerMessageService = ecmInnerMessageService;
     }
 
 
@@ -153,18 +155,19 @@ public class EcmPayServiceImpl implements EcmPayService {
                 System.err.println("正在执行执行业务逻辑");
                 // 调用 业务判断
                 System.out.println("total_fee" + "/n" + total_fee + "/n" + ecmOrder.getOrderPrice());
-                if (ecmOrder.getOrderPrice().equals(new BigDecimal(total_fee).divide(BigDecimal.valueOf(100)))) {
+//                if (ecmOrder.getOrderPrice().equals(new BigDecimal(total_fee).divide(BigDecimal.valueOf(100)))) {
                     //执行业务并判断是否成功
                     if (ecmOrderService.savaVipPaymentInfo(out_trade_no)) {
                         ecmOrderVO.setOrderState(2);
                     } else {
                         System.out.println("支付成功，业务因为异常执行失败!!  订单code：" + out_trade_no);
                         ecmOrderVO.setOrderState(1);
+                        ecmInnerMessageService.sendMsgByOrder(ecmOrder);
                     }
-                } else {
-                    System.out.println("支付成功，业务执行错误!，订单金额和支付金额不符合！！订单code：" + out_trade_no);
-                    ecmOrderVO.setOrderState(3);
-                }
+//                } else {
+//                    System.out.println("支付成功，业务执行错误!，订单金额和支付金额不符合！！订单code：" + out_trade_no);
+//                    ecmOrderVO.setOrderState(3);
+//                }
                 ecmOrderService.updateOrderByPay(ecmOrderVO);
                 ecmOrderHistoryService.insertOrderHistory(out_trade_no, total_fee);
                 // 通知微信.异步确认成功.必写.不然会一直通知后台.八次之后就认为交易失败了.

@@ -295,7 +295,9 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         //是更新节点时
         if (JudgeConstant.Y.equals(ecmArtworkNodes.getIsleaf())) {
             ecmArtworkNodes.setIsleaf("");
+            ecmArtworkNodes.setFkEndingId(10);
             ecmArtworkNodesDao.updateByPrimaryKeySelective(ecmArtworkNodes);
+
             // 跳转节点的数据
             if (!StringUtils.isEmpty(ecmArtworkNodes.getItems())) {
                 EcmArtworkNodes ecmArtworkNode = ecmArtworkNodesDao.selectByPrimaryKey(Integer.valueOf(ecmArtworkNodes.getItems()));
@@ -304,10 +306,13 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                 BeanUtils.copyProperties(ecmArtworkNode, ecmArtworkNodesDTO);
                 ecmArtworkNodes.setLinkNode(ecmArtworkNodesDTO);
             }
+
+
+
             return ResponseDTO.ok("成功", ecmArtworkNodes);
         }
         //默认图片地址
-        if (!ecmArtworkNodes.getALevel().equals(1)) {
+        if (!ecmArtworkNodes.getALevel().equals(1) && ecmArtworkNodes.getALevel() != null) {
             ecmArtworkNodes.setItemsBakText("https://sike-1259692143.cos.ap-chongqing.myqcloud.com/img/1604281276527nodeImgUrl.png");
         }
         if (StringUtils.isEmpty(ecmArtworkNodes.getCssVo())) {
