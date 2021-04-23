@@ -522,7 +522,7 @@ public class EcmUserServiceImpl implements EcmUserService {
 	}
 
 	private int getUsedFlowBySymbolEqualsOne(Date vipStartTime,Integer pkUserId,SimpleDateFormat format) {
-		HashMap<String, Date> vipzoneBySymbolEqualsOneone = this.getVipZoneBySymbolEqualsOne(vipStartTime);
+		HashMap<String, Date> vipzoneBySymbolEqualsOneone = this.getNextMonthVipZone(vipStartTime);
 		java.sql.Date param1 = new java.sql.Date(vipzoneBySymbolEqualsOneone.get("startDate").getTime());
 		java.sql.Date param2 = new java.sql.Date(vipzoneBySymbolEqualsOneone.get("endDate").getTime());
 		String format1 = format.format(param1);
