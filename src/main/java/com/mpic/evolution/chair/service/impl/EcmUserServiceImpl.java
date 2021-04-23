@@ -200,9 +200,17 @@ public class EcmUserServiceImpl implements EcmUserService {
 		//有会员过了当前月的截止期 重置已使用流量为0
 		if (symbol == INT_ONE) {
 			if(vip.getFkVipRoleId() == 2){
-				//如果用户是超级会员则展示超级会员的相关信息
-				user.setVipStartDate(null);
-				user.setVipEndDate(null);
+				//如果是超级会员一定有普通会员得的信息 只展示超级会员的相关信息
+				for (int i = 0; i < ecmVipUserInfos.size(); i++){
+					if(ecmVipUserInfos.get(i).getFkVipRoleId() == 1){
+						//循环遍历找出普通会员的信息
+						//common vip数据
+						String endTime = format.format(ecmVipUserInfos.get(i).getVipEndTime());
+						user.setVipEndDate(endTime);
+						String startTime = format.format(ecmVipUserInfos.get(i).getVipStartTime());
+						user.setVipStartDate(startTime);
+					}
+				}
 			}
 			if(vip.getFkVipRoleId() == 1){
 				user.setSuperVipStartDate(null);
