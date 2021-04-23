@@ -131,8 +131,10 @@ public class EcmInnerMessageServiceImpl implements EcmInnerMessageService{
 
 		EcmOrderVO ecmOrderVO = ecmOrderDao.selectOrderInfoByPrimaryKey(ecmOrder.getPkOrderId());
 		EcmTemplate ecmTemplate = ecmTemplateDao.selectByPrimaryKey(19);
+
 		EcmInnerMessageVo insertMsgVO = getInsertMsgVO(ecmTemplate.getContent(), ecmOrderVO);
 		insertMsgVO.setFkTemplateId(ecmTemplate.getPkTemplateId());
+
 		ecmInnerMessageDao.insertSelective(insertMsgVO);
 		return ResponseDTO.ok();
     }

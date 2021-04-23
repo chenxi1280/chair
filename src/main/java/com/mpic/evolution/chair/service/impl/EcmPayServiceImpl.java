@@ -159,10 +159,11 @@ public class EcmPayServiceImpl implements EcmPayService {
                     //执行业务并判断是否成功
                     if (ecmOrderService.savaVipPaymentInfo(out_trade_no)) {
                         ecmOrderVO.setOrderState(2);
+                        ecmInnerMessageService.sendMsgByOrder(ecmOrder);
                     } else {
                         System.out.println("支付成功，业务因为异常执行失败!!  订单code：" + out_trade_no);
                         ecmOrderVO.setOrderState(1);
-                        ecmInnerMessageService.sendMsgByOrder(ecmOrder);
+
                     }
 //                } else {
 //                    System.out.println("支付成功，业务执行错误!，订单金额和支付金额不符合！！订单code：" + out_trade_no);
