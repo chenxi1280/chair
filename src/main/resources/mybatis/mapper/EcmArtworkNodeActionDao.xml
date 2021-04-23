@@ -203,7 +203,6 @@
     where pk_action_id = #{pkActionId,jdbcType=INTEGER}
   </update>
 
-
   <!--  sql-->
   <select id="selectByFkArtworkId" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkNodeActionVO">
     select <include refid="Base_Column_List" />
@@ -214,33 +213,32 @@
   <select id="selectByEcmNodeIdList" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkNodeActionVO">
     select <include refid="Base_Column_List" />
     from ecm_artwork_node_action
-    where pk_action_id in <foreach collection="list" open="(" close=")" item="item" separator=",">
+    where fk_node_id in <foreach collection="list" open="(" close=")" item="item" separator=",">
     #{item}
   </foreach>
   </select>
 
-  <insert id="insertSelectiveList">
-    insert into ecm_artwork_node_buoy
-    (fk_node_id, fk_artwork_id, action_wide,
+  <insert id="insertSelectiveList"  keyColumn="pk_action_id" keyProperty="pkActionId"  useGeneratedKeys="true">
+    insert into ecm_artwork_node_action (fk_node_id, fk_artwork_id, action_wide,
     action_high, action_opacity, action_section_time,
     action_end_time, action_coordinate_x, action_coordinate_y,
-    action_type, action_play_end_type, action_event_type,
+    action_play_end_type, action_event_type,
     action_transform, action_scale)
 
     values
     <foreach collection="list" separator="," index="index" item="item" >
-      (#{item.fkNodeId,jdbcType=INTEGER}, #{item.fkArtworkId,jdbcType=INTEGER}, #{item.actionWide,jdbcType=VARCHAR},
-      #{item.actionHigh,jdbcType=VARCHAR}, #{item.actionOpacity,jdbcType=VARCHAR}, #{item.actionSectionTime,jdbcType=VARCHAR},
-      #{item.actionEndTime,jdbcType=VARCHAR}, #{item.actionCoordinateX,jdbcType=VARCHAR}, #{item.actionCoordinateY,jdbcType=VARCHAR},
-      #{item.actionType,jdbcType=INTEGER}, #{item.actionPlayEndType,jdbcType=INTEGER}, #{item.actionEventType,jdbcType=INTEGER},
-      #{item.actionTransform,jdbcType=VARCHAR}, #{item.actionScale,jdbcType=VARCHAR})
+      ( #{item.fkNodeId}, #{item.fkArtworkId}, #{item.actionWide},
+      #{item.actionHigh}, #{item.actionOpacity}, #{item.actionSectionTime},
+      #{item.actionEndTime}, #{item.actionCoordinateX}, #{item.actionCoordinateY},
+      #{item.actionPlayEndType}, #{item.actionEventType},
+      #{item.actionTransform}, #{item.actionScale} )
     </foreach>
 
 
   </insert>
 
   <update id="updateByPrimaryKeySelectiveList">
-    update ecm_artwork_node_buoy
+    update ecm_artwork_node_action
 
     <trim prefix="set" suffixOverrides=",">
 
@@ -307,15 +305,6 @@
         </foreach>
       </trim>
 
-      <trim prefix="action_type = case" suffix="end,">
-        <foreach collection="list" item="item" index="index">
-          <if test="item.actionType!=null">
-            when pk_action_id =#{item.pkActionId}
-            then #{item.actionType}
-          </if>
-        </foreach>
-      </trim>
-
       <trim prefix="action_play_end_type = case" suffix="end,">
         <foreach collection="list" item="item" index="index">
           <if test="item.actionPlayEndType!=null">
@@ -352,9 +341,8 @@
         </foreach>
       </trim>
 
-
-
     </trim>
+
     where pk_action_id in
     <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
       #{item.pkActionId}
