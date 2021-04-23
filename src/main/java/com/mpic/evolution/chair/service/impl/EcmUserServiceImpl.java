@@ -115,8 +115,8 @@ public class EcmUserServiceImpl implements EcmUserService {
 		EcmUserFlowVO ecmUserFlow = ecmUserFlowDao.selectByPkUserId(ecmUser.getPkUserId());
 		if (ecmUserFlow == null || ecmUserFlow.getUserFlowId() == null){
 			PaymentVipService updateVipDate = beanConfig.createQueryService("UpdateVipDate");
-			updateVipDate.operationRelateToPayment(1,ecmUser.getPkUserId(),"新用户赠送一个普通月会员");
-			EcmVipRole commonRole = ecmVipRoleDao.selectByPrimaryKey(1);
+			updateVipDate.operationRelateToPayment(6,ecmUser.getPkUserId(),"新用户赠送一个普通月会员");
+			EcmVipRole commonRole = ecmVipRoleDao.selectByPrimaryKey(2);
 			int newVipUserFlow =  commonRole.getFlowLimit()*1000*1000;
 			EcmUserFlowVO userFlow= new EcmUserFlowVO();
 			userFlow.setUserId(user.getPkUserId());
