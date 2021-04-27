@@ -57,6 +57,16 @@ public class EcmArtworkNodeNumberCondition implements Serializable {
     private String changeCondition3;
 
     /**
+     * 数值4出现的条件
+     */
+    private String appearCondition4;
+
+    /**
+     * 数值4发生怎样的改变
+     */
+    private String changeCondition4;
+
+    /**
      * 条件0 的名字
      */
     private String nameCondition0;
@@ -95,6 +105,16 @@ public class EcmArtworkNodeNumberCondition implements Serializable {
      * 条件3的 名字是否在前端展示
      */
     private Byte nameDisplay3;
+
+    /**
+     * 条件4 的名字
+     */
+    private String nameCondition4;
+
+    /**
+     * 条件4的 名字是否在前端展示
+     */
+    private Byte nameDisplay4;
 
     /**
      * 作品id

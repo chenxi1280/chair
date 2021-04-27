@@ -196,15 +196,15 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                 for (EcmArtworkNodeNumberCondition ecmArtworkNodeNumberCondition : ecmArtworkNodeNumberConditionS) {
                     if (ecmArtworkNodeNumberCondition.getPkDetailid().equals(node.getPkDetailId())) {
                         // ecmArtworkNodeNumberCondition中数值0 1 2 3，并改成 前端对应的 list<NodeNumberConditionVO
-                        List<NodeNumberConditionVO> numberCondition = new ArrayList<>(4);
-                        List<String> names = new ArrayList<>(4);
+                        List<NodeNumberConditionVO> numberCondition = new ArrayList<>(5);
+                        List<String> names = new ArrayList<>(5);
 //                        List<Boolean> allNodeNameFlagList = new ArrayList<>(4);
                         Class<EcmArtworkNodeNumberCondition> ecmArtworkNodeNumberConditionClass = EcmArtworkNodeNumberCondition.class;
                         String appearCondition = "appearCondition";
                         String changeCondition = "changeCondition";
                         String nameCondition = "nameCondition";
                         String nameDisplay = "nameDisplay";
-                        for (int i = 0; i < INT_FOUR; i++) {
+                        for (int i = 0; i < 5; i++) {
                             NodeNumberConditionVO nodeNumberConditionVO = new NodeNumberConditionVO();
                             //反射还原前端对象
                             VOUtils.setNodeNumberConditionFieldValue(ecmArtworkNodeNumberCondition, appearCondition, i, ecmArtworkNodeNumberConditionClass, nodeNumberConditionVO);
@@ -451,6 +451,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             }
             ecmArtworkNodesDao.updateByPrimaryKeySelective(ecmArtworkNodes);
             ecmArtworkNodeNumberConditionDao.updateNameConditionByArtworkID(ecmArtworkNodeNumberConditionVO);
+
             if (ecmArtworkNodeNumberCondition != null) {
                 ecmArtworkNodeNumberConditionDao.updateByPrimaryKeySelective(ecmArtworkNodeNumberConditionVO);
                 return ResponseDTO.ok();

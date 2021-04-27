@@ -11,6 +11,8 @@
     <result column="change_condition2" jdbcType="VARCHAR" property="changeCondition2" />
     <result column="appear_condition3" jdbcType="VARCHAR" property="appearCondition3" />
     <result column="change_condition3" jdbcType="VARCHAR" property="changeCondition3" />
+    <result column="appear_condition4" jdbcType="VARCHAR" property="appearCondition4" />
+    <result column="change_condition4" jdbcType="VARCHAR" property="changeCondition4" />
     <result column="name_condition0" jdbcType="VARCHAR" property="nameCondition0" />
     <result column="name_display0" jdbcType="TINYINT" property="nameDisplay0" />
     <result column="name_condition1" jdbcType="VARCHAR" property="nameCondition1" />
@@ -19,6 +21,8 @@
     <result column="name_display2" jdbcType="TINYINT" property="nameDisplay2" />
     <result column="name_condition3" jdbcType="VARCHAR" property="nameCondition3" />
     <result column="name_display3" jdbcType="TINYINT" property="nameDisplay3" />
+    <result column="name_condition4" jdbcType="VARCHAR" property="nameCondition4" />
+    <result column="name_display4" jdbcType="TINYINT" property="nameDisplay4" />
     <result column="fk_artwork_id" jdbcType="INTEGER" property="fkArtworkId" />
     <result column="change_flag" jdbcType="TINYINT" property="changeFlag" />
     <result column="appear_flag" jdbcType="TINYINT" property="appearFlag" />
@@ -29,9 +33,10 @@
   </resultMap>
   <sql id="Base_Column_List">
     pk_detailId, appear_condition0, change_condition0, appear_condition1, change_condition1,
-    appear_condition2, change_condition2, appear_condition3, change_condition3, name_condition0,
-    name_display0, name_condition1, name_display1, name_condition2, name_display2, name_condition3,
-    name_display3, fk_artwork_id, change_flag, appear_flag, name_flag, all_name_flag,
+    appear_condition2, change_condition2, appear_condition3, change_condition3, appear_condition4,
+    change_condition4, name_condition0, name_display0, name_condition1, name_display1,
+    name_condition2, name_display2, name_condition3, name_display3, name_condition4,
+    name_display4, fk_artwork_id, change_flag, appear_flag, name_flag, all_name_flag,
     create_date, updata_date
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -48,21 +53,23 @@
     insert into ecm_artwork_node_number_condition (appear_condition0, change_condition0,
       appear_condition1, change_condition1, appear_condition2,
       change_condition2, appear_condition3, change_condition3,
-      name_condition0, name_display0, name_condition1,
-      name_display1, name_condition2, name_display2,
-      name_condition3, name_display3, fk_artwork_id,
-      change_flag, appear_flag, name_flag,
-      all_name_flag, create_date, updata_date
-      )
+      appear_condition4, change_condition4, name_condition0,
+      name_display0, name_condition1, name_display1,
+      name_condition2, name_display2, name_condition3,
+      name_display3, name_condition4, name_display4,
+      fk_artwork_id, change_flag, appear_flag,
+      name_flag, all_name_flag, create_date,
+      updata_date)
     values (#{appearCondition0,jdbcType=VARCHAR}, #{changeCondition0,jdbcType=VARCHAR},
       #{appearCondition1,jdbcType=VARCHAR}, #{changeCondition1,jdbcType=VARCHAR}, #{appearCondition2,jdbcType=VARCHAR},
       #{changeCondition2,jdbcType=VARCHAR}, #{appearCondition3,jdbcType=VARCHAR}, #{changeCondition3,jdbcType=VARCHAR},
-      #{nameCondition0,jdbcType=VARCHAR}, #{nameDisplay0,jdbcType=TINYINT}, #{nameCondition1,jdbcType=VARCHAR},
-      #{nameDisplay1,jdbcType=TINYINT}, #{nameCondition2,jdbcType=VARCHAR}, #{nameDisplay2,jdbcType=TINYINT},
-      #{nameCondition3,jdbcType=VARCHAR}, #{nameDisplay3,jdbcType=TINYINT}, #{fkArtworkId,jdbcType=INTEGER},
-      #{changeFlag,jdbcType=TINYINT}, #{appearFlag,jdbcType=TINYINT}, #{nameFlag,jdbcType=TINYINT},
-      #{allNameFlag,jdbcType=TINYINT}, #{createDate,jdbcType=TIMESTAMP}, #{updataDate,jdbcType=TIMESTAMP}
-      )
+      #{appearCondition4,jdbcType=VARCHAR}, #{changeCondition4,jdbcType=VARCHAR}, #{nameCondition0,jdbcType=VARCHAR},
+      #{nameDisplay0,jdbcType=TINYINT}, #{nameCondition1,jdbcType=VARCHAR}, #{nameDisplay1,jdbcType=TINYINT},
+      #{nameCondition2,jdbcType=VARCHAR}, #{nameDisplay2,jdbcType=TINYINT}, #{nameCondition3,jdbcType=VARCHAR},
+      #{nameDisplay3,jdbcType=TINYINT}, #{nameCondition4,jdbcType=VARCHAR}, #{nameDisplay4,jdbcType=TINYINT},
+      #{fkArtworkId,jdbcType=INTEGER}, #{changeFlag,jdbcType=TINYINT}, #{appearFlag,jdbcType=TINYINT},
+      #{nameFlag,jdbcType=TINYINT}, #{allNameFlag,jdbcType=TINYINT}, #{createDate,jdbcType=TIMESTAMP},
+      #{updataDate,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" keyColumn="pk_detailId" keyProperty="pkDetailid" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeNumberCondition" useGeneratedKeys="true">
     insert into ecm_artwork_node_number_condition
@@ -91,6 +98,12 @@
       <if test="changeCondition3 != null">
         change_condition3,
       </if>
+      <if test="appearCondition4 != null">
+        appear_condition4,
+      </if>
+      <if test="changeCondition4 != null">
+        change_condition4,
+      </if>
       <if test="nameCondition0 != null">
         name_condition0,
       </if>
@@ -114,6 +127,12 @@
       </if>
       <if test="nameDisplay3 != null">
         name_display3,
+      </if>
+      <if test="nameCondition4 != null">
+        name_condition4,
+      </if>
+      <if test="nameDisplay4 != null">
+        name_display4,
       </if>
       <if test="fkArtworkId != null">
         fk_artwork_id,
@@ -162,6 +181,12 @@
       <if test="changeCondition3 != null">
         #{changeCondition3,jdbcType=VARCHAR},
       </if>
+      <if test="appearCondition4 != null">
+        #{appearCondition4,jdbcType=VARCHAR},
+      </if>
+      <if test="changeCondition4 != null">
+        #{changeCondition4,jdbcType=VARCHAR},
+      </if>
       <if test="nameCondition0 != null">
         #{nameCondition0,jdbcType=VARCHAR},
       </if>
@@ -185,6 +210,12 @@
       </if>
       <if test="nameDisplay3 != null">
         #{nameDisplay3,jdbcType=TINYINT},
+      </if>
+      <if test="nameCondition4 != null">
+        #{nameCondition4,jdbcType=VARCHAR},
+      </if>
+      <if test="nameDisplay4 != null">
+        #{nameDisplay4,jdbcType=TINYINT},
       </if>
       <if test="fkArtworkId != null">
         #{fkArtworkId,jdbcType=INTEGER},
@@ -236,6 +267,12 @@
       <if test="changeCondition3 != null">
         change_condition3 = #{changeCondition3,jdbcType=VARCHAR},
       </if>
+      <if test="appearCondition4 != null">
+        appear_condition4 = #{appearCondition4,jdbcType=VARCHAR},
+      </if>
+      <if test="changeCondition4 != null">
+        change_condition4 = #{changeCondition4,jdbcType=VARCHAR},
+      </if>
       <if test="nameCondition0 != null">
         name_condition0 = #{nameCondition0,jdbcType=VARCHAR},
       </if>
@@ -259,6 +296,12 @@
       </if>
       <if test="nameDisplay3 != null">
         name_display3 = #{nameDisplay3,jdbcType=TINYINT},
+      </if>
+      <if test="nameCondition4 != null">
+        name_condition4 = #{nameCondition4,jdbcType=VARCHAR},
+      </if>
+      <if test="nameDisplay4 != null">
+        name_display4 = #{nameDisplay4,jdbcType=TINYINT},
       </if>
       <if test="fkArtworkId != null">
         fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER},
@@ -294,6 +337,8 @@
       change_condition2 = #{changeCondition2,jdbcType=VARCHAR},
       appear_condition3 = #{appearCondition3,jdbcType=VARCHAR},
       change_condition3 = #{changeCondition3,jdbcType=VARCHAR},
+      appear_condition4 = #{appearCondition4,jdbcType=VARCHAR},
+      change_condition4 = #{changeCondition4,jdbcType=VARCHAR},
       name_condition0 = #{nameCondition0,jdbcType=VARCHAR},
       name_display0 = #{nameDisplay0,jdbcType=TINYINT},
       name_condition1 = #{nameCondition1,jdbcType=VARCHAR},
@@ -302,6 +347,8 @@
       name_display2 = #{nameDisplay2,jdbcType=TINYINT},
       name_condition3 = #{nameCondition3,jdbcType=VARCHAR},
       name_display3 = #{nameDisplay3,jdbcType=TINYINT},
+      name_condition4 = #{nameCondition4,jdbcType=VARCHAR},
+      name_display4 = #{nameDisplay4,jdbcType=TINYINT},
       fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER},
       change_flag = #{changeFlag,jdbcType=TINYINT},
       appear_flag = #{appearFlag,jdbcType=TINYINT},
@@ -311,7 +358,6 @@
       updata_date = #{updataDate,jdbcType=TIMESTAMP}
     where pk_detailId = #{pkDetailid,jdbcType=INTEGER}
   </update>
-
 
   <!--  sql-->
   <select id="selectByArtWorkId" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkNodeNumberConditionVO">
@@ -326,22 +372,23 @@
      insert into ecm_artwork_node_number_condition (pk_detailId,appear_condition0, change_condition0,
       appear_condition1, change_condition1, appear_condition2,
       change_condition2, appear_condition3, change_condition3,
-      name_condition0, name_display0, name_condition1,
-      name_display1, name_condition2, name_display2,
-      name_condition3, name_display3, fk_artwork_id,
-      change_flag, appear_flag, name_flag,
-      create_date,
+      appear_condition4, change_condition4, name_condition0,
+      name_display0, name_condition1, name_display1,
+      name_condition2, name_display2, name_condition3,
+      name_display3, name_condition4, name_display4,
+      fk_artwork_id, change_flag, appear_flag,
+      name_flag, all_name_flag, create_date,
       updata_date)
     values ( #{pkDetailid,jdbcType=INTEGER},
-    #{appearCondition0,jdbcType=VARCHAR}, #{changeCondition0,jdbcType=VARCHAR},
-      #{appearCondition1,jdbcType=VARCHAR}, #{changeCondition1,jdbcType=VARCHAR},
-      #{appearCondition2,jdbcType=VARCHAR},#{changeCondition2,jdbcType=VARCHAR},
-      #{appearCondition3,jdbcType=VARCHAR}, #{changeCondition3,jdbcType=VARCHAR},
-      #{nameCondition0,jdbcType=VARCHAR}, #{nameDisplay0,jdbcType=TINYINT}, #{nameCondition1,jdbcType=VARCHAR},
-      #{nameDisplay1,jdbcType=TINYINT}, #{nameCondition2,jdbcType=VARCHAR}, #{nameDisplay2,jdbcType=TINYINT},
-      #{nameCondition3,jdbcType=VARCHAR}, #{nameDisplay3,jdbcType=TINYINT}, #{fkArtworkId,jdbcType=INTEGER},
-      #{changeFlag,jdbcType=TINYINT}, #{appearFlag,jdbcType=TINYINT}, #{nameFlag,jdbcType=TINYINT},
-      #{createDate,jdbcType=TIMESTAMP},
+      #{appearCondition0,jdbcType=VARCHAR}, #{changeCondition0,jdbcType=VARCHAR},
+      #{appearCondition1,jdbcType=VARCHAR}, #{changeCondition1,jdbcType=VARCHAR}, #{appearCondition2,jdbcType=VARCHAR},
+      #{changeCondition2,jdbcType=VARCHAR}, #{appearCondition3,jdbcType=VARCHAR}, #{changeCondition3,jdbcType=VARCHAR},
+      #{appearCondition4,jdbcType=VARCHAR}, #{changeCondition4,jdbcType=VARCHAR}, #{nameCondition0,jdbcType=VARCHAR},
+      #{nameDisplay0,jdbcType=TINYINT}, #{nameCondition1,jdbcType=VARCHAR}, #{nameDisplay1,jdbcType=TINYINT},
+      #{nameCondition2,jdbcType=VARCHAR}, #{nameDisplay2,jdbcType=TINYINT}, #{nameCondition3,jdbcType=VARCHAR},
+      #{nameDisplay3,jdbcType=TINYINT}, #{nameCondition4,jdbcType=VARCHAR}, #{nameDisplay4,jdbcType=TINYINT},
+      #{fkArtworkId,jdbcType=INTEGER}, #{changeFlag,jdbcType=TINYINT}, #{appearFlag,jdbcType=TINYINT},
+      #{nameFlag,jdbcType=TINYINT}, #{allNameFlag,jdbcType=TINYINT}, #{createDate,jdbcType=TIMESTAMP},
       #{updataDate,jdbcType=TIMESTAMP})
 
   </insert>
@@ -399,6 +446,7 @@
       name_condition1 = #{nameCondition1,jdbcType=VARCHAR},
       name_condition2 = #{nameCondition2,jdbcType=VARCHAR},
       name_condition3 = #{nameCondition3,jdbcType=VARCHAR},
+      name_condition4 = #{nameCondition4,jdbcType=VARCHAR},
       name_flag = 1,
       updata_date = #{updataDate,jdbcType=TIMESTAMP}
     where fk_artwork_id = #{fkArtworkId}
@@ -420,6 +468,9 @@
       <if test="allNodeNameFlag3 != null and allNodeNameFlag3">
         name_display3 = #{nameDisplay3,jdbcType=TINYINT},
       </if>
+      <if test="allNodeNameFlag4 != null and allNodeNameFlag3">
+        name_display4 = #{allNodeNameFlag4,jdbcType=TINYINT},
+      </if>
       updata_date = #{updataDate,jdbcType=TIMESTAMP}
     where fk_artwork_id = #{fkArtworkId}
   </update>
@@ -432,10 +483,12 @@
       appear_condition1, change_condition1,
       appear_condition2, change_condition2,
       appear_condition3, change_condition3,
+      appear_condition4, change_condition4,
       name_condition0, name_display0,
       name_condition1, name_display1,
       name_condition2, name_display2,
       name_condition3, name_display3,
+      name_condition4, name_display4,
       fk_artwork_id,
       change_flag, appear_flag, name_flag, all_name_flag ,
       create_date)
@@ -447,10 +500,12 @@
       'null,null','0',
       'null,null','0',
       'null,null','0',
+      'null,null','0',
       #{item.nameCondition0 }, #{item.nameDisplay0 },
       #{item.nameCondition1 }, #{item.nameDisplay1 },
       #{item.nameCondition2 }, #{item.nameDisplay2 },
       #{item.nameCondition3 }, #{item.nameDisplay3 },
+      #{item.nameCondition4 }, #{item.nameDisplay4 },
       #{item.fkArtworkId },
       0,0,1,1,
       #{item.createDate}
