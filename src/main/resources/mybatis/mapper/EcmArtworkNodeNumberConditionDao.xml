@@ -468,8 +468,8 @@
       <if test="allNodeNameFlag3 != null and allNodeNameFlag3">
         name_display3 = #{nameDisplay3,jdbcType=TINYINT},
       </if>
-      <if test="allNodeNameFlag4 != null and allNodeNameFlag3">
-        name_display4 = #{allNodeNameFlag4,jdbcType=TINYINT},
+      <if test="allNodeNameFlag4 != null and allNodeNameFlag4">
+        name_display4 = #{nameDisplay4,jdbcType=TINYINT},
       </if>
       updata_date = #{updataDate,jdbcType=TIMESTAMP}
     where fk_artwork_id = #{fkArtworkId}
