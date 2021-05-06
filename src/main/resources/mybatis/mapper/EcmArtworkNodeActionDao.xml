@@ -15,13 +15,22 @@
     <result column="action_type" jdbcType="INTEGER" property="actionType" />
     <result column="action_play_end_type" jdbcType="INTEGER" property="actionPlayEndType" />
     <result column="action_event_type" jdbcType="INTEGER" property="actionEventType" />
+    <result column="action_event_type_img_url" jdbcType="VARCHAR" property="actionEventTypeImgUrl" />
     <result column="action_transform" jdbcType="VARCHAR" property="actionTransform" />
     <result column="action_scale" jdbcType="VARCHAR" property="actionScale" />
+    <result column="action_text_state" jdbcType="INTEGER" property="actionTextState" />
+    <result column="action_text_color" jdbcType="VARCHAR" property="actionTextColor" />
+    <result column="action_text_point" jdbcType="VARCHAR" property="actionTextPoint" />
+    <result column="action_text_value" jdbcType="VARCHAR" property="actionTextValue" />
+    <result column="action_text_coordinate_x" jdbcType="VARCHAR" property="actionTextCoordinateX" />
+    <result column="action_text_coordinate_y" jdbcType="VARCHAR" property="actionTextCoordinateY" />
   </resultMap>
   <sql id="Base_Column_List">
     pk_action_id, fk_node_id, fk_artwork_id, action_wide, action_high, action_opacity,
     action_section_time, action_end_time, action_coordinate_x, action_coordinate_y, action_type,
-    action_play_end_type, action_event_type, action_transform, action_scale
+    action_play_end_type, action_event_type, action_event_type_img_url, action_transform,
+    action_scale, action_text_state, action_text_color, action_text_point, action_text_value,
+    action_text_coordinate_x, action_text_coordinate_y
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
@@ -38,12 +47,18 @@
       action_high, action_opacity, action_section_time,
       action_end_time, action_coordinate_x, action_coordinate_y,
       action_type, action_play_end_type, action_event_type,
-      action_transform, action_scale)
+      action_event_type_img_url, action_transform,
+      action_scale, action_text_state, action_text_color,
+      action_text_point, action_text_value, action_text_coordinate_x,
+      action_text_coordinate_y)
     values (#{fkNodeId,jdbcType=INTEGER}, #{fkArtworkId,jdbcType=INTEGER}, #{actionWide,jdbcType=VARCHAR},
       #{actionHigh,jdbcType=VARCHAR}, #{actionOpacity,jdbcType=VARCHAR}, #{actionSectionTime,jdbcType=VARCHAR},
       #{actionEndTime,jdbcType=VARCHAR}, #{actionCoordinateX,jdbcType=VARCHAR}, #{actionCoordinateY,jdbcType=VARCHAR},
       #{actionType,jdbcType=INTEGER}, #{actionPlayEndType,jdbcType=INTEGER}, #{actionEventType,jdbcType=INTEGER},
-      #{actionTransform,jdbcType=VARCHAR}, #{actionScale,jdbcType=VARCHAR})
+      #{actionEventTypeImgUrl,jdbcType=VARCHAR}, #{actionTransform,jdbcType=VARCHAR},
+      #{actionScale,jdbcType=VARCHAR}, #{actionTextState,jdbcType=INTEGER}, #{actionTextColor,jdbcType=VARCHAR},
+      #{actionTextPoint,jdbcType=VARCHAR}, #{actionTextValue,jdbcType=VARCHAR}, #{actionTextCoordinateX,jdbcType=VARCHAR},
+      #{actionTextCoordinateY,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" keyColumn="pk_action_id" keyProperty="pkActionId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeAction" useGeneratedKeys="true">
     insert into ecm_artwork_node_action
@@ -84,11 +99,32 @@
       <if test="actionEventType != null">
         action_event_type,
       </if>
+      <if test="actionEventTypeImgUrl != null">
+        action_event_type_img_url,
+      </if>
       <if test="actionTransform != null">
         action_transform,
       </if>
       <if test="actionScale != null">
         action_scale,
+      </if>
+      <if test="actionTextState != null">
+        action_text_state,
+      </if>
+      <if test="actionTextColor != null">
+        action_text_color,
+      </if>
+      <if test="actionTextPoint != null">
+        action_text_point,
+      </if>
+      <if test="actionTextValue != null">
+        action_text_value,
+      </if>
+      <if test="actionTextCoordinateX != null">
+        action_text_coordinate_x,
+      </if>
+      <if test="actionTextCoordinateY != null">
+        action_text_coordinate_y,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -128,11 +164,32 @@
       <if test="actionEventType != null">
         #{actionEventType,jdbcType=INTEGER},
       </if>
+      <if test="actionEventTypeImgUrl != null">
+        #{actionEventTypeImgUrl,jdbcType=VARCHAR},
+      </if>
       <if test="actionTransform != null">
         #{actionTransform,jdbcType=VARCHAR},
       </if>
       <if test="actionScale != null">
         #{actionScale,jdbcType=VARCHAR},
+      </if>
+      <if test="actionTextState != null">
+        #{actionTextState,jdbcType=INTEGER},
+      </if>
+      <if test="actionTextColor != null">
+        #{actionTextColor,jdbcType=VARCHAR},
+      </if>
+      <if test="actionTextPoint != null">
+        #{actionTextPoint,jdbcType=VARCHAR},
+      </if>
+      <if test="actionTextValue != null">
+        #{actionTextValue,jdbcType=VARCHAR},
+      </if>
+      <if test="actionTextCoordinateX != null">
+        #{actionTextCoordinateX,jdbcType=VARCHAR},
+      </if>
+      <if test="actionTextCoordinateY != null">
+        #{actionTextCoordinateY,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -175,11 +232,32 @@
       <if test="actionEventType != null">
         action_event_type = #{actionEventType,jdbcType=INTEGER},
       </if>
+      <if test="actionEventTypeImgUrl != null">
+        action_event_type_img_url = #{actionEventTypeImgUrl,jdbcType=VARCHAR},
+      </if>
       <if test="actionTransform != null">
         action_transform = #{actionTransform,jdbcType=VARCHAR},
       </if>
       <if test="actionScale != null">
         action_scale = #{actionScale,jdbcType=VARCHAR},
+      </if>
+      <if test="actionTextState != null">
+        action_text_state = #{actionTextState,jdbcType=INTEGER},
+      </if>
+      <if test="actionTextColor != null">
+        action_text_color = #{actionTextColor,jdbcType=VARCHAR},
+      </if>
+      <if test="actionTextPoint != null">
+        action_text_point = #{actionTextPoint,jdbcType=VARCHAR},
+      </if>
+      <if test="actionTextValue != null">
+        action_text_value = #{actionTextValue,jdbcType=VARCHAR},
+      </if>
+      <if test="actionTextCoordinateX != null">
+        action_text_coordinate_x = #{actionTextCoordinateX,jdbcType=VARCHAR},
+      </if>
+      <if test="actionTextCoordinateY != null">
+        action_text_coordinate_y = #{actionTextCoordinateY,jdbcType=VARCHAR},
       </if>
     </set>
     where pk_action_id = #{pkActionId,jdbcType=INTEGER}
@@ -198,8 +276,15 @@
       action_type = #{actionType,jdbcType=INTEGER},
       action_play_end_type = #{actionPlayEndType,jdbcType=INTEGER},
       action_event_type = #{actionEventType,jdbcType=INTEGER},
+      action_event_type_img_url = #{actionEventTypeImgUrl,jdbcType=VARCHAR},
       action_transform = #{actionTransform,jdbcType=VARCHAR},
-      action_scale = #{actionScale,jdbcType=VARCHAR}
+      action_scale = #{actionScale,jdbcType=VARCHAR},
+      action_text_state = #{actionTextState,jdbcType=INTEGER},
+      action_text_color = #{actionTextColor,jdbcType=VARCHAR},
+      action_text_point = #{actionTextPoint,jdbcType=VARCHAR},
+      action_text_value = #{actionTextValue,jdbcType=VARCHAR},
+      action_text_coordinate_x = #{actionTextCoordinateX,jdbcType=VARCHAR},
+      action_text_coordinate_y = #{actionTextCoordinateY,jdbcType=VARCHAR}
     where pk_action_id = #{pkActionId,jdbcType=INTEGER}
   </update>
 
@@ -222,18 +307,22 @@
     insert into ecm_artwork_node_action (fk_node_id, fk_artwork_id, action_wide,
     action_high, action_opacity, action_section_time,
     action_end_time, action_coordinate_x, action_coordinate_y,
-    action_play_end_type, action_event_type,
-    action_transform, action_scale)
+    action_type, action_play_end_type, action_event_type,
+    action_event_type_img_url, action_transform, action_scale,
+    action_text_state, action_text_color,
+    action_text_point, action_text_value, action_text_coordinate_x,
+    action_text_coordinate_y)
 
     values
     <foreach collection="list" separator="," index="index" item="item" >
       ( #{item.fkNodeId}, #{item.fkArtworkId}, #{item.actionWide},
       #{item.actionHigh}, #{item.actionOpacity}, #{item.actionSectionTime},
       #{item.actionEndTime}, #{item.actionCoordinateX}, #{item.actionCoordinateY},
-      #{item.actionPlayEndType}, #{item.actionEventType},
-      #{item.actionTransform}, #{item.actionScale} )
+      #{item.actionPlayEndType}, #{item.actionEventType}, #{item.actionTransform}, #{item.actionScale},
+      #{item.actionTextState}, #{item.actionTextColor},
+      #{item.actionTextPoint}, #{item.actionTextValue}, #{item.actionTextCoordinateX},
+      #{item.actionTextCoordinateY})
     </foreach>
-
 
   </insert>
 
@@ -337,6 +426,60 @@
           <if test="item.actionScale!=null">
             when pk_action_id =#{item.pkActionId}
             then #{item.actionScale}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="action_text_state = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.actionTextState!=null">
+            when pk_action_id =#{item.pkActionId}
+            then #{item.actionTextState}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="action_text_color = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.actionTextColor!=null">
+            when pk_action_id =#{item.pkActionId}
+            then #{item.actionTextColor}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="action_text_point = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.actionTextPoint!=null">
+            when pk_action_id =#{item.pkActionId}
+            then #{item.actionTextPoint}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="action_text_value = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.actionTextValue!=null">
+            when pk_action_id =#{item.pkActionId}
+            then #{item.actionTextValue}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="action_text_coordinate_x = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.actionTextCoordinateX!=null">
+            when pk_action_id =#{item.pkActionId}
+            then #{item.actionTextCoordinateX}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="action_text_coordinate_y = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.actionTextCoordinateY!=null">
+            when pk_action_id =#{item.pkActionId}
+            then #{item.actionTextCoordinateY}
           </if>
         </foreach>
       </trim>
