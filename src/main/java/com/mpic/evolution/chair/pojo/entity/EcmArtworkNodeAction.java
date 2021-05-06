@@ -70,6 +70,11 @@ public class EcmArtworkNodeAction implements Serializable {
     private Integer actionEventType;
 
     /**
+     * img url
+     */
+    private String actionEventTypeImgUrl;
+
+    /**
      * 旋转值
      */
     private String actionTransform;
@@ -78,6 +83,36 @@ public class EcmArtworkNodeAction implements Serializable {
      * 比列尺
      */
     private String actionScale;
+
+    /**
+     * 0 无文字，， 1 有问题
+     */
+    private Integer actionTextState;
+
+    /**
+     * 文字颜色
+     */
+    private String actionTextColor;
+
+    /**
+     * 文字大小
+     */
+    private String actionTextPoint;
+
+    /**
+     * 内容
+     */
+    private String actionTextValue;
+
+    /**
+     * 文字坐标X
+     */
+    private String actionTextCoordinateX;
+
+    /**
+     * 文字坐标Y
+     */
+    private String actionTextCoordinateY;
 
     private static final long serialVersionUID = 1L;
 }
