@@ -114,8 +114,8 @@ public class EcmUserServiceImpl implements EcmUserService {
 		//如果发现是新用户赠送一个月普通会员 并获取其会员信息
 		EcmUserFlowVO ecmUserFlow = ecmUserFlowDao.selectByPkUserId(ecmUser.getPkUserId());
 		if (ecmUserFlow == null || ecmUserFlow.getUserFlowId() == null){
-			PaymentVipService updateVipDate = beanConfig.createQueryService("UpdateVipDate");
-			updateVipDate.operationRelateToPayment(6,ecmUser.getPkUserId(),"新用户赠送一个普通月会员");
+			PaymentVipService updateVipDate = beanConfig.createQueryService("UpdateSuperVipDate");
+			updateVipDate.operationRelateToPayment(6,ecmUser.getPkUserId(),"新用户赠送半年超级会员");
 			EcmVipRole commonRole = ecmVipRoleDao.selectByPrimaryKey(2);
 			int newVipUserFlow =  commonRole.getFlowLimit()*1000*1000;
 			EcmUserFlowVO userFlow= new EcmUserFlowVO();
