@@ -217,8 +217,8 @@ public class EcmUserServiceImpl implements EcmUserService {
 			if(vip.getFkVipRoleId() == 1){
 				user.setSuperVipStartDate(null);
 				user.setSuperVipEndDate(null);
-				user.setVipEndDate(format.format(vip.getVipStartTime()));
-				user.setVipStartDate(format.format(vip.getVipEndTime()));
+				user.setVipEndDate(format.format(vip.getVipEndTime()));
+				user.setVipStartDate(format.format(vip.getVipStartTime()));
 			}
 			int usedFlowBySymbolEqualsOne = this.getUsedFlowBySymbolEqualsOne(vip.getVipStartTime(),ecmUser.getPkUserId(),format);
 			user.setCurrentMothVipUserdFlow(usedFlowBySymbolEqualsOne);
