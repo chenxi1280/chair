@@ -200,6 +200,8 @@ public class EcmUserServiceImpl implements EcmUserService {
 		//有会员过了当前月的截止期 重置已使用流量为0
 		if (symbol == INT_ONE) {
 			if(vip.getFkVipRoleId() == 2){
+				user.setSuperVipStartDate(format.format(vip.getVipStartTime()));
+				user.setSuperVipEndDate(format.format(vip.getVipEndTime()));
 				//如果是超级会员一定有普通会员得的信息 只展示超级会员的相关信息
 				for (int i = 0; i < ecmVipUserInfos.size(); i++){
 					if(ecmVipUserInfos.get(i).getFkVipRoleId() == 1){
@@ -215,13 +217,13 @@ public class EcmUserServiceImpl implements EcmUserService {
 			if(vip.getFkVipRoleId() == 1){
 				user.setSuperVipStartDate(null);
 				user.setSuperVipEndDate(null);
+				user.setVipEndDate(format.format(vip.getVipStartTime()));
+				user.setVipStartDate(format.format(vip.getVipEndTime()));
 			}
 			int usedFlowBySymbolEqualsOne = this.getUsedFlowBySymbolEqualsOne(vip.getVipStartTime(),ecmUser.getPkUserId(),format);
 			user.setCurrentMothVipUserdFlow(usedFlowBySymbolEqualsOne);
 			user.setCurrentMothVipsurplusFlow(vipflow - usedFlowBySymbolEqualsOne);
 			user.setCurrentMothVipTotalFlow(vipflow);
-			user.setSuperVipStartDate(format.format(vip.getVipStartTime()));
-			user.setSuperVipEndDate(format.format(vip.getVipEndTime()));
 			//查询用户永久流量充值记录
 			int totalPermanentFlow = 0;
 			List<EcmUserExtraflow> ecmUserExtraflows = ecmUserExtraflowDao.selectByFkUserId(user.getPkUserId());
