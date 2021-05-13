@@ -9,10 +9,8 @@ import com.mpic.evolution.chair.common.exception.EcmTokenException;
 import com.mpic.evolution.chair.config.annotation.EcmArtworkAuthentication;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeAction;
-import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
-import com.mpic.evolution.chair.pojo.query.EcmArtworkEndingsQuery;
-import com.mpic.evolution.chair.pojo.query.EcmArtworkNodeActionQuery;
-import com.mpic.evolution.chair.pojo.query.EcmArtworkNodeBuoyQuery;
+import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeBuoyPanoramic;
+import com.mpic.evolution.chair.pojo.query.*;
 import com.mpic.evolution.chair.pojo.vo.*;
 import com.mpic.evolution.chair.service.EcmArtWorkService;
 import com.mpic.evolution.chair.util.HttpMpicUtil;
@@ -544,6 +542,26 @@ public class EcmArtWorkController extends BaseController{
 		ecmArtworkNodeActionQuery.setFkUserId(getUserIdByHandToken());
 		return ecmArtWorkService.getArtworkNodeAction(ecmArtworkNodeActionQuery);
 	}
+
+
+	@EcmArtworkAuthentication(auth = {"浮标"})
+	@RequestMapping("/saveArtworkNodePanoramicBuoy")
+	@ResponseBody
+	public ResponseDTO saveArtworkNodePanoramicBuoy(@RequestBody EcmArtworkNodeBuoyPanoramicQuery ecmArtworkNodeBuoyPanoramicQuery){
+		ecmArtworkNodeBuoyPanoramicQuery.setFkUserId(getUserIdByHandToken());
+		return ecmArtWorkService.saveArtworkNodePanoramicBuoy(ecmArtworkNodeBuoyPanoramicQuery);
+	}
+
+
+	@EcmArtworkAuthentication(auth = {"浮标"})
+	@RequestMapping("/getArtworkNodePanoramicBuoy")
+	@ResponseBody
+	public ResponseDTO getArtworkNodePanoramicBuoy(@RequestBody EcmArtworkNodeBuoyPanoramicQuery ecmArtworkNodeBuoyPanoramicQuery){
+
+		ecmArtworkNodeBuoyPanoramicQuery.setFkUserId(getUserIdByHandToken());
+		return ecmArtWorkService.getArtworkNodePanoramicBuoy(ecmArtworkNodeBuoyPanoramicQuery);
+	}
+
 
 
 	/**

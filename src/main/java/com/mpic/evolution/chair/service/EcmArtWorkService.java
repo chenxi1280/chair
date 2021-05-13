@@ -1,10 +1,7 @@
 package com.mpic.evolution.chair.service;
 
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
-import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
-import com.mpic.evolution.chair.pojo.query.EcmArtworkEndingsQuery;
-import com.mpic.evolution.chair.pojo.query.EcmArtworkNodeActionQuery;
-import com.mpic.evolution.chair.pojo.query.EcmArtworkNodeBuoyQuery;
+import com.mpic.evolution.chair.pojo.query.*;
 import com.mpic.evolution.chair.pojo.vo.*;
 
 /**
@@ -221,6 +218,9 @@ public interface EcmArtWorkService {
 
     ResponseDTO getArtworkNodeAction(EcmArtworkNodeActionQuery ecmArtworkNodeActionQuery);
 
+    ResponseDTO saveArtworkNodePanoramicBuoy(EcmArtworkNodeBuoyPanoramicQuery ecmArtworkNodeBuoyPanoramicQuery);
+
+    ResponseDTO getArtworkNodePanoramicBuoy(EcmArtworkNodeBuoyPanoramicQuery ecmArtworkNodeBuoyPanoramicQuery);
 
 
 //小程序接口

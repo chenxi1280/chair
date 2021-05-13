@@ -7,10 +7,7 @@ import com.mpic.evolution.chair.dao.*;
 import com.mpic.evolution.chair.pojo.dto.EcmArtworkNodesDTO;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.*;
-import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
-import com.mpic.evolution.chair.pojo.query.EcmArtworkEndingsQuery;
-import com.mpic.evolution.chair.pojo.query.EcmArtworkNodeActionQuery;
-import com.mpic.evolution.chair.pojo.query.EcmArtworkNodeBuoyQuery;
+import com.mpic.evolution.chair.pojo.query.*;
 import com.mpic.evolution.chair.pojo.vo.*;
 import com.mpic.evolution.chair.service.EcmArtWorkService;
 import com.mpic.evolution.chair.util.*;
@@ -55,6 +52,8 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
     EcmArtworkNodeBuoyDao ecmArtworkNodeBuoyDao;
     @Resource
     EcmArtworkNodeActionDao ecmArtworkNodeActionDao;
+    @Resource
+    EcmArtworkNodeBuoyPanoramicDao ecmArtworkNodeBuoyPanoramicDao;
 
 
     @Override
@@ -1136,6 +1135,87 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         return ResponseDTO.ok(ecmArtworkNodeActionVOS);
     }
 
+
+    @Override
+    public ResponseDTO saveArtworkNodePanoramicBuoy(EcmArtworkNodeBuoyPanoramicQuery ecmArtworkNodeBuoyPanoramicQuery) {
+        EcmArtwork ecmArtworkVo = ecmArtworkDao.selectByPrimaryKey(ecmArtworkNodeBuoyPanoramicQuery.getFkArtworkId());
+        if (ecmArtworkVo == null) {
+            return ResponseDTO.fail("作品错误");
+        }
+        if (!ecmArtworkVo.getFkUserid().equals(ecmArtworkNodeBuoyPanoramicQuery.getFkUserId())) {
+            return ResponseDTO.fail("非法访问");
+        }
+
+        List<EcmArtworkNodeBuoyPanoramic> ecmArtworkNodeBuoyList = ecmArtworkNodeBuoyPanoramicQuery.getEcmArtworkNodeBuoyList();
+        EcmArtworkNodes ecmArtworkNodes = ecmArtworkNodesDao.selectByPrimaryKey(ecmArtworkNodeBuoyList.get(0).getFkNodeId());
+        List<EcmArtworkNodeBuoyPanoramicVO> ecmArtworkNodeBuoyVOList = ecmArtworkNodeBuoyPanoramicDao.selectByEcmArtworkId(ecmArtworkNodeBuoyPanoramicQuery.getFkArtworkId());
+
+        List<EcmArtworkNodeBuoyPanoramic> upDataEcmArtworkNodeBuoyVOList = new ArrayList<>();
+
+        Iterator<EcmArtworkNodeBuoyPanoramic> iterator = ecmArtworkNodeBuoyList.iterator();
+        while (iterator.hasNext()) {
+            EcmArtworkNodeBuoyPanoramic next = iterator.next();
+//            next.setBuoyStatus("0");
+            if (next.getBuoyType().equals(0)) {
+                next.setBuoyPlayEndType(ecmArtworkNodeBuoyPanoramicQuery.getBuoyPlayEndType());
+            }
+
+            for (EcmArtworkNodeBuoyPanoramic ecmArtworkNodeBuoy : ecmArtworkNodeBuoyVOList) {
+                ecmArtworkNodeBuoy.setFkArtworkId(ecmArtworkNodeBuoyPanoramicQuery.getFkArtworkId());
+                if (ecmArtworkNodeBuoy.getPkBuoyId().equals(next.getPkBuoyId())) {
+//                    ecmArtworkNodeBuoy =  next;
+                    upDataEcmArtworkNodeBuoyVOList.add(next);
+                    iterator.remove();
+                }
+            }
+        }
+        try {
+            if (!CollectionUtils.isEmpty(ecmArtworkNodeBuoyList)) {
+                // 整插
+                ecmArtworkNodeBuoyPanoramicDao.insertSelectiveList(ecmArtworkNodeBuoyList);
+            }
+            if (!CollectionUtils.isEmpty(upDataEcmArtworkNodeBuoyVOList)) {
+                // 更新
+                ecmArtworkNodeBuoyPanoramicDao.updateByPrimaryKeySelectiveList(upDataEcmArtworkNodeBuoyVOList);
+            }
+            ecmArtworkNodesDao.updateArtworkNodeBuoyByFkNodeId(ecmArtworkNodes.getParentId());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDTO.fail("10086");
+        }
+        // 合并集合 前端需要插入过的主键信息
+        upDataEcmArtworkNodeBuoyVOList.addAll(ecmArtworkNodeBuoyList);
+        return ResponseDTO.ok(upDataEcmArtworkNodeBuoyVOList);
+    }
+
+    @Override
+    public ResponseDTO getArtworkNodePanoramicBuoy(EcmArtworkNodeBuoyPanoramicQuery ecmArtworkNodeBuoyPanoramicQuery) {
+        EcmArtwork ecmArtworkVo = ecmArtworkDao.selectByPrimaryKey(ecmArtworkNodeBuoyPanoramicQuery.getFkArtworkId());
+        if (ecmArtworkVo == null) {
+            return ResponseDTO.fail("作品错误");
+        }
+        if (!ecmArtworkVo.getFkUserid().equals(ecmArtworkNodeBuoyPanoramicQuery.getFkUserId())) {
+            return ResponseDTO.fail("非法访问");
+        }
+        if (CollectionUtils.isEmpty(ecmArtworkNodeBuoyPanoramicQuery.getFkNodeIdList())) {
+            return ResponseDTO.fail("网络错误");
+        }
+        List<EcmArtworkNodeBuoyPanoramicVO> ecmArtworkNodeBuoyVOList = ecmArtworkNodeBuoyPanoramicDao.selectByEcmNodeIdList(ecmArtworkNodeBuoyPanoramicQuery.getFkNodeIdList());
+//        ecmArtworkNodeBuoyVOList.forEach(v -> v.setComparingTime(Integer.valueOf(v.getBuoySectionTime())));
+        // 排序
+//        List<EcmArtworkNodeBuoyVO> sortEcmArtworkNodeBuoyVOList = ecmArtworkNodeBuoyVOList.stream().sorted(Comparator.comparing(EcmArtworkNodeBuoyVO::getBuoyType).thenComparing(EcmArtworkNodeBuoyVO::getComparingTime)).collect(Collectors.toList());
+        HashMap<String, Object> stringObjectHashMap = new HashMap<>(2);
+        stringObjectHashMap.put("list",ecmArtworkNodeBuoyVOList);
+        if (!CollectionUtils.isEmpty(ecmArtworkNodeBuoyVOList)) {
+            stringObjectHashMap.put("buoyPlayEndType",ecmArtworkNodeBuoyVOList.get(0).getBuoyPlayEndType());
+        }else {
+            stringObjectHashMap.put("buoyPlayEndType",-1);
+        }
+
+        return ResponseDTO.ok(stringObjectHashMap);
+    }
+
+
     /**
      * @param: [ecmArtworkNodesTree 需要被替换的子孙集合 对象中含有childs 树状集合, ecmArtworkNodes 保存集合保存 被替换掉的新对象 , rXIdBase 被替换的 xid, cXIdBase 替换的 xid]
      * @return: void
@@ -1155,6 +1235,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
 
     }
+
 
 
     /**

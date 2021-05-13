@@ -1,0 +1,658 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mpic.evolution.chair.dao.EcmArtworkNodeBuoyPanoramicDao">
+  <resultMap id="BaseResultMap" type="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeBuoyPanoramic">
+    <id column="pk_buoy_id" jdbcType="INTEGER" property="pkBuoyId" />
+    <result column="fk_node_id" jdbcType="INTEGER" property="fkNodeId" />
+    <result column="fk_artwork_id" jdbcType="INTEGER" property="fkArtworkId" />
+    <result column="buoy_text_size" jdbcType="VARCHAR" property="buoyTextSize" />
+    <result column="buoy_text_color" jdbcType="VARCHAR" property="buoyTextColor" />
+    <result column="buoy_thing_size" jdbcType="VARCHAR" property="buoyThingSize" />
+    <result column="buoy_thing_img_url" jdbcType="VARCHAR" property="buoyThingImgUrl" />
+    <result column="buoy_thing_type" jdbcType="INTEGER" property="buoyThingType" />
+    <result column="buoy_thing_color" jdbcType="VARCHAR" property="buoyThingColor" />
+    <result column="buoy_thing_opacity" jdbcType="VARCHAR" property="buoyThingOpacity" />
+    <result column="buoy_start_time" jdbcType="VARCHAR" property="buoyStartTime" />
+    <result column="buoy_show_type" jdbcType="INTEGER" property="buoyShowType" />
+    <result column="buoy_end_time" jdbcType="VARCHAR" property="buoyEndTime" />
+    <result column="buoy_action_type" jdbcType="INTEGER" property="buoyActionType" />
+    <result column="buoy_thing_coordinate_x_y_z" jdbcType="VARCHAR" property="buoyThingCoordinateXYZ" />
+    <result column="buoy_text_coordinate_x_y_z" jdbcType="VARCHAR" property="buoyTextCoordinateXYZ" />
+    <result column="buoy_type" jdbcType="INTEGER" property="buoyType" />
+    <result column="buoy_choose_type" jdbcType="INTEGER" property="buoyChooseType" />
+    <result column="buoy_choose_play_type" jdbcType="INTEGER" property="buoyChoosePlayType" />
+    <result column="buoy_choose_event" jdbcType="VARCHAR" property="buoyChooseEvent" />
+    <result column="buoy_play_end_type" jdbcType="INTEGER" property="buoyPlayEndType" />
+    <result column="buoy_status" jdbcType="INTEGER" property="buoyStatus" />
+    <result column="buoy_pop_context" jdbcType="VARCHAR" property="buoyPopContext" />
+    <result column="buoy_pop_type" jdbcType="INTEGER" property="buoyPopType" />
+    <result column="buoy_pop_app_id" jdbcType="VARCHAR" property="buoyPopAppId" />
+    <result column="buoy_pop_web_url" jdbcType="VARCHAR" property="buoyPopWebUrl" />
+    <result column="buoy_event" jdbcType="VARCHAR" property="buoyEvent" />
+    <result column="buoy_context" jdbcType="VARCHAR" property="buoyContext" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pk_buoy_id, fk_node_id, fk_artwork_id, buoy_text_size, buoy_text_color, buoy_thing_size,
+    buoy_thing_img_url, buoy_thing_type, buoy_thing_color, buoy_thing_opacity, buoy_start_time,
+    buoy_show_type, buoy_end_time, buoy_action_type, buoy_thing_coordinate_x_y_z, buoy_text_coordinate_x_y_z,
+    buoy_type, buoy_choose_type, buoy_choose_play_type, buoy_choose_event, buoy_play_end_type,
+    buoy_status, buoy_pop_context, buoy_pop_type, buoy_pop_app_id, buoy_pop_web_url,
+    buoy_event, buoy_context
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from ecm_artwork_node_buoy_panoramic
+    where pk_buoy_id = #{pkBuoyId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ecm_artwork_node_buoy_panoramic
+    where pk_buoy_id = #{pkBuoyId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="pk_buoy_id" keyProperty="pkBuoyId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeBuoyPanoramic" useGeneratedKeys="true">
+    insert into ecm_artwork_node_buoy_panoramic (fk_node_id, fk_artwork_id, buoy_text_size,
+      buoy_text_color, buoy_thing_size, buoy_thing_img_url,
+      buoy_thing_type, buoy_thing_color, buoy_thing_opacity,
+      buoy_start_time, buoy_show_type, buoy_end_time,
+      buoy_action_type, buoy_thing_coordinate_x_y_z,
+      buoy_text_coordinate_x_y_z, buoy_type, buoy_choose_type,
+      buoy_choose_play_type, buoy_choose_event, buoy_play_end_type,
+      buoy_status, buoy_pop_context, buoy_pop_type,
+      buoy_pop_app_id, buoy_pop_web_url, buoy_event,
+      buoy_context)
+    values (#{fkNodeId,jdbcType=INTEGER}, #{fkArtworkId,jdbcType=INTEGER}, #{buoyTextSize,jdbcType=VARCHAR},
+      #{buoyTextColor,jdbcType=VARCHAR}, #{buoyThingSize,jdbcType=VARCHAR}, #{buoyThingImgUrl,jdbcType=VARCHAR},
+      #{buoyThingType,jdbcType=INTEGER}, #{buoyThingColor,jdbcType=VARCHAR}, #{buoyThingOpacity,jdbcType=VARCHAR},
+      #{buoyStartTime,jdbcType=VARCHAR}, #{buoyShowType,jdbcType=INTEGER}, #{buoyEndTime,jdbcType=VARCHAR},
+      #{buoyActionType,jdbcType=INTEGER}, #{buoyThingCoordinateXYZ,jdbcType=VARCHAR},
+      #{buoyTextCoordinateXYZ,jdbcType=VARCHAR}, #{buoyType,jdbcType=INTEGER}, #{buoyChooseType,jdbcType=INTEGER},
+      #{buoyChoosePlayType,jdbcType=INTEGER}, #{buoyChooseEvent,jdbcType=VARCHAR}, #{buoyPlayEndType,jdbcType=INTEGER},
+      #{buoyStatus,jdbcType=INTEGER}, #{buoyPopContext,jdbcType=VARCHAR}, #{buoyPopType,jdbcType=INTEGER},
+      #{buoyPopAppId,jdbcType=VARCHAR}, #{buoyPopWebUrl,jdbcType=VARCHAR}, #{buoyEvent,jdbcType=VARCHAR},
+      #{buoyContext,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="pk_buoy_id" keyProperty="pkBuoyId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeBuoyPanoramic" useGeneratedKeys="true">
+    insert into ecm_artwork_node_buoy_panoramic
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="fkNodeId != null">
+        fk_node_id,
+      </if>
+      <if test="fkArtworkId != null">
+        fk_artwork_id,
+      </if>
+      <if test="buoyTextSize != null">
+        buoy_text_size,
+      </if>
+      <if test="buoyTextColor != null">
+        buoy_text_color,
+      </if>
+      <if test="buoyThingSize != null">
+        buoy_thing_size,
+      </if>
+      <if test="buoyThingImgUrl != null">
+        buoy_thing_img_url,
+      </if>
+      <if test="buoyThingType != null">
+        buoy_thing_type,
+      </if>
+      <if test="buoyThingColor != null">
+        buoy_thing_color,
+      </if>
+      <if test="buoyThingOpacity != null">
+        buoy_thing_opacity,
+      </if>
+      <if test="buoyStartTime != null">
+        buoy_start_time,
+      </if>
+      <if test="buoyShowType != null">
+        buoy_show_type,
+      </if>
+      <if test="buoyEndTime != null">
+        buoy_end_time,
+      </if>
+      <if test="buoyActionType != null">
+        buoy_action_type,
+      </if>
+      <if test="buoyThingCoordinateXYZ != null">
+        buoy_thing_coordinate_x_y_z,
+      </if>
+      <if test="buoyTextCoordinateXYZ != null">
+        buoy_text_coordinate_x_y_z,
+      </if>
+      <if test="buoyType != null">
+        buoy_type,
+      </if>
+      <if test="buoyChooseType != null">
+        buoy_choose_type,
+      </if>
+      <if test="buoyChoosePlayType != null">
+        buoy_choose_play_type,
+      </if>
+      <if test="buoyChooseEvent != null">
+        buoy_choose_event,
+      </if>
+      <if test="buoyPlayEndType != null">
+        buoy_play_end_type,
+      </if>
+      <if test="buoyStatus != null">
+        buoy_status,
+      </if>
+      <if test="buoyPopContext != null">
+        buoy_pop_context,
+      </if>
+      <if test="buoyPopType != null">
+        buoy_pop_type,
+      </if>
+      <if test="buoyPopAppId != null">
+        buoy_pop_app_id,
+      </if>
+      <if test="buoyPopWebUrl != null">
+        buoy_pop_web_url,
+      </if>
+      <if test="buoyEvent != null">
+        buoy_event,
+      </if>
+      <if test="buoyContext != null">
+        buoy_context,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="fkNodeId != null">
+        #{fkNodeId,jdbcType=INTEGER},
+      </if>
+      <if test="fkArtworkId != null">
+        #{fkArtworkId,jdbcType=INTEGER},
+      </if>
+      <if test="buoyTextSize != null">
+        #{buoyTextSize,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyTextColor != null">
+        #{buoyTextColor,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyThingSize != null">
+        #{buoyThingSize,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyThingImgUrl != null">
+        #{buoyThingImgUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyThingType != null">
+        #{buoyThingType,jdbcType=INTEGER},
+      </if>
+      <if test="buoyThingColor != null">
+        #{buoyThingColor,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyThingOpacity != null">
+        #{buoyThingOpacity,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyStartTime != null">
+        #{buoyStartTime,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyShowType != null">
+        #{buoyShowType,jdbcType=INTEGER},
+      </if>
+      <if test="buoyEndTime != null">
+        #{buoyEndTime,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyActionType != null">
+        #{buoyActionType,jdbcType=INTEGER},
+      </if>
+      <if test="buoyThingCoordinateXYZ != null">
+        #{buoyThingCoordinateXYZ,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyTextCoordinateXYZ != null">
+        #{buoyTextCoordinateXYZ,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyType != null">
+        #{buoyType,jdbcType=INTEGER},
+      </if>
+      <if test="buoyChooseType != null">
+        #{buoyChooseType,jdbcType=INTEGER},
+      </if>
+      <if test="buoyChoosePlayType != null">
+        #{buoyChoosePlayType,jdbcType=INTEGER},
+      </if>
+      <if test="buoyChooseEvent != null">
+        #{buoyChooseEvent,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyPlayEndType != null">
+        #{buoyPlayEndType,jdbcType=INTEGER},
+      </if>
+      <if test="buoyStatus != null">
+        #{buoyStatus,jdbcType=INTEGER},
+      </if>
+      <if test="buoyPopContext != null">
+        #{buoyPopContext,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyPopType != null">
+        #{buoyPopType,jdbcType=INTEGER},
+      </if>
+      <if test="buoyPopAppId != null">
+        #{buoyPopAppId,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyPopWebUrl != null">
+        #{buoyPopWebUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyEvent != null">
+        #{buoyEvent,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyContext != null">
+        #{buoyContext,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeBuoyPanoramic">
+    update ecm_artwork_node_buoy_panoramic
+    <set>
+      <if test="fkNodeId != null">
+        fk_node_id = #{fkNodeId,jdbcType=INTEGER},
+      </if>
+      <if test="fkArtworkId != null">
+        fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER},
+      </if>
+      <if test="buoyTextSize != null">
+        buoy_text_size = #{buoyTextSize,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyTextColor != null">
+        buoy_text_color = #{buoyTextColor,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyThingSize != null">
+        buoy_thing_size = #{buoyThingSize,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyThingImgUrl != null">
+        buoy_thing_img_url = #{buoyThingImgUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyThingType != null">
+        buoy_thing_type = #{buoyThingType,jdbcType=INTEGER},
+      </if>
+      <if test="buoyThingColor != null">
+        buoy_thing_color = #{buoyThingColor,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyThingOpacity != null">
+        buoy_thing_opacity = #{buoyThingOpacity,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyStartTime != null">
+        buoy_start_time = #{buoyStartTime,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyShowType != null">
+        buoy_show_type = #{buoyShowType,jdbcType=INTEGER},
+      </if>
+      <if test="buoyEndTime != null">
+        buoy_end_time = #{buoyEndTime,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyActionType != null">
+        buoy_action_type = #{buoyActionType,jdbcType=INTEGER},
+      </if>
+      <if test="buoyThingCoordinateXYZ != null">
+        buoy_thing_coordinate_x_y_z = #{buoyThingCoordinateXYZ,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyTextCoordinateXYZ != null">
+        buoy_text_coordinate_x_y_z = #{buoyTextCoordinateXYZ,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyType != null">
+        buoy_type = #{buoyType,jdbcType=INTEGER},
+      </if>
+      <if test="buoyChooseType != null">
+        buoy_choose_type = #{buoyChooseType,jdbcType=INTEGER},
+      </if>
+      <if test="buoyChoosePlayType != null">
+        buoy_choose_play_type = #{buoyChoosePlayType,jdbcType=INTEGER},
+      </if>
+      <if test="buoyChooseEvent != null">
+        buoy_choose_event = #{buoyChooseEvent,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyPlayEndType != null">
+        buoy_play_end_type = #{buoyPlayEndType,jdbcType=INTEGER},
+      </if>
+      <if test="buoyStatus != null">
+        buoy_status = #{buoyStatus,jdbcType=INTEGER},
+      </if>
+      <if test="buoyPopContext != null">
+        buoy_pop_context = #{buoyPopContext,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyPopType != null">
+        buoy_pop_type = #{buoyPopType,jdbcType=INTEGER},
+      </if>
+      <if test="buoyPopAppId != null">
+        buoy_pop_app_id = #{buoyPopAppId,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyPopWebUrl != null">
+        buoy_pop_web_url = #{buoyPopWebUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyEvent != null">
+        buoy_event = #{buoyEvent,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyContext != null">
+        buoy_context = #{buoyContext,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where pk_buoy_id = #{pkBuoyId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeBuoyPanoramic">
+    update ecm_artwork_node_buoy_panoramic
+    set fk_node_id = #{fkNodeId,jdbcType=INTEGER},
+      fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER},
+      buoy_text_size = #{buoyTextSize,jdbcType=VARCHAR},
+      buoy_text_color = #{buoyTextColor,jdbcType=VARCHAR},
+      buoy_thing_size = #{buoyThingSize,jdbcType=VARCHAR},
+      buoy_thing_img_url = #{buoyThingImgUrl,jdbcType=VARCHAR},
+      buoy_thing_type = #{buoyThingType,jdbcType=INTEGER},
+      buoy_thing_color = #{buoyThingColor,jdbcType=VARCHAR},
+      buoy_thing_opacity = #{buoyThingOpacity,jdbcType=VARCHAR},
+      buoy_start_time = #{buoyStartTime,jdbcType=VARCHAR},
+      buoy_show_type = #{buoyShowType,jdbcType=INTEGER},
+      buoy_end_time = #{buoyEndTime,jdbcType=VARCHAR},
+      buoy_action_type = #{buoyActionType,jdbcType=INTEGER},
+      buoy_thing_coordinate_x_y_z = #{buoyThingCoordinateXYZ,jdbcType=VARCHAR},
+      buoy_text_coordinate_x_y_z = #{buoyTextCoordinateXYZ,jdbcType=VARCHAR},
+      buoy_type = #{buoyType,jdbcType=INTEGER},
+      buoy_choose_type = #{buoyChooseType,jdbcType=INTEGER},
+      buoy_choose_play_type = #{buoyChoosePlayType,jdbcType=INTEGER},
+      buoy_choose_event = #{buoyChooseEvent,jdbcType=VARCHAR},
+      buoy_play_end_type = #{buoyPlayEndType,jdbcType=INTEGER},
+      buoy_status = #{buoyStatus,jdbcType=INTEGER},
+      buoy_pop_context = #{buoyPopContext,jdbcType=VARCHAR},
+      buoy_pop_type = #{buoyPopType,jdbcType=INTEGER},
+      buoy_pop_app_id = #{buoyPopAppId,jdbcType=VARCHAR},
+      buoy_pop_web_url = #{buoyPopWebUrl,jdbcType=VARCHAR},
+      buoy_event = #{buoyEvent,jdbcType=VARCHAR},
+      buoy_context = #{buoyContext,jdbcType=VARCHAR}
+    where pk_buoy_id = #{pkBuoyId,jdbcType=INTEGER}
+  </update>
+
+
+
+  <!--  sql-->
+  <select id="selectByEcmArtworkId" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkNodeBuoyPanoramicVO">
+    select <include refid="Base_Column_List"/>
+    from ecm_artwork_node_buoy_panoramic
+    where fk_artwork_id = #{fkArtworkId}
+  </select>
+  <select id="selectByEcmNodeId" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkNodeBuoyPanoramicVO">
+    select <include refid="Base_Column_List"/>
+    from ecm_artwork_node_buoy_panoramic
+    where fk_node_id = #{fkNodeId}
+  </select>
+  <select id="selectByEcmArtworkNodeList" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkNodeBuoyPanoramicVO">
+    select  <include refid="Base_Column_List" />
+    from ecm_artwork_node_buoy_panoramic
+    where fk_node_id in  <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+     #{item.pkDetailId}
+    </foreach>
+  </select>
+  <select id="selectByEcmNodeIdList" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkNodeBuoyPanoramicVO">
+    select  <include refid="Base_Column_List" />
+    from ecm_artwork_node_buoy_panoramic
+    where fk_node_id in  <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+    #{item}
+    </foreach>
+  </select>
+  <delete id="deleteByEcmArtworkId">
+    delete from ecm_artwork_node_buoy_panoramic
+    where fk_artwork_id = #{fkArtworkId}
+  </delete>
+
+  <insert id="insertSelectiveList"  keyColumn="pk_buoy_id" keyProperty="pkBuoyId"  useGeneratedKeys="true">
+    insert into ecm_artwork_node_buoy_panoramic
+    (fk_node_id, fk_artwork_id, buoy_text_size,
+    buoy_text_color, buoy_thing_size, buoy_thing_img_url,
+    buoy_thing_type, buoy_thing_color, buoy_thing_opacity,
+    buoy_start_time, buoy_show_type, buoy_end_time,
+    buoy_action_type, buoy_thing_coordinate_x_y_z,
+    buoy_text_coordinate_x_y_z, buoy_type, buoy_choose_type,
+    buoy_choose_play_type, buoy_choose_event, buoy_play_end_type,
+    buoy_status, buoy_pop_context, buoy_pop_type,
+    buoy_pop_app_id, buoy_pop_web_url, buoy_event,
+    buoy_context)
+
+    values
+
+    <foreach collection="list" separator="," index="index" item="item" >
+      (#{item.fkNodeId,jdbcType=INTEGER}, #{item.fkArtworkId,jdbcType=INTEGER}, #{item.buoyTextSize,jdbcType=VARCHAR},
+      #{item.buoyTextColor,jdbcType=VARCHAR}, #{item.buoyThingSize,jdbcType=VARCHAR}, #{item.buoyThingImgUrl,jdbcType=VARCHAR},
+      #{item.buoyThingType,jdbcType=INTEGER}, #{item.buoyThingColor,jdbcType=VARCHAR}, #{item.buoyThingOpacity,jdbcType=VARCHAR},
+      #{item.buoyStartTime,jdbcType=VARCHAR}, #{item.buoyShowType,jdbcType=INTEGER}, #{item.buoyEndTime,jdbcType=VARCHAR},
+      #{item.buoyActionType,jdbcType=INTEGER}, #{item.buoyThingCoordinateXYZ,jdbcType=VARCHAR},
+      #{item.buoyTextCoordinateXYZ,jdbcType=VARCHAR}, #{item.buoyType,jdbcType=INTEGER}, #{item.buoyChooseType,jdbcType=INTEGER},
+      #{item.buoyChoosePlayType,jdbcType=INTEGER}, #{item.buoyChooseEvent,jdbcType=VARCHAR}, #{item.buoyPlayEndType,jdbcType=INTEGER},
+      #{item.buoyStatus,jdbcType=INTEGER}, #{item.buoyPopContext,jdbcType=VARCHAR}, #{item.buoyPopType,jdbcType=INTEGER},
+      #{item.buoyPopAppId,jdbcType=VARCHAR}, #{item.buoyPopWebUrl,jdbcType=VARCHAR}, #{item.buoyEvent,jdbcType=VARCHAR},
+      #{item.buoyContext,jdbcType=VARCHAR})
+    </foreach>
+
+  </insert>
+
+  <update id="updateByPrimaryKeySelectiveList">
+    update ecm_artwork_node_buoy_panoramic
+
+    <trim prefix="set" suffixOverrides=",">
+
+      <trim prefix="buoy_text_size =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.buoyTextSize!=null">
+            when pk_buoy_id =#{item.pkBuoyId}
+            then #{item.buoyTextSize}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="buoy_text_color =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.buoyTextColor!=null">
+            when pk_buoy_id =#{item.pkBuoyId}
+            then #{item.buoyTextColor}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="buoy_thing_size =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.buoyThingSize!=null">
+            when pk_buoy_id =#{item.pkBuoyId}
+            then #{item.buoyThingSize}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="buoy_thing_img_url =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.buoyThingImgUrl!=null">
+            when pk_buoy_id =#{item.pkBuoyId}
+            then #{item.buoyThingImgUrl}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="buoy_thing_type =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.buoyThingType!=null">
+            when pk_buoy_id =#{item.pkBuoyId}
+            then #{item.buoyThingType}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix=" buoy_thing_color =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.buoyThingColor!=null">
+            when pk_buoy_id =#{item.pkBuoyId}
+            then #{item.buoyThingColor}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="buoy_thing_opacity = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.buoyThingOpacity!=null">
+            when pk_buoy_id =#{item.pkBuoyId}
+            then #{item.buoyThingOpacity}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="buoy_start_time = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.buoyStartTime!=null">
+            when pk_buoy_id =#{item.pkBuoyId}
+            then #{item.buoyStartTime}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="buoy_end_time = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.buoyEndTime!=null">
+            when pk_buoy_id =#{item.pkBuoyId}
+            then #{item.buoyEndTime}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="buoy_action_type = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.buoyActionType!=null">
+            when pk_buoy_id =#{item.pkBuoyId}
+            then #{item.buoyActionType}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="buoy_show_type = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.buoyShowType!=null">
+            when pk_buoy_id =#{item.pkBuoyId}
+            then #{item.buoyShowType}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="buoy_thing_coordinate_x_y_z = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.buoyThingCoordinateXYZ != null">
+            when pk_buoy_id =#{item.pkBuoyId}
+            then #{item.buoyThingCoordinateXYZ}
+          </if>
+        </foreach>
+      </trim>
+
+
+      <trim prefix="buoy_text_coordinate_x_y_z = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.buoyTextCoordinateXYZ != null">
+            when pk_buoy_id =#{item.pkBuoyId}
+            then #{item.buoyTextCoordinateXYZ}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="buoy_type = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.buoyType != null">
+            when pk_buoy_id =#{item.pkBuoyId}
+            then #{item.buoyType}
+          </if>
+        </foreach>
+      </trim>
+
+
+      <trim prefix="buoy_choose_type = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.buoyChooseType != null">
+            when pk_buoy_id =#{item.pkBuoyId}
+            then #{item.buoyChooseType}
+          </if>
+        </foreach>
+      </trim>
+
+
+      <trim prefix="buoy_choose_play_type = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.buoyChoosePlayType != null">
+            when pk_buoy_id =#{item.pkBuoyId}
+            then #{item.buoyChoosePlayType}
+          </if>
+        </foreach>
+      </trim>
+
+
+      <trim prefix="buoy_choose_event = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.buoyChooseEvent != null">
+            when pk_buoy_id =#{item.pkBuoyId}
+            then #{item.buoyChooseEvent}
+          </if>
+        </foreach>
+      </trim>
+
+
+      <trim prefix="buoy_play_end_type = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.buoyPlayEndType != null">
+            when pk_buoy_id =#{item.pkBuoyId}
+            then #{item.buoyPlayEndType}
+          </if>
+        </foreach>
+      </trim>
+
+
+
+      <trim prefix="buoy_status = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.buoyStatus!=null">
+            when pk_buoy_id =#{item.pkBuoyId}
+            then #{item.buoyStatus}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="buoy_pop_context = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.buoyPopContext!=null">
+            when pk_buoy_id =#{item.pkBuoyId}
+            then #{item.buoyPopContext}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="buoy_pop_type = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.buoyPopType!=null">
+            when pk_buoy_id =#{item.pkBuoyId}
+            then #{item.buoyPopType}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="buoy_pop_web_url = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.buoyPopWebUrl!=null">
+            when pk_buoy_id =#{item.pkBuoyId}
+            then #{item.buoyPopWebUrl}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="buoy_pop_app_id = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.buoyPopAppId != null">
+            when pk_buoy_id =#{item.pkBuoyId}
+            then #{item.buoyPopAppId}
+          </if>
+
+          <if test="item.buoyPopAppId == '' and item.buoyPopAppId == null ">
+            when pk_buoy_id =#{item.pkBuoyId}
+            then #{item.buoyContext}
+          </if>
+        </foreach>
+      </trim>
+
+
+
+    </trim>
+    where pk_buoy_id in
+    <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+      #{item.pkBuoyId}
+    </foreach>
+
+  </update>
+
+</mapper>

@@ -71,7 +71,7 @@ public class EcmArtworkNodeBuoy implements Serializable {
     private Integer buoyStatus;
 
     /**
-     * 浮标 弹窗 内容
+     * 浮标 弹窗 内容 大小
      */
     private String buoyPopContext;
 
