@@ -544,7 +544,7 @@ public class EcmArtWorkController extends BaseController{
 	}
 
 
-	@EcmArtworkAuthentication(auth = {"浮标"})
+//	@EcmArtworkAuthentication(auth = {"VR"})
 	@RequestMapping("/saveArtworkNodePanoramicBuoy")
 	@ResponseBody
 	public ResponseDTO saveArtworkNodePanoramicBuoy(@RequestBody EcmArtworkNodeBuoyPanoramicQuery ecmArtworkNodeBuoyPanoramicQuery){
