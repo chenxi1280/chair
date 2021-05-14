@@ -36,6 +36,11 @@ public class EcmArtworkNodeBuoyPanoramic implements Serializable {
     private String buoyTextColor;
 
     /**
+     * 是否显示文字
+     */
+    private Integer buoyTextType;
+
+    /**
      * 浮标物体
      */
     private String buoyThingSize;

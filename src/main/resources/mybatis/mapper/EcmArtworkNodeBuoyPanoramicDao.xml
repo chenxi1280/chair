@@ -7,6 +7,7 @@
     <result column="fk_artwork_id" jdbcType="INTEGER" property="fkArtworkId" />
     <result column="buoy_text_size" jdbcType="VARCHAR" property="buoyTextSize" />
     <result column="buoy_text_color" jdbcType="VARCHAR" property="buoyTextColor" />
+    <result column="buoy_text_type" jdbcType="INTEGER" property="buoyTextType" />
     <result column="buoy_thing_size" jdbcType="VARCHAR" property="buoyThingSize" />
     <result column="buoy_thing_img_url" jdbcType="VARCHAR" property="buoyThingImgUrl" />
     <result column="buoy_thing_type" jdbcType="INTEGER" property="buoyThingType" />
@@ -32,12 +33,12 @@
     <result column="buoy_context" jdbcType="VARCHAR" property="buoyContext" />
   </resultMap>
   <sql id="Base_Column_List">
-    pk_buoy_id, fk_node_id, fk_artwork_id, buoy_text_size, buoy_text_color, buoy_thing_size,
-    buoy_thing_img_url, buoy_thing_type, buoy_thing_color, buoy_thing_opacity, buoy_start_time,
-    buoy_show_type, buoy_end_time, buoy_action_type, buoy_thing_coordinate_x_y_z, buoy_text_coordinate_x_y_z,
-    buoy_type, buoy_choose_type, buoy_choose_play_type, buoy_choose_event, buoy_play_end_type,
-    buoy_status, buoy_pop_context, buoy_pop_type, buoy_pop_app_id, buoy_pop_web_url,
-    buoy_event, buoy_context
+    pk_buoy_id, fk_node_id, fk_artwork_id, buoy_text_size, buoy_text_color, buoy_text_type,
+    buoy_thing_size, buoy_thing_img_url, buoy_thing_type, buoy_thing_color, buoy_thing_opacity,
+    buoy_start_time, buoy_show_type, buoy_end_time, buoy_action_type, buoy_thing_coordinate_x_y_z,
+    buoy_text_coordinate_x_y_z, buoy_type, buoy_choose_type, buoy_choose_play_type, buoy_choose_event,
+    buoy_play_end_type, buoy_status, buoy_pop_context, buoy_pop_type, buoy_pop_app_id,
+    buoy_pop_web_url, buoy_event, buoy_context
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
@@ -51,20 +52,20 @@
   </delete>
   <insert id="insert" keyColumn="pk_buoy_id" keyProperty="pkBuoyId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeBuoyPanoramic" useGeneratedKeys="true">
     insert into ecm_artwork_node_buoy_panoramic (fk_node_id, fk_artwork_id, buoy_text_size,
-      buoy_text_color, buoy_thing_size, buoy_thing_img_url,
-      buoy_thing_type, buoy_thing_color, buoy_thing_opacity,
-      buoy_start_time, buoy_show_type, buoy_end_time,
-      buoy_action_type, buoy_thing_coordinate_x_y_z,
+      buoy_text_color, buoy_text_type, buoy_thing_size,
+      buoy_thing_img_url, buoy_thing_type, buoy_thing_color,
+      buoy_thing_opacity, buoy_start_time, buoy_show_type,
+      buoy_end_time, buoy_action_type, buoy_thing_coordinate_x_y_z,
       buoy_text_coordinate_x_y_z, buoy_type, buoy_choose_type,
       buoy_choose_play_type, buoy_choose_event, buoy_play_end_type,
       buoy_status, buoy_pop_context, buoy_pop_type,
       buoy_pop_app_id, buoy_pop_web_url, buoy_event,
       buoy_context)
     values (#{fkNodeId,jdbcType=INTEGER}, #{fkArtworkId,jdbcType=INTEGER}, #{buoyTextSize,jdbcType=VARCHAR},
-      #{buoyTextColor,jdbcType=VARCHAR}, #{buoyThingSize,jdbcType=VARCHAR}, #{buoyThingImgUrl,jdbcType=VARCHAR},
-      #{buoyThingType,jdbcType=INTEGER}, #{buoyThingColor,jdbcType=VARCHAR}, #{buoyThingOpacity,jdbcType=VARCHAR},
-      #{buoyStartTime,jdbcType=VARCHAR}, #{buoyShowType,jdbcType=INTEGER}, #{buoyEndTime,jdbcType=VARCHAR},
-      #{buoyActionType,jdbcType=INTEGER}, #{buoyThingCoordinateXYZ,jdbcType=VARCHAR},
+      #{buoyTextColor,jdbcType=VARCHAR}, #{buoyTextType,jdbcType=INTEGER}, #{buoyThingSize,jdbcType=VARCHAR},
+      #{buoyThingImgUrl,jdbcType=VARCHAR}, #{buoyThingType,jdbcType=INTEGER}, #{buoyThingColor,jdbcType=VARCHAR},
+      #{buoyThingOpacity,jdbcType=VARCHAR}, #{buoyStartTime,jdbcType=VARCHAR}, #{buoyShowType,jdbcType=INTEGER},
+      #{buoyEndTime,jdbcType=VARCHAR}, #{buoyActionType,jdbcType=INTEGER}, #{buoyThingCoordinateXYZ,jdbcType=VARCHAR},
       #{buoyTextCoordinateXYZ,jdbcType=VARCHAR}, #{buoyType,jdbcType=INTEGER}, #{buoyChooseType,jdbcType=INTEGER},
       #{buoyChoosePlayType,jdbcType=INTEGER}, #{buoyChooseEvent,jdbcType=VARCHAR}, #{buoyPlayEndType,jdbcType=INTEGER},
       #{buoyStatus,jdbcType=INTEGER}, #{buoyPopContext,jdbcType=VARCHAR}, #{buoyPopType,jdbcType=INTEGER},
@@ -85,6 +86,9 @@
       </if>
       <if test="buoyTextColor != null">
         buoy_text_color,
+      </if>
+      <if test="buoyTextType != null">
+        buoy_text_type,
       </if>
       <if test="buoyThingSize != null">
         buoy_thing_size,
@@ -168,6 +172,9 @@
       </if>
       <if test="buoyTextColor != null">
         #{buoyTextColor,jdbcType=VARCHAR},
+      </if>
+      <if test="buoyTextType != null">
+        #{buoyTextType,jdbcType=INTEGER},
       </if>
       <if test="buoyThingSize != null">
         #{buoyThingSize,jdbcType=VARCHAR},
@@ -255,6 +262,9 @@
       <if test="buoyTextColor != null">
         buoy_text_color = #{buoyTextColor,jdbcType=VARCHAR},
       </if>
+      <if test="buoyTextType != null">
+        buoy_text_type = #{buoyTextType,jdbcType=INTEGER},
+      </if>
       <if test="buoyThingSize != null">
         buoy_thing_size = #{buoyThingSize,jdbcType=VARCHAR},
       </if>
@@ -333,6 +343,7 @@
       fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER},
       buoy_text_size = #{buoyTextSize,jdbcType=VARCHAR},
       buoy_text_color = #{buoyTextColor,jdbcType=VARCHAR},
+      buoy_text_type = #{buoyTextType,jdbcType=INTEGER},
       buoy_thing_size = #{buoyThingSize,jdbcType=VARCHAR},
       buoy_thing_img_url = #{buoyThingImgUrl,jdbcType=VARCHAR},
       buoy_thing_type = #{buoyThingType,jdbcType=INTEGER},
@@ -358,8 +369,6 @@
       buoy_context = #{buoyContext,jdbcType=VARCHAR}
     where pk_buoy_id = #{pkBuoyId,jdbcType=INTEGER}
   </update>
-
-
 
   <!--  sql-->
   <select id="selectByEcmArtworkId" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkNodeBuoyPanoramicVO">
@@ -394,24 +403,23 @@
   <insert id="insertSelectiveList"  keyColumn="pk_buoy_id" keyProperty="pkBuoyId"  useGeneratedKeys="true">
     insert into ecm_artwork_node_buoy_panoramic
     (fk_node_id, fk_artwork_id, buoy_text_size,
-    buoy_text_color, buoy_thing_size, buoy_thing_img_url,
-    buoy_thing_type, buoy_thing_color, buoy_thing_opacity,
-    buoy_start_time, buoy_show_type, buoy_end_time,
-    buoy_action_type, buoy_thing_coordinate_x_y_z,
+    buoy_text_color, buoy_text_type, buoy_thing_size,
+    buoy_thing_img_url, buoy_thing_type, buoy_thing_color,
+    buoy_thing_opacity, buoy_start_time, buoy_show_type,
+    buoy_end_time, buoy_action_type, buoy_thing_coordinate_x_y_z,
     buoy_text_coordinate_x_y_z, buoy_type, buoy_choose_type,
     buoy_choose_play_type, buoy_choose_event, buoy_play_end_type,
     buoy_status, buoy_pop_context, buoy_pop_type,
     buoy_pop_app_id, buoy_pop_web_url, buoy_event,
     buoy_context)
-
     values
 
     <foreach collection="list" separator="," index="index" item="item" >
       (#{item.fkNodeId,jdbcType=INTEGER}, #{item.fkArtworkId,jdbcType=INTEGER}, #{item.buoyTextSize,jdbcType=VARCHAR},
-      #{item.buoyTextColor,jdbcType=VARCHAR}, #{item.buoyThingSize,jdbcType=VARCHAR}, #{item.buoyThingImgUrl,jdbcType=VARCHAR},
-      #{item.buoyThingType,jdbcType=INTEGER}, #{item.buoyThingColor,jdbcType=VARCHAR}, #{item.buoyThingOpacity,jdbcType=VARCHAR},
-      #{item.buoyStartTime,jdbcType=VARCHAR}, #{item.buoyShowType,jdbcType=INTEGER}, #{item.buoyEndTime,jdbcType=VARCHAR},
-      #{item.buoyActionType,jdbcType=INTEGER}, #{item.buoyThingCoordinateXYZ,jdbcType=VARCHAR},
+      #{item.buoyTextColor,jdbcType=VARCHAR}, #{item.buoyTextType,jdbcType=INTEGER}, #{item.buoyThingSize,jdbcType=VARCHAR},
+      #{item.buoyThingImgUrl,jdbcType=VARCHAR}, #{item.buoyThingType,jdbcType=INTEGER}, #{item.buoyThingColor,jdbcType=VARCHAR},
+      #{item.buoyThingOpacity,jdbcType=VARCHAR}, #{item.buoyStartTime,jdbcType=VARCHAR}, #{item.buoyShowType,jdbcType=INTEGER},
+      #{item.buoyEndTime,jdbcType=VARCHAR}, #{item.buoyActionType,jdbcType=INTEGER}, #{item.buoyThingCoordinateXYZ,jdbcType=VARCHAR},
       #{item.buoyTextCoordinateXYZ,jdbcType=VARCHAR}, #{item.buoyType,jdbcType=INTEGER}, #{item.buoyChooseType,jdbcType=INTEGER},
       #{item.buoyChoosePlayType,jdbcType=INTEGER}, #{item.buoyChooseEvent,jdbcType=VARCHAR}, #{item.buoyPlayEndType,jdbcType=INTEGER},
       #{item.buoyStatus,jdbcType=INTEGER}, #{item.buoyPopContext,jdbcType=VARCHAR}, #{item.buoyPopType,jdbcType=INTEGER},
@@ -440,6 +448,15 @@
           <if test="item.buoyTextColor!=null">
             when pk_buoy_id =#{item.pkBuoyId}
             then #{item.buoyTextColor}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="buoy_text_type =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.buoyTextType!=null">
+            when pk_buoy_id =#{item.pkBuoyId}
+            then #{item.buoyTextType}
           </if>
         </foreach>
       </trim>
