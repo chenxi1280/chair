@@ -84,4 +84,28 @@
       start_time = #{startTime,jdbcType=TIMESTAMP}
     where pk_broadcast_id = #{pkBroadcastId,jdbcType=INTEGER}
   </update>
+
+    <select id="selectByRecord" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHistory" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from ecm_artwork_broadcast_history
+        <where>
+            <if test="pkBroadcastId != null">
+                and pk_broadcast_id = #{pkBroadcastId,jdbcType=INTEGER}
+            </if>
+            <if test="fkArtworkId != null">
+                and fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER}
+            </if>
+            <if test="fkArtworkDetailId != null">
+                and fk_artwork_detail_id = #{fkArtworkDetailId,jdbcType=INTEGER}
+            </if>
+            <if test="fkUserId != null">
+                and fk_user_id = #{fkUserId,jdbcType=INTEGER}
+            </if>
+            <if test="startTime != null">
+                and start_time = #{startTime,jdbcType=TIMESTAMP}
+            </if>
+        </where>
+    </select>
+
 </mapper>

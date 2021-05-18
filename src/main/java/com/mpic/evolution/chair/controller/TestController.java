@@ -1,21 +1,34 @@
 package com.mpic.evolution.chair.controller;
 
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSONObject;
+import com.mpic.evolution.chair.dao.EcmArtworkBroadcastHistoryDao;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
+import com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHistory;
 import com.mpic.evolution.chair.pojo.entity.EcmGoods;
 import com.mpic.evolution.chair.pojo.vo.EcmOrderVO;
 import com.mpic.evolution.chair.service.EcmGoodsService;
 import com.mpic.evolution.chair.service.EcmOrderService;
 import com.mpic.evolution.chair.service.EcmVipService;
+import com.mpic.evolution.chair.service.NoticeService;
 import com.mpic.evolution.chair.service.vip.BeanConfig;
 import com.mpic.evolution.chair.service.vip.PaymentVipService;
+import com.mpic.evolution.chair.util.ExpotExcelUtil;
+import com.tencentcloudapi.common.exception.TencentCloudSDKException;
+import com.tencentcloudapi.sms.v20190711.models.SendStatus;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,6 +59,12 @@ public class TestController {
 
 	@Resource
 	private EcmGoodsService ecmGoodsService;
+
+    @Resource
+    NoticeService noticeService;
+
+    @Resource
+    EcmArtworkBroadcastHistoryDao historyDao;
 
 //	private int count = 0;
 
@@ -88,5 +107,89 @@ public class TestController {
 		System.out.println(updateVipDate.toString());
 		updateVipDate.operationRelateToPayment(goods.getGoodsActionNumber(),ecmOrderVO.getFkUserId(),goods.getGoodsName());
 	}
+
+
+
+    /**
+     * 	测试短信发送接口
+     * @return
+     */
+    @RequestMapping("/sendNotice")
+    @ResponseBody
+    public ResponseDTO sendNotice() {
+        try {
+            // 参数可能是 10% 1gb
+            String code = "1gb";
+            String[] phoneNumbers = {"+8618895397505"};
+            //不带参数的 模板id 960224
+            String templateId = "960345";
+            SendStatus sendStatus = noticeService.sendSMS(code, phoneNumbers, templateId);
+            if(!sendStatus.getCode().equals("Ok")){
+                return ResponseDTO.ok("短信发送失败");
+            }
+            return ResponseDTO.ok("短信发送成功");
+        } catch (TencentCloudSDKException e) {
+            e.printStackTrace();
+            return ResponseDTO.ok("短信发送失败");
+        }
+    }
+
+    @RequestMapping("/export")
+    public void export(HttpServletRequest request, HttpServletResponse response){
+        //excel标题
+        String title = "播放记录表";
+        //excel表名
+        String [] headers = {"序号","用户token","观看作品名称","作品节点xid","进入作品时间"};
+        //excel文件名
+        String fileName = title + System.currentTimeMillis()+".xls";
+
+
+        //从数据库中查询出数据组装成content
+        //String content[][] = new String[list.size()][5];
+        //excel元素
+        EcmArtworkBroadcastHistory history = new EcmArtworkBroadcastHistory();
+        history.setFkUserId(1619);
+        List<EcmArtworkBroadcastHistory> histories = historyDao.selectByRecord(history);
+        String content[][] = new String[histories.size()][5];
+        int seriesNum = 0;
+        for (int i = 0; i < histories.size(); i++) {
+            content[i] = new String[headers.length];
+            content[i][0] = String.valueOf(seriesNum++);
+            content[i][1] = histories.get(i).getFkUserId().toString();
+            content[i][2] = histories.get(i).getFkArtworkId().toString();
+            content[i][3] = histories.get(i).getFkArtworkDetailId().toString();
+            content[i][4] = histories.get(i).getStartTime().toString();
+        }
+        //创建HSSFWorkbook
+        HSSFWorkbook wb = ExpotExcelUtil.getHSSFWorkbook(title, headers, content);
+
+        //响应到客户端
+        try {
+            this.setResponseHeader(response, fileName);
+            OutputStream os = response.getOutputStream();
+            wb.write(os);
+            os.flush();
+            os.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //发送响应流方法
+    public void setResponseHeader(HttpServletResponse response, String fileName) {
+        try {
+            try {
+                fileName = new String(fileName.getBytes(),"ISO8859-1");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            response.setContentType("application/octet-stream;charset=ISO8859-1");
+            response.setHeader("Content-Disposition", "attachment;filename="+ fileName);
+            response.addHeader("Pargam", "no-cache");
+            response.addHeader("Cache-Control", "no-cache");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 
 }
