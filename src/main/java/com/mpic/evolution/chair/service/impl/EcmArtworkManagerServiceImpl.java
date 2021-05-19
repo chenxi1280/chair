@@ -79,7 +79,10 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 
 			//  作品请求审核
 			if ( CommonField.VERIFY.equals(ecmArtworkVo.getCode())){
-				videoHandleConsumerService.handleArtwork(ecmArtworkVo.getPkArtworkId());
+				if (ecmArtwork.getPlayMode() != 2 ) {
+					videoHandleConsumerService.handleArtwork(ecmArtworkVo.getPkArtworkId());
+				}
+
 				// 重点优化需要 线程优化
 				ecmArtworkVo.setArtworkStatus((short)1);
 			}
