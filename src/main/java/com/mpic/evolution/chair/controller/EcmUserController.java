@@ -30,7 +30,7 @@ public class EcmUserController extends BaseController{
     EcmUserService ecmUserService;
 
     @Resource
-    private EcmVipService ecmVipService;
+    EcmVipService ecmVipService;
 
     /**
      * @param: [EcmUser]  请求头中必须带有token
@@ -113,11 +113,7 @@ public class EcmUserController extends BaseController{
     @ResponseBody
     @RequestMapping("getDownLinkFlowRecord")
     ResponseDTO getDownLinkFlowRecord(@RequestBody EcmUserHistoryFlowVO ecmUserHistoryFlowVO){
-        Integer userId = getUserIdByHandToken();
-        if ( userId == null){
-            return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
-        }
-        ecmUserHistoryFlowVO.setUserId(userId);
+        ecmUserHistoryFlowVO.setUserId(getUserIdByHandToken());
         return ecmUserService.getDownLinkFlowRecord(ecmUserHistoryFlowVO);
     }
 
