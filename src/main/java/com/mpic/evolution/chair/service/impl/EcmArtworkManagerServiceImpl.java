@@ -96,7 +96,6 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 				if (ecmArtwork.getPlayMode() != 2 ) {
 					videoHandleConsumerService.handleArtwork(ecmArtworkVo.getPkArtworkId());
 				}
-
 				// 重点优化需要 线程优化
 				ecmArtworkVo.setArtworkStatus((short)1);
 			}
@@ -131,7 +130,7 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			}
 			// 用户在设置免广告播放的时候 要查询用户是否有足够的下行流量 不进行短信通知 新用户查询不到下行流量信息的时候我们直接返回错误状态
 			// 如果没有设置免广告则不需要查询下行流量
-			if(ecmArtwork.getPlayType() == 1){
+			if(ecmArtwork.getPlayType() == 1 && ecmArtwork.getPlayType() != null ){
 				boolean b = this.checkdownLinkFlowIsEmpty(userId);
 				if(!b){
 					return ResponseDTO.fail("设置免流量功能失败，可能原因：1.尚未购买下行流量，2.下行流量已用完，请联系我们。");
@@ -158,6 +157,7 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			ecmArtworkNodesDao.insertSelective(ecmArtworkNodes);
 			return ResponseDTO.ok("新建成功");
 		} catch (Exception e) {
+			e.printStackTrace();
 			return ResponseDTO.fail("新建失败");
 		}
 	}
@@ -180,7 +180,7 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			}
 			// 用户在设置免广告播放的时候 要查询用户是否有足够的下行流量 不进行短信通知 新用户查询不到下行流量信息的时候我们直接返回错误状态
 			// 如果没有设置免广告则不需要查询下行流量
-			if(ecmArtwork.getPlayType() == 1){
+			if(ecmArtwork.getPlayType() == 1 && ecmArtwork.getPlayType() != null ){
 				boolean b = this.checkdownLinkFlowIsEmpty(userId);
 				if(!b){
 					return ResponseDTO.fail("设置免流量功能失败，可能原因：1.尚未购买下行流量，2.下行流量已用完，请联系我们。");
