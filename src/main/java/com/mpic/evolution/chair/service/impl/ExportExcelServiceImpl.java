@@ -1,15 +1,19 @@
 package com.mpic.evolution.chair.service.impl;
 
 import com.mpic.evolution.chair.common.constant.SecretKeyConstants;
+import com.mpic.evolution.chair.common.exception.EcmTokenException;
 import com.mpic.evolution.chair.dao.EcmArtworkBroadcastHistoryDao;
 import com.mpic.evolution.chair.dao.EcmArtworkDao;
 import com.mpic.evolution.chair.dao.EcmArtworkNodesDao;
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHistory;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
+import com.mpic.evolution.chair.pojo.vo.ExcelExportVo;
 import com.mpic.evolution.chair.service.ExportExcelService;
+import com.mpic.evolution.chair.util.EncryptUtil;
 import com.mpic.evolution.chair.util.ExpotExcelUtil;
 import com.mpic.evolution.chair.util.JWTUtil;
+import com.qcloud.vod.common.StringUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +45,12 @@ public class ExportExcelServiceImpl implements ExportExcelService {
     EcmArtworkNodesDao ecmArtworkNodesDao;
 
     @Override
-    public void exportExcel(HttpServletResponse response,Integer userId) {
+    public void exportExcel(HttpServletResponse response, ExcelExportVo excelExportVo) {
+        String userIdStr = JWTUtil.getUserId(excelExportVo.getToken());
+        if (StringUtil.isEmpty(userIdStr)){
+            throw new EcmTokenException(603,"非法访问");
+        }
+        Integer userId = Integer.valueOf(userIdStr);
         //excel标题
         String title = "播放记录表";
         //excel表名
@@ -49,7 +58,8 @@ public class ExportExcelServiceImpl implements ExportExcelService {
         //excel文件名
         String fileName = title + System.currentTimeMillis()+".xls";
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
+        String sDate = dateFormat.format(excelExportVo.getStartDate());
+        String eDate =  dateFormat.format(excelExportVo.getEndDate());
         //从数据库中查询出数据组装成content
         //String content[][] = new String[list.size()][5];
         //excel元素
@@ -63,7 +73,7 @@ public class ExportExcelServiceImpl implements ExportExcelService {
         EcmArtworkBroadcastHistory history = new EcmArtworkBroadcastHistory();
         collect.forEach( i ->{
                 history.setFkArtworkId(i.getPkArtworkId());
-                List<EcmArtworkBroadcastHistory> list = historyDao.selectByRecord(history);
+                List<EcmArtworkBroadcastHistory> list = historyDao.selectByRecord(history,sDate,sDate);
                 list.forEach(j->{
                     artworkNames.add(i.getArtworkName());
                 });

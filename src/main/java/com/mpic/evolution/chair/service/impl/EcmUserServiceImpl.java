@@ -5,15 +5,20 @@ import static com.mpic.evolution.chair.common.constant.JudgeConstant.FLOW_MAX;
 import static com.mpic.evolution.chair.common.constant.JudgeConstant.SUCCESS;
 
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.xml.transform.sax.SAXTransformerFactory;
 
+import com.alibaba.fastjson.JSONObject;
+import com.google.gson.JsonObject;
 import com.mpic.evolution.chair.dao.*;
 import com.mpic.evolution.chair.pojo.entity.*;
 import com.mpic.evolution.chair.service.vip.BeanConfig;
@@ -55,6 +60,8 @@ public class EcmUserServiceImpl implements EcmUserService {
     EcmUserExtraflowDao ecmUserExtraflowDao;
 	@Resource
 	BeanConfig beanConfig;
+	@Resource
+	EcmDownlinkFlowHistoryDao ecmDownlinkFlowHistoryDao;
 
 	@Override
 	public EcmUser getUserInfos(EcmUser record) {
@@ -399,6 +406,41 @@ public class EcmUserServiceImpl implements EcmUserService {
             return false;
         }
 		return true;
+	}
+
+	@Override
+	public ResponseDTO getDownLinkFlowRecord(EcmUserHistoryFlowVO ecmUserHistoryFlowVO) {
+		// KB
+		JSONObject data = new JSONObject();
+		ArrayList<Integer> flowsSplitByDays = new ArrayList<>();
+		Integer userId = ecmUserHistoryFlowVO.getUserId();
+		LocalDateTime startTime = ecmUserHistoryFlowVO.getStartDate();
+		LocalDateTime endTime = ecmUserHistoryFlowVO.getEndDate();
+		Duration between = Duration.between(startTime, endTime);
+		EcmDownlinkFlowHistory ecmDownlinkFlowHistory = new EcmDownlinkFlowHistory();
+		long l = between.toDays();
+		for(int i=0; i < l; i++){
+			LocalDateTime localDateTime = startTime.plusDays(1);
+			int year = localDateTime.getYear();
+			int monthValue = localDateTime.getMonthValue();
+			int dayOfMonth = localDateTime.getDayOfMonth();
+			LocalDateTime targetTime= LocalDateTime.of(year, monthValue, dayOfMonth, 0, 0, 0);
+			Date targetDate = VipDateUtil.formatToDate(targetTime);
+			ecmDownlinkFlowHistory.setCreateTime(targetDate);
+			ecmDownlinkFlowHistory.setFkUserId(userId);
+			EcmDownlinkFlowHistory historyObject = ecmDownlinkFlowHistoryDao.selectByRecord(ecmDownlinkFlowHistory);
+			flowsSplitByDays.add(historyObject.getSubUsedFlow()/1024);
+			startTime = targetTime;
+		}
+		int max = flowsSplitByDays.get(0);
+		for (int i = 0; i < flowsSplitByDays.size(); i++) {
+			if(flowsSplitByDays.get(i) > max){
+				max = flowsSplitByDays.get(i);
+			}
+		}
+		data.put("max",max);
+		data.put("arrayData",flowsSplitByDays);
+		return ResponseDTO.ok(data);
 	}
 
 	/**

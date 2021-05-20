@@ -101,6 +101,24 @@ public class EcmUserController extends BaseController{
         return ecmUserService.reduceFlow(ecmUserHistoryFlowVO);
     }
 
-
+    /**
+     * @param: [ecmUserHistoryFlowVO]
+     * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+     * @author: SJ
+     * @Date: 2021/05/20
+     * 	描述 : 查询用户一段时间使用的下行流量记录
+     *       	成功: status 200  msg "success"
+     *       	失败: status 500  msg "error"
+     */
+    @ResponseBody
+    @RequestMapping("getDownLinkFlowRecord")
+    ResponseDTO getDownLinkFlowRecord(@RequestBody EcmUserHistoryFlowVO ecmUserHistoryFlowVO){
+        Integer userId = getUserIdByHandToken();
+        if ( userId == null){
+            return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+        }
+        ecmUserHistoryFlowVO.setUserId(userId);
+        return ecmUserService.getDownLinkFlowRecord(ecmUserHistoryFlowVO);
+    }
 
 }

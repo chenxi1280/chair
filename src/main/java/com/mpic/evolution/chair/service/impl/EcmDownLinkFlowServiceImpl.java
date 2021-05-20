@@ -13,7 +13,9 @@ import com.tencentcloudapi.vod.v20180717.models.CreateSubAppIdResponse;
 import com.tencentcloudapi.vod.v20180717.models.DescribeCDNStatDetailsRequest;
 import com.tencentcloudapi.vod.v20180717.models.DescribeCDNStatDetailsResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
+@Service
 public class EcmDownLinkFlowServiceImpl implements EcmDownLinkFlowService {
 
     @Value("${sms.secretId}")

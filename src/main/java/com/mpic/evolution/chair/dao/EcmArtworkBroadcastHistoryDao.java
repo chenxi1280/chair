@@ -1,6 +1,7 @@
 package com.mpic.evolution.chair.dao;
 
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHistory;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public interface EcmArtworkBroadcastHistoryDao {
 
     EcmArtworkBroadcastHistory selectByPrimaryKey(Integer pkBroadcastId);
 
-    List<EcmArtworkBroadcastHistory> selectByRecord(EcmArtworkBroadcastHistory record);
+    List<EcmArtworkBroadcastHistory> selectByRecord(@Param("record") EcmArtworkBroadcastHistory record,@Param("startTime") String startTime,@Param("endTime") String endTime);
 
     int updateByPrimaryKeySelective(EcmArtworkBroadcastHistory record);
 

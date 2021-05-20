@@ -36,4 +36,5 @@ public interface EcmUserService {
 
 	boolean updatePwdByUserId(EcmUser user);
 
+	ResponseDTO getDownLinkFlowRecord(EcmUserHistoryFlowVO ecmUserHistoryFlowVO);
 }

@@ -97,28 +97,25 @@
     where pk_broadcast_id = #{pkBroadcastId,jdbcType=INTEGER}
   </update>
 
-  <select id="selectByRecord" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHistory" resultMap="BaseResultMap">
+  <select id="selectByRecord" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from ecm_artwork_broadcast_history
     <where>
-      <if test="pkBroadcastId != null">
-        and pk_broadcast_id = #{pkBroadcastId,jdbcType=INTEGER}
+      <if test="record.fkArtworkId != null">
+        and fk_artwork_id = #{record.fkArtworkId,jdbcType=INTEGER}
       </if>
-      <if test="fkArtworkId != null">
-        and fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER}
+      <if test="record.fkArtworkDetailId != null">
+        and fk_artwork_detail_id = #{record.fkArtworkDetailId,jdbcType=INTEGER}
       </if>
-      <if test="fkArtworkDetailId != null">
-        and fk_artwork_detail_id = #{fkArtworkDetailId,jdbcType=INTEGER}
+      <if test="record.fkUserId != null">
+        and fk_user_id = #{record.fkUserId,jdbcType=INTEGER}
       </if>
-      <if test="fkUserId != null">
-        and fk_user_id = #{fkUserId,jdbcType=INTEGER}
+      <if test="record.fkRevolutionId != null">
+        and fk_revolution_id = #{record.fkRevolutionId,jdbcType=VARCHAR}
       </if>
-      <if test="fkRevolutionId != null">
-        and fk_revolution_id = #{fkRevolutionId,jdbcType=VARCHAR}
-      </if>
-      <if test="startTime != null">
-        and start_time = #{startTime,jdbcType=TIMESTAMP}
+      <if test="startTime != null and startTime != '' and endTime != null and endTime != ''">
+        and start_time between #{startTime} and #{endTime}
       </if>
     </where>
   </select>

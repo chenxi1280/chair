@@ -149,7 +149,7 @@ public class TestController {
         //excel元素
         EcmArtworkBroadcastHistory history = new EcmArtworkBroadcastHistory();
         history.setFkUserId(1619);
-        List<EcmArtworkBroadcastHistory> histories = historyDao.selectByRecord(history);
+       /* List<EcmArtworkBroadcastHistory> histories = historyDao.selectByRecord(history);
         String content[][] = new String[histories.size()][5];
         int seriesNum = 0;
         for (int i = 0; i < histories.size(); i++) {
@@ -159,15 +159,15 @@ public class TestController {
             content[i][2] = histories.get(i).getFkArtworkId().toString();
             content[i][3] = histories.get(i).getFkArtworkDetailId().toString();
             content[i][4] = histories.get(i).getStartTime().toString();
-        }
+        }*/
         //创建HSSFWorkbook
-        HSSFWorkbook wb = ExpotExcelUtil.getHSSFWorkbook(title, headers, content);
+//        HSSFWorkbook wb = ExpotExcelUtil.getHSSFWorkbook(title, headers, content);
 
         //响应到客户端
         try {
             this.setResponseHeader(response, fileName);
             OutputStream os = response.getOutputStream();
-            wb.write(os);
+//            wb.write(os);
             os.flush();
             os.close();
         } catch (Exception e) {
