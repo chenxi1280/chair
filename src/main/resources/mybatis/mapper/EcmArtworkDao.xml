@@ -15,11 +15,13 @@
     <result column="fk_audit_id" jdbcType="INTEGER" property="fkAuditId" />
     <result column="play_mode" jdbcType="INTEGER" property="playMode" />
     <result column="is_endings" jdbcType="INTEGER" property="isEndings" />
+    <result column="play_client" jdbcType="INTEGER" property="playClient" />
+    <result column="play_type" jdbcType="INTEGER" property="playType" />
   </resultMap>
   <sql id="Base_Column_List">
     pk_artwork_id, fk_userId, artwork_name, artwork_describe, artwork_status, logo_path,
     logo_path_status, last_create_date, last_modify_date, four_letter_tips, fk_audit_id,
-    play_mode, is_endings
+    play_mode, is_endings, play_client, play_type
   </sql>
   <sql id="WxuserEcmArtwork_Column_List">
     pk_artwork_id, fk_userId, artwork_name, artwork_describe, artwork_status, logo_path,
@@ -40,12 +42,13 @@
     insert into ecm_artwork (fk_userId, artwork_name, artwork_describe,
       artwork_status, logo_path, logo_path_status,
       last_create_date, last_modify_date, four_letter_tips,
-      fk_audit_id, play_mode, is_endings
-      )
+      fk_audit_id, play_mode, is_endings,
+      play_client, play_type )
     values (#{fkUserid,jdbcType=INTEGER}, #{artworkName,jdbcType=VARCHAR}, #{artworkDescribe,jdbcType=VARCHAR},
       #{artworkStatus,jdbcType=SMALLINT}, #{logoPath,jdbcType=VARCHAR}, #{logoPathStatus,jdbcType=SMALLINT},
       #{lastCreateDate,jdbcType=TIMESTAMP}, #{lastModifyDate,jdbcType=TIMESTAMP}, #{fourLetterTips,jdbcType=VARCHAR},
-      #{fkAuditId,jdbcType=INTEGER}, #{playMode,jdbcType=INTEGER}, #{isEndings,jdbcType=INTEGER}
+      #{fkAuditId,jdbcType=INTEGER}, #{playMode,jdbcType=INTEGER}, #{isEndings,jdbcType=INTEGER},
+      #{playClient,jdbcType=INTEGER}, #{playType,jdbcType=INTEGER}
       )
   </insert>
   <insert id="insertSelective" keyColumn="pk_artwork_id" keyProperty="pkArtworkId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtwork" useGeneratedKeys="true">
@@ -87,6 +90,12 @@
       <if test="isEndings != null">
         is_endings,
       </if>
+      <if test="playClient != null">
+        play_client,
+      </if>
+      <if test="playType != null">
+        play_type,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="fkUserid != null">
@@ -124,6 +133,12 @@
       </if>
       <if test="isEndings != null">
         #{isEndings,jdbcType=INTEGER},
+      </if>
+      <if test="playClient != null">
+        #{playClient,jdbcType=INTEGER},
+      </if>
+      <if test="playType != null">
+        #{playType,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -166,6 +181,12 @@
       <if test="isEndings != null">
         is_endings = #{isEndings,jdbcType=INTEGER},
       </if>
+      <if test="playClient != null">
+        play_client = #{playClient,jdbcType=INTEGER},
+      </if>
+      <if test="playType != null">
+        play_type = #{playType,jdbcType=INTEGER},
+      </if>
     </set>
     where pk_artwork_id = #{pkArtworkId,jdbcType=INTEGER}
   </update>
@@ -182,7 +203,9 @@
       four_letter_tips = #{fourLetterTips,jdbcType=VARCHAR},
       fk_audit_id = #{fkAuditId,jdbcType=INTEGER},
       play_mode = #{playMode,jdbcType=INTEGER},
-      is_endings = #{isEndings,jdbcType=INTEGER}
+      is_endings = #{isEndings,jdbcType=INTEGER},
+      play_client = #{playClient,jdbcType=INTEGER},
+      play_type = #{playType,jdbcType=INTEGER}
     where pk_artwork_id = #{pkArtworkId,jdbcType=INTEGER}
   </update>
 

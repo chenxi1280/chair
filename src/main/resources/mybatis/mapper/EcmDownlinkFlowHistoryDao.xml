@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mpic.evolution.chair.dao.EcmDownlinkFlowHistoryDao">
+  <resultMap id="BaseResultMap" type="com.mpic.evolution.chair.pojo.entity.EcmDownlinkFlowHistory">
+    <id column="pk_id" jdbcType="INTEGER" property="pkId" />
+    <result column="fk_user_id" jdbcType="INTEGER" property="fkUserId" />
+    <result column="sub_app_id" jdbcType="INTEGER" property="subAppId" />
+    <result column="sub_used_flow" jdbcType="INTEGER" property="subUsedFlow" />
+    <result column="sub_flow_status" jdbcType="INTEGER" property="subFlowStatus" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pk_id, fk_user_id, sub_app_id, sub_used_flow, sub_flow_status, start_time, end_time, 
+    create_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from ecm_downlink_flow_history
+    where pk_id = #{pkId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ecm_downlink_flow_history
+    where pk_id = #{pkId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="pk_id" keyProperty="pkId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmDownlinkFlowHistory" useGeneratedKeys="true">
+    insert into ecm_downlink_flow_history (fk_user_id, sub_app_id, sub_used_flow, 
+      sub_flow_status, start_time, end_time, 
+      create_time)
+    values (#{fkUserId,jdbcType=INTEGER}, #{subAppId,jdbcType=INTEGER}, #{subUsedFlow,jdbcType=INTEGER}, 
+      #{subFlowStatus,jdbcType=INTEGER}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
+      #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" keyColumn="pk_id" keyProperty="pkId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmDownlinkFlowHistory" useGeneratedKeys="true">
+    insert into ecm_downlink_flow_history
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="fkUserId != null">
+        fk_user_id,
+      </if>
+      <if test="subAppId != null">
+        sub_app_id,
+      </if>
+      <if test="subUsedFlow != null">
+        sub_used_flow,
+      </if>
+      <if test="subFlowStatus != null">
+        sub_flow_status,
+      </if>
+      <if test="startTime != null">
+        start_time,
+      </if>
+      <if test="endTime != null">
+        end_time,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="fkUserId != null">
+        #{fkUserId,jdbcType=INTEGER},
+      </if>
+      <if test="subAppId != null">
+        #{subAppId,jdbcType=INTEGER},
+      </if>
+      <if test="subUsedFlow != null">
+        #{subUsedFlow,jdbcType=INTEGER},
+      </if>
+      <if test="subFlowStatus != null">
+        #{subFlowStatus,jdbcType=INTEGER},
+      </if>
+      <if test="startTime != null">
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmDownlinkFlowHistory">
+    update ecm_downlink_flow_history
+    <set>
+      <if test="fkUserId != null">
+        fk_user_id = #{fkUserId,jdbcType=INTEGER},
+      </if>
+      <if test="subAppId != null">
+        sub_app_id = #{subAppId,jdbcType=INTEGER},
+      </if>
+      <if test="subUsedFlow != null">
+        sub_used_flow = #{subUsedFlow,jdbcType=INTEGER},
+      </if>
+      <if test="subFlowStatus != null">
+        sub_flow_status = #{subFlowStatus,jdbcType=INTEGER},
+      </if>
+      <if test="startTime != null">
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where pk_id = #{pkId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmDownlinkFlowHistory">
+    update ecm_downlink_flow_history
+    set fk_user_id = #{fkUserId,jdbcType=INTEGER},
+      sub_app_id = #{subAppId,jdbcType=INTEGER},
+      sub_used_flow = #{subUsedFlow,jdbcType=INTEGER},
+      sub_flow_status = #{subFlowStatus,jdbcType=INTEGER},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where pk_id = #{pkId,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByRecord" parameterType="com.mpic.evolution.chair.pojo.entity.EcmDownlinkFlowHistory" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from ecm_downlink_flow_history
+    <where>
+      <if test="fkUserId != null">
+        and fk_user_id = #{fkUserId,jdbcType=INTEGER}
+      </if>
+      <if test="subAppId != null">
+        and sub_app_id = #{subAppId,jdbcType=INTEGER}
+      </if>
+      <if test="subUsedFlow != null">
+        and sub_used_flow = #{subUsedFlow,jdbcType=INTEGER}
+      </if>
+      <if test="subFlowStatus != null">
+        and sub_flow_status = #{subFlowStatus,jdbcType=INTEGER}
+      </if>
+      <if test="startTime != null">
+        and start_time = #{startTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="endTime != null">
+        and end_time = #{endTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="createTime != null">
+        and create_time = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+    </where>
+  </select>
+
+</mapper>

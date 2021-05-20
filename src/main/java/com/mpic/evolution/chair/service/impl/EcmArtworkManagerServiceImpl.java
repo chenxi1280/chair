@@ -1,26 +1,28 @@
 package com.mpic.evolution.chair.service.impl;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 import javax.annotation.Resource;
 
 import com.mpic.evolution.chair.common.constant.CommonField;
 import com.mpic.evolution.chair.common.constant.JudgeConstant;
-import com.mpic.evolution.chair.dao.EcmArtworkBroadcastHotDao;
-import com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHot;
+import com.mpic.evolution.chair.dao.*;
+import com.mpic.evolution.chair.pojo.entity.*;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkBroadcastHotVO;
+import com.mpic.evolution.chair.service.EcmDownLinkFlowService;
 import com.mpic.evolution.chair.service.VideoHandleConsumerService;
+import com.mpic.evolution.chair.util.RedisUtil;
 import com.qcloud.vod.common.StringUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.mpic.evolution.chair.dao.EcmArtworkDao;
-import com.mpic.evolution.chair.dao.EcmArtworkNodesDao;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
-import com.mpic.evolution.chair.pojo.entity.EcmArtwork;
-import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
 import com.mpic.evolution.chair.service.EcmArtworkManagerService;
 import com.mpic.evolution.chair.util.AIVerifyUtil;
@@ -47,6 +49,18 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 
 	@Resource
 	VideoHandleConsumerService videoHandleConsumerService;
+
+	@Resource
+	EcmDownlinkFlowDao ecmDownlinkFlowDao;
+
+	@Resource
+	EcmDownlinkFlowHistoryDao ecmDownlinkFlowHistoryDao;
+
+	@Resource
+	EcmDownLinkFlowService ecmDownLinkFlowService;
+
+	@Resource
+	RedisUtil redisUtil;
 
 	@Override
 	public ResponseDTO modifyArtWorkStatus(EcmArtworkVo ecmArtworkVo) {
@@ -112,6 +126,14 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			if (!StringUtils.isEmpty(result)) {
 				return ResponseDTO.fail("作品名称违规含有违禁词",result,null,510);
 			}
+			// 用户在设置免广告播放的时候 要查询用户是否有足够的下行流量 不进行短信通知 新用户查询不到下行流量信息的时候我们直接返回错误状态
+			// 如果没有设置免广告则不需要查询下行流量
+			if(ecmArtwork.getPlayType() == 1){
+				boolean b = this.checkdownLinkFlowIsEmpty(userId);
+				if(!b){
+					return ResponseDTO.fail("尚未绑定私有云点播，请联系我们");
+				}
+			}
 			ecmArtwork.setArtworkName(artworkName);
 			ecmArtwork.setPlayMode(ecmArtworkVo.getPlayMode());
 			ecmArtwork.setArtworkStatus((short)0);
@@ -120,6 +142,7 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			ecmArtwork.setLastCreateDate(new Date());
 			ecmArtwork.setLastModifyDate(new Date());
 			ecmArtwork.setLogoPath(ecmArtworkVo.getLogoPath());
+			ecmArtwork.setPlayType(ecmArtworkVo.getPlayType());
 			ecmArtworkDao.insertSelective(ecmArtwork);
 			EcmArtworkNodes ecmArtworkNodes = new EcmArtworkNodes();
 			ecmArtworkNodes.setFkArtworkId(ecmArtwork.getPkArtworkId());
@@ -157,6 +180,9 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			ecmArtwork.setLogoPathStatus((short)0);
 			ecmArtwork.setLogoPath(ecmArtworkVo.getLogoPath());
 			ecmArtwork.setLastModifyDate(new Date());
+			//TODO 用户在设置免广告播放的时候 要查询用户是否有足够的下行流量 新用户查询不到下行流量信息的时候我们直接返回错误状态 不进行短信通知
+			// 如果没有设置免广告则不需要查询下行流量
+			ecmArtwork.setPlayType(ecmArtworkVo.getPlayType());
 			ecmArtwork.setFourLetterTips(ecmArtworkVo.getFourLetterTips());
 			ecmArtwork.setArtworkDescribe(ecmArtworkVo.getArtworkDescribe());
 //			ecmArtwork.setLogoPath(ecmArtworkVo.getLogoPath());
@@ -195,6 +221,90 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
     		userId = Integer.parseInt(userIdStr);
     	}
 		return userId;
+	}
+
+	private boolean checkdownLinkFlowIsEmpty(Integer userId){
+		EcmDownlinkFlow ecmDownlinkFlow = new EcmDownlinkFlow();
+		ecmDownlinkFlow.setFkUserId(userId);
+		ecmDownlinkFlow = ecmDownlinkFlowDao.selectByRecord(ecmDownlinkFlow);
+		//先查询用户是否开通了云点播下行流量
+		if(ecmDownlinkFlow == null){
+			return false;
+		}
+		//查询完之前发现流量不足直接返回提示信息 不做继续做业务
+		if((ecmDownlinkFlow.getSubTotalFlow() - (ecmDownlinkFlow.getSubUsedFlow()/ 1024)) < 0){
+			//下行流量使用完 返回提示信息
+			return false;
+		}
+		Integer subAppId = ecmDownlinkFlow.getSubAppId();
+		LocalDateTime now = LocalDateTime.now();
+		//获取当前时间的年月日 时
+		int dayOfMonth = now.getDayOfMonth();
+		int year = now.getYear();
+		int monthValue = now.getMonthValue();
+		String redisKey = "flow_" + userId;
+		if(!redisUtil.hasKey(redisKey)){
+			//今天 分两次查询云点播下行流量
+			LocalDateTime yStartDateTime = LocalDateTime.of(year, monthValue, dayOfMonth - 1, 0, 0, 0);
+			ZonedDateTime yesterdayStartZoned = yStartDateTime.atZone(ZoneId.from(ZoneOffset.UTC));
+			ZonedDateTime yesterdayStartconverted = yesterdayStartZoned.withZoneSameInstant(ZoneOffset.ofHours(-8));
+			LocalDateTime yesterdayStartTimeUTC = yesterdayStartconverted.toLocalDateTime();
+			String[] yesterdayStartSplit = yesterdayStartTimeUTC.toString().split("\\.");
+			String yesterdayStartTime = yesterdayStartSplit[0]+"Z";
+
+			LocalDateTime yEndDateTime = LocalDateTime.of(year, monthValue, dayOfMonth - 1, 23, 59, 59);
+			ZonedDateTime yesterdayEndZoned = yEndDateTime.atZone(ZoneId.from(ZoneOffset.UTC));
+			ZonedDateTime yesterdayEndconverted = yesterdayEndZoned.withZoneSameInstant(ZoneOffset.ofHours(-8));
+			LocalDateTime yesterdayEndUTC = yesterdayEndconverted.toLocalDateTime();
+			String[] yesterdayEndSplit = yesterdayEndUTC.toString().split("\\.");
+			String yesterdayEndTime = yesterdayEndSplit[0]+"Z";
+
+			ZonedDateTime todayEndZoned = now.atZone(ZoneId.from(ZoneOffset.UTC));
+			ZonedDateTime todayEndconverted = todayEndZoned.withZoneSameInstant(ZoneOffset.ofHours(-8));
+			LocalDateTime todayEndUTC = todayEndconverted.toLocalDateTime();
+			String[] todayEndSplit = todayEndUTC.toString().split("\\.");
+			String todayEndTime = todayEndSplit[0]+"Z";
+
+			long yesterdaySum = ecmDownLinkFlowService.describeCDNStatDetails(yesterdayStartTime, yesterdayEndTime, subAppId);
+			long todaySum = ecmDownLinkFlowService.describeCDNStatDetails(yesterdayEndTime, todayEndTime, subAppId);
+
+
+			redisUtil.set(redisKey,"",5);
+
+			EcmDownlinkFlowHistory ecmDownlinkFlowHistory = new EcmDownlinkFlowHistory();
+			LocalDateTime createLocalDateTime = LocalDateTime.of(year,monthValue,dayOfMonth-1,0,0,0);
+			ZoneId zoneId = ZoneId.systemDefault();
+			ZonedDateTime zdt = createLocalDateTime.atZone(zoneId);
+			Date createDate = Date.from(zdt.toInstant());
+			ecmDownlinkFlowHistory.setCreateTime(createDate);
+			ecmDownlinkFlowHistory = ecmDownlinkFlowHistoryDao.selectByRecord(ecmDownlinkFlowHistory);
+			if(ecmDownlinkFlowHistory == null){
+				//插入一条昨天的记录
+				ecmDownlinkFlowHistory.setCreateTime(createDate);
+				ecmDownlinkFlowHistory.setStartTime(createDate);
+				ecmDownlinkFlowHistory.setEndTime(createDate);
+				ecmDownlinkFlowHistory.setFkUserId(userId);
+				ecmDownlinkFlowHistory.setSubAppId(subAppId);
+				ecmDownlinkFlowHistory.setSubFlowStatus(0);
+				ecmDownlinkFlowHistory.setSubUsedFlow((int)yesterdaySum);
+				ecmDownlinkFlowHistoryDao.insertSelective(ecmDownlinkFlowHistory);
+			}else{
+				//更新昨天的记录
+				ecmDownlinkFlowHistory.setSubUsedFlow((int)yesterdaySum);
+				ecmDownlinkFlowHistoryDao.updateByPrimaryKeySelective(ecmDownlinkFlowHistory);
+			}
+			//更新下行流量表记录
+			ecmDownlinkFlow.setSubUsedFlow((int)todaySum);
+			ecmDownlinkFlowDao.updateByPrimaryKeySelective(ecmDownlinkFlow);//单位Byte
+
+		}
+		int todaySumByKb = (ecmDownlinkFlow.getSubUsedFlow() / 1024);//单位KB
+		//查询完之后发现流量不足直接返回提示信息
+		if((ecmDownlinkFlow.getSubTotalFlow() - todaySumByKb) < 0){
+			//下行流量使用完 返回提示信息
+			return false;
+		}
+		return true;
 	}
 
 }

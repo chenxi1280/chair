@@ -1,9 +1,8 @@
 package com.mpic.evolution.chair.pojo.entity;
 
-import lombok.Data;
-
 import java.io.Serializable;
 import java.util.Date;
+import lombok.Data;
 
 /**
  * ecm_artwork_broadcast_history
@@ -30,6 +29,11 @@ public class EcmArtworkBroadcastHistory implements Serializable {
      * userId
      */
     private Integer fkUserId;
+
+    /**
+     * 前台id
+     */
+    private String fkRevolutionId;
 
     /**
      * 作品观看时间

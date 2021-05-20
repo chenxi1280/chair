@@ -12,7 +12,7 @@ public interface EcmArtworkBroadcastHistoryDao {
     int insertSelective(EcmArtworkBroadcastHistory record);
 
     EcmArtworkBroadcastHistory selectByPrimaryKey(Integer pkBroadcastId);
-    // TODO 补充完整
+
     List<EcmArtworkBroadcastHistory> selectByRecord(EcmArtworkBroadcastHistory record);
 
     int updateByPrimaryKeySelective(EcmArtworkBroadcastHistory record);

@@ -6,10 +6,12 @@
     <result column="fk_artwork_id" jdbcType="INTEGER" property="fkArtworkId" />
     <result column="fk_artwork_detail_id" jdbcType="INTEGER" property="fkArtworkDetailId" />
     <result column="fk_user_id" jdbcType="INTEGER" property="fkUserId" />
+    <result column="fk_revolution_id" jdbcType="VARCHAR" property="fkRevolutionId" />
     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    pk_broadcast_id, fk_artwork_id, fk_artwork_detail_id, fk_user_id, start_time
+    pk_broadcast_id, fk_artwork_id, fk_artwork_detail_id, fk_user_id, fk_revolution_id, 
+    start_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -23,9 +25,9 @@
   </delete>
   <insert id="insert" keyColumn="pk_broadcast_id" keyProperty="pkBroadcastId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHistory" useGeneratedKeys="true">
     insert into ecm_artwork_broadcast_history (fk_artwork_id, fk_artwork_detail_id, fk_user_id, 
-      start_time)
+      fk_revolution_id, start_time)
     values (#{fkArtworkId,jdbcType=INTEGER}, #{fkArtworkDetailId,jdbcType=INTEGER}, #{fkUserId,jdbcType=INTEGER}, 
-      #{startTime,jdbcType=TIMESTAMP})
+      #{fkRevolutionId,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" keyColumn="pk_broadcast_id" keyProperty="pkBroadcastId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHistory" useGeneratedKeys="true">
     insert into ecm_artwork_broadcast_history
@@ -38,6 +40,9 @@
       </if>
       <if test="fkUserId != null">
         fk_user_id,
+      </if>
+      <if test="fkRevolutionId != null">
+        fk_revolution_id,
       </if>
       <if test="startTime != null">
         start_time,
@@ -52,6 +57,9 @@
       </if>
       <if test="fkUserId != null">
         #{fkUserId,jdbcType=INTEGER},
+      </if>
+      <if test="fkRevolutionId != null">
+        #{fkRevolutionId,jdbcType=VARCHAR},
       </if>
       <if test="startTime != null">
         #{startTime,jdbcType=TIMESTAMP},
@@ -70,6 +78,9 @@
       <if test="fkUserId != null">
         fk_user_id = #{fkUserId,jdbcType=INTEGER},
       </if>
+      <if test="fkRevolutionId != null">
+        fk_revolution_id = #{fkRevolutionId,jdbcType=VARCHAR},
+      </if>
       <if test="startTime != null">
         start_time = #{startTime,jdbcType=TIMESTAMP},
       </if>
@@ -81,31 +92,35 @@
     set fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER},
       fk_artwork_detail_id = #{fkArtworkDetailId,jdbcType=INTEGER},
       fk_user_id = #{fkUserId,jdbcType=INTEGER},
+      fk_revolution_id = #{fkRevolutionId,jdbcType=VARCHAR},
       start_time = #{startTime,jdbcType=TIMESTAMP}
     where pk_broadcast_id = #{pkBroadcastId,jdbcType=INTEGER}
   </update>
 
-    <select id="selectByRecord" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHistory" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List" />
-        from ecm_artwork_broadcast_history
-        <where>
-            <if test="pkBroadcastId != null">
-                and pk_broadcast_id = #{pkBroadcastId,jdbcType=INTEGER}
-            </if>
-            <if test="fkArtworkId != null">
-                and fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER}
-            </if>
-            <if test="fkArtworkDetailId != null">
-                and fk_artwork_detail_id = #{fkArtworkDetailId,jdbcType=INTEGER}
-            </if>
-            <if test="fkUserId != null">
-                and fk_user_id = #{fkUserId,jdbcType=INTEGER}
-            </if>
-            <if test="startTime != null">
-                and start_time = #{startTime,jdbcType=TIMESTAMP}
-            </if>
-        </where>
-    </select>
+  <select id="selectByRecord" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHistory" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from ecm_artwork_broadcast_history
+    <where>
+      <if test="pkBroadcastId != null">
+        and pk_broadcast_id = #{pkBroadcastId,jdbcType=INTEGER}
+      </if>
+      <if test="fkArtworkId != null">
+        and fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER}
+      </if>
+      <if test="fkArtworkDetailId != null">
+        and fk_artwork_detail_id = #{fkArtworkDetailId,jdbcType=INTEGER}
+      </if>
+      <if test="fkUserId != null">
+        and fk_user_id = #{fkUserId,jdbcType=INTEGER}
+      </if>
+      <if test="fkRevolutionId != null">
+        and fk_revolution_id = #{fkRevolutionId,jdbcType=VARCHAR}
+      </if>
+      <if test="startTime != null">
+        and start_time = #{startTime,jdbcType=TIMESTAMP}
+      </if>
+    </where>
+  </select>
 
 </mapper>
