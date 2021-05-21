@@ -1,8 +1,8 @@
 package com.mpic.evolution.chair.controller;
 
 import com.mpic.evolution.chair.common.exception.EcmTokenException;
-import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
+import com.mpic.evolution.chair.pojo.query.EcmUserHistoryFlowQuery;
 import com.mpic.evolution.chair.pojo.vo.ExcelExportVo;
 import com.mpic.evolution.chair.service.ExportExcelService;
 import com.mpic.evolution.chair.util.JWTUtil;
@@ -11,11 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -32,23 +29,27 @@ public class ExportExcelController extends BaseController {
 
     @ResponseBody
     @RequestMapping("/export")
-    public ResponseDTO export(@RequestBody ExcelExportVo excelExportVo){
-        HttpServletResponse response =((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
-        Integer userId = getUserIdByHandToken();
-        if ( userId == null){
-            return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
-        }
-        exportExcelService.exportExcel(response,excelExportVo);
-        return ResponseDTO.ok("导出报表成功");
-    }
-
-    private Integer getUserIdByHandToken(String token){
+    public void export(Long endDate, HttpServletResponse response, Long startDate,String token){
         if (!StringUtil.isEmpty(token)){
             String userId = JWTUtil.getUserId(token);
             if (!StringUtil.isEmpty(userId)){
-                return  Integer.valueOf(userId);
+                ExcelExportVo excelExportVo = new ExcelExportVo();
+                excelExportVo.setStartDate(startDate);
+                excelExportVo.setEndDate(endDate);
+                excelExportVo.setUserId(Integer.valueOf(userId));
+                exportExcelService.exportExcel(response,excelExportVo);
             }
+        }else{
+            throw new EcmTokenException(603,"非法访问");
         }
-        throw new EcmTokenException(603,"非法访问");
+
     }
+
+    @ResponseBody
+    @RequestMapping("/getDownLinkRecord")
+    public ResponseDTO getDownLinkRecord(@RequestBody EcmUserHistoryFlowQuery ecmUserHistoryFlowQuery){
+        ecmUserHistoryFlowQuery.setFkUserid(getUserIdByHandToken());
+        return exportExcelService.getDownLinkRecord(ecmUserHistoryFlowQuery);
+    }
+
 }

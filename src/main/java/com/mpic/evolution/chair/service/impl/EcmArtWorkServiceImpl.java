@@ -54,7 +54,8 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
     EcmArtworkNodeActionDao ecmArtworkNodeActionDao;
     @Resource
     EcmArtworkNodeBuoyPanoramicDao ecmArtworkNodeBuoyPanoramicDao;
-
+    @Resource
+    EcmArtworkFreeAdDao ecmArtworkFreeAdDao;
 
     @Override
     public ResponseDTO updateNodeInfo() {
@@ -156,6 +157,11 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             map = ecmArtworkNodeBuoyVOList.stream().collect(Collectors.groupingBy(EcmArtworkNodeBuoy::getFkNodeId));
         }
 
+        //查询是否有免广告记录
+        EcmArtworkFreeAd ecmArtworkFreeAd = new EcmArtworkFreeAd();
+        ecmArtworkFreeAd.setFkArtworkId(ecmArtWorkQuery.getPkArtworkId());
+        ecmArtworkFreeAd = ecmArtworkFreeAdDao.selectByRecord(ecmArtworkFreeAd);
+
         //循环 还原对应的  数据信息
         for (EcmArtworkNodesVo node : collect) {
             // 是否为跳转节点
@@ -241,6 +247,14 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             }
             if (node.getConditionState() == null) {
                 node.setConditionState(INT_ZORE);
+            }
+
+            if (node.getParentId().equals(INT_ZORE)){
+                if(ecmArtworkFreeAd == null){
+                    node.setPlayType(0);
+                }else{
+                    node.setPlayType(1);
+                }
             }
 
         }

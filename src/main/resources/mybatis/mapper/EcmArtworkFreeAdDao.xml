@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mpic.evolution.chair.dao.EcmArtworkFreeAdDao">
+  <resultMap id="BaseResultMap" type="com.mpic.evolution.chair.pojo.entity.EcmArtworkFreeAd">
+    <id column="pk_ecm_artwork_free_ad_id" jdbcType="INTEGER" property="pkEcmArtworkFreeAdId" />
+    <result column="fk_artwork_id" jdbcType="INTEGER" property="fkArtworkId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pk_ecm_artwork_free_ad_id, fk_artwork_id, create_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from ecm_artwork_free_ad
+    where pk_ecm_artwork_free_ad_id = #{pkEcmArtworkFreeAdId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ecm_artwork_free_ad
+    where pk_ecm_artwork_free_ad_id = #{pkEcmArtworkFreeAdId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="pk_ecm_artwork_free_ad_id" keyProperty="pkEcmArtworkFreeAdId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkFreeAd" useGeneratedKeys="true">
+    insert into ecm_artwork_free_ad (fk_artwork_id, create_time)
+    values (#{fkArtworkId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" keyColumn="pk_ecm_artwork_free_ad_id" keyProperty="pkEcmArtworkFreeAdId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkFreeAd" useGeneratedKeys="true">
+    insert into ecm_artwork_free_ad
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="fkArtworkId != null">
+        fk_artwork_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="fkArtworkId != null">
+        #{fkArtworkId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkFreeAd">
+    update ecm_artwork_free_ad
+    <set>
+      <if test="fkArtworkId != null">
+        fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where pk_ecm_artwork_free_ad_id = #{pkEcmArtworkFreeAdId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkFreeAd">
+    update ecm_artwork_free_ad
+    set fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where pk_ecm_artwork_free_ad_id = #{pkEcmArtworkFreeAdId,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByRecord" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkFreeAd" resultMap="BaseResultMap">
+    select
+        <include refid="Base_Column_List" />
+    from ecm_artwork_free_ad
+    <where>
+      <if test="fkArtworkId != null">
+        and fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER}
+      </if>
+      <if test="createTime != null">
+        and create_time = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+    </where>
+  </select>
+
+  <select id="selectFreeAdArtwork" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkFreeAdVO">
+    select fk_artwork_id,artwork_name
+    from ecm_artwork_free_ad  left join ecm_artwork on fk_artwork_id = pk_artwork_id
+    where
+    fk_artwork_id  in
+    <foreach item="fkArtworkId" index="index" collection="artworks"
+             open="(" separator="," close=")">
+      #{fkArtworkId}
+    </foreach>
+  </select>
+
+</mapper>

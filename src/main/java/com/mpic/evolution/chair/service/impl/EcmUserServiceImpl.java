@@ -2,7 +2,6 @@ package com.mpic.evolution.chair.service.impl;
 
 import static com.mpic.evolution.chair.common.constant.CommonField.*;
 import static com.mpic.evolution.chair.common.constant.JudgeConstant.FLOW_MAX;
-import static com.mpic.evolution.chair.common.constant.JudgeConstant.SUCCESS;
 
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -15,12 +14,11 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
-import javax.xml.transform.sax.SAXTransformerFactory;
 
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.JsonObject;
 import com.mpic.evolution.chair.dao.*;
 import com.mpic.evolution.chair.pojo.entity.*;
+import com.mpic.evolution.chair.pojo.vo.EcmUserHistoryFlowVO;
 import com.mpic.evolution.chair.service.vip.BeanConfig;
 import com.mpic.evolution.chair.service.vip.PaymentVipService;
 import org.springframework.stereotype.Service;
@@ -32,7 +30,7 @@ import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.query.EcmUserFlowQuery;
 import com.mpic.evolution.chair.pojo.vo.EcmUserFlowVO;
-import com.mpic.evolution.chair.pojo.vo.EcmUserHistoryFlowVO;
+import com.mpic.evolution.chair.pojo.query.EcmUserHistoryFlowQuery;
 import com.mpic.evolution.chair.pojo.vo.EcmUserVo;
 import com.mpic.evolution.chair.service.EcmUserService;
 import com.mpic.evolution.chair.util.EncryptUtil;
@@ -409,8 +407,7 @@ public class EcmUserServiceImpl implements EcmUserService {
 	}
 
 	@Override
-	public ResponseDTO getDownLinkFlowRecord(EcmUserHistoryFlowVO ecmUserHistoryFlowVO) {
-		// KB
+	public ResponseDTO getDownLinkFlowRecord( EcmUserHistoryFlowVO ecmUserHistoryFlowVO) {
 		JSONObject data = new JSONObject();
 		ArrayList<Integer> flowsSplitByDays = new ArrayList<>();
 		Integer userId = ecmUserHistoryFlowVO.getUserId();
@@ -429,7 +426,7 @@ public class EcmUserServiceImpl implements EcmUserService {
 			ecmDownlinkFlowHistory.setCreateTime(targetDate);
 			ecmDownlinkFlowHistory.setFkUserId(userId);
 			EcmDownlinkFlowHistory historyObject = ecmDownlinkFlowHistoryDao.selectByRecord(ecmDownlinkFlowHistory);
-			flowsSplitByDays.add(historyObject.getSubUsedFlow()/1024);
+			flowsSplitByDays.add(historyObject.getSubUsedFlow()/1024);//单位KB
 			startTime = targetTime;
 		}
 		int max = flowsSplitByDays.get(0);

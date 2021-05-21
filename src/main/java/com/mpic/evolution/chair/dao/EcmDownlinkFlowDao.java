@@ -1,6 +1,7 @@
 package com.mpic.evolution.chair.dao;
 
 import com.mpic.evolution.chair.pojo.entity.EcmDownlinkFlow;
+import org.apache.ibatis.annotations.Param;
 
 public interface EcmDownlinkFlowDao {
     int deleteByPrimaryKey(Integer pkId);
@@ -14,6 +15,8 @@ public interface EcmDownlinkFlowDao {
     EcmDownlinkFlow selectByRecord(EcmDownlinkFlow record);
 
     int updateByPrimaryKeySelective(EcmDownlinkFlow record);
+
+    int updateBySelective(@Param("param1") EcmDownlinkFlow record1, @Param("param2") EcmDownlinkFlow record2);
 
     int updateByPrimaryKey(EcmDownlinkFlow record);
 }

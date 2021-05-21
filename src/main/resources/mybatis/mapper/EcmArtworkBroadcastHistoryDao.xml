@@ -120,4 +120,36 @@
     </where>
   </select>
 
+  <select id="selectByPageQuery" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from ecm_artwork_broadcast_history
+    <where>
+      <if test="record.artworkId != null">
+        and fk_artwork_id = #{record.artworkId,jdbcType=INTEGER}
+      </if>
+      <if test="record.fkUserId != null">
+        and fk_user_id = #{record.fkUserId,jdbcType=INTEGER}
+      </if>
+      <if test="startTime != null and startTime != '' and endTime != null and endTime != ''">
+        and start_time between #{startTime} and #{endTime}
+      </if>
+      <if test="start != null and limit != null ">
+        limit #{start},#{limit}
+      </if>
+    </where>
+  </select>
+
+  <select id="selectArtWorkHistoryCount" resultType="java.lang.Integer">
+    select count(*)
+    from ecm_artwork_broadcast_history
+    where
+    fk_artwork_id  in
+    <foreach item="fkArtworkId" index="index" collection="artworks"
+             open="(" separator="," close=")">
+      #{fkArtworkId}
+    </foreach>
+
+  </select>
+
 </mapper>

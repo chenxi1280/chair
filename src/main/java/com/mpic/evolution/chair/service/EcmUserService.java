@@ -3,6 +3,7 @@ package com.mpic.evolution.chair.service;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmUser;
 import com.mpic.evolution.chair.pojo.query.EcmUserFlowQuery;
+import com.mpic.evolution.chair.pojo.query.EcmUserHistoryFlowQuery;
 import com.mpic.evolution.chair.pojo.vo.EcmUserHistoryFlowVO;
 import com.mpic.evolution.chair.pojo.vo.EcmUserVo;
 
@@ -36,5 +37,5 @@ public interface EcmUserService {
 
 	boolean updatePwdByUserId(EcmUser user);
 
-	ResponseDTO getDownLinkFlowRecord(EcmUserHistoryFlowVO ecmUserHistoryFlowVO);
+	ResponseDTO getDownLinkFlowRecord( EcmUserHistoryFlowVO ecmUserHistoryFlowVO);
 }

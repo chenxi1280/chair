@@ -5,6 +5,7 @@ import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmUser;
 import com.mpic.evolution.chair.pojo.query.EcmUserFlowQuery;
+import com.mpic.evolution.chair.pojo.query.EcmUserHistoryFlowQuery;
 import com.mpic.evolution.chair.pojo.vo.EcmUserHistoryFlowVO;
 import com.mpic.evolution.chair.pojo.vo.EcmUserVo;
 import com.mpic.evolution.chair.service.EcmUserService;
@@ -112,7 +113,7 @@ public class EcmUserController extends BaseController{
      */
     @ResponseBody
     @RequestMapping("getDownLinkFlowRecord")
-    ResponseDTO getDownLinkFlowRecord(@RequestBody EcmUserHistoryFlowVO ecmUserHistoryFlowVO){
+    ResponseDTO getDownLinkFlowRecord(@RequestBody  EcmUserHistoryFlowVO ecmUserHistoryFlowVO){
         ecmUserHistoryFlowVO.setUserId(getUserIdByHandToken());
         return ecmUserService.getDownLinkFlowRecord(ecmUserHistoryFlowVO);
     }

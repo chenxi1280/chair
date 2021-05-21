@@ -119,4 +119,9 @@ public class EcmArtworkNodesVo extends EcmArtworkNodes  {
 
     private String newRevolutionId;
 
+    /**
+     *  是否是免广告的作品
+     */
+    private Integer playType;
+
 }

@@ -150,4 +150,54 @@
     </where>
   </select>
 
+  <update id="updateBySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmDownlinkFlowHistory">
+    update ecm_downlink_flow_history
+    <set>
+      <if test="param1.fkUserId != null">
+        fk_user_id = #{param1.fkUserId,jdbcType=INTEGER},
+      </if>
+      <if test="param1.subAppId != null">
+        sub_app_id = #{param1.subAppId,jdbcType=INTEGER},
+      </if>
+      <if test="param1.subUsedFlow != null">
+        sub_used_flow = #{param1.subUsedFlow,jdbcType=INTEGER},
+      </if>
+      <if test="param1.subFlowStatus != null">
+        sub_flow_status = #{param1.subFlowStatus,jdbcType=INTEGER},
+      </if>
+      <if test="param1.startTime != null">
+        start_time = #{param1.startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="param1.endTime != null">
+        end_time = #{param1.endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="param1.createTime != null">
+        create_time = #{param1.createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <where>
+      <if test="param2.fkUserId != null">
+        and fk_user_id = #{param2.fkUserId,jdbcType=INTEGER}
+      </if>
+      <if test="param2.subAppId != null">
+        and sub_app_id = #{param2.subAppId,jdbcType=INTEGER}
+      </if>
+      <if test="param2.subUsedFlow != null">
+        and sub_used_flow = #{param2.subUsedFlow,jdbcType=INTEGER}
+      </if>
+      <if test="param2.subFlowStatus != null">
+        and sub_flow_status = #{param2.subFlowStatus,jdbcType=INTEGER}
+      </if>
+      <if test="param2.startTime != null">
+        and start_time = #{param2.startTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="param2.endTime != null">
+        and end_time = #{param2.endTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="param2.createTime != null">
+        and create_time = #{param2.createTime,jdbcType=TIMESTAMP}
+      </if>
+    </where>
+  </update>
+
 </mapper>

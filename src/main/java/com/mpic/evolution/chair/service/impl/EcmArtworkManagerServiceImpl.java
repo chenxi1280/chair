@@ -62,6 +62,9 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 	@Resource
 	RedisUtil redisUtil;
 
+	@Resource
+	EcmArtworkFreeAdDao ecmArtworkFreeAdDao;
+
 	@Override
 	public ResponseDTO modifyArtWorkStatus(EcmArtworkVo ecmArtworkVo) {
 		JSONObject message = this.getMessage();
@@ -129,14 +132,6 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			if (!StringUtils.isEmpty(result)) {
 				return ResponseDTO.fail("作品名称违规含有违禁词",result,null,510);
 			}
-			// 用户在设置免广告播放的时候 要查询用户是否有足够的下行流量 不进行短信通知 新用户查询不到下行流量信息的时候我们直接返回错误状态
-			// 如果没有设置免广告则不需要查询下行流量
-			if(ecmArtwork.getPlayType() == 1){
-				boolean b = this.checkdownLinkFlowIsEmpty(userId);
-				if(!b){
-					return ResponseDTO.fail("设置免流量功能失败，可能原因：1.尚未购买下行流量，2.下行流量已用完，请联系我们。");
-				}
-			}
 			ecmArtwork.setArtworkName(artworkName);
 			ecmArtwork.setPlayMode(ecmArtworkVo.getPlayMode());
 			ecmArtwork.setArtworkStatus((short)0);
@@ -156,8 +151,21 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			ecmArtworkNodes.setItemsBakText("https://sike-1259692143.cos.ap-chongqing.myqcloud.com/img/1604281276527nodeImgUrl.png");
 			ecmArtworkNodes.setVideoText("开场");
 			ecmArtworkNodesDao.insertSelective(ecmArtworkNodes);
+			// 用户在设置免广告播放的时候 要查询用户是否有足够的下行流量 不进行短信通知 新用户查询不到下行流量信息的时候我们直接返回错误状态
+			// 如果没有设置免广告则不需要查询下行流量
+			if(ecmArtworkVo.getPlayType() == 1){
+				boolean b = this.checkdownLinkFlowIsEmpty(userId);
+				if(!b){
+					return ResponseDTO.fail("设置免流量功能失败，可能原因：1.尚未购买下行流量，2.下行流量已用完，请联系我们。");
+				}
+				EcmArtworkFreeAd ecmArtworkFreeAd = new EcmArtworkFreeAd();
+				ecmArtworkFreeAd.setFkArtworkId(ecmArtwork.getPkArtworkId());
+				ecmArtworkFreeAd.setCreateTime(new Date());
+				ecmArtworkFreeAdDao.insertSelective(ecmArtworkFreeAd);
+			}
 			return ResponseDTO.ok("新建成功");
 		} catch (Exception e) {
+			e.printStackTrace();
 			return ResponseDTO.fail("新建失败");
 		}
 	}
@@ -180,10 +188,24 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			}
 			// 用户在设置免广告播放的时候 要查询用户是否有足够的下行流量 不进行短信通知 新用户查询不到下行流量信息的时候我们直接返回错误状态
 			// 如果没有设置免广告则不需要查询下行流量
-			if(ecmArtwork.getPlayType() == 1){
+			if(ecmArtworkVo.getPlayType() == 1){
 				boolean b = this.checkdownLinkFlowIsEmpty(userId);
 				if(!b){
 					return ResponseDTO.fail("设置免流量功能失败，可能原因：1.尚未购买下行流量，2.下行流量已用完，请联系我们。");
+				}
+				EcmArtworkFreeAd ecmArtworkFreeAd = new EcmArtworkFreeAd();
+				ecmArtworkFreeAd.setFkArtworkId(ecmArtworkVo.getPkArtworkId());
+				EcmArtworkFreeAd ecmArtworkFreeAd1 = ecmArtworkFreeAdDao.selectByRecord(ecmArtworkFreeAd);
+				if(ecmArtworkFreeAd1 == null) {
+					ecmArtworkFreeAd.setCreateTime(new Date());
+					ecmArtworkFreeAdDao.insertSelective(ecmArtworkFreeAd);
+				}
+			}else{
+				EcmArtworkFreeAd ecmArtworkFreeAd = new EcmArtworkFreeAd();
+				ecmArtworkFreeAd.setFkArtworkId(ecmArtworkVo.getPkArtworkId());
+				ecmArtworkFreeAd = ecmArtworkFreeAdDao.selectByRecord(ecmArtworkFreeAd);
+				if(ecmArtworkFreeAd != null) {
+					ecmArtworkFreeAdDao.deleteByPrimaryKey(ecmArtworkFreeAd.getPkEcmArtworkFreeAdId());
 				}
 			}
 			ecmArtwork.setPlayMode(ecmArtworkVo.getPlayMode());
@@ -286,10 +308,9 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			ZonedDateTime zdt = createLocalDateTime.atZone(zoneId);
 			Date createDate = Date.from(zdt.toInstant());
 			ecmDownlinkFlowHistory.setCreateTime(createDate);
-			ecmDownlinkFlowHistory = ecmDownlinkFlowHistoryDao.selectByRecord(ecmDownlinkFlowHistory);
-			if(ecmDownlinkFlowHistory == null){
+			EcmDownlinkFlowHistory history = ecmDownlinkFlowHistoryDao.selectByRecord(ecmDownlinkFlowHistory);
+			if(history == null){
 				//插入一条昨天的记录
-				ecmDownlinkFlowHistory.setCreateTime(createDate);
 				ecmDownlinkFlowHistory.setStartTime(createDate);
 				ecmDownlinkFlowHistory.setEndTime(createDate);
 				ecmDownlinkFlowHistory.setFkUserId(userId);
@@ -299,11 +320,12 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 				ecmDownlinkFlowHistoryDao.insertSelective(ecmDownlinkFlowHistory);
 			}else{
 				//更新昨天的记录
-				ecmDownlinkFlowHistory.setSubUsedFlow((int)yesterdaySum);
-				ecmDownlinkFlowHistoryDao.updateByPrimaryKeySelective(ecmDownlinkFlowHistory);
+				history.setSubUsedFlow((int)yesterdaySum);
+				ecmDownlinkFlowHistoryDao.updateBySelective(history,ecmDownlinkFlowHistory);
 			}
 			//更新下行流量表记录
 			ecmDownlinkFlow.setSubUsedFlow((int)todaySum);
+			ecmDownlinkFlow.setUpdateTime(new Date());
 			ecmDownlinkFlowDao.updateByPrimaryKeySelective(ecmDownlinkFlow);//单位Byte
 
 		}

@@ -1,19 +1,22 @@
 package com.mpic.evolution.chair.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.mpic.evolution.chair.common.constant.SecretKeyConstants;
-import com.mpic.evolution.chair.common.exception.EcmTokenException;
 import com.mpic.evolution.chair.dao.EcmArtworkBroadcastHistoryDao;
 import com.mpic.evolution.chair.dao.EcmArtworkDao;
+import com.mpic.evolution.chair.dao.EcmArtworkFreeAdDao;
 import com.mpic.evolution.chair.dao.EcmArtworkNodesDao;
+import com.mpic.evolution.chair.pojo.dto.EcmArtworkBroadcastHistoryDTO;
+import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHistory;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
+import com.mpic.evolution.chair.pojo.query.EcmUserHistoryFlowQuery;
+import com.mpic.evolution.chair.pojo.vo.EcmArtworkFreeAdVO;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
 import com.mpic.evolution.chair.pojo.vo.ExcelExportVo;
 import com.mpic.evolution.chair.service.ExportExcelService;
-import com.mpic.evolution.chair.util.EncryptUtil;
 import com.mpic.evolution.chair.util.ExpotExcelUtil;
 import com.mpic.evolution.chair.util.JWTUtil;
-import com.qcloud.vod.common.StringUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.stereotype.Service;
 
@@ -22,10 +25,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author 作者 SJ:
@@ -44,13 +47,12 @@ public class ExportExcelServiceImpl implements ExportExcelService {
     @Resource
     EcmArtworkNodesDao ecmArtworkNodesDao;
 
+    @Resource
+    EcmArtworkFreeAdDao ecmArtworkFreeAdDao;
+
     @Override
     public void exportExcel(HttpServletResponse response, ExcelExportVo excelExportVo) {
-        String userIdStr = JWTUtil.getUserId(excelExportVo.getToken());
-        if (StringUtil.isEmpty(userIdStr)){
-            throw new EcmTokenException(603,"非法访问");
-        }
-        Integer userId = Integer.valueOf(userIdStr);
+        Integer userId = excelExportVo.getUserId();
         //excel标题
         String title = "播放记录表";
         //excel表名
@@ -58,8 +60,13 @@ public class ExportExcelServiceImpl implements ExportExcelService {
         //excel文件名
         String fileName = title + System.currentTimeMillis()+".xls";
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String sDate = dateFormat.format(excelExportVo.getStartDate());
-        String eDate =  dateFormat.format(excelExportVo.getEndDate());
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        Long startDate = excelExportVo.getStartDate();
+        Long endDate = excelExportVo.getEndDate();
+//        LocalDateTime startDate = LocalDateTime.parse(excelExportVo.getStartDate(),df);
+        String sDate = dateFormat.format(new Date(startDate));
+//        LocalDateTime endDate = LocalDateTime.parse(excelExportVo.getEndDate(),df);
+        String eDate =  dateFormat.format(new Date(endDate));
         //从数据库中查询出数据组装成content
         //String content[][] = new String[list.size()][5];
         //excel元素
@@ -67,13 +74,19 @@ public class ExportExcelServiceImpl implements ExportExcelService {
         EcmArtWorkQuery ecmArtWorkQuery = new EcmArtWorkQuery();
         ecmArtWorkQuery.setFkUserid(userId);
         List<EcmArtworkVo> ecmArtworkVos = ecmArtworkDao.selectArtWorks(ecmArtWorkQuery);
-        List<EcmArtworkVo> collect = ecmArtworkVos.stream().filter((EcmArtworkVo e) -> e.getPlayType() == 1).collect(Collectors.toList());
+
+        ArrayList<Integer> artworks = new ArrayList<>();
+        ecmArtworkVos.forEach(item ->{
+            artworks.add(item.getPkArtworkId());
+        });
+
+        List<EcmArtworkFreeAdVO> ecmArtworkFreeAds = ecmArtworkFreeAdDao.selectFreeAdArtwork(artworks);
         List<EcmArtworkBroadcastHistory> histories = new ArrayList<>();
         List<String> artworkNames = new ArrayList<>();
         EcmArtworkBroadcastHistory history = new EcmArtworkBroadcastHistory();
-        collect.forEach( i ->{
-                history.setFkArtworkId(i.getPkArtworkId());
-                List<EcmArtworkBroadcastHistory> list = historyDao.selectByRecord(history,sDate,sDate);
+        ecmArtworkFreeAds.forEach( i ->{
+                history.setFkArtworkId(i.getFkArtworkId());
+                List<EcmArtworkBroadcastHistory> list = historyDao.selectByRecord(history,sDate,eDate);
                 list.forEach(j->{
                     artworkNames.add(i.getArtworkName());
                 });
@@ -89,7 +102,7 @@ public class ExportExcelServiceImpl implements ExportExcelService {
             String token = JWTUtil.sign(String.valueOf(fkUserId), "加密用户",SecretKeyConstants.JWT_SECRET_KEY);
             content[i][1] = token;
             content[i][2] = artworkNames.get(i);
-            //TODO 直接从播放记录中获取 作品节点xid
+            // 直接从播放记录中获取 作品节点xid
             content[i][3] = histories.get(i).getFkRevolutionId();
             Date startTime = histories.get(i).getStartTime();
             String format = dateFormat.format(startTime);
@@ -108,6 +121,56 @@ public class ExportExcelServiceImpl implements ExportExcelService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public ResponseDTO getDownLinkRecord(EcmUserHistoryFlowQuery ecmUserHistoryFlowQuery) {
+        JSONObject data = new JSONObject();
+        Integer userId = ecmUserHistoryFlowQuery.getFkUserid();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Long startDate = ecmUserHistoryFlowQuery.getStartDate();
+        Long endDate = ecmUserHistoryFlowQuery.getEndDate();
+        String sDate = dateFormat.format(new Date(startDate));
+        String eDate =  dateFormat.format(new Date(endDate));
+        EcmArtWorkQuery ecmArtWorkQuery = new EcmArtWorkQuery();
+        ecmArtWorkQuery.setFkUserid(userId);
+        List<EcmArtworkVo> ecmArtworkVos = ecmArtworkDao.selectArtWorks(ecmArtWorkQuery);
+
+        ArrayList<Integer> artworks = new ArrayList<>();
+        ecmArtworkVos.forEach(item ->{
+            artworks.add(item.getPkArtworkId());
+        });
+
+        int recordCount = historyDao.selectArtWorkHistoryCount(artworks);
+        List<EcmArtworkFreeAdVO> ecmArtworkFreeAds = ecmArtworkFreeAdDao.selectFreeAdArtwork(artworks);
+        List<EcmArtworkBroadcastHistory> histories = new ArrayList<>();
+        List<String> artworkNames = new ArrayList<>();
+        EcmUserHistoryFlowQuery query = new EcmUserHistoryFlowQuery();
+        ecmArtworkFreeAds.forEach( i ->{
+                    query.setAtrworkId(i.getFkArtworkId());
+                    List<EcmArtworkBroadcastHistory> list = historyDao.selectByPageQuery(query,sDate,eDate);
+                    list.forEach(j->{
+                        artworkNames.add(i.getArtworkName());
+                    });
+                    histories.addAll(list);
+                }
+        );
+        ArrayList<EcmArtworkBroadcastHistoryDTO> broadcastHistories = new ArrayList<>();
+        EcmArtworkBroadcastHistoryDTO ecmArtworkBroadcastHistoryDTO = new EcmArtworkBroadcastHistoryDTO();
+        for (int i = 0; i < histories.size(); i++) {
+            ecmArtworkBroadcastHistoryDTO.setArtworkName(artworkNames.get(i));
+            Integer fkUserId = histories.get(i).getFkUserId();
+            String token = JWTUtil.sign(String.valueOf(fkUserId), "加密用户",SecretKeyConstants.JWT_SECRET_KEY);
+            ecmArtworkBroadcastHistoryDTO.setToken(token);
+            Date startTime = histories.get(i).getStartTime();
+            String format = dateFormat.format(startTime);
+            ecmArtworkBroadcastHistoryDTO.setCreateTime(format);
+            ecmArtworkBroadcastHistoryDTO.setXid(histories.get(i).getFkRevolutionId());
+            broadcastHistories.add(ecmArtworkBroadcastHistoryDTO);
+        }
+        data.put("count",recordCount);
+        data.put("data",broadcastHistories);
+        return ResponseDTO.ok(data);
     }
 
     //发送响应流方法
