@@ -8,6 +8,7 @@ import com.mpic.evolution.chair.dao.EcmArtworkFreeAdDao;
 import com.mpic.evolution.chair.dao.EcmArtworkNodesDao;
 import com.mpic.evolution.chair.pojo.dto.EcmArtworkBroadcastHistoryDTO;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
+import com.mpic.evolution.chair.pojo.entity.EcmArtwork;
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHistory;
 import com.mpic.evolution.chair.pojo.query.EcmArtWorkQuery;
 import com.mpic.evolution.chair.pojo.query.EcmUserHistoryFlowQuery;
@@ -151,20 +152,15 @@ public class ExportExcelServiceImpl implements ExportExcelService {
         List<String> artworkNames = new ArrayList<>();
         EcmUserHistoryFlowQuery query = new EcmUserHistoryFlowQuery();
         query.setPage(ecmUserHistoryFlowQuery.getPage());
-        query.setPage(ecmUserHistoryFlowQuery.getLimit());
+        query.setLimit(ecmUserHistoryFlowQuery.getLimit());
         query.setArtworkIds(targetArtworks);
-        ecmArtworkFreeAds.forEach( i ->{
-                    List<EcmArtworkBroadcastHistory> list = historyDao.selectByPageQuery(query,sDate,eDate);
-                    list.forEach(j->{
-                        artworkNames.add(i.getArtworkName());
-                    });
-                    histories.addAll(list);
-                }
-        );
+        histories = historyDao.selectByPageQuery(query,sDate,eDate);
         ArrayList<EcmArtworkBroadcastHistoryDTO> broadcastHistories = new ArrayList<>();
         EcmArtworkBroadcastHistoryDTO ecmArtworkBroadcastHistoryDTO = new EcmArtworkBroadcastHistoryDTO();
         for (int i = 0; i < histories.size(); i++) {
-            ecmArtworkBroadcastHistoryDTO.setArtworkName(artworkNames.get(i));
+            Integer fkArtworkId = histories.get(i).getFkArtworkId();
+            EcmArtwork ecmArtwork = ecmArtworkDao.selectByPrimaryKey(fkArtworkId);
+            ecmArtworkBroadcastHistoryDTO.setArtworkName(ecmArtwork.getArtworkName());
             Integer fkUserId = histories.get(i).getFkUserId();
             String token = JWTUtil.sign(String.valueOf(fkUserId), "加密用户",SecretKeyConstants.JWT_SECRET_KEY);
             ecmArtworkBroadcastHistoryDTO.setToken(token);
