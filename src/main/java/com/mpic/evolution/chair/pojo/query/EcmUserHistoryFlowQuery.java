@@ -7,6 +7,7 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author by cxd
@@ -34,5 +35,6 @@ public class EcmUserHistoryFlowQuery extends PageQuery {
     /**
      * 作品id
      */
-    private Integer atrworkId;
+    List<Integer> artworkIds;
+
 }

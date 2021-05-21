@@ -141,13 +141,19 @@ public class ExportExcelServiceImpl implements ExportExcelService {
             artworks.add(item.getPkArtworkId());
         });
 
-        int recordCount = historyDao.selectArtWorkHistoryCount(artworks);
         List<EcmArtworkFreeAdVO> ecmArtworkFreeAds = ecmArtworkFreeAdDao.selectFreeAdArtwork(artworks);
+        ArrayList<Integer> targetArtworks = new ArrayList<>();
+        ecmArtworkFreeAds.forEach(item ->{
+            targetArtworks.add(item.getFkArtworkId());
+        });
+        int recordCount = historyDao.selectArtWorkHistoryCount(targetArtworks,sDate,eDate);
         List<EcmArtworkBroadcastHistory> histories = new ArrayList<>();
         List<String> artworkNames = new ArrayList<>();
         EcmUserHistoryFlowQuery query = new EcmUserHistoryFlowQuery();
+        query.setPage(ecmUserHistoryFlowQuery.getPage());
+        query.setPage(ecmUserHistoryFlowQuery.getLimit());
+        query.setArtworkIds(targetArtworks);
         ecmArtworkFreeAds.forEach( i ->{
-                    query.setAtrworkId(i.getFkArtworkId());
                     List<EcmArtworkBroadcastHistory> list = historyDao.selectByPageQuery(query,sDate,eDate);
                     list.forEach(j->{
                         artworkNames.add(i.getArtworkName());

@@ -20,7 +20,7 @@ public interface EcmArtworkBroadcastHistoryDao {
 
     List<EcmArtworkBroadcastHistory> selectByPageQuery(@Param("record") EcmUserHistoryFlowQuery record, @Param("startTime") String startTime, @Param("endTime") String endTime);
 
-    int selectArtWorkHistoryCount(@Param("artworks") List<Integer> artworks);
+    int selectArtWorkHistoryCount(@Param("artworks") List<Integer> artworks, @Param("startTime") String startTime, @Param("endTime") String endTime);
 
     int updateByPrimaryKeySelective(EcmArtworkBroadcastHistory record);
 
