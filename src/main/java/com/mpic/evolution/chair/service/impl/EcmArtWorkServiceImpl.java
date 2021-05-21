@@ -1170,9 +1170,8 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         while (iterator.hasNext()) {
             EcmArtworkNodeBuoyPanoramic next = iterator.next();
 //            next.setBuoyStatus("0");
-            if (next.getBuoyType().equals(0)) {
-                next.setBuoyPlayEndType(ecmArtworkNodeBuoyPanoramicQuery.getBuoyPlayEndType());
-            }
+              next.setBuoyPlayEndType(ecmArtworkNodeBuoyPanoramicQuery.getBuoyPlayEndType());
+
 
             for (EcmArtworkNodeBuoyPanoramic ecmArtworkNodeBuoy : ecmArtworkNodeBuoyVOList) {
                 ecmArtworkNodeBuoy.setFkArtworkId(ecmArtworkNodeBuoyPanoramicQuery.getFkArtworkId());

@@ -99,7 +99,6 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 				if (ecmArtwork.getPlayMode() != 2 ) {
 					videoHandleConsumerService.handleArtwork(ecmArtworkVo.getPkArtworkId());
 				}
-
 				// 重点优化需要 线程优化
 				ecmArtworkVo.setArtworkStatus((short)1);
 			}

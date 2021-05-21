@@ -3,9 +3,15 @@ package com.mpic.evolution.chair.config.exception;
 import com.mpic.evolution.chair.common.exception.EcmAuthenticationException;
 import com.mpic.evolution.chair.common.exception.EcmTokenException;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import static com.mpic.evolution.chair.common.returnvo.ErrorEnum.ERR_603;
 
@@ -15,13 +21,16 @@ import static com.mpic.evolution.chair.common.returnvo.ErrorEnum.ERR_603;
  * @Description TODO
  * @Date 2020/12/16 15:36
  */
+@Slf4j
 @ControllerAdvice
 public class BaseExceptionHandler {
+
+
     // 捕获参数异常
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
     ResponseDTO  baseExceptionException(Exception e) {
-        System.out.println("后台全局异常捕获发现异常");
+        log.info("后台全局异常捕获发现异常");
         e.printStackTrace();
         return ResponseDTO.fail(e.getMessage(),"后台错误",550,550);
     }
@@ -29,18 +38,19 @@ public class BaseExceptionHandler {
 
     @ExceptionHandler(value = EcmTokenException.class)
     @ResponseBody
-    ResponseDTO  tokenException(EcmTokenException e) {
-        System.out.println("token 不合法 ，非法访问");
-//        e.printStackTrace();
-        return ResponseDTO.fail(ERR_603.getText(),ERR_603.getText(),Integer.valueOf(ERR_603.getValue()),ERR_603.getValue());
+    ResponseDTO  tokenException( EcmTokenException e) {
+//        String errorSource=  session.getAttribute("errorSource").toString();
+        log.info("token 不合法 ，非法访问");
+        e.printStackTrace();
+        return ResponseDTO.fail(e.getMessage(),e.getCode());
     }
 
 
     @ExceptionHandler(value = EcmAuthenticationException.class)
     @ResponseBody
     ResponseDTO  ecmAuthenticationException(EcmAuthenticationException e) {
-        System.out.println("权限不够！");
-//        e.printStackTrace();
-        return ResponseDTO.fail(ERR_603.getText(),ERR_603.getText(),Integer.valueOf(ERR_603.getValue()),ERR_603.getValue());
+        log.info("权限不够！");
+        e.printStackTrace();
+        return ResponseDTO.fail(e.getMessage(),e.getCode());
     }
 }
