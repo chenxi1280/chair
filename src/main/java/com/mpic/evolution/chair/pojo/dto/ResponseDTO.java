@@ -147,4 +147,11 @@ public class ResponseDTO implements Serializable {
     public static ResponseDTO fail(String msg) {
         return new ResponseDTO(msg, null, null, 500);
     }
+
+    /**
+     * 调用失败的时候，返回失败的状态
+     */
+    public static ResponseDTO fail(String msg, Integer errorCode) {
+        return new ResponseDTO(msg, null, errorCode, errorCode);
+    }
 }

@@ -119,7 +119,7 @@ public class AuthenticationAspect {
             }
         }
         logger.info("非法访问 ==》 拦截");
-        throw new EcmAuthenticationException();
+        throw new EcmAuthenticationException(604,"非法访问,权限不够");
 
 
     }
