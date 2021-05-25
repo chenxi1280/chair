@@ -5,8 +5,8 @@
     <id column="pk_id" jdbcType="INTEGER" property="pkId" />
     <result column="fk_user_id" jdbcType="INTEGER" property="fkUserId" />
     <result column="sub_app_id" jdbcType="INTEGER" property="subAppId" />
-    <result column="sub_total_flow" jdbcType="INTEGER" property="subTotalFlow" />
-    <result column="sub_used_flow" jdbcType="INTEGER" property="subUsedFlow" />
+    <result column="sub_total_flow" jdbcType="BIGINT" property="subTotalFlow" />
+    <result column="sub_used_flow" jdbcType="BIGINT" property="subUsedFlow" />
     <result column="sub_flow_status" jdbcType="INTEGER" property="subFlowStatus" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -29,8 +29,8 @@
     insert into ecm_downlink_flow (fk_user_id, sub_app_id, sub_total_flow, 
       sub_used_flow, sub_flow_status, update_time, 
       create_time)
-    values (#{fkUserId,jdbcType=INTEGER}, #{subAppId,jdbcType=INTEGER}, #{subTotalFlow,jdbcType=INTEGER}, 
-      #{subUsedFlow,jdbcType=INTEGER}, #{subFlowStatus,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, 
+    values (#{fkUserId,jdbcType=INTEGER}, #{subAppId,jdbcType=INTEGER}, #{subTotalFlow,jdbcType=BIGINT},
+      #{subUsedFlow,jdbcType=BIGINT},  #{subFlowStatus,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP},
       #{createTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" keyColumn="pk_id" keyProperty="pkId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmDownlinkFlow" useGeneratedKeys="true">
@@ -66,10 +66,10 @@
         #{subAppId,jdbcType=INTEGER},
       </if>
       <if test="subTotalFlow != null">
-        #{subTotalFlow,jdbcType=INTEGER},
+        #{subTotalFlow,jdbcType=BIGINT},
       </if>
       <if test="subUsedFlow != null">
-        #{subUsedFlow,jdbcType=INTEGER},
+        #{subUsedFlow,jdbcType=BIGINT},
       </if>
       <if test="subFlowStatus != null">
         #{subFlowStatus,jdbcType=INTEGER},
@@ -92,10 +92,10 @@
         sub_app_id = #{subAppId,jdbcType=INTEGER},
       </if>
       <if test="subTotalFlow != null">
-        sub_total_flow = #{subTotalFlow,jdbcType=INTEGER},
+        sub_total_flow = #{subTotalFlow,jdbcType=BIGINT},
       </if>
       <if test="subUsedFlow != null">
-        sub_used_flow = #{subUsedFlow,jdbcType=INTEGER},
+        sub_used_flow = #{subUsedFlow,jdbcType=BIGINT},
       </if>
       <if test="subFlowStatus != null">
         sub_flow_status = #{subFlowStatus,jdbcType=INTEGER},
@@ -113,8 +113,8 @@
     update ecm_downlink_flow
     set fk_user_id = #{fkUserId,jdbcType=INTEGER},
       sub_app_id = #{subAppId,jdbcType=INTEGER},
-      sub_total_flow = #{subTotalFlow,jdbcType=INTEGER},
-      sub_used_flow = #{subUsedFlow,jdbcType=INTEGER},
+      sub_total_flow = #{subTotalFlow,jdbcType=BIGINT},
+      sub_used_flow = #{subUsedFlow,jdbcType=BIGINT},
       sub_flow_status = #{subFlowStatus,jdbcType=INTEGER},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       create_time = #{createTime,jdbcType=TIMESTAMP}
@@ -133,10 +133,10 @@
         and sub_app_id = #{subAppId,jdbcType=INTEGER}
       </if>
       <if test="subTotalFlow != null">
-        and sub_total_flow = #{subTotalFlow,jdbcType=INTEGER}
+        and sub_total_flow = #{subTotalFlow,jdbcType=BIGINT}
       </if>
       <if test="subUsedFlow != null">
-        and sub_used_flow = #{subUsedFlow,jdbcType=INTEGER}
+        and sub_used_flow = #{subUsedFlow,jdbcType=BIGINT}
       </if>
       <if test="subFlowStatus != null">
         and sub_flow_status = #{subFlowStatus,jdbcType=INTEGER}
@@ -160,10 +160,10 @@
         sub_app_id = #{param1.subAppId,jdbcType=INTEGER},
       </if>
       <if test="param1.subTotalFlow != null">
-        sub_total_flow = #{param1.subTotalFlow,jdbcType=INTEGER},
+        sub_total_flow = #{param1.subTotalFlow,jdbcType=BIGINT},
       </if>
       <if test="param1.subUsedFlow != null">
-        sub_used_flow = #{param1.subUsedFlow,jdbcType=INTEGER},
+        sub_used_flow = #{param1.subUsedFlow,jdbcType=BIGINT},
       </if>
       <if test="param1.subFlowStatus != null">
         sub_flow_status = #{param1.subFlowStatus,jdbcType=INTEGER},
@@ -183,10 +183,10 @@
         and sub_app_id = #{param2.subAppId,jdbcType=INTEGER}
       </if>
       <if test="param2.subTotalFlow != null">
-        and sub_total_flow = #{param2.subTotalFlow,jdbcType=INTEGER}
+        and sub_total_flow = #{param2.subTotalFlow,jdbcType=BIGINT}
       </if>
       <if test="param2.subUsedFlow != null">
-        and sub_used_flow = #{param2.subUsedFlow,jdbcType=INTEGER}
+        and sub_used_flow = #{param2.subUsedFlow,jdbcType=BIGINT}
       </if>
       <if test="param2.subFlowStatus != null">
         and sub_flow_status = #{param2.subFlowStatus,jdbcType=INTEGER}

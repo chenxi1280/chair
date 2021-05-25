@@ -28,12 +28,12 @@ public class EcmDownlinkFlow implements Serializable {
     /**
      * 用户下行总流量（单位KB）
      */
-    private Integer subTotalFlow;
+    private Long subTotalFlow;
 
     /**
      * 用户下行已使用流量（单位KB）
      */
-    private Integer subUsedFlow;
+    private Long subUsedFlow;
 
     /**
      * 当前记录的状态(预留)
