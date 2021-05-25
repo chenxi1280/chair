@@ -2,6 +2,7 @@ package com.mpic.evolution.chair.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.mpic.evolution.chair.common.constant.JudgeConstant;
+import com.mpic.evolution.chair.dao.EcmArtworkDao;
 import com.mpic.evolution.chair.dao.EcmArtworkNodesDao;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.tencent.video.AiContentReviewResultSet;
@@ -47,6 +48,10 @@ import static com.mpic.evolution.chair.common.constant.CosConstant.*;
 @Service
 public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerService {
 
+
+
+    @Resource
+    EcmArtworkDao ecmArtworkDao;
 
     @Resource
     EcmArtworkNodesDao ecmArtworkNodesDao;
@@ -104,6 +109,8 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
     public ResponseDTO videoHandleConsumer(TencentVideoResult tencentVideoResult) {
         System.out.println("腾讯视频审核回调接口开始工作了");
 
+//        ecmArtworkDao.selectByPrimaryKey()
+
         if (tencentVideoResult.getProcedureStateChangeEvent().getErrCode() == 0 && JudgeConstant.SUCCESS.toUpperCase().equals(tencentVideoResult.getProcedureStateChangeEvent().getMessage())){
 
             List<EcmArtworkNodesVo> ecmArtworkNodesVoList = ecmArtworkNodesDao.selectByVideoCode(tencentVideoResult.getProcedureStateChangeEvent().getFileId());
@@ -129,6 +136,7 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
                 }
                 ecmArtworkNode.setPkDetailId(ecmArtworkNodesVo.getPkDetailId());
                 ecmArtworkNode.setFkEndingId(ecmArtworkNodesVo.getFkEndingId());
+                // 后续需要修改
                 ecmArtworkNode.setVideoUrl(ecmArtworkNodesVo.getVideoUrl());
                 ecmArtworkNodesList.add(ecmArtworkNode);
 

@@ -96,10 +96,10 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 
 			//  作品请求审核
 			if ( CommonField.VERIFY.equals(ecmArtworkVo.getCode())){
+				// 全景视频 不走腾讯审核
 				if (ecmArtwork.getPlayMode() != 2 ) {
 					videoHandleConsumerService.handleArtwork(ecmArtworkVo.getPkArtworkId());
 				}
-				// 重点优化需要 线程优化
 				ecmArtworkVo.setArtworkStatus((short)1);
 			}
 			if ( CommonField.CANCEL.equals(ecmArtworkVo.getCode() )){
