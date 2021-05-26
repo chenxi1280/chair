@@ -6,6 +6,7 @@ import com.mpic.evolution.chair.dao.EcmArtworkDao;
 import com.mpic.evolution.chair.dao.EcmArtworkNodesDao;
 import com.mpic.evolution.chair.dao.EcmDownlinkFlowDao;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
+import com.mpic.evolution.chair.pojo.entity.EcmArtwork;
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes;
 import com.mpic.evolution.chair.pojo.entity.EcmDownlinkFlow;
 import com.mpic.evolution.chair.pojo.tencent.video.AiContentReviewResultSet;
@@ -185,15 +186,15 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
      // ecmArtworkNodesDao.updatePrivateVideoUrl()
         if (!CollectionUtils.isEmpty(ecmArtworkNodesVos)){
             EcmDownlinkFlow ecmDownlinkFlow = new EcmDownlinkFlow();
-            ecmDownlinkFlow.setFkUserId(ecmArtworkNodesVos.get(0).getFkUserId());
+            EcmArtwork ecmArtwork = ecmArtworkDao.selectByPrimaryKey(pkArtworkId);
+            ecmDownlinkFlow.setFkUserId(ecmArtwork.getFkUserid());
             ecmDownlinkFlow = ecmDownlinkFlowDao.selectByRecord(ecmDownlinkFlow);
             int subjectId = ecmDownlinkFlow.getSubAppId();
-            int detailId = ecmArtworkNodesVos.get(0).getPkDetailId();
-            List<EcmArtworkNodesVo> collect = ecmArtworkNodesVos.stream().filter(ecmArtworkNodesVo ->  ecmArtworkNodesVo.getPrivateVideoUrl() == null).collect(Collectors.toList());
+            List<EcmArtworkNodesVo> collect = ecmArtworkNodesVos.stream().filter(ecmArtworkNodesVo ->  StringUtils.isEmpty(ecmArtworkNodesVo.getPrivateVideoUrl())).collect(Collectors.toList());
             collect.forEach( ecmArtworkNodesVo ->  {
                 if(ecmArtworkNodesVo.getVideoUrl() != null) {
                     //执行腾讯云方法
-                    this.tencentCopyUrl(ecmArtworkNodesVo.getVideoUrl(), subjectId, detailId);
+                    this.tencentCopyUrl(ecmArtworkNodesVo.getVideoUrl(), subjectId, ecmArtworkNodesVo.getPkDetailId());
                     System.out.println(ecmArtworkNodesVo.getVideoUrl() + "已发送腾讯进行复制私有库");
                 }
             });
@@ -225,15 +226,15 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
         try {
             while (true) {
                 Map<String, String> urlMap = (Map<String, String>) redisUtil.lPop("copy_url_list");
-                String taskId = urlMap.get("taskId");
-                String subjectId = urlMap.get("subjectId");
-                int detailId = Integer.parseInt(urlMap.get("detailId"));
-                if(org.apache.commons.lang3.StringUtils.isNotBlank(taskId)){
+                if(urlMap != null && org.apache.commons.lang3.StringUtils.isNotBlank(urlMap.get("taskId"))){
                     //做业务
+                    String taskId = urlMap.get("taskId");
+                    String subjectId = urlMap.get("subjectId");
+                    int detailId = Integer.parseInt(urlMap.get("detailId"));
                     callTencentTaskDetail(taskId, Long.parseLong(subjectId), detailId);
                 } else {
                     System.out.println("没有要copy的私有桶数据"+ String.valueOf(new Date()));
-                    Thread.sleep(30000);
+                    Thread.sleep(3000);
                 }
             }
         }catch (Exception e) {
@@ -263,17 +264,17 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
                     System.out.println("获得的私有桶url是" + url);
                 } else {
                     System.out.println("私有桶复制失败1");
-                    setRedis(taskId, subAppId, detailId);
+                    setRedisTimeOut(taskId, subAppId, detailId);
                 }
             }else {
                 System.out.println("私有桶复制失败2, 任务可能还没结束");
-                setRedis(taskId, subAppId, detailId);
+                setRedisTimeOut(taskId, subAppId, detailId);
             }
 
         } catch (TencentCloudSDKException e) {
             e.printStackTrace();
             System.out.println("私有桶复制失败3");
-            setRedis(taskId, subAppId, detailId);
+            setRedisTimeOut(taskId, subAppId, detailId);
         }
 
 
@@ -289,6 +290,25 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
         clientProfile.setHttpProfile(httpProfile);
 
         return new VodClient(cred, "", clientProfile);
+    }
+
+    /**
+      * 方法名:
+      * @author Xuezx (◔‸◔）
+      * @param taskId
+     * @param subAppId
+     * @param detailId
+      * @date 2021/5/26 14:16
+      * 方法描述: 没查到结果的情况下，无秒钟之后再查
+      */
+    private void setRedisTimeOut(String taskId, long subAppId, int detailId){
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        setRedis(taskId, subAppId, detailId);
+
     }
 
     private void setRedis(String taskId, long subAppId, int detailId){

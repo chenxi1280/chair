@@ -161,6 +161,7 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 				ecmArtworkFreeAd.setFkArtworkId(ecmArtwork.getPkArtworkId());
 				ecmArtworkFreeAd.setCreateTime(new Date());
 				ecmArtworkFreeAdDao.insertSelective(ecmArtworkFreeAd);
+				videoHandleConsumerService.copyVideo(ecmArtwork.getPkArtworkId());
 			}
 			return ResponseDTO.ok("新建成功");
 		} catch (Exception e) {
@@ -199,6 +200,7 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 					ecmArtworkFreeAd.setCreateTime(new Date());
 					ecmArtworkFreeAdDao.insertSelective(ecmArtworkFreeAd);
 				}
+				videoHandleConsumerService.copyVideo(ecmArtwork.getPkArtworkId());
 			}else{
 				EcmArtworkFreeAd ecmArtworkFreeAd = new EcmArtworkFreeAd();
 				ecmArtworkFreeAd.setFkArtworkId(ecmArtworkVo.getPkArtworkId());
