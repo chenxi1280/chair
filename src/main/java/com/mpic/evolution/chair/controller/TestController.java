@@ -73,7 +73,7 @@ public class TestController {
 	public void  testRedisLock() throws InterruptedException {
 		int clientcount = 100000;
 		CountDownLatch countDownLatch = new CountDownLatch(clientcount);
-		ExecutorService threadPool = Executors.newFixedThreadPool(1000);
+
 		long start = System.currentTimeMillis();
 		for (int i = 0; i < clientcount; i++) {
 			threadPool.execute(()->{

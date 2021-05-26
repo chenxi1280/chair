@@ -27,6 +27,8 @@ public class EcmArtworkNodes implements Serializable  {
 
     private String videoUrl;
 
+    private String privateVideoUrl;
+
     // 是否为 定位
     @JsonProperty(value = "isPosition" )
     @JSONField(name = "isPosition ")

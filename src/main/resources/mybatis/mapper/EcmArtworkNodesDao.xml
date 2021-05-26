@@ -7,6 +7,7 @@
     <result column="video_code" jdbcType="VARCHAR" property="videoCode" />
     <result column="parent_code" jdbcType="VARCHAR" property="parentCode" />
     <result column="video_url" jdbcType="VARCHAR" property="videoUrl" />
+    <result column="private_video_url" jdbcType="VARCHAR" property="privateVideoUrl" />
     <result column="branch_pre" jdbcType="TINYINT" property="branchPre" />
     <result column="revolution_id" jdbcType="VARCHAR" property="revolutionId" />
     <result column="video_text" jdbcType="VARCHAR" property="videoText" />
@@ -28,7 +29,7 @@
     <result column="percentage_state" jdbcType="INTEGER" property="percentageState" />
   </resultMap>
   <sql id="Base_Column_List">
-    pk_detail_id, parent_id, video_code, parent_code, video_url, branch_pre, revolution_id,
+    pk_detail_id, parent_id, video_code, parent_code, video_url,private_video_url, branch_pre, revolution_id,
     video_text, fk_artwork_id, items, items_text, items_bak_text, css_vo, fk_achievement_id,
     fk_ending_id, isleaf, a_level, is_deleted, parent_list, chosen_text, video_info,
     popup_state, condition_state, percentage_state
@@ -737,6 +738,15 @@
       #{item.pkDetailId}
     </foreach>
   </update>
+  <update id="updatePrivateVideoUrl">
+    update ecm_artwork_nodes
+    <set>
+      <if test="privateVideoUrl != null">
+        private_video_url = #{privateVideoUrl}
+      </if>
+    </set>
+    where pk_detail_id = #{pkDetailId}
 
+  </update>
 
 </mapper>
