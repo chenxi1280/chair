@@ -29,20 +29,9 @@ public class ExportExcelController extends BaseController {
 
     @ResponseBody
     @RequestMapping("/export")
-    public void export(Long endDate, HttpServletResponse response, Long startDate,String token){
-        if (!StringUtil.isEmpty(token)){
-            String userId = JWTUtil.getUserId(token);
-            if (!StringUtil.isEmpty(userId)){
-                ExcelExportVo excelExportVo = new ExcelExportVo();
-                excelExportVo.setStartDate(startDate);
-                excelExportVo.setEndDate(endDate);
-                excelExportVo.setUserId(Integer.valueOf(userId));
-                exportExcelService.exportExcel(response,excelExportVo);
-            }
-        }else{
-            throw new EcmTokenException(603,"非法访问");
-        }
-
+    public ResponseDTO export(@RequestBody ExcelExportVo excelExportVo){
+        excelExportVo.setUserId(Integer.valueOf(getUserIdByHandToken()));
+        return exportExcelService.exportExcel(excelExportVo);
     }
 
     @ResponseBody

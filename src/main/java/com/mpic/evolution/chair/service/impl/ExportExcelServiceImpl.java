@@ -22,9 +22,9 @@ import com.qcloud.cos.COSClient;
 import com.qcloud.cos.ClientConfig;
 import com.qcloud.cos.auth.BasicCOSCredentials;
 import com.qcloud.cos.auth.COSCredentials;
+import com.qcloud.cos.http.HttpMethodName;
 import com.qcloud.cos.http.HttpProtocol;
-import com.qcloud.cos.model.PutObjectRequest;
-import com.qcloud.cos.model.PutObjectResult;
+import com.qcloud.cos.model.*;
 import com.qcloud.cos.region.Region;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,6 +33,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -59,6 +60,12 @@ public class ExportExcelServiceImpl implements ExportExcelService {
     @Value("${excel.localFilePath}")
     private String localFilePath;
 
+    @Value("${cos.bucket.key}")
+    private String bucketKey;
+
+    @Value("${cos.bucket.name}")
+    private String bucketName;
+
     @Resource
     EcmArtworkBroadcastHistoryDao historyDao;
 
@@ -72,7 +79,8 @@ public class ExportExcelServiceImpl implements ExportExcelService {
     EcmArtworkFreeAdDao ecmArtworkFreeAdDao;
 
     @Override
-    public void exportExcel(HttpServletResponse response, ExcelExportVo excelExportVo) {
+    public ResponseDTO exportExcel(ExcelExportVo excelExportVo) {
+        FileOutputStream out = null;
         Integer userId = excelExportVo.getUserId();
         //excel标题
         String title = "播放记录表";
@@ -129,22 +137,42 @@ public class ExportExcelServiceImpl implements ExportExcelService {
         HSSFWorkbook wb = ExpotExcelUtil.getHSSFWorkbook(title, headers, content);
         //检查文件是否存在
         //响应到客户端
+        String filePath = localFilePath + fileName;
         try {
 
 //            this.setResponseHeader(response, fileName);
 //            OutputStream os = response.getOutputStream();
-            File sourceFile = new File(localFilePath);
-            String filePath = localFilePath + fileName;
-            FileOutputStream fout = new FileOutputStream(filePath);
-            if (!sourceFile.isDirectory() || !sourceFile.exists()) {
-                sourceFile.mkdir();
-            }
-            wb.write(fout);
-            fout.flush();
-            fout.close();
+
+            out = new FileOutputStream(filePath);
+            wb.write(out);
+            out.flush();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        finally {
+            if (out != null){
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            String url = this.uploadExcel(filePath, fileName);
+            this.delFile(filePath);
+            System.err.println("都已执行完毕");
+            return ResponseDTO.ok(url);
+        }
+    }
+
+    private void delFile(String filePath){
+        File file = new File(filePath);
+        if (file.exists()){
+            file.delete();
+            System.out.println("删除成功");
+        }else {
+            System.out.println("删除失败");
+        }
+
     }
 
     @Override
@@ -200,12 +228,12 @@ public class ExportExcelServiceImpl implements ExportExcelService {
 
     /**
      * 上传Excel
-     * @param fileNewName
+     * @param filePath
      * @return
      */
-    private String uploadExcel(String fileNewName){
+    private String uploadExcel(String filePath,String fileName){
         // 设置bucket所在的区域，比如广州(gz), 天津(tj)
-        Region region = new Region("cq");
+        Region region = new Region("ap-chongqing");
         // 初始化客户端配置
         ClientConfig clientConfig = new ClientConfig(region);
         //这里建议设置使用 https 协议
@@ -217,32 +245,34 @@ public class ExportExcelServiceImpl implements ExportExcelService {
         COSClient cosClient = new COSClient(cred, clientConfig);
         // 上传文件的本地目录
 
-        File localFile = new File(localFilePath);
+        File localFile = new File(filePath);
         // 指定文件将要存放的存储桶
         // 设置要操作的bucket
-        String bucketName = "examplebucket-1250000000";
         // 指定文件上传到 COS 上的路径，即对象键。例如对象键为folder/picture.jpg，则表示将文件 picture.jpg 上传到 folder 路径下
-        String key = "excel";
-        PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, localFile);
+        PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, bucketKey+fileName, localFile);
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentType("application/xls");
+        putObjectRequest.setMetadata(objectMetadata);
         PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
-        System.out.println(putObjectResult);
-        return null;
+
+        //获取带权限的下载链接
+        GeneratePresignedUrlRequest req =
+                new GeneratePresignedUrlRequest(bucketName, bucketKey+fileName, HttpMethodName.GET);
+        // 设置签名过期时间(可选), 若未进行设置, 则默认使用 ClientConfig 中的签名过期时间(1小时)
+        // 这里设置签名在半个小时后过期
+        Date expirationDate = new Date(System.currentTimeMillis() + 30L * 60L * 1000L);
+        req.setExpiration(expirationDate);
+        URL url = cosClient.generatePresignedUrl(req);
+        String sUrl = this.makeUrlData(url);
+        return sUrl;
+    }
+    
+    private String makeUrlData(URL url){
+        String host = url.getHost();
+        String protocol = url.getProtocol();
+        String path = url.getPath();
+        String urlStr = protocol +"://"+host+path;
+        return urlStr;
     }
 
-    //发送响应流方法
-    private void setResponseHeader(HttpServletResponse response, String fileName) {
-        try {
-            try {
-                fileName = new String(fileName.getBytes(),"ISO8859-1");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-            response.setContentType("application/octet-stream;charset=ISO8859-1");
-            response.setHeader("Content-Disposition", "attachment;filename="+ fileName);
-            response.addHeader("Pargam", "no-cache");
-            response.addHeader("Cache-Control", "no-cache");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
 }

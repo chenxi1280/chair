@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface ExportExcelService {
 
-     void exportExcel(HttpServletResponse response, ExcelExportVo excelExportVo);
+    ResponseDTO exportExcel(ExcelExportVo excelExportVo);
 
     ResponseDTO getDownLinkRecord(EcmUserHistoryFlowQuery ecmUserHistoryFlowQuery);
 }
