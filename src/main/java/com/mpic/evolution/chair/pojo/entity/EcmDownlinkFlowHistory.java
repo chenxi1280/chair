@@ -28,7 +28,7 @@ public class EcmDownlinkFlowHistory implements Serializable {
     /**
      * 用户下行已使用流量（单位Byte）
      */
-    private Integer subUsedFlow;
+    private Long subUsedFlow;
 
     /**
      * 当前记录的状态(预留)

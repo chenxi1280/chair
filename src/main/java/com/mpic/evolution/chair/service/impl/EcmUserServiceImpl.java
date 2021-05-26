@@ -409,7 +409,7 @@ public class EcmUserServiceImpl implements EcmUserService {
 	@Override
 	public ResponseDTO getDownLinkFlowRecord( EcmUserHistoryFlowVO ecmUserHistoryFlowVO) {
 		JSONObject data = new JSONObject();
-		ArrayList<Integer> flowsSplitByDays = new ArrayList<>();
+		ArrayList<Long> flowsSplitByDays = new ArrayList<>();
 		Integer userId = ecmUserHistoryFlowVO.getUserId();
 		LocalDateTime startTime = ecmUserHistoryFlowVO.getStartDate();
 		LocalDateTime endTime = ecmUserHistoryFlowVO.getEndDate();
@@ -426,10 +426,10 @@ public class EcmUserServiceImpl implements EcmUserService {
 			ecmDownlinkFlowHistory.setCreateTime(targetDate);
 			ecmDownlinkFlowHistory.setFkUserId(userId);
 			EcmDownlinkFlowHistory historyObject = ecmDownlinkFlowHistoryDao.selectByRecord(ecmDownlinkFlowHistory);
-			flowsSplitByDays.add(historyObject.getSubUsedFlow()/1024);//单位KB
+			flowsSplitByDays.add(historyObject.getSubUsedFlow());//单位KB
 			startTime = targetTime;
 		}
-		int max = flowsSplitByDays.get(0);
+		long max = flowsSplitByDays.get(0);
 		for (int i = 0; i < flowsSplitByDays.size(); i++) {
 			if(flowsSplitByDays.get(i) > max){
 				max = flowsSplitByDays.get(i);

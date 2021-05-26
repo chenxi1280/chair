@@ -262,7 +262,7 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			return false;
 		}
 		//查询完之前发现流量不足直接返回提示信息 不做继续做业务
-		if((ecmDownlinkFlow.getSubTotalFlow() - (ecmDownlinkFlow.getSubUsedFlow()/ 1024)) < 0){
+		if(ecmDownlinkFlow.getSubTotalFlow() - ecmDownlinkFlow.getSubUsedFlow() <= 0){
 			//下行流量使用完 返回提示信息
 			return false;
 		}
@@ -315,20 +315,20 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 				ecmDownlinkFlowHistory.setFkUserId(userId);
 				ecmDownlinkFlowHistory.setSubAppId(subAppId);
 				ecmDownlinkFlowHistory.setSubFlowStatus(0);
-				ecmDownlinkFlowHistory.setSubUsedFlow((int)yesterdaySum);
+				ecmDownlinkFlowHistory.setSubUsedFlow(yesterdaySum/1024);//Byte 转 KB
 				ecmDownlinkFlowHistoryDao.insertSelective(ecmDownlinkFlowHistory);
 			}else{
 				//更新昨天的记录
-				history.setSubUsedFlow((int)yesterdaySum);
+				history.setSubUsedFlow(yesterdaySum/1024);//Byte 转 KB
 				ecmDownlinkFlowHistoryDao.updateBySelective(history,ecmDownlinkFlowHistory);
 			}
 			//更新下行流量表记录
-			ecmDownlinkFlow.setSubUsedFlow((int)todaySum);
+			ecmDownlinkFlow.setSubUsedFlow(todaySum/1024);//Byte 转 KB
 			ecmDownlinkFlow.setUpdateTime(new Date());
-			ecmDownlinkFlowDao.updateByPrimaryKeySelective(ecmDownlinkFlow);//单位Byte
+			ecmDownlinkFlowDao.updateByPrimaryKeySelective(ecmDownlinkFlow);
 
 		}
-		int todaySumByKb = (ecmDownlinkFlow.getSubUsedFlow() / 1024);//单位KB
+		long todaySumByKb = ecmDownlinkFlow.getSubUsedFlow();//单位KB
 		//查询完之后发现流量不足直接返回提示信息
 		if((ecmDownlinkFlow.getSubTotalFlow() - todaySumByKb) < 0){
 			//下行流量使用完 返回提示信息
