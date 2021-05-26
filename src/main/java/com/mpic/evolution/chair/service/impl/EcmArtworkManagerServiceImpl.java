@@ -65,6 +65,9 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 	@Resource
 	EcmArtworkFreeAdDao ecmArtworkFreeAdDao;
 
+	@Resource
+	EcmSubappUpdateHistoryDao ecmSubappUpdateHistoryDao;
+
 	@Override
 	public ResponseDTO modifyArtWorkStatus(EcmArtworkVo ecmArtworkVo) {
 		JSONObject message = this.getMessage();
@@ -155,7 +158,38 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			if(ecmArtworkVo.getPlayType() == 1){
 				boolean b = this.checkdownLinkFlowIsEmpty(userId);
 				if(!b){
-					return ResponseDTO.fail("设置免流量功能失败，可能原因：1.尚未购买下行流量，2.下行流量已用完，请联系我们。");
+					EcmDownlinkFlow ecmDownlinkFlow = new EcmDownlinkFlow();
+					ecmDownlinkFlow.setFkUserId(userId);
+					ecmDownlinkFlow = ecmDownlinkFlowDao.selectByRecord(ecmDownlinkFlow);
+					//ecmDownlinkFlow 用户没有下行流量记录的话标识未开通云点播子应用
+					if(ecmDownlinkFlow == null){
+						return ResponseDTO.fail("设置免流量功能失败，可能原因：1.尚未购买下行流量，2.下行流量已用完，请联系我们。");
+					}else{
+						//用户流量为0 时停用云点播
+						String subAppId = ecmDownlinkFlow.getSubAppId().toString();
+						boolean symbol = ecmDownLinkFlowService.modifySubAppStatus("off", Long.valueOf(subAppId));
+						if(symbol){
+							EcmSubappUpdateHistory ecmSubappUpdateHistory = new EcmSubappUpdateHistory();
+							ecmSubappUpdateHistory.setSubAppId(ecmDownlinkFlow.getSubAppId());
+							ecmSubappUpdateHistory.setStatus(1);
+							ecmSubappUpdateHistory.setFkUserId(userId);
+							ecmSubappUpdateHistory = ecmSubappUpdateHistoryDao.selectByRecord(ecmSubappUpdateHistory);
+							if(ecmSubappUpdateHistory == null){
+								EcmSubappUpdateHistory ecmSubappUpdateHistory1 = new EcmSubappUpdateHistory();
+								ecmSubappUpdateHistory1.setSubAppId(ecmDownlinkFlow.getSubAppId());
+								ecmSubappUpdateHistory1.setFkUserId(userId);
+								ecmSubappUpdateHistory1.setStatus(0);
+								ecmSubappUpdateHistory1.setCreateTime(new Date());
+								ecmSubappUpdateHistory1.setUpdateTime(new Date());
+								ecmSubappUpdateHistoryDao.insertSelective(ecmSubappUpdateHistory1);
+							}else{
+								ecmSubappUpdateHistory.setStatus(0);
+								ecmSubappUpdateHistoryDao.updateByPrimaryKeySelective(ecmSubappUpdateHistory);
+							}
+
+						}
+						return ResponseDTO.fail("设置免流量功能失败，可能原因：1.尚未购买下行流量，2.下行流量已用完，请联系我们。");
+					}
 				}
 				EcmArtworkFreeAd ecmArtworkFreeAd = new EcmArtworkFreeAd();
 				ecmArtworkFreeAd.setFkArtworkId(ecmArtwork.getPkArtworkId());
@@ -190,7 +224,38 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			if(ecmArtworkVo.getPlayType() == 1){
 				boolean b = this.checkdownLinkFlowIsEmpty(userId);
 				if(!b){
-					return ResponseDTO.fail("设置免流量功能失败，可能原因：1.尚未购买下行流量，2.下行流量已用完，请联系我们。");
+					EcmDownlinkFlow ecmDownlinkFlow = new EcmDownlinkFlow();
+					ecmDownlinkFlow.setFkUserId(userId);
+					ecmDownlinkFlow = ecmDownlinkFlowDao.selectByRecord(ecmDownlinkFlow);
+					//ecmDownlinkFlow 用户没有下行流量记录的话标识未开通云点播子应用
+					if(ecmDownlinkFlow == null){
+						return ResponseDTO.fail("设置免流量功能失败，可能原因：1.尚未购买下行流量，2.下行流量已用完，请联系我们。");
+					}else{
+						//用户流量为0 时停用云点播
+						String subAppId = ecmDownlinkFlow.getSubAppId().toString();
+						boolean symbol = ecmDownLinkFlowService.modifySubAppStatus("off", Long.valueOf(subAppId));
+						if(symbol){
+							EcmSubappUpdateHistory ecmSubappUpdateHistory = new EcmSubappUpdateHistory();
+							ecmSubappUpdateHistory.setSubAppId(ecmDownlinkFlow.getSubAppId());
+							ecmSubappUpdateHistory.setStatus(1);
+							ecmSubappUpdateHistory.setFkUserId(userId);
+							ecmSubappUpdateHistory = ecmSubappUpdateHistoryDao.selectByRecord(ecmSubappUpdateHistory);
+							if(ecmSubappUpdateHistory == null){
+								EcmSubappUpdateHistory ecmSubappUpdateHistory1 = new EcmSubappUpdateHistory();
+								ecmSubappUpdateHistory1.setSubAppId(ecmDownlinkFlow.getSubAppId());
+								ecmSubappUpdateHistory1.setFkUserId(userId);
+								ecmSubappUpdateHistory1.setStatus(0);
+								ecmSubappUpdateHistory1.setCreateTime(new Date());
+								ecmSubappUpdateHistory1.setUpdateTime(new Date());
+								ecmSubappUpdateHistoryDao.insertSelective(ecmSubappUpdateHistory1);
+							}else{
+								ecmSubappUpdateHistory.setStatus(0);
+								ecmSubappUpdateHistoryDao.updateByPrimaryKeySelective(ecmSubappUpdateHistory);
+							}
+
+						}
+						return ResponseDTO.fail("设置免流量功能失败，可能原因：1.尚未购买下行流量，2.下行流量已用完，请联系我们。");
+					}
 				}
 				EcmArtworkFreeAd ecmArtworkFreeAd = new EcmArtworkFreeAd();
 				ecmArtworkFreeAd.setFkArtworkId(ecmArtworkVo.getPkArtworkId());
