@@ -264,6 +264,7 @@ public class ExportExcelServiceImpl implements ExportExcelService {
         req.setExpiration(expirationDate);
         URL url = cosClient.generatePresignedUrl(req);
         String sUrl = this.makeUrlData(url);
+        cosClient.shutdown();
         return sUrl;
     }
     
