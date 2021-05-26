@@ -195,6 +195,9 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 				ecmArtworkFreeAd.setFkArtworkId(ecmArtwork.getPkArtworkId());
 				ecmArtworkFreeAd.setCreateTime(new Date());
 				ecmArtworkFreeAdDao.insertSelective(ecmArtworkFreeAd);
+				if(ecmArtworkVo.getPlayType() == 1){
+					//TODO  如果是免压缩作品 则需要插入记录
+				}
 			}
 			return ResponseDTO.ok("新建成功");
 		} catch (Exception e) {

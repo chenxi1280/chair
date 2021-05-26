@@ -36,4 +36,9 @@ public class EcmArtworkVo extends EcmArtwork {
      */
     private String userLogoUrl;
 
+    /**
+     * 1 免广压缩作品
+     */
+    private Integer videoType;
+
 }
