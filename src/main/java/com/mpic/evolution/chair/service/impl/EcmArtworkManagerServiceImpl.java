@@ -216,7 +216,6 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 					ecmArtworkFreeAd.setCreateTime(new Date());
 					ecmArtworkFreeAdDao.insertSelective(ecmArtworkFreeAd);
 				}
-				videoHandleConsumerService.copyVideo(ecmArtwork.getPkArtworkId());
 			}else{
 				EcmArtworkFreeAd ecmArtworkFreeAd = new EcmArtworkFreeAd();
 				ecmArtworkFreeAd.setFkArtworkId(ecmArtworkVo.getPkArtworkId());
