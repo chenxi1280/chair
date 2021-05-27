@@ -10,12 +10,14 @@ import com.tencentcloudapi.vod.v20180717.models.*;;
 
 public class DescribeCDNStatDetails {
 
+    private static String secretId = "AKIDNs9B1a3HUSFmMgJeIgneFpnYAWcRGfKm";
 
+    private static String secretKey = "MXYlmOeLm9KErRk1TfKj7E4oImzvlKsA";
 
     public static void main(String [] args) {
         try{
 
-            Credential cred = new Credential("AKIDNs9B1a3HUSFmMgJeIgneFpnYAWcRGfKm", "MXYlmOeLm9KErRk1TfKj7E4oImzvlKsA");
+            Credential cred = new Credential(secretId, secretKey);
 
             HttpProfile httpProfile = new HttpProfile();
             httpProfile.setEndpoint("vod.tencentcloudapi.com");
