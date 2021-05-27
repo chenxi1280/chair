@@ -71,8 +71,10 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
 
     @Autowired
     private ExecutorService executorService;
+
     @Resource
     RedisUtil redisUtil;
+
 
     /**
       * 方法名:
@@ -222,7 +224,11 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
     }
 
     @PostConstruct
-    private void copyUrlWork()  {
+    private void copyUrlWork(){
+        executorService.execute(this::doCopyRunner);
+    }
+
+    private void doCopyRunner()  {
         try {
             while (true) {
                 Map<String, String> urlMap = (Map<String, String>) redisUtil.lPop("copy_url_list");
