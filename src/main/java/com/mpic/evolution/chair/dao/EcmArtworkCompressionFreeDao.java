@@ -2,6 +2,8 @@ package com.mpic.evolution.chair.dao;
 
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkCompressionFree;
 
+import java.util.List;
+
 public interface EcmArtworkCompressionFreeDao {
     int deleteByPrimaryKey(Integer pkId);
 
@@ -14,4 +16,6 @@ public interface EcmArtworkCompressionFreeDao {
     int updateByPrimaryKeySelective(EcmArtworkCompressionFree record);
 
     int updateByPrimaryKey(EcmArtworkCompressionFree record);
+
+    List<Integer> selectByVideoCode(String fileId);
 }

@@ -13,7 +13,7 @@
     pk_id, fk_user_id, fk_artwork_id, `status`, update_time, create_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from ecm_artwork_compression_free
     where pk_id = #{pkId,jdbcType=INTEGER}
@@ -23,9 +23,9 @@
     where pk_id = #{pkId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyColumn="pk_id" keyProperty="pkId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkCompressionFree" useGeneratedKeys="true">
-    insert into ecm_artwork_compression_free (fk_user_id, fk_artwork_id, `status`, 
+    insert into ecm_artwork_compression_free (fk_user_id, fk_artwork_id, `status`,
       update_time, create_time)
-    values (#{fkUserId,jdbcType=INTEGER}, #{fkArtworkId,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, 
+    values (#{fkUserId,jdbcType=INTEGER}, #{fkArtworkId,jdbcType=INTEGER}, #{status,jdbcType=INTEGER},
       #{updateTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" keyColumn="pk_id" keyProperty="pkId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkCompressionFree" useGeneratedKeys="true">
@@ -95,4 +95,15 @@
       create_time = #{createTime,jdbcType=TIMESTAMP}
     where pk_id = #{pkId,jdbcType=INTEGER}
   </update>
+
+<!--  sql-->
+  <select id="selectByVideoCode" resultType="java.lang.Integer">
+    select ecm_artwork_compression_free.fk_artwork_id
+    from   ecm_artwork_compression_free inner join ecm_artwork_nodes  on ecm_artwork_nodes.fk_artwork_id = ecm_artwork_compression_free.fk_artwork_id
+    where video_code =  #{fileId} group by  ecm_artwork_compression_free.fk_artwork_id
+
+  </select>
+
+
+
 </mapper>
