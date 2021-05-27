@@ -234,7 +234,7 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
                     callTencentTaskDetail(taskId, Long.parseLong(subjectId), detailId);
                 } else {
                     System.out.println("没有要copy的私有桶数据"+ String.valueOf(new Date()));
-                    Thread.sleep(3000);
+                    Thread.sleep(30000);
                 }
             }
         }catch (Exception e) {
