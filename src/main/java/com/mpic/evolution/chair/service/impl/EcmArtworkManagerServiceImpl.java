@@ -317,7 +317,7 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			long todaySum = ecmDownLinkFlowService.describeCDNStatDetails(yesterdayEndTime, todayEndTime, subAppId);
 
 
-			redisUtil.set(redisKey,"",5);
+			redisUtil.set(redisKey,"",300);
 
 			EcmDownlinkFlowHistory ecmDownlinkFlowHistory = new EcmDownlinkFlowHistory();
 			LocalDateTime createLocalDateTime = LocalDateTime.of(year,monthValue,dayOfMonth-1,0,0,0);
