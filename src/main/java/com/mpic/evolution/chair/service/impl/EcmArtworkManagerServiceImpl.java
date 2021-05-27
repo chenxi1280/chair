@@ -137,6 +137,16 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			if (!StringUtils.isEmpty(result)) {
 				return ResponseDTO.fail("作品名称违规含有违禁词",result,null,510);
 			}
+
+			// 用户在设置免广告播放的时候 要查询用户是否有足够的下行流量 不进行短信通知 新用户查询不到下行流量信息的时候我们直接返回错误状态
+			// 如果没有设置免广告则不需要查询下行流量
+			if(ecmArtworkVo.getPlayType() == 1){
+				boolean b = this.checkdownLinkFlowIsEmpty(userId);
+				if(!b){
+					return this.flowDetectionFailed(userId);
+				}
+			}
+
 			ecmArtwork.setArtworkName(artworkName);
 			ecmArtwork.setPlayMode(ecmArtworkVo.getPlayMode());
 			ecmArtwork.setArtworkStatus((short)0);
@@ -156,65 +166,15 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			ecmArtworkNodes.setItemsBakText("https://sike-1259692143.cos.ap-chongqing.myqcloud.com/img/1604281276527nodeImgUrl.png");
 			ecmArtworkNodes.setVideoText("开场");
 			ecmArtworkNodesDao.insertSelective(ecmArtworkNodes);
-			// 用户在设置免广告播放的时候 要查询用户是否有足够的下行流量 不进行短信通知 新用户查询不到下行流量信息的时候我们直接返回错误状态
-			// 如果没有设置免广告则不需要查询下行流量
-			if(ecmArtworkVo.getPlayType() == 1){
-				boolean b = this.checkdownLinkFlowIsEmpty(userId);
-				if(!b){
-					EcmDownlinkFlow ecmDownlinkFlow = new EcmDownlinkFlow();
-					ecmDownlinkFlow.setFkUserId(userId);
-					ecmDownlinkFlow = ecmDownlinkFlowDao.selectByRecord(ecmDownlinkFlow);
-					//ecmDownlinkFlow 用户没有下行流量记录的话标识未开通云点播子应用
-					if(ecmDownlinkFlow == null){
-						return ResponseDTO.fail("设置免流量功能失败，可能原因：1.尚未购买下行流量，2.下行流量已用完，请联系我们。");
-					}else{
-						//用户流量为0 时停用云点播
-						String subAppId = ecmDownlinkFlow.getSubAppId().toString();
-						boolean symbol = ecmDownLinkFlowService.modifySubAppStatus("off", Long.valueOf(subAppId));
-						if(symbol){
-							EcmSubappUpdateHistory ecmSubappUpdateHistory = new EcmSubappUpdateHistory();
-							ecmSubappUpdateHistory.setSubAppId(ecmDownlinkFlow.getSubAppId());
-							ecmSubappUpdateHistory.setStatus(1);
-							ecmSubappUpdateHistory.setFkUserId(userId);
-							ecmSubappUpdateHistory = ecmSubappUpdateHistoryDao.selectByRecord(ecmSubappUpdateHistory);
-							if(ecmSubappUpdateHistory == null){
-								EcmSubappUpdateHistory ecmSubappUpdateHistory1 = new EcmSubappUpdateHistory();
-								ecmSubappUpdateHistory1.setSubAppId(ecmDownlinkFlow.getSubAppId());
-								ecmSubappUpdateHistory1.setFkUserId(userId);
-								ecmSubappUpdateHistory1.setStatus(0);
-								ecmSubappUpdateHistory1.setCreateTime(new Date());
-								ecmSubappUpdateHistory1.setUpdateTime(new Date());
-								ecmSubappUpdateHistoryDao.insertSelective(ecmSubappUpdateHistory1);
-							}else{
-								ecmSubappUpdateHistory.setStatus(0);
-								ecmSubappUpdateHistory.setUpdateTime(new Date());
-								ecmSubappUpdateHistoryDao.updateByPrimaryKeySelective(ecmSubappUpdateHistory);
-							}
 
-						}
-						return ResponseDTO.fail("设置免流量功能失败，可能原因：1.尚未购买下行流量，2.下行流量已用完，请联系我们。");
-					}
-				}
-				EcmArtworkFreeAd ecmArtworkFreeAd = new EcmArtworkFreeAd();
-				ecmArtworkFreeAd.setFkArtworkId(ecmArtwork.getPkArtworkId());
-				ecmArtworkFreeAd.setCreateTime(new Date());
-				ecmArtworkFreeAdDao.insertSelective(ecmArtworkFreeAd);
-				if(ecmArtworkVo.getVideoType() == 1){
-					// 如果是免压缩作品 并且经过了免广告的下行流量检测 则需要插入记录
-					EcmArtworkCompressionFree ecmArtworkCompressionFree = new EcmArtworkCompressionFree();
-					ecmArtworkCompressionFree.setStatus(1);
-					ecmArtworkCompressionFree.setFkUserId(userId);
-					ecmArtworkCompressionFree.setFkArtworkId(ecmArtwork.getPkArtworkId());
-					EcmArtworkCompressionFree ecmArtworkCompressionFree1 = ecmArtworkCompressionFreeDao.selectByRecord(ecmArtworkCompressionFree);
-					if(ecmArtworkCompressionFree1 == null){
-						ecmArtworkCompressionFree.setCreateTime(new Date());
-						ecmArtworkCompressionFree.setUpdateTime(new Date());
-						ecmArtworkCompressionFreeDao.insertSelective(ecmArtworkCompressionFree);
-					}else{
-						ecmArtworkCompressionFree.setUpdateTime(new Date());
-						ecmArtworkCompressionFreeDao.updateByPrimaryKeySelective(ecmArtworkCompressionFree);
-					}
-				}
+			//保存免广告记录
+			EcmArtworkFreeAd ecmArtworkFreeAd = new EcmArtworkFreeAd();
+			ecmArtworkFreeAd.setFkArtworkId(ecmArtwork.getPkArtworkId());
+			ecmArtworkFreeAd.setCreateTime(new Date());
+			ecmArtworkFreeAdDao.insertSelective(ecmArtworkFreeAd);
+			//在有下行流量的情况下 进行免压缩的逻辑操作
+			if(ecmArtworkVo.getVideoType() == 1){
+				this.artworkCompressionFree(userId,ecmArtwork.getPkArtworkId());
 			}
 			return ResponseDTO.ok("新建成功");
 		} catch (Exception e) {
@@ -244,38 +204,7 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			if(ecmArtworkVo.getPlayType() == 1){
 				boolean b = this.checkdownLinkFlowIsEmpty(userId);
 				if(!b){
-					EcmDownlinkFlow ecmDownlinkFlow = new EcmDownlinkFlow();
-					ecmDownlinkFlow.setFkUserId(userId);
-					ecmDownlinkFlow = ecmDownlinkFlowDao.selectByRecord(ecmDownlinkFlow);
-					//ecmDownlinkFlow 用户没有下行流量记录的话标识未开通云点播子应用
-					if(ecmDownlinkFlow == null){
-						return ResponseDTO.fail("设置免流量功能失败，可能原因：1.尚未购买下行流量，2.下行流量已用完，请联系我们。");
-					}else{
-						//用户流量为0 时停用云点播
-						String subAppId = ecmDownlinkFlow.getSubAppId().toString();
-						boolean symbol = ecmDownLinkFlowService.modifySubAppStatus("off", Long.valueOf(subAppId));
-						if(symbol){
-							EcmSubappUpdateHistory ecmSubappUpdateHistory = new EcmSubappUpdateHistory();
-							ecmSubappUpdateHistory.setSubAppId(ecmDownlinkFlow.getSubAppId());
-							ecmSubappUpdateHistory.setStatus(1);
-							ecmSubappUpdateHistory.setFkUserId(userId);
-							ecmSubappUpdateHistory = ecmSubappUpdateHistoryDao.selectByRecord(ecmSubappUpdateHistory);
-							if(ecmSubappUpdateHistory == null){
-								EcmSubappUpdateHistory ecmSubappUpdateHistory1 = new EcmSubappUpdateHistory();
-								ecmSubappUpdateHistory1.setSubAppId(ecmDownlinkFlow.getSubAppId());
-								ecmSubappUpdateHistory1.setFkUserId(userId);
-								ecmSubappUpdateHistory1.setStatus(0);
-								ecmSubappUpdateHistory1.setCreateTime(new Date());
-								ecmSubappUpdateHistory1.setUpdateTime(new Date());
-								ecmSubappUpdateHistoryDao.insertSelective(ecmSubappUpdateHistory1);
-							}else{
-								ecmSubappUpdateHistory.setStatus(0);
-								ecmSubappUpdateHistoryDao.updateByPrimaryKeySelective(ecmSubappUpdateHistory);
-							}
-
-						}
-						return ResponseDTO.fail("设置免流量功能失败，可能原因：1.尚未购买下行流量，2.下行流量已用完，请联系我们。");
-					}
+					return this.flowDetectionFailed(userId);
 				}
 				EcmArtworkFreeAd ecmArtworkFreeAd = new EcmArtworkFreeAd();
 				ecmArtworkFreeAd.setFkArtworkId(ecmArtworkVo.getPkArtworkId());
@@ -285,20 +214,7 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 					ecmArtworkFreeAdDao.insertSelective(ecmArtworkFreeAd);
 				}
 				if(ecmArtworkVo.getVideoType() == 1){
-					// 如果是免压缩作品 并且经过了免广告的下行流量检测 则需要插入记录
-					EcmArtworkCompressionFree ecmArtworkCompressionFree = new EcmArtworkCompressionFree();
-					ecmArtworkCompressionFree.setStatus(1);
-					ecmArtworkCompressionFree.setFkUserId(userId);
-					ecmArtworkCompressionFree.setFkArtworkId(ecmArtwork.getPkArtworkId());
-					EcmArtworkCompressionFree ecmArtworkCompressionFree1 = ecmArtworkCompressionFreeDao.selectByRecord(ecmArtworkCompressionFree);
-					if(ecmArtworkCompressionFree1 == null){
-						ecmArtworkCompressionFree.setCreateTime(new Date());
-						ecmArtworkCompressionFree.setUpdateTime(new Date());
-						ecmArtworkCompressionFreeDao.insertSelective(ecmArtworkCompressionFree);
-					}else{
-						ecmArtworkCompressionFree.setUpdateTime(new Date());
-						ecmArtworkCompressionFreeDao.updateByPrimaryKeySelective(ecmArtworkCompressionFree);
-					}
+					this.artworkCompressionFree(userId,ecmArtworkVo.getPkArtworkId());
 				}
 			}else{
 				EcmArtworkFreeAd ecmArtworkFreeAd = new EcmArtworkFreeAd();
@@ -323,6 +239,69 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			return ResponseDTO.fail("修改失败");
 		}
 	}
+
+	/**
+	 * 未通过下行流量检测
+	 * @param userId
+	 * @return
+	 */
+	private ResponseDTO flowDetectionFailed(Integer userId){
+		EcmDownlinkFlow ecmDownlinkFlow = new EcmDownlinkFlow();
+		ecmDownlinkFlow.setFkUserId(userId);
+		ecmDownlinkFlow = ecmDownlinkFlowDao.selectByRecord(ecmDownlinkFlow);
+		//ecmDownlinkFlow 用户没有下行流量记录的话标识未开通云点播子应用
+		if(ecmDownlinkFlow == null){
+			return ResponseDTO.fail("设置免流量功能失败，可能原因：1.尚未购买下行流量，2.下行流量已用完，请联系我们。");
+		}else{
+			//用户流量为0 时停用云点播
+			String subAppId = ecmDownlinkFlow.getSubAppId().toString();
+			boolean symbol = ecmDownLinkFlowService.modifySubAppStatus("off", Long.valueOf(subAppId));
+			if(symbol){
+				EcmSubappUpdateHistory ecmSubappUpdateHistory = new EcmSubappUpdateHistory();
+				ecmSubappUpdateHistory.setSubAppId(ecmDownlinkFlow.getSubAppId());
+				ecmSubappUpdateHistory.setStatus(1);
+				ecmSubappUpdateHistory.setFkUserId(userId);
+				EcmSubappUpdateHistory ecmSubappUpdateHistory1 = ecmSubappUpdateHistoryDao.selectByRecord(ecmSubappUpdateHistory);
+				if(ecmSubappUpdateHistory1 == null){
+					ecmSubappUpdateHistory.setStatus(0);
+					ecmSubappUpdateHistory.setCreateTime(new Date());
+					ecmSubappUpdateHistory.setUpdateTime(new Date());
+					ecmSubappUpdateHistoryDao.insertSelective(ecmSubappUpdateHistory);
+				}else{
+					ecmSubappUpdateHistory.setStatus(0);
+					ecmSubappUpdateHistory.setPkId(ecmSubappUpdateHistory1.getPkId());
+					ecmSubappUpdateHistory.setUpdateTime(new Date());
+					ecmSubappUpdateHistoryDao.updateByPrimaryKeySelective(ecmSubappUpdateHistory);
+				}
+
+			}
+			return ResponseDTO.fail("设置免流量功能失败，可能原因：1.尚未购买下行流量，2.下行流量已用完，请联系我们。");
+		}
+	}
+
+	/**
+	 * 未通过下行流量检测
+	 * @param userId
+	 * @return
+	 */
+	private void artworkCompressionFree(Integer userId,Integer artworkId){
+		// 如果是免压缩作品 并且经过了免广告的下行流量检测 则需要插入记录
+		EcmArtworkCompressionFree ecmArtworkCompressionFree = new EcmArtworkCompressionFree();
+		ecmArtworkCompressionFree.setStatus(1);
+		ecmArtworkCompressionFree.setFkUserId(userId);
+		ecmArtworkCompressionFree.setFkArtworkId(artworkId);
+		EcmArtworkCompressionFree ecmArtworkCompressionFree1 = ecmArtworkCompressionFreeDao.selectByRecord(ecmArtworkCompressionFree);
+		if(ecmArtworkCompressionFree1 == null){
+			ecmArtworkCompressionFree.setCreateTime(new Date());
+			ecmArtworkCompressionFree.setUpdateTime(new Date());
+			ecmArtworkCompressionFreeDao.insertSelective(ecmArtworkCompressionFree);
+		}else{
+			ecmArtworkCompressionFree.setPkId(ecmArtworkCompressionFree1.getPkId());
+			ecmArtworkCompressionFree.setUpdateTime(new Date());
+			ecmArtworkCompressionFreeDao.updateByPrimaryKeySelective(ecmArtworkCompressionFree);
+		}
+	}
+
 
 	private JSONObject getCondition() {
 		JSONObject condition = new JSONObject();

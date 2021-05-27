@@ -56,6 +56,8 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
     EcmArtworkNodeBuoyPanoramicDao ecmArtworkNodeBuoyPanoramicDao;
     @Resource
     EcmArtworkFreeAdDao ecmArtworkFreeAdDao;
+    @Resource
+    EcmArtworkCompressionFreeDao ecmArtworkCompressionFreeDao;
 
     @Override
     public ResponseDTO updateNodeInfo() {
@@ -162,6 +164,13 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         ecmArtworkFreeAd.setFkArtworkId(ecmArtWorkQuery.getPkArtworkId());
         ecmArtworkFreeAd = ecmArtworkFreeAdDao.selectByRecord(ecmArtworkFreeAd);
 
+        //TODO 查询是否有免压缩记录
+        EcmArtworkCompressionFree ecmArtworkCompressionFree = new EcmArtworkCompressionFree();
+        ecmArtworkCompressionFree.setStatus(1);
+        ecmArtworkCompressionFree.setFkUserId(ecmArtwork.getFkUserid());
+        ecmArtworkCompressionFree.setFkArtworkId(ecmArtWorkQuery.getPkArtworkId());
+        ecmArtworkCompressionFree = ecmArtworkCompressionFreeDao.selectByRecord(ecmArtworkCompressionFree);
+
         //循环 还原对应的  数据信息
         for (EcmArtworkNodesVo node : collect) {
             // 是否为跳转节点
@@ -254,6 +263,11 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                     node.setPlayType(0);
                 }else{
                     node.setPlayType(1);
+                }
+                if(ecmArtworkCompressionFree == null){
+                    node.setVideoType(0);
+                }else{
+                    node.setVideoType(1);
                 }
             }
 

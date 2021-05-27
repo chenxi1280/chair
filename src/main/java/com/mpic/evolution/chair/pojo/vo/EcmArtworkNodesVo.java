@@ -124,4 +124,9 @@ public class EcmArtworkNodesVo extends EcmArtworkNodes  {
      */
     private Integer playType;
 
+    /**
+     *  是否是免压缩的作品
+     */
+    private Integer videoType;
+
 }
