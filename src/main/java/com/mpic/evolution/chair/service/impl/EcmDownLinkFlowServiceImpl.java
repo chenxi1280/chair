@@ -30,7 +30,8 @@ public class EcmDownLinkFlowServiceImpl implements EcmDownLinkFlowService {
      * @return
      */
 
-    public long describeCDNStatDetails(String sTime,String eTime,long subAppId){
+    @Override
+    public long describeCDNStatDetails(String sTime, String eTime, long subAppId){
 
         try{
             Credential cred = new Credential(secretId, secretKey);
@@ -75,6 +76,7 @@ public class EcmDownLinkFlowServiceImpl implements EcmDownLinkFlowService {
      * @return
      */
 
+    @Override
     public Long createSubAppId(String name){
         try{
             Credential cred = new Credential(secretId, secretKey);
@@ -108,6 +110,7 @@ public class EcmDownLinkFlowServiceImpl implements EcmDownLinkFlowService {
      * @return
      */
 
+    @Override
     public boolean modifySubAppStatus(String status, Long subAppId){
         try{
 

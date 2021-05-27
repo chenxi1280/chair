@@ -2,6 +2,7 @@ package com.mpic.evolution.chair.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.mpic.evolution.chair.common.constant.JudgeConstant;
+import com.mpic.evolution.chair.dao.EcmArtworkCompressionFreeDao;
 import com.mpic.evolution.chair.dao.EcmArtworkDao;
 import com.mpic.evolution.chair.dao.EcmArtworkNodesDao;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
@@ -55,6 +56,9 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
 
     @Resource
     EcmArtworkNodesDao ecmArtworkNodesDao;
+
+    @Resource
+    EcmArtworkCompressionFreeDao ecmArtworkCompressionFreeDao;
 
     @Value("${spring.redis.host}")
     private String redisHost;// 腾讯ai审核需要使用
@@ -112,7 +116,7 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
 //        ecmArtworkDao.selectByPrimaryKey()
 
         if (tencentVideoResult.getProcedureStateChangeEvent().getErrCode() == 0 && JudgeConstant.SUCCESS.toUpperCase().equals(tencentVideoResult.getProcedureStateChangeEvent().getMessage())){
-
+            List<Integer> artworkList = ecmArtworkCompressionFreeDao.selectByVideoCode(tencentVideoResult.getProcedureStateChangeEvent().getFileId());
             List<EcmArtworkNodesVo> ecmArtworkNodesVoList = ecmArtworkNodesDao.selectByVideoCode(tencentVideoResult.getProcedureStateChangeEvent().getFileId());
             List<EcmArtworkNodesVo> ecmArtworkNodesList = new ArrayList<>();
             for (EcmArtworkNodesVo ecmArtworkNodesVo : ecmArtworkNodesVoList) {
@@ -136,8 +140,19 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
                 }
                 ecmArtworkNode.setPkDetailId(ecmArtworkNodesVo.getPkDetailId());
                 ecmArtworkNode.setFkEndingId(ecmArtworkNodesVo.getFkEndingId());
-                // 后续需要修改
-                ecmArtworkNode.setVideoUrl(ecmArtworkNodesVo.getVideoUrl());
+                // 后续需要修改  明天修改
+                if (!CollectionUtils.isEmpty(artworkList)){
+                    artworkList.forEach( v -> {
+                        if (!v.equals(ecmArtworkNodesVo.getFkArtworkId())) {
+                            System.out.println("不符合要求，不压缩" + v + "  " + ecmArtworkNode.getFkArtworkId());
+                        }else {
+                            ecmArtworkNode.setVideoUrl(ecmArtworkNodesVo.getVideoUrl());
+                        }
+                    });
+                }else {
+                    System.out.println("不符合要求，不压缩");
+                    ecmArtworkNode.setVideoUrl(ecmArtworkNodesVo.getVideoUrl());
+                }
                 ecmArtworkNodesList.add(ecmArtworkNode);
 
             }
