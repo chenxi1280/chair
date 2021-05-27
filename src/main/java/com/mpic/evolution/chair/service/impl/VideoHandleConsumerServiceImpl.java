@@ -128,8 +128,14 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
 //        ecmArtworkDao.selectByPrimaryKey()
 
         if (tencentVideoResult.getProcedureStateChangeEvent().getErrCode() == 0 && JudgeConstant.SUCCESS.toUpperCase().equals(tencentVideoResult.getProcedureStateChangeEvent().getMessage())){
-
+            // 查询是否为免广告作品
+            Integer artworkId = ecmArtworkDao.selectByVideoCode(tencentVideoResult.getProcedureStateChangeEvent().getFileId());
             List<EcmArtworkNodesVo> ecmArtworkNodesVoList = ecmArtworkNodesDao.selectByVideoCode(tencentVideoResult.getProcedureStateChangeEvent().getFileId());
+            if (artworkId != null ) {
+                System.out.println("免广告作品，开始执行copyVideoByNodeList");
+                copyVideoByNodeList(ecmArtworkNodesVoList,artworkId);
+            }
+
             List<EcmArtworkNodesVo> ecmArtworkNodesList = new ArrayList<>();
             for (EcmArtworkNodesVo ecmArtworkNodesVo : ecmArtworkNodesVoList) {
                 EcmArtworkNodesVo ecmArtworkNode = new EcmArtworkNodesVo();
@@ -202,6 +208,25 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
             });
         }
 
+    }
+
+    @Override
+    public void copyVideoByNodeList(List<EcmArtworkNodesVo> ecmArtworkNodesVos,Integer pkArtworkId ) {
+        if (!CollectionUtils.isEmpty(ecmArtworkNodesVos)){
+            EcmDownlinkFlow ecmDownlinkFlow = new EcmDownlinkFlow();
+            EcmArtwork ecmArtwork = ecmArtworkDao.selectByPrimaryKey(pkArtworkId);
+            ecmDownlinkFlow.setFkUserId(ecmArtwork.getFkUserid());
+            ecmDownlinkFlow = ecmDownlinkFlowDao.selectByRecord(ecmDownlinkFlow);
+            int subjectId = ecmDownlinkFlow.getSubAppId();
+            List<EcmArtworkNodesVo> collect = ecmArtworkNodesVos.stream().filter(ecmArtworkNodesVo ->  StringUtils.isEmpty(ecmArtworkNodesVo.getPrivateVideoUrl())).collect(Collectors.toList());
+            collect.forEach( ecmArtworkNodesVo ->  {
+                if(ecmArtworkNodesVo.getVideoUrl() != null) {
+                    //执行腾讯云方法
+                    this.tencentCopyUrl(ecmArtworkNodesVo.getVideoUrl(), subjectId, ecmArtworkNodesVo.getPkDetailId());
+                    System.out.println(ecmArtworkNodesVo.getVideoUrl() + "已发送腾讯进行复制私有库");
+                }
+            });
+        }
     }
 
     private void tencentCopyUrl(String videoUrl, long subjectId, int detailId){

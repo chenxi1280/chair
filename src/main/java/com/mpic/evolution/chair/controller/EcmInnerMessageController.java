@@ -131,6 +131,7 @@ public class EcmInnerMessageController extends BaseController{
 	@RequestMapping("/sendNotice")
 	@ResponseBody
 	public ResponseDTO sendNotice(@RequestBody SendNoticeVO sendNoticeVO) {
+		System.out.println("sendNotice，发送短信了！");
 		try {
 			// 参数可能是 10% 1gb
 			String code = "1gb";

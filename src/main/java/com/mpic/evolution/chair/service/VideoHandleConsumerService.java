@@ -2,7 +2,10 @@ package com.mpic.evolution.chair.service;
 
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.tencent.video.TencentVideoResult;
+import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
 import org.springframework.scheduling.annotation.Async;
+
+import java.util.List;
 
 /**
  * @author Administrator
@@ -32,4 +35,14 @@ public interface VideoHandleConsumerService {
       * 方法描述: 将一个作品中所有的视频从主库中copy到各自的独立库中
       */
     void copyVideo(Integer pkArtworkId);
+
+    /**
+     * 方法名:copyVideoByNodeList
+     * @author cxd
+     * @param ecmArtworkNodesVos <EcmArtworkNodesVo> , Integer pkArtworkId
+     * @date 2021/5/25 11:06
+     * 方法描述: 将一个节点list中所有的视频从主库中copy到各自的独立库中
+     */
+    void copyVideoByNodeList(List<EcmArtworkNodesVo> ecmArtworkNodesVos,Integer pkArtworkId);
+
 }
