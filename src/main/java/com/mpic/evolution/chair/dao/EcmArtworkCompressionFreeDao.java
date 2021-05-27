@@ -13,6 +13,8 @@ public interface EcmArtworkCompressionFreeDao {
 
     EcmArtworkCompressionFree selectByPrimaryKey(Integer pkId);
 
+    EcmArtworkCompressionFree selectByRecord(EcmArtworkCompressionFree record);
+
     int updateByPrimaryKeySelective(EcmArtworkCompressionFree record);
 
     int updateByPrimaryKey(EcmArtworkCompressionFree record);

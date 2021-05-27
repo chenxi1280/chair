@@ -68,6 +68,9 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 	@Resource
 	EcmSubappUpdateHistoryDao ecmSubappUpdateHistoryDao;
 
+	@Resource
+	EcmArtworkCompressionFreeDao ecmArtworkCompressionFreeDao;
+
 	@Override
 	public ResponseDTO modifyArtWorkStatus(EcmArtworkVo ecmArtworkVo) {
 		JSONObject message = this.getMessage();
@@ -184,6 +187,7 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 								ecmSubappUpdateHistoryDao.insertSelective(ecmSubappUpdateHistory1);
 							}else{
 								ecmSubappUpdateHistory.setStatus(0);
+								ecmSubappUpdateHistory.setUpdateTime(new Date());
 								ecmSubappUpdateHistoryDao.updateByPrimaryKeySelective(ecmSubappUpdateHistory);
 							}
 
@@ -195,8 +199,21 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 				ecmArtworkFreeAd.setFkArtworkId(ecmArtwork.getPkArtworkId());
 				ecmArtworkFreeAd.setCreateTime(new Date());
 				ecmArtworkFreeAdDao.insertSelective(ecmArtworkFreeAd);
-				if(ecmArtworkVo.getPlayType() == 1){
-					//TODO  如果是免压缩作品 则需要插入记录
+				if(ecmArtworkVo.getVideoType() == 1){
+					// 如果是免压缩作品 并且经过了免广告的下行流量检测 则需要插入记录
+					EcmArtworkCompressionFree ecmArtworkCompressionFree = new EcmArtworkCompressionFree();
+					ecmArtworkCompressionFree.setStatus(1);
+					ecmArtworkCompressionFree.setFkUserId(userId);
+					ecmArtworkCompressionFree.setFkArtworkId(ecmArtwork.getPkArtworkId());
+					EcmArtworkCompressionFree ecmArtworkCompressionFree1 = ecmArtworkCompressionFreeDao.selectByRecord(ecmArtworkCompressionFree);
+					if(ecmArtworkCompressionFree1 == null){
+						ecmArtworkCompressionFree.setCreateTime(new Date());
+						ecmArtworkCompressionFree.setUpdateTime(new Date());
+						ecmArtworkCompressionFreeDao.insertSelective(ecmArtworkCompressionFree);
+					}else{
+						ecmArtworkCompressionFree.setUpdateTime(new Date());
+						ecmArtworkCompressionFreeDao.updateByPrimaryKeySelective(ecmArtworkCompressionFree);
+					}
 				}
 			}
 			return ResponseDTO.ok("新建成功");
@@ -266,6 +283,22 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 				if(ecmArtworkFreeAd1 == null) {
 					ecmArtworkFreeAd.setCreateTime(new Date());
 					ecmArtworkFreeAdDao.insertSelective(ecmArtworkFreeAd);
+				}
+				if(ecmArtworkVo.getVideoType() == 1){
+					// 如果是免压缩作品 并且经过了免广告的下行流量检测 则需要插入记录
+					EcmArtworkCompressionFree ecmArtworkCompressionFree = new EcmArtworkCompressionFree();
+					ecmArtworkCompressionFree.setStatus(1);
+					ecmArtworkCompressionFree.setFkUserId(userId);
+					ecmArtworkCompressionFree.setFkArtworkId(ecmArtwork.getPkArtworkId());
+					EcmArtworkCompressionFree ecmArtworkCompressionFree1 = ecmArtworkCompressionFreeDao.selectByRecord(ecmArtworkCompressionFree);
+					if(ecmArtworkCompressionFree1 == null){
+						ecmArtworkCompressionFree.setCreateTime(new Date());
+						ecmArtworkCompressionFree.setUpdateTime(new Date());
+						ecmArtworkCompressionFreeDao.insertSelective(ecmArtworkCompressionFree);
+					}else{
+						ecmArtworkCompressionFree.setUpdateTime(new Date());
+						ecmArtworkCompressionFreeDao.updateByPrimaryKeySelective(ecmArtworkCompressionFree);
+					}
 				}
 			}else{
 				EcmArtworkFreeAd ecmArtworkFreeAd = new EcmArtworkFreeAd();
