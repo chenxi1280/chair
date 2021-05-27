@@ -131,6 +131,23 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			if (!StringUtils.isEmpty(result)) {
 				return ResponseDTO.fail("作品名称违规含有违禁词",result,null,510);
 			}
+
+			// 用户在设置免广告播放的时候 要查询用户是否有足够的下行流量 不进行短信通知 新用户查询不到下行流量信息的时候我们直接返回错误状态
+			// 如果没有设置免广告则不需要查询下行流量
+			if(ecmArtworkVo.getPlayType() == 1){
+				boolean b = this.checkdownLinkFlowIsEmpty(userId);
+				if(!b){
+					EcmDownlinkFlow ecmDownlinkFlow = new EcmDownlinkFlow();
+					ecmDownlinkFlow.setFkUserId(userId);
+					ecmDownlinkFlow = ecmDownlinkFlowDao.selectByRecord(ecmDownlinkFlow);
+					if(ecmDownlinkFlow == null){
+						return ResponseDTO.fail("尚未购买下行流量，请联系我们。",null,null,10085);
+					}else{
+						return ResponseDTO.fail("下行流量已用完，请联系我们。",null,null,10086);
+					}
+				}
+			}
+
 			ecmArtwork.setArtworkName(artworkName);
 			ecmArtwork.setPlayMode(ecmArtworkVo.getPlayMode());
 			ecmArtwork.setArtworkStatus((short)0);
@@ -150,19 +167,11 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			ecmArtworkNodes.setItemsBakText("https://sike-1259692143.cos.ap-chongqing.myqcloud.com/img/1604281276527nodeImgUrl.png");
 			ecmArtworkNodes.setVideoText("开场");
 			ecmArtworkNodesDao.insertSelective(ecmArtworkNodes);
-			// 用户在设置免广告播放的时候 要查询用户是否有足够的下行流量 不进行短信通知 新用户查询不到下行流量信息的时候我们直接返回错误状态
-			// 如果没有设置免广告则不需要查询下行流量
-			if(ecmArtworkVo.getPlayType() == 1){
-				boolean b = this.checkdownLinkFlowIsEmpty(userId);
-				if(!b){
-					return ResponseDTO.fail("设置免流量功能失败，可能原因：1.尚未购买下行流量，2.下行流量已用完，请联系我们。");
-				}
-				EcmArtworkFreeAd ecmArtworkFreeAd = new EcmArtworkFreeAd();
-				ecmArtworkFreeAd.setFkArtworkId(ecmArtwork.getPkArtworkId());
-				ecmArtworkFreeAd.setCreateTime(new Date());
-				ecmArtworkFreeAdDao.insertSelective(ecmArtworkFreeAd);
-				videoHandleConsumerService.copyVideo(ecmArtwork.getPkArtworkId());
-			}
+
+			EcmArtworkFreeAd ecmArtworkFreeAd = new EcmArtworkFreeAd();
+			ecmArtworkFreeAd.setFkArtworkId(ecmArtwork.getPkArtworkId());
+			ecmArtworkFreeAd.setCreateTime(new Date());
+			ecmArtworkFreeAdDao.insertSelective(ecmArtworkFreeAd);
 			return ResponseDTO.ok("新建成功");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -191,7 +200,14 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			if(ecmArtworkVo.getPlayType() == 1){
 				boolean b = this.checkdownLinkFlowIsEmpty(userId);
 				if(!b){
-					return ResponseDTO.fail("设置免流量功能失败，可能原因：1.尚未购买下行流量，2.下行流量已用完，请联系我们。");
+					EcmDownlinkFlow ecmDownlinkFlow = new EcmDownlinkFlow();
+					ecmDownlinkFlow.setFkUserId(userId);
+					ecmDownlinkFlow = ecmDownlinkFlowDao.selectByRecord(ecmDownlinkFlow);
+					if(ecmDownlinkFlow == null){
+						return ResponseDTO.fail("尚未购买下行流量，请联系我们。",null,null,10085);
+					}else{
+						return ResponseDTO.fail("下行流量已用完，请联系我们。",null,null,10086);
+					}
 				}
 				EcmArtworkFreeAd ecmArtworkFreeAd = new EcmArtworkFreeAd();
 				ecmArtworkFreeAd.setFkArtworkId(ecmArtworkVo.getPkArtworkId());
