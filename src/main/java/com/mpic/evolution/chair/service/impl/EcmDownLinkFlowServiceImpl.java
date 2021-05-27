@@ -24,7 +24,8 @@ public class EcmDownLinkFlowServiceImpl implements EcmDownLinkFlowService {
     @Value("${sms.secretKey}")
     private String secretKey;// 密钥对
 
-    public long describeCDNStatDetails(String sTime,String eTime,long subAppId){
+    @Override
+    public long describeCDNStatDetails(String sTime, String eTime, long subAppId){
 
         try{
             Credential cred = new Credential(secretId, secretKey);
@@ -62,6 +63,7 @@ public class EcmDownLinkFlowServiceImpl implements EcmDownLinkFlowService {
         }
     }
 
+    @Override
     public Long createSubAppId(String name){
         try{
             Credential cred = new Credential(secretId, secretKey);
