@@ -10,9 +10,11 @@ import javax.annotation.Resource;
 
 import com.mpic.evolution.chair.common.constant.CommonField;
 import com.mpic.evolution.chair.common.constant.JudgeConstant;
+import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
 import com.mpic.evolution.chair.dao.*;
 import com.mpic.evolution.chair.pojo.entity.*;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkBroadcastHotVO;
+import com.mpic.evolution.chair.pojo.vo.FreeAdVo;
 import com.mpic.evolution.chair.service.EcmDownLinkFlowService;
 import com.mpic.evolution.chair.service.VideoHandleConsumerService;
 import com.mpic.evolution.chair.util.RedisUtil;
@@ -122,6 +124,9 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			EcmArtwork ecmArtwork = new EcmArtwork();
 			ecmArtwork.setPkArtworkId(ecmArtworkVo.getPkArtworkId());
 			Integer userId = this.getIdByToken(ecmArtworkVo.getToken());
+			if(userId == null){
+				return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+			}
 			ecmArtwork.setFkUserid(userId);
 			String artworkName = ecmArtworkVo.getArtworkName();
 			if (StringUtils.isEmpty(artworkName)) {
@@ -167,11 +172,12 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			ecmArtworkNodes.setItemsBakText("https://sike-1259692143.cos.ap-chongqing.myqcloud.com/img/1604281276527nodeImgUrl.png");
 			ecmArtworkNodes.setVideoText("开场");
 			ecmArtworkNodesDao.insertSelective(ecmArtworkNodes);
-
-			EcmArtworkFreeAd ecmArtworkFreeAd = new EcmArtworkFreeAd();
-			ecmArtworkFreeAd.setFkArtworkId(ecmArtwork.getPkArtworkId());
-			ecmArtworkFreeAd.setCreateTime(new Date());
-			ecmArtworkFreeAdDao.insertSelective(ecmArtworkFreeAd);
+			if(ecmArtworkVo.getPlayType() == 1) {
+				EcmArtworkFreeAd ecmArtworkFreeAd = new EcmArtworkFreeAd();
+				ecmArtworkFreeAd.setFkArtworkId(ecmArtwork.getPkArtworkId());
+				ecmArtworkFreeAd.setCreateTime(new Date());
+				ecmArtworkFreeAdDao.insertSelective(ecmArtworkFreeAd);
+			}
 			return ResponseDTO.ok("新建成功");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -185,6 +191,9 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			EcmArtwork ecmArtwork = new EcmArtwork();
 			ecmArtwork.setPkArtworkId(ecmArtworkVo.getPkArtworkId());
 			Integer userId = this.getIdByToken(ecmArtworkVo.getToken());
+			if(userId == null){
+				return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+			}
 			ecmArtwork.setFkUserid(userId);
 			ecmArtwork.setArtworkStatus(ecmArtworkVo.getArtworkStatus());
 			String artworkName = ecmArtworkVo.getArtworkName();
@@ -269,6 +278,46 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
     		userId = Integer.parseInt(userIdStr);
     	}
 		return userId;
+	}
+
+	/**
+	 * 检查用户是否可以开启免广告
+	 * @return
+	 */
+	public ResponseDTO checkFreeAd(FreeAdVo freeAdVo){
+		Integer userId = freeAdVo.getUserId();
+		if(userId == null){
+			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+		}
+		if(freeAdVo.getPlayType() == 1){
+			boolean b = this.checkdownLinkFlowIsEmpty(userId);
+			if(!b){
+				EcmDownlinkFlow ecmDownlinkFlow = new EcmDownlinkFlow();
+				ecmDownlinkFlow.setFkUserId(userId);
+				ecmDownlinkFlow = ecmDownlinkFlowDao.selectByRecord(ecmDownlinkFlow);
+				if(ecmDownlinkFlow == null){
+					return ResponseDTO.fail("尚未购买下行流量，请联系我们。",null,null,10085);
+				}else{
+					return ResponseDTO.fail("下行流量已用完，请联系我们。",null,null,10086);
+				}
+			}
+			EcmArtworkFreeAd ecmArtworkFreeAd = new EcmArtworkFreeAd();
+			ecmArtworkFreeAd.setFkArtworkId(freeAdVo.getArtworkId());
+			EcmArtworkFreeAd ecmArtworkFreeAd1 = ecmArtworkFreeAdDao.selectByRecord(ecmArtworkFreeAd);
+			if(ecmArtworkFreeAd1 == null) {
+				ecmArtworkFreeAd.setCreateTime(new Date());
+				ecmArtworkFreeAdDao.insertSelective(ecmArtworkFreeAd);
+			}
+			videoHandleConsumerService.copyVideo(freeAdVo.getArtworkId());
+		}else{
+			EcmArtworkFreeAd ecmArtworkFreeAd = new EcmArtworkFreeAd();
+			ecmArtworkFreeAd.setFkArtworkId(freeAdVo.getArtworkId());
+			ecmArtworkFreeAd = ecmArtworkFreeAdDao.selectByRecord(ecmArtworkFreeAd);
+			if(ecmArtworkFreeAd != null) {
+				ecmArtworkFreeAdDao.deleteByPrimaryKey(ecmArtworkFreeAd.getPkEcmArtworkFreeAdId());
+			}
+		}
+		return ResponseDTO.ok("设置作品免流量成功");
 	}
 
 	private boolean checkdownLinkFlowIsEmpty(Integer userId){

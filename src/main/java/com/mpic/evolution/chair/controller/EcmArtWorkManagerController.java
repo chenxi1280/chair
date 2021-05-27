@@ -2,6 +2,7 @@ package com.mpic.evolution.chair.controller;
 
 import javax.annotation.Resource;
 
+import com.mpic.evolution.chair.pojo.vo.FreeAdVo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,13 +17,13 @@ import com.mpic.evolution.chair.service.EcmArtworkManagerService;
  */
 @Controller
 @RequestMapping("/ecmArtWorkManager")
-public class EcmArtWorkManagerController {
+public class EcmArtWorkManagerController extends BaseController {
 	@Resource
 	EcmArtworkManagerService artworkManagerService;
 	
 	/**
 	 * @author SJ
-	 * @param ecmArtWorkQuery
+	 * @param ecmArtworkVo
 	 * @return
 	 */
 	@RequestMapping("/modifyArtWorksStatus")
@@ -33,8 +34,7 @@ public class EcmArtWorkManagerController {
 	
 	/**
 	 * @author SJ
-	 * @param ecmArtWorkQuery
-	 * @param code
+	 * @param ecmArtworkVo
 	 * @return
 	 */
 	@RequestMapping("/modifyArtWorks")
@@ -54,5 +54,18 @@ public class EcmArtWorkManagerController {
     public ResponseDTO addArtWorks(@RequestBody EcmArtworkVo ecmArtworkVo){
         return artworkManagerService.addArtWorks(ecmArtworkVo);
     }
+
+	/**
+	 * @author SJ
+	 * @param freeAdVo
+	 * @return
+	 */
+
+	@RequestMapping("/checkFreeAd")
+	@ResponseBody
+	public ResponseDTO checkFreeAd(@RequestBody FreeAdVo freeAdVo){
+		freeAdVo.setUserId(getUserIdByHandToken());
+		return artworkManagerService.checkFreeAd(freeAdVo);
+	}
 	
 }
