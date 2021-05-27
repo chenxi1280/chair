@@ -143,8 +143,9 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
                 // 后续需要修改  明天修改
                 if (!CollectionUtils.isEmpty(artworkList)){
                     artworkList.forEach( v -> {
-                        if (!v.equals(ecmArtworkNode.getFkArtworkId())){
-                            System.out.println("不符合要求，不压缩"+v+"  " +ecmArtworkNode.getFkArtworkId());
+                        if (!v.equals(ecmArtworkNodesVo.getFkArtworkId())) {
+                            System.out.println("不符合要求，不压缩" + v + "  " + ecmArtworkNode.getFkArtworkId());
+                        }else {
                             ecmArtworkNode.setVideoUrl(ecmArtworkNodesVo.getVideoUrl());
                         }
                     });
