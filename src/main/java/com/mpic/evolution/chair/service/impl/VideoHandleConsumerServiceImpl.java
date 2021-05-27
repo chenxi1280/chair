@@ -191,23 +191,7 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
     @Override
     public void copyVideo(Integer pkArtworkId) {
         List<EcmArtworkNodesVo> ecmArtworkNodesVos = ecmArtworkNodesDao.selectByArtWorkId(pkArtworkId);
-     // ecmArtworkNodesDao.updatePrivateVideoUrl()
-        if (!CollectionUtils.isEmpty(ecmArtworkNodesVos)){
-            EcmDownlinkFlow ecmDownlinkFlow = new EcmDownlinkFlow();
-            EcmArtwork ecmArtwork = ecmArtworkDao.selectByPrimaryKey(pkArtworkId);
-            ecmDownlinkFlow.setFkUserId(ecmArtwork.getFkUserid());
-            ecmDownlinkFlow = ecmDownlinkFlowDao.selectByRecord(ecmDownlinkFlow);
-            int subjectId = ecmDownlinkFlow.getSubAppId();
-            List<EcmArtworkNodesVo> collect = ecmArtworkNodesVos.stream().filter(ecmArtworkNodesVo ->  StringUtils.isEmpty(ecmArtworkNodesVo.getPrivateVideoUrl())).collect(Collectors.toList());
-            collect.forEach( ecmArtworkNodesVo ->  {
-                if(ecmArtworkNodesVo.getVideoUrl() != null) {
-                    //执行腾讯云方法
-                    this.tencentCopyUrl(ecmArtworkNodesVo.getVideoUrl(), subjectId, ecmArtworkNodesVo.getPkDetailId());
-                    System.out.println(ecmArtworkNodesVo.getVideoUrl() + "已发送腾讯进行复制私有库");
-                }
-            });
-        }
-
+        copyVideoByNodeList(ecmArtworkNodesVos,pkArtworkId);
     }
 
     @Override
