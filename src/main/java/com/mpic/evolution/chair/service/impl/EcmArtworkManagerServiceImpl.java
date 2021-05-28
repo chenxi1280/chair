@@ -361,11 +361,12 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			ZonedDateTime todayEndZoned = now.atZone(ZoneId.from(ZoneOffset.UTC));
 			LocalDateTime todayEndTime = todayEndZoned.toLocalDateTime();
 			todayEndTime = todayEndTime.plusHours(-8);
+			String[] todayEndSplit = todayEndTime.toString().split("\\.");
 			String todayEnd = null;
-			if(todayEndTime.toString().length() == yesterdayEnd.length()){
-				todayEnd = todayEndTime.toString()+"Z";
+			if(todayEndSplit[0].length()+1 == yesterdayEnd.length()){
+				todayEnd = todayEndSplit[0]+"Z";
 			}else{
-				todayEnd = todayEndTime.toString()+":00Z";
+				todayEnd = todayEndSplit[0]+":00Z";
 			}
 
 			long yesterdaySum = ecmDownLinkFlowService.describeCDNStatDetails(yesterdayStart, yesterdayEnd, subAppId);
