@@ -43,5 +43,5 @@ public interface EcmArtworkDao {
 
     List<EcmArtworkVo> selectArtWorksAll();
 
-
+    Integer selectByVideoCode(String fileId);
 }

@@ -35,6 +35,7 @@ public class MsgWebSocketController {
     @RequestMapping("/pushMsg")
     @ResponseBody
     public ResponseEntity<String> pushMsg(@RequestBody List<EcmInnerMessageVo> ecmInnerMessageVOS) {
+        System.out.println("发送短信了！");
         if (!CollectionUtils.isEmpty(ecmInnerMessageVOS)) {
             ecmInnerMessageVOS.forEach(v -> {
                 try {

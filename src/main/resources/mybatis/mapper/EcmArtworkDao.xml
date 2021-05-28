@@ -347,8 +347,15 @@
       from ecm_artwork
       where artwork_status != 5
     </select>
+  <select id="selectByVideoCode" resultType="java.lang.Integer">
+    select pk_artwork_id
+    from ecm_artwork join ecm_artwork_nodes on pk_artwork_id = fk_artwork_id
+    where video_code = #{fileId} group by pk_artwork_id
 
-    <update id="updateEndingsByArtworkId">
+
+  </select>
+
+  <update id="updateEndingsByArtworkId">
     update ecm_artwork
     set
       is_endings = 1

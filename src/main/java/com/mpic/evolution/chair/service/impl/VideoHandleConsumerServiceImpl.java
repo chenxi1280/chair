@@ -128,8 +128,14 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
 //        ecmArtworkDao.selectByPrimaryKey()
 
         if (tencentVideoResult.getProcedureStateChangeEvent().getErrCode() == 0 && JudgeConstant.SUCCESS.toUpperCase().equals(tencentVideoResult.getProcedureStateChangeEvent().getMessage())){
-
+            // 查询是否为免广告作品
+            Integer artworkId = ecmArtworkDao.selectByVideoCode(tencentVideoResult.getProcedureStateChangeEvent().getFileId());
             List<EcmArtworkNodesVo> ecmArtworkNodesVoList = ecmArtworkNodesDao.selectByVideoCode(tencentVideoResult.getProcedureStateChangeEvent().getFileId());
+            if (artworkId != null ) {
+                System.out.println("免广告作品，开始执行copyVideoByNodeList");
+                copyVideoByNodeList(ecmArtworkNodesVoList,artworkId);
+            }
+
             List<EcmArtworkNodesVo> ecmArtworkNodesList = new ArrayList<>();
             for (EcmArtworkNodesVo ecmArtworkNodesVo : ecmArtworkNodesVoList) {
                 EcmArtworkNodesVo ecmArtworkNode = new EcmArtworkNodesVo();
@@ -185,7 +191,11 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
     @Override
     public void copyVideo(Integer pkArtworkId) {
         List<EcmArtworkNodesVo> ecmArtworkNodesVos = ecmArtworkNodesDao.selectByArtWorkId(pkArtworkId);
-     // ecmArtworkNodesDao.updatePrivateVideoUrl()
+        copyVideoByNodeList(ecmArtworkNodesVos,pkArtworkId);
+    }
+
+    @Override
+    public void copyVideoByNodeList(List<EcmArtworkNodesVo> ecmArtworkNodesVos,Integer pkArtworkId ) {
         if (!CollectionUtils.isEmpty(ecmArtworkNodesVos)){
             EcmDownlinkFlow ecmDownlinkFlow = new EcmDownlinkFlow();
             EcmArtwork ecmArtwork = ecmArtworkDao.selectByPrimaryKey(pkArtworkId);
@@ -201,7 +211,6 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
                 }
             });
         }
-
     }
 
     private void tencentCopyUrl(String videoUrl, long subjectId, int detailId){
