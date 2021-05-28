@@ -182,22 +182,39 @@
       <if test="param2.subAppId != null">
         and sub_app_id = #{param2.subAppId,jdbcType=INTEGER}
       </if>
-      <if test="param2.subUsedFlow != null">
-        and sub_used_flow = #{param2.subUsedFlow,jdbcType=BIGINT}
-      </if>
-      <if test="param2.subFlowStatus != null">
-        and sub_flow_status = #{param2.subFlowStatus,jdbcType=INTEGER}
-      </if>
-      <if test="param2.startTime != null">
-        and start_time = #{param2.startTime,jdbcType=TIMESTAMP}
-      </if>
-      <if test="param2.endTime != null">
-        and end_time = #{param2.endTime,jdbcType=TIMESTAMP}
-      </if>
       <if test="param2.createTime != null">
         and create_time = #{param2.createTime,jdbcType=TIMESTAMP}
       </if>
     </where>
   </update>
+
+  <select id="selectBySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmDownlinkFlowHistory" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from ecm_downlink_flow_history
+    <where>
+      <if test="fkUserId != null">
+        and fk_user_id = #{fkUserId,jdbcType=INTEGER}
+      </if>
+      <if test="subAppId != null">
+        and sub_app_id = #{subAppId,jdbcType=INTEGER}
+      </if>
+      <if test="subUsedFlow != null">
+        and sub_used_flow = #{subUsedFlow,jdbcType=BIGINT}
+      </if>
+      <if test="subFlowStatus != null">
+        and sub_flow_status = #{subFlowStatus,jdbcType=INTEGER}
+      </if>
+      <if test="startTime != null">
+        and start_time = #{startTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="endTime != null">
+        and end_time = #{endTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="createTime != null">
+        and create_time = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+    </where>
+  </select>
 
 </mapper>

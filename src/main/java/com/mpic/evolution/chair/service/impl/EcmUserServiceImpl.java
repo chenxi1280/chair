@@ -426,7 +426,11 @@ public class EcmUserServiceImpl implements EcmUserService {
 			ecmDownlinkFlowHistory.setCreateTime(targetDate);
 			ecmDownlinkFlowHistory.setFkUserId(userId);
 			EcmDownlinkFlowHistory historyObject = ecmDownlinkFlowHistoryDao.selectByRecord(ecmDownlinkFlowHistory);
-			flowsSplitByDays.add(historyObject.getSubUsedFlow());//单位KB
+			if(historyObject == null){
+				flowsSplitByDays.add(0L);//单位KB
+			}else{
+				flowsSplitByDays.add(historyObject.getSubUsedFlow());//单位KB
+			}
 			startTime = targetTime;
 		}
 		long max = flowsSplitByDays.get(0);
