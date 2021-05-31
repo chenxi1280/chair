@@ -207,8 +207,8 @@ public class ExportExcelServiceImpl implements ExportExcelService {
         query.setArtworkIds(targetArtworks);
         histories = historyDao.selectByPageQuery(query,sDate,eDate);
         ArrayList<EcmArtworkBroadcastHistoryDTO> broadcastHistories = new ArrayList<>();
-        EcmArtworkBroadcastHistoryDTO ecmArtworkBroadcastHistoryDTO = new EcmArtworkBroadcastHistoryDTO();
         for (int i = 0; i < histories.size(); i++) {
+            EcmArtworkBroadcastHistoryDTO ecmArtworkBroadcastHistoryDTO = new EcmArtworkBroadcastHistoryDTO();
             Integer fkArtworkId = histories.get(i).getFkArtworkId();
             EcmArtwork ecmArtwork = ecmArtworkDao.selectByPrimaryKey(fkArtworkId);
             ecmArtworkBroadcastHistoryDTO.setArtworkName(ecmArtwork.getArtworkName());

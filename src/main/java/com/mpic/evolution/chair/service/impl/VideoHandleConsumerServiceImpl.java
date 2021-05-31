@@ -5,19 +5,25 @@ import com.mpic.evolution.chair.common.constant.JudgeConstant;
 import com.mpic.evolution.chair.dao.EcmArtworkCompressionFreeDao;
 import com.mpic.evolution.chair.dao.EcmArtworkDao;
 import com.mpic.evolution.chair.dao.EcmArtworkNodesDao;
+import com.mpic.evolution.chair.dao.EcmDownlinkFlowDao;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
+import com.mpic.evolution.chair.pojo.entity.EcmArtwork;
+import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes;
+import com.mpic.evolution.chair.pojo.entity.EcmDownlinkFlow;
 import com.mpic.evolution.chair.pojo.tencent.video.AiContentReviewResultSet;
 import com.mpic.evolution.chair.pojo.tencent.video.BaseTask;
+import com.mpic.evolution.chair.pojo.tencent.video.ProcedureStateChangeEvent;
 import com.mpic.evolution.chair.pojo.tencent.video.TencentVideoResult;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
 import com.mpic.evolution.chair.service.VideoHandleConsumerService;
+import com.mpic.evolution.chair.util.RedisUtil;
 import com.tencentcloudapi.common.Credential;
 import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 import com.tencentcloudapi.common.profile.ClientProfile;
 import com.tencentcloudapi.common.profile.HttpProfile;
 import com.tencentcloudapi.vod.v20180717.VodClient;
-import com.tencentcloudapi.vod.v20180717.models.ProcessMediaByProcedureRequest;
-import com.tencentcloudapi.vod.v20180717.models.ProcessMediaByProcedureResponse;
+import com.tencentcloudapi.vod.v20180717.models.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -25,15 +31,15 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 import javax.xml.transform.sax.SAXResult;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
 import static com.mpic.evolution.chair.common.constant.CommonField.STRING_REDIS_IP;
@@ -60,8 +66,18 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
     @Resource
     EcmArtworkCompressionFreeDao ecmArtworkCompressionFreeDao;
 
+    @Resource
+    EcmDownlinkFlowDao ecmDownlinkFlowDao;
+
+    // 腾讯ai审核需要使用
     @Value("${spring.redis.host}")
-    private String redisHost;// 腾讯ai审核需要使用
+    private String redisHost;
+
+    @Autowired
+    private ExecutorService executorService;
+
+    @Resource
+    RedisUtil redisUtil;
 
 
     /**
@@ -116,8 +132,15 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
 //        ecmArtworkDao.selectByPrimaryKey()
 
         if (tencentVideoResult.getProcedureStateChangeEvent().getErrCode() == 0 && JudgeConstant.SUCCESS.toUpperCase().equals(tencentVideoResult.getProcedureStateChangeEvent().getMessage())){
-            List<Integer> artworkList = ecmArtworkCompressionFreeDao.selectByVideoCode(tencentVideoResult.getProcedureStateChangeEvent().getFileId());
+			List<Integer> artworkList = ecmArtworkCompressionFreeDao.selectByVideoCode(tencentVideoResult.getProcedureStateChangeEvent().getFileId());
+            // 查询是否为免广告作品
+            Integer artworkId = ecmArtworkDao.selectByVideoCode(tencentVideoResult.getProcedureStateChangeEvent().getFileId());
             List<EcmArtworkNodesVo> ecmArtworkNodesVoList = ecmArtworkNodesDao.selectByVideoCode(tencentVideoResult.getProcedureStateChangeEvent().getFileId());
+            if (artworkId != null ) {
+                System.out.println("免广告作品，开始执行copyVideoByNodeList");
+                copyVideoByNodeList(ecmArtworkNodesVoList,artworkId);
+            }
+
             List<EcmArtworkNodesVo> ecmArtworkNodesList = new ArrayList<>();
             for (EcmArtworkNodesVo ecmArtworkNodesVo : ecmArtworkNodesVoList) {
                 EcmArtworkNodesVo ecmArtworkNode = new EcmArtworkNodesVo();
@@ -178,5 +201,152 @@ public class VideoHandleConsumerServiceImpl implements VideoHandleConsumerServic
             });
         }
 
+    }
+
+
+    @Override
+    public void copyVideo(Integer pkArtworkId) {
+        List<EcmArtworkNodesVo> ecmArtworkNodesVos = ecmArtworkNodesDao.selectByArtWorkId(pkArtworkId);
+        copyVideoByNodeList(ecmArtworkNodesVos,pkArtworkId);
+    }
+
+    @Override
+    public void copyVideoByNodeList(List<EcmArtworkNodesVo> ecmArtworkNodesVos,Integer pkArtworkId ) {
+        if (!CollectionUtils.isEmpty(ecmArtworkNodesVos)){
+            EcmDownlinkFlow ecmDownlinkFlow = new EcmDownlinkFlow();
+            EcmArtwork ecmArtwork = ecmArtworkDao.selectByPrimaryKey(pkArtworkId);
+            ecmDownlinkFlow.setFkUserId(ecmArtwork.getFkUserid());
+            ecmDownlinkFlow = ecmDownlinkFlowDao.selectByRecord(ecmDownlinkFlow);
+            int subjectId = ecmDownlinkFlow.getSubAppId();
+            List<EcmArtworkNodesVo> collect = ecmArtworkNodesVos.stream().filter(ecmArtworkNodesVo ->  StringUtils.isEmpty(ecmArtworkNodesVo.getPrivateVideoUrl())).collect(Collectors.toList());
+            collect.forEach( ecmArtworkNodesVo ->  {
+                if(ecmArtworkNodesVo.getVideoUrl() != null) {
+                    //执行腾讯云方法
+                    this.tencentCopyUrl(ecmArtworkNodesVo.getVideoUrl(), subjectId, ecmArtworkNodesVo.getPkDetailId());
+                    System.out.println(ecmArtworkNodesVo.getVideoUrl() + "已发送腾讯进行复制私有库");
+                }
+            });
+        }
+    }
+
+    private void tencentCopyUrl(String videoUrl, long subjectId, int detailId){
+        try{
+
+            VodClient client = tencentVodCredentialInit();
+
+            PullUploadRequest req = new PullUploadRequest();
+            req.setMediaUrl(videoUrl);
+            req.setSubAppId(subjectId);
+
+            PullUploadResponse resp = client.PullUpload(req);
+            String taskId = resp.getTaskId();
+            setRedis(taskId, subjectId, detailId);
+
+            System.out.println("将taskId存入了");
+        } catch (TencentCloudSDKException e) {
+            System.out.println(e.toString());
+        }
+    }
+
+    @PostConstruct
+    private void copyUrlWork(){
+        executorService.execute(this::doCopyRunner);
+    }
+
+    private void doCopyRunner()  {
+        try {
+            while (true) {
+                Map<String, String> urlMap = (Map<String, String>) redisUtil.lPop("copy_url_list");
+                if(urlMap != null && org.apache.commons.lang3.StringUtils.isNotBlank(urlMap.get("taskId"))){
+                    //做业务
+                    String taskId = urlMap.get("taskId");
+                    String subjectId = urlMap.get("subjectId");
+                    int detailId = Integer.parseInt(urlMap.get("detailId"));
+                    callTencentTaskDetail(taskId, Long.parseLong(subjectId), detailId);
+                } else {
+                    System.out.println("没有要copy的私有桶数据"+ String.valueOf(new Date()));
+                    Thread.sleep(30000);
+                }
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            copyUrlWork();
+        }
+    }
+
+    private void callTencentTaskDetail(String taskId, long subAppId, int detailId){
+        try{
+
+            VodClient client = tencentVodCredentialInit();
+
+            DescribeTaskDetailRequest req = new DescribeTaskDetailRequest();
+            req.setSubAppId(subAppId);
+            req.setTaskId(taskId);
+
+            DescribeTaskDetailResponse resp = client.DescribeTaskDetail(req);
+            if(resp != null && resp.getPullUploadTask() != null && resp.getPullUploadTask().getMediaBasicInfo() != null){
+                String url = resp.getPullUploadTask().getMediaBasicInfo().getMediaUrl();
+                if(org.apache.commons.lang3.StringUtils.isNotBlank(url)){
+                    // System.out.println(DescribeTaskDetailResponse.toJsonString(resp));1
+                    EcmArtworkNodes nodes = new EcmArtworkNodes();
+                    nodes.setPrivateVideoUrl(url);
+                    nodes.setPkDetailId(detailId);
+                    ecmArtworkNodesDao.updatePrivateVideoUrl(nodes);
+                    System.out.println("获得的私有桶url是" + url);
+                } else {
+                    System.out.println("私有桶复制失败1");
+                    setRedisTimeOut(taskId, subAppId, detailId);
+                }
+            }else {
+                System.out.println("私有桶复制失败2, 任务可能还没结束");
+                setRedisTimeOut(taskId, subAppId, detailId);
+            }
+
+        } catch (TencentCloudSDKException e) {
+            e.printStackTrace();
+            System.out.println("私有桶复制失败3");
+            setRedisTimeOut(taskId, subAppId, detailId);
+        }
+
+
+    }
+
+    private VodClient tencentVodCredentialInit(){
+        Credential cred = new Credential(SECRET_ID, SECRET_KEY);
+
+        HttpProfile httpProfile = new HttpProfile();
+        httpProfile.setEndpoint(TC_API);
+
+        ClientProfile clientProfile = new ClientProfile();
+        clientProfile.setHttpProfile(httpProfile);
+
+        return new VodClient(cred, "", clientProfile);
+    }
+
+    /**
+      * 方法名:
+      * @author Xuezx (◔‸◔）
+      * @param taskId
+     * @param subAppId
+     * @param detailId
+      * @date 2021/5/26 14:16
+      * 方法描述: 没查到结果的情况下，无秒钟之后再查
+      */
+    private void setRedisTimeOut(String taskId, long subAppId, int detailId){
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        setRedis(taskId, subAppId, detailId);
+
+    }
+
+    private void setRedis(String taskId, long subAppId, int detailId){
+        Map<String, String> urlMap = new HashMap<>(4);
+        urlMap.put("taskId", taskId);
+        urlMap.put("subjectId", String.valueOf(subAppId));
+        urlMap.put("detailId", detailId + "");
+        redisUtil.lSet("copy_url_list", urlMap);
     }
 }

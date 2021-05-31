@@ -4,10 +4,7 @@ import static com.mpic.evolution.chair.common.constant.CommonField.*;
 import static com.mpic.evolution.chair.common.constant.JudgeConstant.FLOW_MAX;
 
 import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -60,6 +57,8 @@ public class EcmUserServiceImpl implements EcmUserService {
 	BeanConfig beanConfig;
 	@Resource
 	EcmDownlinkFlowHistoryDao ecmDownlinkFlowHistoryDao;
+	@Resource
+	EcmDownlinkFlowDao ecmDownlinkFlowDao;
 
 	@Override
 	public EcmUser getUserInfos(EcmUser record) {
@@ -111,6 +110,19 @@ public class EcmUserServiceImpl implements EcmUserService {
 		if (user == null ){
 			return user;
 		}
+
+		//add 22周需求
+		EcmDownlinkFlow ecmDownlinkFlow = new EcmDownlinkFlow();
+		ecmDownlinkFlow.setFkUserId(ecmUser.getPkUserId());
+		ecmDownlinkFlow = ecmDownlinkFlowDao.selectByRecord(ecmDownlinkFlow);
+		if(ecmDownlinkFlow == null){
+			user.setUserSubTotalFlow(0L);
+			user.setUserSubUsedFlow(0L);
+		}else{
+			user.setUserSubTotalFlow(ecmDownlinkFlow.getSubTotalFlow());
+			user.setUserSubUsedFlow(ecmDownlinkFlow.getSubUsedFlow());
+		}
+
 		//会员流量上限
 		int vipflow = 0;
 		//如何计算流量的标志 0会员月内 1会员信息重置
@@ -411,10 +423,25 @@ public class EcmUserServiceImpl implements EcmUserService {
 		JSONObject data = new JSONObject();
 		ArrayList<Long> flowsSplitByDays = new ArrayList<>();
 		Integer userId = ecmUserHistoryFlowVO.getUserId();
-		LocalDateTime startTime = ecmUserHistoryFlowVO.getStartDate();
-		LocalDateTime endTime = ecmUserHistoryFlowVO.getEndDate();
+		Date startDate = new Date(ecmUserHistoryFlowVO.getStartDate());
+		LocalDateTime startTime = VipDateUtil.formatToLocalDateTime(startDate);
+		Date endDate = new Date(ecmUserHistoryFlowVO.getEndDate());
+		LocalDateTime endTime = VipDateUtil.formatToLocalDateTime(endDate);
 		Duration between = Duration.between(startTime, endTime);
 		EcmDownlinkFlowHistory ecmDownlinkFlowHistory = new EcmDownlinkFlowHistory();
+		int sYear = startTime.getYear();
+		int sMonthValue = startTime.getMonthValue();
+		int sDayOfMonth = startTime.getDayOfMonth();
+		LocalDateTime sTargetTime= LocalDateTime.of(sYear, sMonthValue, sDayOfMonth, 0, 0, 0);
+		Date sTargetDate = VipDateUtil.formatToDate(sTargetTime);
+		ecmDownlinkFlowHistory.setCreateTime(sTargetDate);
+		ecmDownlinkFlowHistory.setFkUserId(userId);
+		EcmDownlinkFlowHistory sHistoryObject = ecmDownlinkFlowHistoryDao.selectByRecord(ecmDownlinkFlowHistory);
+		if(sHistoryObject == null){
+			flowsSplitByDays.add(0L);//单位KB
+		}else{
+			flowsSplitByDays.add(sHistoryObject.getSubUsedFlow());//单位KB
+		}
 		long l = between.toDays();
 		for(int i=0; i < l; i++){
 			LocalDateTime localDateTime = startTime.plusDays(1);
@@ -426,7 +453,11 @@ public class EcmUserServiceImpl implements EcmUserService {
 			ecmDownlinkFlowHistory.setCreateTime(targetDate);
 			ecmDownlinkFlowHistory.setFkUserId(userId);
 			EcmDownlinkFlowHistory historyObject = ecmDownlinkFlowHistoryDao.selectByRecord(ecmDownlinkFlowHistory);
-			flowsSplitByDays.add(historyObject.getSubUsedFlow());//单位KB
+			if(historyObject == null){
+				flowsSplitByDays.add(0L);//单位KB
+			}else{
+				flowsSplitByDays.add(historyObject.getSubUsedFlow());//单位KB
+			}
 			startTime = targetTime;
 		}
 		long max = flowsSplitByDays.get(0);

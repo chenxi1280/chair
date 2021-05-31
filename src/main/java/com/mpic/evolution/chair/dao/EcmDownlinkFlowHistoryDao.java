@@ -3,6 +3,8 @@ package com.mpic.evolution.chair.dao;
 import com.mpic.evolution.chair.pojo.entity.EcmDownlinkFlowHistory;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 public interface EcmDownlinkFlowHistoryDao {
     int deleteByPrimaryKey(Integer pkId);
 
@@ -13,6 +15,8 @@ public interface EcmDownlinkFlowHistoryDao {
     EcmDownlinkFlowHistory selectByPrimaryKey(Integer pkId);
 
     EcmDownlinkFlowHistory selectByRecord(EcmDownlinkFlowHistory record);
+
+    List<EcmDownlinkFlowHistory> selectBySelective(EcmDownlinkFlowHistory record);
 
     int updateByPrimaryKeySelective(EcmDownlinkFlowHistory record);
 

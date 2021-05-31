@@ -72,4 +72,5 @@ public interface EcmArtworkNodesDao {
 
     int updateMigrateByEcmArtworkNodesList(@Param("list") List<EcmArtworkNodes> ecmArtworkNodesList);
 
+    int updatePrivateVideoUrl(EcmArtworkNodes nodes);
 }

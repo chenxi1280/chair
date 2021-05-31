@@ -81,4 +81,13 @@ public class EcmUserVo extends EcmUser {
 	 */
 	private Integer surplusPermanentFlow;
 
+	/**
+	 * 用户总的下行流量
+	 */
+	private Long userSubTotalFlow;
+	/**
+	 * 用户已使用的下行流量
+	 */
+	private Long userSubUsedFlow;
+
 }

@@ -5,14 +5,17 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.Resource;
 
 import com.mpic.evolution.chair.common.constant.CommonField;
 import com.mpic.evolution.chair.common.constant.JudgeConstant;
+import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
 import com.mpic.evolution.chair.dao.*;
 import com.mpic.evolution.chair.pojo.entity.*;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkBroadcastHotVO;
+import com.mpic.evolution.chair.pojo.vo.FreeAdVo;
 import com.mpic.evolution.chair.service.EcmDownLinkFlowService;
 import com.mpic.evolution.chair.service.VideoHandleConsumerService;
 import com.mpic.evolution.chair.util.RedisUtil;
@@ -128,6 +131,9 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			EcmArtwork ecmArtwork = new EcmArtwork();
 			ecmArtwork.setPkArtworkId(ecmArtworkVo.getPkArtworkId());
 			Integer userId = this.getIdByToken(ecmArtworkVo.getToken());
+			if(userId == null){
+				return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+			}
 			ecmArtwork.setFkUserid(userId);
 			String artworkName = ecmArtworkVo.getArtworkName();
 			if (StringUtils.isEmpty(artworkName)) {
@@ -137,6 +143,23 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			if (!StringUtils.isEmpty(result)) {
 				return ResponseDTO.fail("作品名称违规含有违禁词",result,null,510);
 			}
+
+			// 用户在设置免广告播放的时候 要查询用户是否有足够的下行流量 不进行短信通知 新用户查询不到下行流量信息的时候我们直接返回错误状态
+			// 如果没有设置免广告则不需要查询下行流量
+			if(ecmArtworkVo.getPlayType() == 1){
+				boolean b = this.checkdownLinkFlowIsEmpty(userId);
+				if(!b){
+					EcmDownlinkFlow ecmDownlinkFlow = new EcmDownlinkFlow();
+					ecmDownlinkFlow.setFkUserId(userId);
+					ecmDownlinkFlow = ecmDownlinkFlowDao.selectByRecord(ecmDownlinkFlow);
+					if(ecmDownlinkFlow == null){
+						return ResponseDTO.fail("尚未购买下行流量，请联系我们。",null,null,10085);
+					}else{
+						return ResponseDTO.fail("下行流量已用完，请联系我们。",null,null,10086);
+					}
+				}
+			}
+
 
 			// 用户在设置免广告播放的时候 要查询用户是否有足够的下行流量 不进行短信通知 新用户查询不到下行流量信息的时候我们直接返回错误状态
 			// 如果没有设置免广告则不需要查询下行流量
@@ -175,6 +198,11 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			//在有下行流量的情况下 进行免压缩的逻辑操作
 			if(ecmArtworkVo.getVideoType() == 1){
 				this.artworkCompressionFree(userId,ecmArtwork.getPkArtworkId());
+			if(ecmArtworkVo.getPlayType() == 1) {
+				EcmArtworkFreeAd ecmArtworkFreeAd = new EcmArtworkFreeAd();
+				ecmArtworkFreeAd.setFkArtworkId(ecmArtwork.getPkArtworkId());
+				ecmArtworkFreeAd.setCreateTime(new Date());
+				ecmArtworkFreeAdDao.insertSelective(ecmArtworkFreeAd);
 			}
 			return ResponseDTO.ok("新建成功");
 		} catch (Exception e) {
@@ -189,6 +217,9 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			EcmArtwork ecmArtwork = new EcmArtwork();
 			ecmArtwork.setPkArtworkId(ecmArtworkVo.getPkArtworkId());
 			Integer userId = this.getIdByToken(ecmArtworkVo.getToken());
+			if(userId == null){
+				return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+			}
 			ecmArtwork.setFkUserid(userId);
 			ecmArtwork.setArtworkStatus(ecmArtworkVo.getArtworkStatus());
 			String artworkName = ecmArtworkVo.getArtworkName();
@@ -333,6 +364,46 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 		return userId;
 	}
 
+	/**
+	 * 检查用户是否可以开启免广告
+	 * @return
+	 */
+	public ResponseDTO checkFreeAd(FreeAdVo freeAdVo){
+		Integer userId = freeAdVo.getUserId();
+		if(userId == null){
+			return ResponseDTO.fail(ErrorEnum.ERR_603.getText());
+		}
+		if(freeAdVo.getPlayType() == 1){
+			boolean b = this.checkdownLinkFlowIsEmpty(userId);
+			if(!b){
+				EcmDownlinkFlow ecmDownlinkFlow = new EcmDownlinkFlow();
+				ecmDownlinkFlow.setFkUserId(userId);
+				ecmDownlinkFlow = ecmDownlinkFlowDao.selectByRecord(ecmDownlinkFlow);
+				if(ecmDownlinkFlow == null){
+					return ResponseDTO.fail("尚未购买下行流量，请联系我们。",null,null,10085);
+				}else{
+					return ResponseDTO.fail("下行流量已用完，请联系我们。",null,null,10086);
+				}
+			}
+			EcmArtworkFreeAd ecmArtworkFreeAd = new EcmArtworkFreeAd();
+			ecmArtworkFreeAd.setFkArtworkId(freeAdVo.getArtworkId());
+			EcmArtworkFreeAd ecmArtworkFreeAd1 = ecmArtworkFreeAdDao.selectByRecord(ecmArtworkFreeAd);
+			if(ecmArtworkFreeAd1 == null) {
+				ecmArtworkFreeAd.setCreateTime(new Date());
+				ecmArtworkFreeAdDao.insertSelective(ecmArtworkFreeAd);
+			}
+			videoHandleConsumerService.copyVideo(freeAdVo.getArtworkId());
+		}else{
+			EcmArtworkFreeAd ecmArtworkFreeAd = new EcmArtworkFreeAd();
+			ecmArtworkFreeAd.setFkArtworkId(freeAdVo.getArtworkId());
+			ecmArtworkFreeAd = ecmArtworkFreeAdDao.selectByRecord(ecmArtworkFreeAd);
+			if(ecmArtworkFreeAd != null) {
+				ecmArtworkFreeAdDao.deleteByPrimaryKey(ecmArtworkFreeAd.getPkEcmArtworkFreeAdId());
+			}
+		}
+		return ResponseDTO.ok("设置作品免流量成功");
+	}
+
 	private boolean checkdownLinkFlowIsEmpty(Integer userId){
 		EcmDownlinkFlow ecmDownlinkFlow = new EcmDownlinkFlow();
 		ecmDownlinkFlow.setFkUserId(userId);
@@ -354,58 +425,96 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 		int monthValue = now.getMonthValue();
 		String redisKey = "flow_" + userId;
 		if(!redisUtil.hasKey(redisKey)){
+			redisUtil.set(redisKey,"",300);
+
 			//今天 分两次查询云点播下行流量
 			LocalDateTime yStartDateTime = LocalDateTime.of(year, monthValue, dayOfMonth - 1, 0, 0, 0);
 			ZonedDateTime yesterdayStartZoned = yStartDateTime.atZone(ZoneId.from(ZoneOffset.UTC));
-			ZonedDateTime yesterdayStartconverted = yesterdayStartZoned.withZoneSameInstant(ZoneOffset.ofHours(-8));
-			LocalDateTime yesterdayStartTimeUTC = yesterdayStartconverted.toLocalDateTime();
-			String[] yesterdayStartSplit = yesterdayStartTimeUTC.toString().split("\\.");
-			String yesterdayStartTime = yesterdayStartSplit[0]+"Z";
+			LocalDateTime yesterdayStartTime = yesterdayStartZoned.toLocalDateTime();
+			yesterdayStartTime = yesterdayStartTime.plusHours(-8);
+			String yesterdayStart = yesterdayStartTime.toString()+":00Z";
 
 			LocalDateTime yEndDateTime = LocalDateTime.of(year, monthValue, dayOfMonth - 1, 23, 59, 59);
 			ZonedDateTime yesterdayEndZoned = yEndDateTime.atZone(ZoneId.from(ZoneOffset.UTC));
-			ZonedDateTime yesterdayEndconverted = yesterdayEndZoned.withZoneSameInstant(ZoneOffset.ofHours(-8));
-			LocalDateTime yesterdayEndUTC = yesterdayEndconverted.toLocalDateTime();
-			String[] yesterdayEndSplit = yesterdayEndUTC.toString().split("\\.");
-			String yesterdayEndTime = yesterdayEndSplit[0]+"Z";
+			LocalDateTime yesterdayEndTime = yesterdayEndZoned.toLocalDateTime();
+			yesterdayEndTime = yesterdayEndTime.plusHours(-8);
+			yesterdayEndTime = yesterdayEndTime.plusSeconds(1);
+			String  yesterdayEnd = yesterdayEndTime.toString()+":00Z";
+
 
 			ZonedDateTime todayEndZoned = now.atZone(ZoneId.from(ZoneOffset.UTC));
-			ZonedDateTime todayEndconverted = todayEndZoned.withZoneSameInstant(ZoneOffset.ofHours(-8));
-			LocalDateTime todayEndUTC = todayEndconverted.toLocalDateTime();
-			String[] todayEndSplit = todayEndUTC.toString().split("\\.");
-			String todayEndTime = todayEndSplit[0]+"Z";
+			LocalDateTime todayEndTime = todayEndZoned.toLocalDateTime();
+			todayEndTime = todayEndTime.plusHours(-8);
+			String[] todayEndSplit = todayEndTime.toString().split("\\.");
+			String todayEnd = null;
+			if(todayEndSplit[0].length()+1 == yesterdayEnd.length()){
+				todayEnd = todayEndSplit[0]+"Z";
+			}else{
+				todayEnd = todayEndSplit[0]+":00Z";
+			}
 
-			long yesterdaySum = ecmDownLinkFlowService.describeCDNStatDetails(yesterdayStartTime, yesterdayEndTime, subAppId);
-			long todaySum = ecmDownLinkFlowService.describeCDNStatDetails(yesterdayEndTime, todayEndTime, subAppId);
+			long yesterdaySum = ecmDownLinkFlowService.describeCDNStatDetails(yesterdayStart, yesterdayEnd, subAppId);
+			long todaySum = ecmDownLinkFlowService.describeCDNStatDetails(yesterdayEnd, todayEnd, subAppId);
 
-
-			redisUtil.set(redisKey,"",5);
-
+			//更新历史记录表中昨天的记录 插入 或者更新
 			EcmDownlinkFlowHistory ecmDownlinkFlowHistory = new EcmDownlinkFlowHistory();
-			LocalDateTime createLocalDateTime = LocalDateTime.of(year,monthValue,dayOfMonth-1,0,0,0);
+			LocalDateTime todayCreateLocalDateTime = LocalDateTime.of(year,monthValue,dayOfMonth,0,0,0);
+			LocalDateTime yesterdayCreateLocalDateTime = LocalDateTime.of(year,monthValue,dayOfMonth-1,0,0,0);
 			ZoneId zoneId = ZoneId.systemDefault();
-			ZonedDateTime zdt = createLocalDateTime.atZone(zoneId);
-			Date createDate = Date.from(zdt.toInstant());
-			ecmDownlinkFlowHistory.setCreateTime(createDate);
-			EcmDownlinkFlowHistory history = ecmDownlinkFlowHistoryDao.selectByRecord(ecmDownlinkFlowHistory);
-			if(history == null){
-				//插入一条昨天的记录
-				ecmDownlinkFlowHistory.setStartTime(createDate);
-				ecmDownlinkFlowHistory.setEndTime(createDate);
+			ZonedDateTime todayZdt = todayCreateLocalDateTime.atZone(zoneId);
+			ZonedDateTime  yesterdayZdt = yesterdayCreateLocalDateTime.atZone(zoneId);
+			Date todayCreateDate = Date.from(todayZdt.toInstant());
+			Date yesterdayCreateDate = Date.from(yesterdayZdt.toInstant());
+			ecmDownlinkFlowHistory.setCreateTime(todayCreateDate);
+			EcmDownlinkFlowHistory today = ecmDownlinkFlowHistoryDao.selectByRecord(ecmDownlinkFlowHistory);
+			ecmDownlinkFlowHistory.setCreateTime(yesterdayCreateDate);
+			EcmDownlinkFlowHistory yesterday = ecmDownlinkFlowHistoryDao.selectByRecord(ecmDownlinkFlowHistory);
+			if(today == null){
+				//插入一条今天的记录
+				ecmDownlinkFlowHistory.setCreateTime(todayCreateDate);
+				ecmDownlinkFlowHistory.setStartTime(todayCreateDate);
+				ecmDownlinkFlowHistory.setEndTime(todayCreateDate);
 				ecmDownlinkFlowHistory.setFkUserId(userId);
 				ecmDownlinkFlowHistory.setSubAppId(subAppId);
 				ecmDownlinkFlowHistory.setSubFlowStatus(0);
-				ecmDownlinkFlowHistory.setSubUsedFlow(yesterdaySum/1024);//Byte 转 KB
+				ecmDownlinkFlowHistory.setSubUsedFlow(todaySum/1024);//byte 转 KB
+				ecmDownlinkFlowHistoryDao.insertSelective(ecmDownlinkFlowHistory);
+			}else{
+				//更新今天的记录
+				today.setSubUsedFlow(todaySum/1024);//byte 转 KB
+				ecmDownlinkFlowHistory.setCreateTime(today.getCreateTime());
+				//ecmDownlinkFlowHistory带的参数 是where条件
+				ecmDownlinkFlowHistoryDao.updateBySelective(today,ecmDownlinkFlowHistory);
+			}
+
+			if(yesterday == null){
+				//插入一条昨天的记录
+				ecmDownlinkFlowHistory.setCreateTime(yesterdayCreateDate);
+				ecmDownlinkFlowHistory.setStartTime(yesterdayCreateDate);
+				ecmDownlinkFlowHistory.setEndTime(yesterdayCreateDate);
+				ecmDownlinkFlowHistory.setFkUserId(userId);
+				ecmDownlinkFlowHistory.setSubAppId(subAppId);
+				ecmDownlinkFlowHistory.setSubFlowStatus(0);
+				ecmDownlinkFlowHistory.setSubUsedFlow(yesterdaySum/1024);//byte 转 KB
 				ecmDownlinkFlowHistoryDao.insertSelective(ecmDownlinkFlowHistory);
 			}else{
 				//更新昨天的记录
-				history.setSubUsedFlow(yesterdaySum/1024);//Byte 转 KB
-				ecmDownlinkFlowHistoryDao.updateBySelective(history,ecmDownlinkFlowHistory);
+				yesterday.setSubUsedFlow(yesterdaySum/1024);//byte 转 KB
+				ecmDownlinkFlowHistory.setCreateTime(yesterday.getCreateTime());
+				ecmDownlinkFlowHistoryDao.updateBySelective(yesterday,ecmDownlinkFlowHistory);
+			}
+
+			EcmDownlinkFlowHistory downlinkFlowHistory = new EcmDownlinkFlowHistory();
+			downlinkFlowHistory.setFkUserId(userId);
+			List<EcmDownlinkFlowHistory> ecmDownlinkFlowHistories = ecmDownlinkFlowHistoryDao.selectBySelective(downlinkFlowHistory);
+			long sum = 0;
+			for (int i = 0; i < ecmDownlinkFlowHistories.size(); i++) {
+				sum += ecmDownlinkFlowHistories.get(i).getSubUsedFlow();
 			}
 			//更新下行流量表记录
-			ecmDownlinkFlow.setSubUsedFlow(todaySum/1024);//Byte 转 KB
+			ecmDownlinkFlow.setSubUsedFlow(sum);
 			ecmDownlinkFlow.setUpdateTime(new Date());
-			ecmDownlinkFlowDao.updateByPrimaryKeySelective(ecmDownlinkFlow);
+			ecmDownlinkFlowDao.updateByPrimaryKeySelective(ecmDownlinkFlow);//单位Byte
 
 		}
 		long todaySumByKb = ecmDownlinkFlow.getSubUsedFlow();//单位KB
