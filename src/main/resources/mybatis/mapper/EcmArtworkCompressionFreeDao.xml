@@ -129,5 +129,10 @@
       </if>
     </where>
   </select>
+  <select id="selectByEcmArtworkId" resultType="com.mpic.evolution.chair.pojo.entity.EcmArtworkCompressionFree">
+    select <include refid="Base_Column_List" />
+    from ecm_artwork_compression_free
+    where fk_artwork_id = #{fkArtworkId}
+  </select>
 
 </mapper>

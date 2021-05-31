@@ -244,16 +244,21 @@
     where fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER}
   </update>
 
-  <insert id="insertSelectiveList">
+  <insert id="insertSelectiveList"  keyColumn="pk_node_popup_settings_id" keyProperty="pkNodePopupSettingsId"  useGeneratedKeys="true">
     insert into ecm_artwork_node_popup_settings
-    (fk_node_id, fk_artwork_id, popup_name, popup_name_state, popup_position, popup_context, popup_context_state,
-    popup_skip, popup_app_id, create_time)
+    (fk_node_id, fk_artwork_id, popup_name,
+    popup_name_state, popup_position, popup_context,
+    popup_context_state, popup_skip, popup_app_id,
+    popup_percentage_state, pop_img_width, pop_img_high,
+    pop_img_scale, create_time, update_time
     values
     <foreach collection="list" separator="," index="index" item="item" >
-      (#{fkNodeId}, #{fkArtworkId}, #{popupName},
-      #{popupNameState}, #{popupPosition}, #{popupContext},
-      #{popupContextState}, #{popupSkip}, #{popupAppId},
-      #{createTime}
+      (#{item.fkNodeId,jdbcType=INTEGER}, #{item.fkArtworkId,jdbcType=INTEGER}, #{item.popupName,jdbcType=VARCHAR},
+      #{item.popupNameState,jdbcType=INTEGER}, #{item.popupPosition,jdbcType=INTEGER}, #{item.popupContext,jdbcType=VARCHAR},
+      #{item.popupContextState,jdbcType=INTEGER}, #{item.popupSkip,jdbcType=VARCHAR}, #{item.popupAppId,jdbcType=VARCHAR},
+      #{item.popupPercentageState,jdbcType=INTEGER}, #{item.popImgWidth,jdbcType=VARCHAR}, #{item.popImgHigh,jdbcType=VARCHAR},
+      #{item.popImgScale,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.updateTime,jdbcType=TIMESTAMP}
+      )
     </foreach>
 
   </insert>

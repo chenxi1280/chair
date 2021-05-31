@@ -23,7 +23,7 @@ public interface EcmArtworkNodesDao {
 
     List<EcmArtworkNodesVo> selectByArtWorkId(Integer pkArtworkId);
 
-    Integer insertList(@Param("list") List<EcmArtworkNodes> addlist);
+    Integer insertList(@Param("list") List<EcmArtworkNodesVo> addlist);
 
     int removeByPrimaryKey(Integer pkDetailId);
 
@@ -70,7 +70,9 @@ public interface EcmArtworkNodesDao {
 
     int updateArtworkNode(EcmArtworkNodesVo ecmArtworkNodesVo);
 
-    int updateMigrateByEcmArtworkNodesList(@Param("list") List<EcmArtworkNodes> ecmArtworkNodesList);
+    int updateMigrateByEcmArtworkNodesList(@Param("list") List<EcmArtworkNodesVo> ecmArtworkNodesList);
 
     int updatePrivateVideoUrl(EcmArtworkNodes nodes);
+
+
 }

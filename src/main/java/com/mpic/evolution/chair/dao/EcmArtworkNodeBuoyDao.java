@@ -33,4 +33,7 @@ public interface EcmArtworkNodeBuoyDao {
     List<EcmArtworkNodeBuoyVO> selectByEcmArtworkNodeList(@Param("list")List<EcmArtworkNodesVo> filterBuoyList);
 
     List<EcmArtworkNodeBuoyVO> selectByEcmNodeIdList(@Param("list")List<Integer> fkNodeIdList);
+
+    int insertSelectiveVOList(@Param("list")List<EcmArtworkNodeBuoyVO> ecmArtworkNodeBuoyVOS);
+
 }

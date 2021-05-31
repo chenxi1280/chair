@@ -10,7 +10,7 @@
     pk_ecm_artwork_free_ad_id, fk_artwork_id, create_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from ecm_artwork_free_ad
     where pk_ecm_artwork_free_ad_id = #{pkEcmArtworkFreeAdId,jdbcType=INTEGER}
@@ -84,6 +84,13 @@
              open="(" separator="," close=")">
       #{fkArtworkId}
     </foreach>
+  </select>
+  <select id="selectByEcmArtworkId" resultType="com.mpic.evolution.chair.pojo.entity.EcmArtworkFreeAd">
+    select
+    <include refid="Base_Column_List" />
+    from ecm_artwork_free_ad
+    where fk_artwork_id = #{fkArtworkId }
+
   </select>
 
 </mapper>

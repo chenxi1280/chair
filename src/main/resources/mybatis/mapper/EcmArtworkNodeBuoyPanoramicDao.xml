@@ -428,8 +428,35 @@
     </foreach>
 
   </insert>
+    <insert id="insertSelectiveVOList">
+      insert into ecm_artwork_node_buoy_panoramic
+      (fk_node_id, fk_artwork_id, buoy_text_size,
+      buoy_text_color, buoy_text_type, buoy_thing_size,
+      buoy_thing_img_url, buoy_thing_type, buoy_thing_color,
+      buoy_thing_opacity, buoy_start_time, buoy_show_type,
+      buoy_end_time, buoy_action_type, buoy_thing_coordinate_x_y_z,
+      buoy_text_coordinate_x_y_z, buoy_type, buoy_choose_type,
+      buoy_choose_play_type, buoy_choose_event, buoy_play_end_type,
+      buoy_status, buoy_pop_context, buoy_pop_type,
+      buoy_pop_app_id, buoy_pop_web_url, buoy_event,
+      buoy_context)
+      values
 
-  <update id="updateByPrimaryKeySelectiveList">
+      <foreach collection="list" separator="," index="index" item="item" >
+        (#{item.fkNodeId,jdbcType=INTEGER}, #{item.fkArtworkId,jdbcType=INTEGER}, #{item.buoyTextSize,jdbcType=VARCHAR},
+        #{item.buoyTextColor,jdbcType=VARCHAR}, #{item.buoyTextType,jdbcType=INTEGER}, #{item.buoyThingSize,jdbcType=VARCHAR},
+        #{item.buoyThingImgUrl,jdbcType=VARCHAR}, #{item.buoyThingType,jdbcType=INTEGER}, #{item.buoyThingColor,jdbcType=VARCHAR},
+        #{item.buoyThingOpacity,jdbcType=VARCHAR}, #{item.buoyStartTime,jdbcType=VARCHAR}, #{item.buoyShowType,jdbcType=INTEGER},
+        #{item.buoyEndTime,jdbcType=VARCHAR}, #{item.buoyActionType,jdbcType=INTEGER}, #{item.buoyThingCoordinateXYZ,jdbcType=VARCHAR},
+        #{item.buoyTextCoordinateXYZ,jdbcType=VARCHAR}, #{item.buoyType,jdbcType=INTEGER}, #{item.buoyChooseType,jdbcType=INTEGER},
+        #{item.buoyChoosePlayType,jdbcType=INTEGER}, #{item.buoyChooseEvent,jdbcType=VARCHAR}, #{item.buoyPlayEndType,jdbcType=INTEGER},
+        #{item.buoyStatus,jdbcType=INTEGER}, #{item.buoyPopContext,jdbcType=VARCHAR}, #{item.buoyPopType,jdbcType=INTEGER},
+        #{item.buoyPopAppId,jdbcType=VARCHAR}, #{item.buoyPopWebUrl,jdbcType=VARCHAR}, #{item.buoyEvent,jdbcType=VARCHAR},
+        #{item.buoyContext,jdbcType=VARCHAR})
+      </foreach>
+    </insert>
+
+    <update id="updateByPrimaryKeySelectiveList">
     update ecm_artwork_node_buoy_panoramic
 
     <trim prefix="set" suffixOverrides=",">

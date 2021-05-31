@@ -129,4 +129,7 @@ public class EcmArtworkNodesVo extends EcmArtworkNodes  {
      */
     private Integer videoType;
 
+
+    private Integer sourceNodeId;
+
 }

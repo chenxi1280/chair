@@ -20,4 +20,6 @@ public interface EcmArtworkCompressionFreeDao {
     int updateByPrimaryKey(EcmArtworkCompressionFree record);
 
     List<Integer> selectByVideoCode(String fileId);
+
+    EcmArtworkCompressionFree selectByEcmArtworkId(Integer pkArtworkId);
 }

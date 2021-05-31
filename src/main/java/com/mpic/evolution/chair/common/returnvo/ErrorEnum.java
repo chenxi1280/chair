@@ -51,7 +51,8 @@ public enum ErrorEnum {
 
     //用户相关的
     ERR_603("603", "非法访问"),
-    ERR_601("601", "无数据");
+    ERR_601("601", "无数据"),
+    ERR_613("613", "已有3个工单处理，无法申请");
 
     private String value;
     private String text;

@@ -154,4 +154,8 @@ public class ResponseDTO implements Serializable {
     public static ResponseDTO fail(String msg, Integer errorCode) {
         return new ResponseDTO(msg, null, errorCode, errorCode);
     }
+
+    public static ResponseDTO fail(String msg, String errorCode) {
+        return new ResponseDTO(msg, null, Integer.valueOf(errorCode),  Integer.valueOf(errorCode));
+    }
 }

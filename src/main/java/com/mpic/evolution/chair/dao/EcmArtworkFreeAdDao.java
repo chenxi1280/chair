@@ -22,4 +22,6 @@ public interface EcmArtworkFreeAdDao {
     List<EcmArtworkFreeAdVO> selectFreeAdArtwork(@Param("artworks") List<Integer> artworks);
 
     int updateByPrimaryKey(EcmArtworkFreeAd record);
+
+    EcmArtworkFreeAd selectByEcmArtworkId(Integer pkArtworkId);
 }

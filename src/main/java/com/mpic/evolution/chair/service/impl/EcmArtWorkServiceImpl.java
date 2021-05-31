@@ -1071,7 +1071,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         EcmArtworkNodesVo pArtworkNodesTree = TreeUtil.buildTreeByDetailId(list, ecmArtworkNodesVo.getPkDetailId()).get(INT_ZORE);
 
         EcmArtworkNodes ecmArtworkNodes = ecmArtworkNodesDao.selectByPrimaryKey(ecmArtworkNodesVo.getPkDetailId());
-        List<EcmArtworkNodes> ecmArtworkNodesList = new ArrayList<>();
+        List<EcmArtworkNodesVo> ecmArtworkNodesList = new ArrayList<>();
 
         String pXId = ecmArtworkNodesTree.getRevolutionId();
 
@@ -1099,6 +1099,98 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
         ecmArtworkNodesDao.updateMigrateByEcmArtworkNodesList(ecmArtworkNodesList);
         return ResponseDTO.ok();
 
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseDTO migrateArtwork(EcmArtworkVo ecmArtworkVo) {
+        EcmArtwork ecmArtwork =  ecmArtworkDao.selectByPrimaryKey(ecmArtworkVo.getPkArtworkId());
+        EcmArtwork artwork = new EcmArtwork();
+        BeanUtils.copyProperties(ecmArtwork,artwork);
+        artwork.setPkArtworkId(null);
+        artwork.setArtworkName(artwork.getArtworkName()+"_副本");
+        artwork.setArtworkStatus((short) 0);
+        ecmArtworkDao.insertSelective(artwork);
+        HashMap<Integer, Integer> map = new HashMap<>();
+        // 1 node 表，2 数值 3 多结局 ，4 弹窗 条件  浮标 动作
+        List<EcmArtworkNodesVo> ecmArtworkNodesVos = ecmArtworkNodesDao.selectByArtWorkId(ecmArtworkVo.getPkArtworkId());
+        ecmArtworkNodesVos.forEach( v -> {
+            v.setSourceNodeId(v.getPkDetailId());
+            v.setFkArtworkId(artwork.getPkArtworkId());
+        });
+        ecmArtworkNodesDao.insertList(ecmArtworkNodesVos);
+        // 创建 源节点 和 新节点的 关系map
+        ecmArtworkNodesVos.forEach( v -> {
+            map.put(v.getSourceNodeId(), v.getPkDetailId());
+        });
+        // 更新节点 parent id
+        ecmArtworkNodesVos.forEach( v -> {
+            if (v.getParentId() != 0 ) {
+                v.setParentId(map.get(v.getParentId()));
+            }
+        });
+        ecmArtworkNodesDao.updateMigrateByEcmArtworkNodesList(ecmArtworkNodesVos);
+        // 数值
+        List<EcmArtworkNodeNumberConditionVO> ecmArtworkNodeNumberConditionVOS = ecmArtworkNodeNumberConditionDao.selectByArtWorkId(ecmArtworkVo.getPkArtworkId());
+        ecmArtworkNodeNumberConditionVOS.forEach( v -> {
+            v.setFkArtworkId(ecmArtworkVo.getPkArtworkId());
+            v.setPkDetailid(map.get(v.getPkDetailid()));
+        });
+        ecmArtworkNodeNumberConditionDao.insertList(ecmArtworkNodeNumberConditionVOS);
+        // 多结局
+        List<EcmArtworkEndingsVO> ecmArtworkEndingsVOS = ecmArtworkEndingsDao.selectByArtwId(ecmArtworkVo.getPkArtworkId());
+        ecmArtworkEndingsVOS.forEach(v -> {
+            v.setFkArtworkId(ecmArtworkVo.getPkArtworkId());
+            v.setFkNodeId(map.get(v.getFkNodeId()));
+        });
+        ecmArtworkEndingsDao.insertSelectiveList(ecmArtworkEndingsVOS);
+        // 弹窗
+        List<EcmArtworkNodePopupSettingsVO> ecmArtworkNodePopupSettingsVOS = ecmArtworkNodePopupSettingsDao.selectByArtworkNodeList(ecmArtworkNodesVos);
+        ecmArtworkNodePopupSettingsVOS.forEach(v -> {
+            v.setFkArtworkId(ecmArtworkVo.getPkArtworkId());
+            v.setFkNodeId(map.get(v.getFkNodeId()));
+        });
+        ecmArtworkNodePopupSettingsDao.insertSelectiveList(ecmArtworkNodePopupSettingsVOS);
+
+        //浮标
+        List<EcmArtworkNodeBuoyVO> ecmArtworkNodeBuoyVOS = ecmArtworkNodeBuoyDao.selectByEcmArtworkId(ecmArtworkVo.getPkArtworkId());
+        ecmArtworkNodeBuoyVOS.forEach(v -> {
+            v.setFkArtworkId(ecmArtworkVo.getPkArtworkId());
+            v.setFkNodeId(map.get(v.getFkNodeId()));
+        });
+        ecmArtworkNodeBuoyDao.insertSelectiveVOList(ecmArtworkNodeBuoyVOS);
+        //动作
+        List<EcmArtworkNodeActionVO> ecmArtworkNodeActionVOS = ecmArtworkNodeActionDao.selectByFkArtworkId(ecmArtworkVo.getPkArtworkId());
+        ecmArtworkNodeActionVOS.forEach(v -> {
+            v.setFkArtworkId(ecmArtworkVo.getPkArtworkId());
+            v.setFkNodeId(map.get(v.getFkNodeId()));
+        });
+        ecmArtworkNodeActionDao.insertSelectiveVOList(ecmArtworkNodeActionVOS);
+        // vr浮标
+        List<EcmArtworkNodeBuoyPanoramicVO> ecmArtworkNodeBuoyPanoramicVOS = ecmArtworkNodeBuoyPanoramicDao.selectByEcmArtworkId(ecmArtworkVo.getPkArtworkId());
+        ecmArtworkNodeBuoyPanoramicVOS.forEach(v -> {
+            v.setFkArtworkId(ecmArtworkVo.getPkArtworkId());
+            v.setFkNodeId(map.get(v.getFkNodeId()));
+        });
+        ecmArtworkNodeBuoyPanoramicDao.insertSelectiveVOList(ecmArtworkNodeBuoyPanoramicVOS);
+
+        // 免广告
+        EcmArtworkFreeAd ecmArtworkFreeAd = ecmArtworkFreeAdDao.selectByEcmArtworkId(ecmArtworkVo.getPkArtworkId());
+        if (ecmArtworkFreeAd != null) {
+            ecmArtworkFreeAd.setFkArtworkId(ecmArtworkVo.getPkArtworkId());
+            ecmArtworkFreeAd.setCreateTime(new Date());
+            ecmArtworkFreeAdDao.insertSelective(ecmArtworkFreeAd);
+        }
+        // 免压缩
+        EcmArtworkCompressionFree ecmArtworkCompressionFree =ecmArtworkCompressionFreeDao.selectByEcmArtworkId(ecmArtworkVo.getPkArtworkId());
+        if (ecmArtworkCompressionFree != null) {
+            ecmArtworkCompressionFree.setFkArtworkId(ecmArtworkVo.getPkArtworkId());
+            ecmArtworkCompressionFree.setCreateTime(new Date());
+            ecmArtworkCompressionFreeDao.insertSelective(ecmArtworkCompressionFree);
+        }
+
+
+        return null;
     }
 
     @Override
@@ -1250,7 +1342,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
      * @Date: 2021/4/19
      * 描述 :  用于把树状的 集合 集合中的 xid 进行替换
      */
-    private void replaceString ( List<EcmArtworkNodesVo> ecmArtworkNodesTree,  List<EcmArtworkNodes> ecmArtworkNodes,String rXIdBase , String cXIdBase) {
+    private void replaceString ( List<EcmArtworkNodesVo> ecmArtworkNodesTree,  List<EcmArtworkNodesVo> ecmArtworkNodes,String rXIdBase , String cXIdBase) {
 
         if (!CollectionUtils.isEmpty(ecmArtworkNodesTree)){
             ecmArtworkNodesTree.forEach( v -> {

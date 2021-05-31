@@ -207,6 +207,7 @@
       </if>
     </trim>
   </insert>
+
   <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes">
     update ecm_artwork_nodes
     <set>
@@ -330,79 +331,28 @@
 
     </select>
 
+  <insert id="insertList"   keyColumn="pk_detail_id" keyProperty="pkDetailId" useGeneratedKeys="true">
 
-    <insert id="insertList" keyColumn="pk_detail_id" keyProperty="pkDetailId"  useGeneratedKeys="true">
-      insert into ecm_artwork_nodes  (parent_id, video_code, parent_code,
-      video_url, branch_pre, revolution_id,
-      video_text, fk_artwork_id, items,
-      items_text, items_bak_text, css_vo,
-      fk_achievement_id, fk_ending_id, isleaf,
-      a_level, is_deleted, parent_list,
-      chosen_text)
-
-    <foreach collection="list" item="item" index="index" separator=",">
-      <trim prefix="values (" suffix=")" suffixOverrides=",">
-        <if test="item.parentId != null">
-          #{item.parentId,jdbcType=INTEGER},
-        </if>
-        <if test="item.videoCode != null">
-          #{item.videoCode,jdbcType=VARCHAR},
-        </if>
-        <if test="item.parentCode != null">
-          #{item.parentCode,jdbcType=VARCHAR},
-        </if>
-        <if test="item.videoUrl != null">
-          #{item.videoUrl,jdbcType=VARCHAR},
-        </if>
-        <if test="item.branchPre != null">
-          #{item.branchPre,jdbcType=BOOLEAN},
-        </if>
-        <if test="item.revolutionId != null">
-          #{item.revolutionId,jdbcType=VARCHAR},
-        </if>
-        <if test="item.videoText != null">
-          #{item.videoText,jdbcType=VARCHAR},
-        </if>
-        <if test="item.fkArtworkId != null">
-          #{item.fkArtworkId,jdbcType=INTEGER},
-        </if>
-        <if test="item.items != null">
-          #{item.items,jdbcType=VARCHAR},
-        </if>
-        <if test="item.itemsText != null">
-          #{item.itemsText,jdbcType=VARCHAR},
-        </if>
-        <if test="itemsBakText != null">
-          #{item.itemsBakText,jdbcType=VARCHAR},
-        </if>
-        <if test="item.cssVo != null">
-          #{item.cssVo,jdbcType=VARCHAR},
-        </if>
-        <if test="item.fkAchievementId != null">
-          #{item.fkAchievementId,jdbcType=INTEGER},
-        </if>
-        <if test="item.fkEndingId != null">
-          #{item.fkEndingId,jdbcType=INTEGER},
-        </if>
-        <if test="item.isleaf != null">
-          #{item.isleaf,jdbcType=VARCHAR},
-        </if>
-        <if test="item.aLevel != null">
-          #{item.aLevel,jdbcType=INTEGER},
-        </if>
-        <if test="item.isDeleted != null">
-          #{item.isDeleted,jdbcType=VARCHAR},
-        </if>
-        <if test="item.parentitem != null">
-          #{item.parentList,jdbcType=VARCHAR},
-        </if>
-        <if test="item.chosenText != null">
-          #{item.chosenText,jdbcType=VARCHAR},
-        </if>
-      </trim>
+      insert into ecm_artwork_nodes (parent_id, video_code, parent_code,
+    video_url, branch_pre, revolution_id,
+    video_text, fk_artwork_id, items,
+    items_text, items_bak_text, css_vo,
+    fk_achievement_id, fk_ending_id, isleaf,
+    a_level, is_deleted, parent_list,
+    chosen_text, video_info, popup_state,
+    condition_state, percentage_state)
+    values
+    <foreach collection="list" separator="," index="index" item="item" >
+      (#{item.parentId,jdbcType=INTEGER}, #{item.videoCode,jdbcType=VARCHAR}, #{item.parentCode,jdbcType=VARCHAR},
+      #{item.videoUrl,jdbcType=VARCHAR}, #{item.branchPre,jdbcType=TINYINT}, #{item.revolutionId,jdbcType=VARCHAR},
+      #{item.videoText,jdbcType=VARCHAR}, #{item.fkArtworkId,jdbcType=INTEGER}, #{item.items,jdbcType=VARCHAR},
+      #{item.itemsText,jdbcType=VARCHAR}, #{item.itemsBakText,jdbcType=VARCHAR}, #{item.cssVo,jdbcType=VARCHAR},
+      #{item.fkAchievementId,jdbcType=INTEGER}, #{item.fkEndingId,jdbcType=INTEGER}, #{item.isleaf,jdbcType=VARCHAR},
+      #{item.aLevel,jdbcType=INTEGER}, #{item.isDeleted,jdbcType=VARCHAR}, #{item.parentList,jdbcType=VARCHAR},
+      #{item.chosenText,jdbcType=VARCHAR}, #{item.videoInfo,jdbcType=VARCHAR}, #{item.popupState,jdbcType=INTEGER},
+      #{item.conditionState,jdbcType=INTEGER}, #{item.percentageState,jdbcType=INTEGER})
 
     </foreach>
-
 
   </insert>
 

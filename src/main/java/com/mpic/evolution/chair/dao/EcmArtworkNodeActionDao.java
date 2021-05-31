@@ -27,4 +27,5 @@ public interface EcmArtworkNodeActionDao {
 
     List<EcmArtworkNodeActionVO> selectByEcmNodeIdList(@Param("list") List<Integer> fkNodeIdList);
 
+    int insertSelectiveVOList(@Param("list") List<EcmArtworkNodeActionVO> ecmArtworkNodeActionVOS);
 }

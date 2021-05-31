@@ -319,6 +319,28 @@
 
 
   </insert>
+  <insert id="insertSelectiveVOList" keyColumn="pk_buoy_id" keyProperty="pkBuoyId"  useGeneratedKeys="true">
+    insert into ecm_artwork_node_buoy
+    (fk_node_id, fk_artwork_id, buoy_wide,
+    buoy_high, buoy_opacity, buoy_section_time,
+    buoy_coordinate_x, buoy_coordinate_y, buoy_type,
+    buoy_play_end_type, buoy_status, buoy_pop_context,
+    buoy_pop_type, buoy_pop_app_id, pop_img_width,
+    pop_img_high, pop_img_scale, buoy_event,
+    buoy_context)
+
+    values
+    <foreach collection="list" separator="," index="index" item="item" >
+      (#{item.fkNodeId,jdbcType=INTEGER}, #{item.fkArtworkId,jdbcType=INTEGER}, #{item.buoyWide,jdbcType=VARCHAR},
+      #{item.buoyHigh,jdbcType=VARCHAR}, #{item.buoyOpacity,jdbcType=VARCHAR}, #{item.buoySectionTime,jdbcType=VARCHAR},
+      #{item.buoyCoordinateX,jdbcType=VARCHAR}, #{item.buoyCoordinateY,jdbcType=VARCHAR}, #{item.buoyType,jdbcType=INTEGER},
+      #{item.buoyPlayEndType,jdbcType=INTEGER}, #{item.buoyStatus,jdbcType=INTEGER}, #{item.buoyPopContext,jdbcType=VARCHAR},
+      #{item.buoyPopType,jdbcType=INTEGER}, #{item.buoyPopAppId,jdbcType=VARCHAR}, #{item.popImgWidth,jdbcType=VARCHAR},
+      #{item.popImgHigh,jdbcType=VARCHAR}, #{item.popImgScale,jdbcType=VARCHAR}, #{item.buoyEvent,jdbcType=VARCHAR},
+      #{item.buoyContext,jdbcType=VARCHAR})
+    </foreach>
+
+  </insert>
 
   <update id="updateByPrimaryKeySelectiveList">
     update ecm_artwork_node_buoy

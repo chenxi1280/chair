@@ -214,6 +214,8 @@ public interface EcmArtWorkService {
 
     ResponseDTO migrateArtworkNode(EcmArtworkNodesVo ecmArtworkNodesVo);
 
+    ResponseDTO migrateArtwork(EcmArtworkVo ecmArtworkVo);
+
     ResponseDTO saveArtworkNodeAction(EcmArtworkNodeActionQuery ecmArtworkNodeActionVO);
 
     ResponseDTO getArtworkNodeAction(EcmArtworkNodeActionQuery ecmArtworkNodeActionQuery);

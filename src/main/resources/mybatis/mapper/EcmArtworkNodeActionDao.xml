@@ -327,8 +327,30 @@
     </foreach>
 
   </insert>
+    <insert id="insertSelectiveVOList">
+      insert into ecm_artwork_node_action (fk_node_id, fk_artwork_id, action_wide,
+      action_high, action_opacity, action_section_time,
+      action_end_time, action_coordinate_x, action_coordinate_y,
+      action_type, action_play_end_type, action_event_type,
+      action_event_type_img_url, action_transform,
+      action_scale, action_text_state, action_text_color,
+      action_text_point, action_text_value, action_text_coordinate_x,
+      action_text_coordinate_y)
 
-  <update id="updateByPrimaryKeySelectiveList">
+      values
+      <foreach collection="list" separator="," index="index" item="item" >
+        (#{item.fkNodeId,jdbcType=INTEGER}, #{item.fkArtworkId,jdbcType=INTEGER}, #{item.actionWide,jdbcType=VARCHAR},
+        #{item.actionHigh,jdbcType=VARCHAR}, #{item.actionOpacity,jdbcType=VARCHAR}, #{item.actionSectionTime,jdbcType=VARCHAR},
+        #{item.actionEndTime,jdbcType=VARCHAR}, #{item.actionCoordinateX,jdbcType=VARCHAR}, #{item.actionCoordinateY,jdbcType=VARCHAR},
+        #{item.actionType,jdbcType=INTEGER}, #{item.actionPlayEndType,jdbcType=INTEGER}, #{item.actionEventType,jdbcType=INTEGER},
+        #{item.actionEventTypeImgUrl,jdbcType=VARCHAR}, #{item.actionTransform,jdbcType=VARCHAR},
+        #{item.actionScale,jdbcType=VARCHAR}, #{item.actionTextState,jdbcType=INTEGER}, #{item.actionTextColor,jdbcType=VARCHAR},
+        #{item.actionTextPoint,jdbcType=VARCHAR}, #{item.actionTextValue,jdbcType=VARCHAR}, #{item.actionTextCoordinateX,jdbcType=VARCHAR},
+        #{item.actionTextCoordinateY,jdbcType=VARCHAR})
+      </foreach>
+    </insert>
+
+    <update id="updateByPrimaryKeySelectiveList">
     update ecm_artwork_node_action
 
     <trim prefix="set" suffixOverrides=",">

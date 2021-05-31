@@ -529,6 +529,13 @@ public class EcmArtWorkController extends BaseController{
 		return ecmArtWorkService.migrateArtworkNode(ecmArtworkNodesVo);
 	}
 
+	@RequestMapping("/migrateArtwork")
+	@ResponseBody
+	public ResponseDTO migrateArtwork(@RequestBody EcmArtworkVo ecmArtworkVo){
+		ecmArtworkVo.setFkUserid(getUserIdByHandToken());
+		return ecmArtWorkService.migrateArtwork(ecmArtworkVo);
+	}
+
 	@RequestMapping("/saveArtworkNodeAction")
 	@ResponseBody
 	public ResponseDTO saveArtworkNodeAction(@RequestBody EcmArtworkNodeActionQuery ecmArtworkNodeActionQuery){

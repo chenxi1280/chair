@@ -27,7 +27,7 @@ public interface EcmArtworkNodePopupSettingsDao {
 
     int updateNameByArtWorkSelective(EcmArtworkNodePopupSettingsVO ecmArtworkNodePopupSettingsVO);
 
-    int insertSelectiveList(List<EcmArtworkNodePopupSettings> ecmArtworkNodePopupSettingsList);
+    int insertSelectiveList(@Param("list")  List<EcmArtworkNodePopupSettingsVO> ecmArtworkNodePopupSettingsList);
 
     List<EcmArtworkNodePopupSettingsVO> selectByEndingList(@Param("list") List<EcmArtworkEndingsVO> ecmArtworkEndingsVOList);
 }
