@@ -67,6 +67,21 @@ public class EcmArtworkNodePopupSettings implements Serializable {
     private Integer popupPercentageState;
 
     /**
+     * 图片宽
+     */
+    private String popImgWidth;
+
+    /**
+     * 图片高
+     */
+    private String popImgHigh;
+
+    /**
+     * 图片宽高比
+     */
+    private String popImgScale;
+
+    /**
      * 创建时间
      */
     private Date createTime;

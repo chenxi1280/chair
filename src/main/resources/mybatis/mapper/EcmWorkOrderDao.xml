@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mpic.evolution.chair.dao.EcmWorkOrderDao">
+  <resultMap id="BaseResultMap" type="com.mpic.evolution.chair.pojo.entity.EcmWorkOrder">
+    <id column="pk_work_order_id" jdbcType="INTEGER" property="pkWorkOrderId" />
+    <result column="fk_user_id" jdbcType="INTEGER" property="fkUserId" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="user_company" jdbcType="VARCHAR" property="userCompany" />
+    <result column="user_contact_information" jdbcType="VARCHAR" property="userContactInformation" />
+    <result column="user_application_function" jdbcType="VARCHAR" property="userApplicationFunction" />
+    <result column="apply_status" jdbcType="INTEGER" property="applyStatus" />
+    <result column="fk_handler_id" jdbcType="INTEGER" property="fkHandlerId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pk_work_order_id, fk_user_id, user_name, user_company, user_contact_information, 
+    user_application_function, apply_status, fk_handler_id, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from ecm_work_order
+    where pk_work_order_id = #{pkWorkOrderId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ecm_work_order
+    where pk_work_order_id = #{pkWorkOrderId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="pk_work_order_id" keyProperty="pkWorkOrderId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmWorkOrder" useGeneratedKeys="true">
+    insert into ecm_work_order (fk_user_id, user_name, user_company, 
+      user_contact_information, user_application_function, 
+      apply_status, fk_handler_id, create_time, 
+      update_time)
+    values (#{fkUserId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{userCompany,jdbcType=VARCHAR}, 
+      #{userContactInformation,jdbcType=VARCHAR}, #{userApplicationFunction,jdbcType=VARCHAR}, 
+      #{applyStatus,jdbcType=INTEGER}, #{fkHandlerId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" keyColumn="pk_work_order_id" keyProperty="pkWorkOrderId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmWorkOrder" useGeneratedKeys="true">
+    insert into ecm_work_order
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="fkUserId != null">
+        fk_user_id,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="userCompany != null">
+        user_company,
+      </if>
+      <if test="userContactInformation != null">
+        user_contact_information,
+      </if>
+      <if test="userApplicationFunction != null">
+        user_application_function,
+      </if>
+      <if test="applyStatus != null">
+        apply_status,
+      </if>
+      <if test="fkHandlerId != null">
+        fk_handler_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="fkUserId != null">
+        #{fkUserId,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userCompany != null">
+        #{userCompany,jdbcType=VARCHAR},
+      </if>
+      <if test="userContactInformation != null">
+        #{userContactInformation,jdbcType=VARCHAR},
+      </if>
+      <if test="userApplicationFunction != null">
+        #{userApplicationFunction,jdbcType=VARCHAR},
+      </if>
+      <if test="applyStatus != null">
+        #{applyStatus,jdbcType=INTEGER},
+      </if>
+      <if test="fkHandlerId != null">
+        #{fkHandlerId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmWorkOrder">
+    update ecm_work_order
+    <set>
+      <if test="fkUserId != null">
+        fk_user_id = #{fkUserId,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userCompany != null">
+        user_company = #{userCompany,jdbcType=VARCHAR},
+      </if>
+      <if test="userContactInformation != null">
+        user_contact_information = #{userContactInformation,jdbcType=VARCHAR},
+      </if>
+      <if test="userApplicationFunction != null">
+        user_application_function = #{userApplicationFunction,jdbcType=VARCHAR},
+      </if>
+      <if test="applyStatus != null">
+        apply_status = #{applyStatus,jdbcType=INTEGER},
+      </if>
+      <if test="fkHandlerId != null">
+        fk_handler_id = #{fkHandlerId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where pk_work_order_id = #{pkWorkOrderId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmWorkOrder">
+    update ecm_work_order
+    set fk_user_id = #{fkUserId,jdbcType=INTEGER},
+      user_name = #{userName,jdbcType=VARCHAR},
+      user_company = #{userCompany,jdbcType=VARCHAR},
+      user_contact_information = #{userContactInformation,jdbcType=VARCHAR},
+      user_application_function = #{userApplicationFunction,jdbcType=VARCHAR},
+      apply_status = #{applyStatus,jdbcType=INTEGER},
+      fk_handler_id = #{fkHandlerId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where pk_work_order_id = #{pkWorkOrderId,jdbcType=INTEGER}
+  </update>
+</mapper>

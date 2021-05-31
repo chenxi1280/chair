@@ -13,13 +13,16 @@
     <result column="popup_skip" jdbcType="VARCHAR" property="popupSkip" />
     <result column="popup_app_id" jdbcType="VARCHAR" property="popupAppId" />
     <result column="popup_percentage_state" jdbcType="INTEGER" property="popupPercentageState" />
+    <result column="pop_img_width" jdbcType="VARCHAR" property="popImgWidth" />
+    <result column="pop_img_high" jdbcType="VARCHAR" property="popImgHigh" />
+    <result column="pop_img_scale" jdbcType="VARCHAR" property="popImgScale" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
     pk_node_popup_settings_id, fk_node_id, fk_artwork_id, popup_name, popup_name_state,
     popup_position, popup_context, popup_context_state, popup_skip, popup_app_id, popup_percentage_state,
-    create_time, update_time
+    pop_img_width, pop_img_high, pop_img_scale, create_time, update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
@@ -33,15 +36,17 @@
   </delete>
   <insert id="insert" keyColumn="pk_node_popup_settings_id" keyProperty="pkNodePopupSettingsId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodePopupSettings" useGeneratedKeys="true">
     insert into ecm_artwork_node_popup_settings (fk_node_id, fk_artwork_id, popup_name,
-      popup_name_state, popup_position, popup_context,
-      popup_context_state, popup_skip, popup_app_id,
-      popup_percentage_state, create_time, update_time
-      )
+                                                 popup_name_state, popup_position, popup_context,
+                                                 popup_context_state, popup_skip, popup_app_id,
+                                                 popup_percentage_state, pop_img_width, pop_img_high,
+                                                 pop_img_scale, create_time, update_time
+    )
     values (#{fkNodeId,jdbcType=INTEGER}, #{fkArtworkId,jdbcType=INTEGER}, #{popupName,jdbcType=VARCHAR},
-      #{popupNameState,jdbcType=INTEGER}, #{popupPosition,jdbcType=INTEGER}, #{popupContext,jdbcType=VARCHAR},
-      #{popupContextState,jdbcType=INTEGER}, #{popupSkip,jdbcType=VARCHAR}, #{popupAppId,jdbcType=VARCHAR},
-      #{popupPercentageState,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
-      )
+            #{popupNameState,jdbcType=INTEGER}, #{popupPosition,jdbcType=INTEGER}, #{popupContext,jdbcType=VARCHAR},
+            #{popupContextState,jdbcType=INTEGER}, #{popupSkip,jdbcType=VARCHAR}, #{popupAppId,jdbcType=VARCHAR},
+            #{popupPercentageState,jdbcType=INTEGER}, #{popImgWidth,jdbcType=VARCHAR}, #{popImgHigh,jdbcType=VARCHAR},
+            #{popImgScale,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+           )
   </insert>
   <insert id="insertSelective" keyColumn="pk_node_popup_settings_id" keyProperty="pkNodePopupSettingsId" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodePopupSettings" useGeneratedKeys="true">
     insert into ecm_artwork_node_popup_settings
@@ -75,6 +80,15 @@
       </if>
       <if test="popupPercentageState != null">
         popup_percentage_state,
+      </if>
+      <if test="popImgWidth != null">
+        pop_img_width,
+      </if>
+      <if test="popImgHigh != null">
+        pop_img_high,
+      </if>
+      <if test="popImgScale != null">
+        pop_img_scale,
       </if>
       <if test="createTime != null">
         create_time,
@@ -114,6 +128,15 @@
       <if test="popupPercentageState != null">
         #{popupPercentageState,jdbcType=INTEGER},
       </if>
+      <if test="popImgWidth != null">
+        #{popImgWidth,jdbcType=VARCHAR},
+      </if>
+      <if test="popImgHigh != null">
+        #{popImgHigh,jdbcType=VARCHAR},
+      </if>
+      <if test="popImgScale != null">
+        #{popImgScale,jdbcType=VARCHAR},
+      </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
       </if>
@@ -122,7 +145,7 @@
       </if>
     </trim>
   </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodePopupSettings">
+  <update id="updateByPrimaryKeySelective" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodePopupSettings">
     update ecm_artwork_node_popup_settings
     <set>
       <if test="fkNodeId != null">
@@ -155,6 +178,15 @@
       <if test="popupPercentageState != null">
         popup_percentage_state = #{popupPercentageState,jdbcType=INTEGER},
       </if>
+      <if test="popImgWidth != null">
+        pop_img_width = #{popImgWidth,jdbcType=VARCHAR},
+      </if>
+      <if test="popImgHigh != null">
+        pop_img_high = #{popImgHigh,jdbcType=VARCHAR},
+      </if>
+      <if test="popImgScale != null">
+        pop_img_scale = #{popImgScale,jdbcType=VARCHAR},
+      </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
@@ -167,20 +199,22 @@
   <update id="updateByPrimaryKey" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodePopupSettings">
     update ecm_artwork_node_popup_settings
     set fk_node_id = #{fkNodeId,jdbcType=INTEGER},
-      fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER},
-      popup_name = #{popupName,jdbcType=VARCHAR},
-      popup_name_state = #{popupNameState,jdbcType=INTEGER},
-      popup_position = #{popupPosition,jdbcType=INTEGER},
-      popup_context = #{popupContext,jdbcType=VARCHAR},
-      popup_context_state = #{popupContextState,jdbcType=INTEGER},
-      popup_skip = #{popupSkip,jdbcType=VARCHAR},
-      popup_app_id = #{popupAppId,jdbcType=VARCHAR},
-      popup_percentage_state = #{popupPercentageState,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+        fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER},
+        popup_name = #{popupName,jdbcType=VARCHAR},
+        popup_name_state = #{popupNameState,jdbcType=INTEGER},
+        popup_position = #{popupPosition,jdbcType=INTEGER},
+        popup_context = #{popupContext,jdbcType=VARCHAR},
+        popup_context_state = #{popupContextState,jdbcType=INTEGER},
+        popup_skip = #{popupSkip,jdbcType=VARCHAR},
+        popup_app_id = #{popupAppId,jdbcType=VARCHAR},
+        popup_percentage_state = #{popupPercentageState,jdbcType=INTEGER},
+        pop_img_width = #{popImgWidth,jdbcType=VARCHAR},
+        pop_img_high = #{popImgHigh,jdbcType=VARCHAR},
+        pop_img_scale = #{popImgScale,jdbcType=VARCHAR},
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+        update_time = #{updateTime,jdbcType=TIMESTAMP}
     where pk_node_popup_settings_id = #{pkNodePopupSettingsId,jdbcType=INTEGER}
   </update>
-
   <!--  sql-->
   <select id="selectByArtworkNodeList" resultType="com.mpic.evolution.chair.pojo.vo.EcmArtworkNodePopupSettingsVO">
     select <include refid="Base_Column_List" />

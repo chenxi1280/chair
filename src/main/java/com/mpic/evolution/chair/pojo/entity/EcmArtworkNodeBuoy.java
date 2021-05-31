@@ -86,6 +86,21 @@ public class EcmArtworkNodeBuoy implements Serializable {
     private String buoyPopAppId;
 
     /**
+     * 图片宽
+     */
+    private String popImgWidth;
+
+    /**
+     * 图片高
+     */
+    private String popImgHigh;
+
+    /**
+     * 比列
+     */
+    private String popImgScale;
+
+    /**
      * 事件
      */
     private String buoyEvent;
