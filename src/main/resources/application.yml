@@ -43,5 +43,3 @@ logging:
   level:
     com.mpic.evolution.chair.dao: debug
     com.mpic.evolution.chair: info
-server:
-  port: 8008

@@ -366,7 +366,7 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 				ecmArtworkFreeAd.setCreateTime(new Date());
 				ecmArtworkFreeAdDao.insertSelective(ecmArtworkFreeAd);
 			}
-			if(freeAdVo.getVideoType() == 1){
+			if(freeAdVo.getVideoType() != null && freeAdVo.getVideoType() == 1){
 				this.artworkCompressionFree(userId,freeAdVo.getArtworkId());
 			}else{
 				EcmArtworkCompressionFree ecmArtworkCompressionFree = new EcmArtworkCompressionFree();
@@ -384,6 +384,14 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			ecmArtworkFreeAd = ecmArtworkFreeAdDao.selectByRecord(ecmArtworkFreeAd);
 			if(ecmArtworkFreeAd != null) {
 				ecmArtworkFreeAdDao.deleteByPrimaryKey(ecmArtworkFreeAd.getPkEcmArtworkFreeAdId());
+			}
+			EcmArtworkCompressionFree ecmArtworkCompressionFree = new EcmArtworkCompressionFree();
+			ecmArtworkCompressionFree.setStatus(1);
+			ecmArtworkCompressionFree.setFkUserId(userId);
+			ecmArtworkCompressionFree.setFkArtworkId(freeAdVo.getArtworkId());
+			EcmArtworkCompressionFree ecmArtworkCompressionFree1 = ecmArtworkCompressionFreeDao.selectByRecord(ecmArtworkCompressionFree);
+			if(ecmArtworkCompressionFree1 != null){
+				ecmArtworkCompressionFreeDao.deleteByPrimaryKey(ecmArtworkCompressionFree1.getPkId());
 			}
 		}
 		return ResponseDTO.ok("设置成功");
