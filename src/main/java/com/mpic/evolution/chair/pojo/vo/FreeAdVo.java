@@ -12,4 +12,9 @@ public class FreeAdVo {
     private Integer playType;
 
     private String token;
+
+    /**
+     * 1 免广压缩作品
+     */
+    private Integer videoType;
 }
