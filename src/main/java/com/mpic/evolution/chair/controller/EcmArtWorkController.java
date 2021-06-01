@@ -521,7 +521,15 @@ public class EcmArtWorkController extends BaseController{
 
 
 
-//	@EcmArtworkAuthentication(auth = {"更新节点"})
+	/**
+	 * @param: [ecmArtworkNodesVo]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2021/6/1
+	 * 描述 : 节点迁移
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
 	@RequestMapping("/migrateArtworkNode")
 	@ResponseBody
 	public ResponseDTO migrateArtworkNode(@RequestBody EcmArtworkNodesVo ecmArtworkNodesVo){
@@ -529,6 +537,15 @@ public class EcmArtWorkController extends BaseController{
 		return ecmArtWorkService.migrateArtworkNode(ecmArtworkNodesVo);
 	}
 
+	/**
+	 * @param: [ecmArtworkVo]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2021/6/1
+	 * 描述 : 作品复制
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
 	@RequestMapping("/migrateArtwork")
 	@ResponseBody
 	public ResponseDTO migrateArtwork(@RequestBody EcmArtworkVo ecmArtworkVo){
@@ -536,6 +553,15 @@ public class EcmArtWorkController extends BaseController{
 		return ecmArtWorkService.migrateArtwork(ecmArtworkVo);
 	}
 
+	/**
+	 * @param: [ecmArtworkNodeActionQuery]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2021/6/1
+	 * 描述 : 保存动作
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
 	@RequestMapping("/saveArtworkNodeAction")
 	@ResponseBody
 	public ResponseDTO saveArtworkNodeAction(@RequestBody EcmArtworkNodeActionQuery ecmArtworkNodeActionQuery){
@@ -543,6 +569,15 @@ public class EcmArtWorkController extends BaseController{
 		return ecmArtWorkService.saveArtworkNodeAction(ecmArtworkNodeActionQuery);
 	}
 
+	/**
+	 * @param: [ecmArtworkNodeActionQuery]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2021/6/1
+	 * 描述 : 获取动作
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
 	@RequestMapping("/getArtworkNodeAction")
 	@ResponseBody
 	public ResponseDTO getArtworkNodeAction(@RequestBody EcmArtworkNodeActionQuery ecmArtworkNodeActionQuery){
@@ -550,7 +585,15 @@ public class EcmArtWorkController extends BaseController{
 		return ecmArtWorkService.getArtworkNodeAction(ecmArtworkNodeActionQuery);
 	}
 
-
+	/**
+	 * @param: [ecmArtworkNodeBuoyPanoramicQuery]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2021/6/1
+	 * 描述 : 保存vr 浮标
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
 //	@EcmArtworkAuthentication(auth = {"VR"})
 	@RequestMapping("/saveArtworkNodePanoramicBuoy")
 	@ResponseBody
@@ -559,7 +602,15 @@ public class EcmArtWorkController extends BaseController{
 		return ecmArtWorkService.saveArtworkNodePanoramicBuoy(ecmArtworkNodeBuoyPanoramicQuery);
 	}
 
-
+	/**
+	 * @param: [ecmArtworkNodeBuoyPanoramicQuery]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2021/6/1
+	 * 描述 : 获取vr 浮标
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
 	@EcmArtworkAuthentication(auth = {"浮标"})
 	@RequestMapping("/getArtworkNodePanoramicBuoy")
 	@ResponseBody
