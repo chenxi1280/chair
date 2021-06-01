@@ -31,4 +31,5 @@ public interface EcmArtworkNodeNumberConditionDao {
 
     int insertList(@Param("list") List<EcmArtworkNodeNumberConditionVO> ecmArtworkNodesVoList);
 
+    int insertVOList(@Param("list") List<EcmArtworkNodeNumberConditionVO> ecmArtworkNodeNumberConditionVOS);
 }

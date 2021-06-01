@@ -1127,7 +1127,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             });
             // 更新节点 parent id
             ecmArtworkNodesVos.forEach( v -> {
-                if (v.getParentId() != 0 ) {
+                if (v.getParentId() != 0 && v.getParentId() != -1) {
                     v.setParentId(map.get(v.getParentId()));
                 }
             });
@@ -1139,7 +1139,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
                     v.setFkArtworkId(artwork.getPkArtworkId());
                     v.setPkDetailid(map.get(v.getPkDetailid()));
                 });
-                ecmArtworkNodeNumberConditionDao.insertList(ecmArtworkNodeNumberConditionVOS);
+                ecmArtworkNodeNumberConditionDao.insertVOList(ecmArtworkNodeNumberConditionVOS);
             }
 
             // 多结局

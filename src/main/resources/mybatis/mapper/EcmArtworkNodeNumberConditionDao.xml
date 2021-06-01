@@ -477,7 +477,6 @@
 
   <insert id="insertList">
     insert into ecm_artwork_node_number_condition
-
       (pk_detailId,
       appear_condition0, change_condition0,
       appear_condition1, change_condition1,
@@ -515,8 +514,37 @@
 
 
   </insert>
+  <insert id="insertVOList">
+    insert into ecm_artwork_node_number_condition
+    (pk_detailId,appear_condition0, change_condition0,
+    appear_condition1, change_condition1, appear_condition2,
+    change_condition2, appear_condition3, change_condition3,
+    appear_condition4, change_condition4, name_condition0,
+    name_display0, name_condition1, name_display1,
+    name_condition2, name_display2, name_condition3,
+    name_display3, name_condition4, name_display4,
+    fk_artwork_id, change_flag, appear_flag,
+    name_flag, all_name_flag, create_date,
+    updata_date)
+    values
+    <foreach collection="list" separator="," index="index" item="item" >
+      ( #{item.pkDetailid,jdbcType=INTEGER},
+      #{item.appearCondition0,jdbcType=VARCHAR}, #{item.changeCondition0,jdbcType=VARCHAR},
+      #{item.appearCondition1,jdbcType=VARCHAR}, #{item.changeCondition1,jdbcType=VARCHAR}, #{item.appearCondition2,jdbcType=VARCHAR},
+      #{item.changeCondition2,jdbcType=VARCHAR}, #{item.appearCondition3,jdbcType=VARCHAR}, #{item.changeCondition3,jdbcType=VARCHAR},
+      #{item.appearCondition4,jdbcType=VARCHAR}, #{item.changeCondition4,jdbcType=VARCHAR}, #{item.nameCondition0,jdbcType=VARCHAR},
+      #{item.nameDisplay0,jdbcType=TINYINT}, #{item.nameCondition1,jdbcType=VARCHAR}, #{item.nameDisplay1,jdbcType=TINYINT},
+      #{item.nameCondition2,jdbcType=VARCHAR}, #{item.nameDisplay2,jdbcType=TINYINT}, #{item.nameCondition3,jdbcType=VARCHAR},
+      #{item.nameDisplay3,jdbcType=TINYINT}, #{item.nameCondition4,jdbcType=VARCHAR}, #{item.nameDisplay4,jdbcType=TINYINT},
+      #{item.fkArtworkId,jdbcType=INTEGER}, #{item.changeFlag,jdbcType=TINYINT}, #{item.appearFlag,jdbcType=TINYINT},
+      #{item.nameFlag,jdbcType=TINYINT}, #{item.allNameFlag,jdbcType=TINYINT}, #{item.createDate,jdbcType=TIMESTAMP},
+      #{item.updataDate,jdbcType=TIMESTAMP})
+    </foreach>
 
-<!--  #{item.appearCondition0 }, #{item.changeCondition0 },-->
+
+  </insert>
+
+  <!--  #{item.appearCondition0 }, #{item.changeCondition0 },-->
 <!--  #{item.appearCondition1 }, #{item.changeCondition1 },-->
 <!--  #{item.appearCondition2 }, #{item.changeCondition2 },-->
 <!--  #{item.appearCondition3 }, #{item.changeCondition3 },-->
