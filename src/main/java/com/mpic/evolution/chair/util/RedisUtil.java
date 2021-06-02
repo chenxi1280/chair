@@ -13,7 +13,10 @@ import org.springframework.util.CollectionUtils;
 /** 
  * redis工具类
  * @author 作者 SJ: 
- * @date 创建时间：2020-8-12 13:19:22 
+ * @date 创建时间：2020-8-12 13:19:22
+ * LoginController getConfirmCode lSet 存储图形验证码的key
+ * LoginController loginByToken lPop 去除图形验证码的key lPop移出并获取列表的第一个元素
+ *
 */
 @Component
 public final class RedisUtil {

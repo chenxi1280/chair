@@ -12,6 +12,7 @@ import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 
 import com.mpic.evolution.chair.common.constant.JudgeConstant;
+import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -112,7 +113,7 @@ public class LoginController extends BaseController {
 		} catch (IOException e) {
 			log.error("获取图片验证码失败");
 			e.printStackTrace();
-			return ResponseDTO.fail("failed", null, null, "000039");
+			return ResponseDTO.fail(ErrorEnum.ERR_000039.getText(), null, null, ErrorEnum.ERR_000039.getValue());
 		}
 	}
 
@@ -134,32 +135,32 @@ public class LoginController extends BaseController {
 			ecmUser = ecmUserService.getUserInfos(ecmUser);
 			// 判断账号是否存在
 			if (ecmUser == null || StringUtils.isNullOrBlank(ecmUser.getPassword())) {
-				data.add("505");
+				data.add(ErrorEnum.ERR_505.getValue());
 			}
 			String confirmCode = ecmUserVo.getConfirmCode();
 			String regionCode = String.valueOf(redisUtil.lPop(ecmUserVo.getImageCodeKey()));
 			if (StringUtils.isNullOrEmpty(regionCode)) {
-				data.add("501");
+				data.add(ErrorEnum.ERR_501.getValue());
 			} else {
 				if (!regionCode.equals(confirmCode)) {
-					data.add("501");
+					data.add(ErrorEnum.ERR_501.getValue());
 				}
 			}
 			// 账号不存在需要直接返回
 			if (!data.isEmpty()) {
-				return ResponseDTO.fail("登陆失败", data, null, 508);
+				return ResponseDTO.fail(ErrorEnum.ERR_508.getText(), data, null, ErrorEnum.ERR_508.getValue());
 			}
 			if ( "N".equals(ecmUser.getIsValid())) {
-				data.add("509");
+				data.add(ErrorEnum.ERR_509.getValue());
 			}
 			String inputPwd = ecmUserVo.getPassword();
 			String encrypt = MD5Utils.encrypt(inputPwd);
 			String password = ecmUser.getPassword();
 			if (!encrypt.equals(password)) {
-				data.add("506");
+				data.add(ErrorEnum.ERR_506.getValue());
 			}
 			if (!data.isEmpty()) {
-				return ResponseDTO.fail("登陆失败", data, null, 508);
+				return ResponseDTO.fail(ErrorEnum.ERR_508.getText(), data, null, ErrorEnum.ERR_508.getValue());
 			}
 			// 设置token
 			String token = JWTUtil.sign(String.valueOf(ecmUser.getPkUserId()), ecmUser.getUsername(),
@@ -173,11 +174,11 @@ public class LoginController extends BaseController {
 		} catch (MyBatisSystemException e) {
 			log.error("账号在数据库中有多条记录");
 			e.printStackTrace();
-			return ResponseDTO.fail("failed", null, null, "000039");
+			return ResponseDTO.fail(ErrorEnum.ERR_000039.getText(), null, null, ErrorEnum.ERR_000039.getValue());
 		} catch (Exception e) {
 			log.error("用户信息加密失败");
 			e.printStackTrace();
-			return ResponseDTO.fail("failed", null, null, "000039");
+			return ResponseDTO.fail(ErrorEnum.ERR_000039.getText(), null, null, ErrorEnum.ERR_000039.getValue());
 		}
 	}
 
@@ -204,39 +205,39 @@ public class LoginController extends BaseController {
 				String inviteCode = ecmUserVo.getInviteCode();
 				ecmInviteCode = ecmInviteCodeService.getEcmInvitedCode(inviteCode);
 				if (ecmInviteCode == null || ecmInviteCode.getFkUserId() != null) {
-					return ResponseDTO.fail("请向管理员获取邀请码", null, null, 515);
+					return ResponseDTO.fail(ErrorEnum.ERR_515.getText(), null, null, ErrorEnum.ERR_515.getValue());
 				}else {
 
 				}
 			}
 			//昵称检测
 			if (StringUtils.isNullOrBlank(username)) {
-				return ResponseDTO.fail("昵称已被使用", null, null, 504);
+				return ResponseDTO.fail(ErrorEnum.ERR_504.getText(), null, null, ErrorEnum.ERR_504.getValue());
 			}
 			String result = AIVerifyUtil.convertContent(username);
 			if (!StringUtils.isNullOrBlank(result)) {
-				return ResponseDTO.fail("昵称存在违禁词汇", result, null, 510);
+				return ResponseDTO.fail(ErrorEnum.ERR_510.getText(), result, null, ErrorEnum.ERR_510.getValue());
 			}
 			userInfo.setUsername(username);
 			user = ecmUserService.getUserInfos(userInfo);
 			// 用户昵称是否存在
 			if (user != null && !StringUtils.isNullOrBlank(String.valueOf(user.getUsername()))) {
-				return ResponseDTO.fail("昵称已被使用", null, null, 504);
+				return ResponseDTO.fail(ErrorEnum.ERR_504.getText(), null, null, ErrorEnum.ERR_504.getValue());
 			}
 			//手机号检测
 			String mobile = EncryptUtil.aesEncrypt(ecmUserVo.getMobile(), SecretKeyConstants.SECRET_KEY);
 			userInfo.setMobile(mobile);
 			user = ecmUserService.getUserInfos(userInfo);
 			if (user != null && !StringUtils.isNullOrBlank(String.valueOf(user.getMobile()))) {
-				return ResponseDTO.fail("账号已被注册，请直接登陆", null, null, 505);
+				return ResponseDTO.fail(ErrorEnum.ERR_505.getText(), null, null, ErrorEnum.ERR_505.getValue());
 			}
 			// 短信验证码验证
 			String phoneConfirmCode = String.valueOf(redisUtil.get(mobile));
 			if (StringUtils.isNullOrEmpty(phoneConfirmCode)) {
-				return ResponseDTO.fail("请重新获取验证码", null, null, 507);
+				return ResponseDTO.fail(ErrorEnum.ERR_507.getText(), null, null, ErrorEnum.ERR_507.getValue());
 			} else {
 				if (!inputPhoneConfirmCode.equals(phoneConfirmCode)) {
-					return ResponseDTO.fail("请正确输入验证码", null, null, 502);
+					return ResponseDTO.fail(ErrorEnum.ERR_502.getText(), null, null, ErrorEnum.ERR_502.getValue());
 				}
 			}
 			// 入库
@@ -264,7 +265,7 @@ public class LoginController extends BaseController {
 			return ResponseDTO.ok("注册成功");
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseDTO.fail("failed", null, null, "000039");
+			return ResponseDTO.fail(ErrorEnum.ERR_000039.getText(), null, null, ErrorEnum.ERR_000039.getValue());
 		}
 	}
 
@@ -288,17 +289,17 @@ public class LoginController extends BaseController {
 			SendStatus status = loginService.sendSMS(phoneConfirmCode, phoneNumbers);
 			if (!"Ok".equals(status.getCode())) {
 				log.error("手机验证码发送失败：" + status.getMessage());
-				return ResponseDTO.fail("手机验证码发送失败：" + status.getMessage(), null, null, 502);
+				return ResponseDTO.fail(ErrorEnum.ERR_502.getText() + status.getMessage(), null, null, ErrorEnum.ERR_502.getValue());
 			}
 			return ResponseDTO.ok("手机验证码发送成功");
 		} catch (TencentCloudSDKException e) {
 			log.error("手机验证码发送失败");
 			e.printStackTrace();
-			return ResponseDTO.fail("failed", null, null, "000039");
+			return ResponseDTO.fail(ErrorEnum.ERR_000039.getText(), null, null, ErrorEnum.ERR_000039.getValue());
 		} catch (Exception e) {
 			log.error("手机号加密失败");
 			e.printStackTrace();
-			return ResponseDTO.fail("failed", null, null, "000039");
+			return ResponseDTO.fail(ErrorEnum.ERR_000039.getText(), null, null, ErrorEnum.ERR_000039.getValue());
 		}
 	}
 
@@ -320,27 +321,27 @@ public class LoginController extends BaseController {
 			ecmUser.setMobile(EncryptUtil.aesEncrypt(mobile, SecretKeyConstants.SECRET_KEY));
 			ecmUser = ecmUserService.getUserInfos(ecmUser);
 			if (StringUtils.isNullOrEmpty(regionCode)) {
-				data.add("501");
+				data.add(ErrorEnum.ERR_501.getValue());
 			} else {
 				if (!regionCode.equals(confirmCode)) {
-					data.add("501");
+					data.add(ErrorEnum.ERR_501.getValue());
 				}
 			}
 			if (ecmUser == null || StringUtils.isNullOrBlank(ecmUser.getMobile())) {
-				data.add("505");
+				data.add(ErrorEnum.ERR_505.getValue());
 			}
 			if (!data.isEmpty()) {
-				return ResponseDTO.fail(null, data, null, 508);
+				return ResponseDTO.fail(ErrorEnum.ERR_508.getText(), data, null, ErrorEnum.ERR_508.getValue());
 			}
 			return ResponseDTO.ok();
 		} catch (MyBatisSystemException e) {
 			log.error("账号在数据库中有多条记录");
 			e.printStackTrace();
-			return ResponseDTO.fail("failed", null, null, "000039");
+			return ResponseDTO.fail(ErrorEnum.ERR_000039.getText(), null, null, ErrorEnum.ERR_000039.getValue());
 		} catch (Exception e) {
 			log.error("用户信息加密失败");
 			e.printStackTrace();
-			return ResponseDTO.fail("failed", null, null, "000039");
+			return ResponseDTO.fail(ErrorEnum.ERR_000039.getText(), null, null, ErrorEnum.ERR_000039.getValue());
 		}
 	}
 
@@ -380,19 +381,19 @@ public class LoginController extends BaseController {
 				}
 			}
 			if (!data.isEmpty()) {
-				return ResponseDTO.fail("密码修改失败", data, null, 508);
+				return ResponseDTO.fail(ErrorEnum.ERR_508.getText(), data, null, ErrorEnum.ERR_508.getValue());
 			}
 			user.setPassword(MD5Utils.encrypt(inputPwd));// 修改后的密码以MD5加密入库
 			user.setUpdateTime(new Date());// 修改updateTime字段
 			boolean flag = ecmUserService.updatePwdByToken(user, userVo);
 			if (!flag) {
-				return ResponseDTO.fail("failed", null, null, "000039");
+				return ResponseDTO.fail(ErrorEnum.ERR_000039.getText(), null, null, ErrorEnum.ERR_000039.getValue());
 			}
 			return ResponseDTO.ok("密码修改成功");
 		} catch (Exception e) {
 			log.error("用户信息加密失败");
 			e.printStackTrace();
-			return ResponseDTO.fail("failed", null, null, "000039");
+			return ResponseDTO.fail(ErrorEnum.ERR_000039.getText(), null, null, ErrorEnum.ERR_000039.getValue());
 		}
 
 	}
@@ -410,23 +411,23 @@ public class LoginController extends BaseController {
 		try {
 			String username = ecmUserVo.getUsername();
 			if (StringUtils.isNullOrBlank(username)) {
-				return ResponseDTO.fail("昵称已被使用", null, null, 504);
+				return ResponseDTO.fail(ErrorEnum.ERR_504.getText(), null, null, ErrorEnum.ERR_504.getValue());
 			}
 			String result = AIVerifyUtil.convertContent(username);
 			if (!StringUtils.isNullOrBlank(result)) {
-				return ResponseDTO.fail("昵称使用了违禁词汇", result, null, 510);
+				return ResponseDTO.fail(ErrorEnum.ERR_510.getText(), result, null, ErrorEnum.ERR_510.getValue());
 			}
 			user.setUsername(username);
 			user = ecmUserService.getUserInfos(user);
 			// 用户昵称是否存在
 			if (user != null && !StringUtils.isNullOrBlank(String.valueOf(user.getUsername()))) {
-				return ResponseDTO.fail("昵称已被使用", null, null, 504);
+				return ResponseDTO.fail(ErrorEnum.ERR_504.getText(), null, null, ErrorEnum.ERR_504.getValue());
 			}
 			return ResponseDTO.ok();
 		} catch (MyBatisSystemException e) {
 			log.error("账号在数据库中有多条记录");
 			e.printStackTrace();
-			return ResponseDTO.fail("failed", null, null, "000039");
+			return ResponseDTO.fail(ErrorEnum.ERR_000039.getText(), null, null, ErrorEnum.ERR_000039.getValue());
 		}
 	}
 
@@ -445,17 +446,17 @@ public class LoginController extends BaseController {
 			user.setMobile(mobile);
 			user = ecmUserService.getUserInfos(user);
 			if (user != null && !StringUtils.isNullOrBlank(String.valueOf(user.getMobile()))) {
-				return ResponseDTO.fail("账号已被注册，请直接登陆", null, null, 505);
+				return ResponseDTO.fail(ErrorEnum.ERR_505.getText(), null, null, ErrorEnum.ERR_505.getValue());
 			}
 			return ResponseDTO.ok();
 		} catch (MyBatisSystemException e) {
 			log.error("账号在数据库中有多条记录");
 			e.printStackTrace();
-			return ResponseDTO.fail("failed", null, null, "000039");
+			return ResponseDTO.fail(ErrorEnum.ERR_000039.getText(), null, null, ErrorEnum.ERR_000039.getValue());
 		} catch (Exception e) {
 			log.error("用户信息加密失败");
 			e.printStackTrace();
-			return ResponseDTO.fail("failed", null, null, "000039");
+			return ResponseDTO.fail(ErrorEnum.ERR_000039.getText(), null, null, ErrorEnum.ERR_000039.getValue());
 		}
 
 	}
@@ -472,11 +473,11 @@ public class LoginController extends BaseController {
 		// 验证码验证
 		String regionCode = String.valueOf(redisUtil.lPop(ecmUserVo.getImageCodeKey()));
 		if (StringUtils.isNullOrEmpty(regionCode)) {
-			return ResponseDTO.fail("点击刷新，重新获取验证码", null, null, 501);
+			return ResponseDTO.fail(ErrorEnum.ERR_501.getText(), null, null, ErrorEnum.ERR_501.getValue());
 		} else {
 			String confirmCode = ecmUserVo.getConfirmCode();
 			if (!regionCode.equals(confirmCode)) {
-				return ResponseDTO.fail("请正确输入验证码", null, null, 501);
+				return ResponseDTO.fail(ErrorEnum.ERR_501.getText(), null, null, ErrorEnum.ERR_501.getValue());
 			}
 		}
 		return ResponseDTO.ok();
@@ -497,18 +498,18 @@ public class LoginController extends BaseController {
 			// 验证码验证
 			String regionCode = String.valueOf(redisUtil.lPop(ecmInviteCodeVo.getImageCodeKey()));
 			if (StringUtils.isNullOrEmpty(regionCode)) {
-				return ResponseDTO.fail("点击刷新，重新获取验证码", null, null, 501);
+				return ResponseDTO.fail(ErrorEnum.ERR_501.getText(), null, null, ErrorEnum.ERR_501.getValue());
 			} else {
 				String confirmCode = ecmInviteCodeVo.getConfirmCode();
 				if (!regionCode.equals(confirmCode)) {
-					return ResponseDTO.fail("请正确输入验证码", null, null, 501);
+					return ResponseDTO.fail(ErrorEnum.ERR_501.getText(), null, null, ErrorEnum.ERR_501.getValue());
 				}
 			}
 			boolean flag = ecmInviteCodeService.isInvited(ecmInviteCodeVo);
 			if (flag) {
 				return ResponseDTO.ok();
 			}else {
-				return ResponseDTO.fail("请向管理员获取邀请码", null, null, 515);
+				return ResponseDTO.fail(ErrorEnum.ERR_515.getText(), null, null, ErrorEnum.ERR_515.getValue());
 			}
 		}
 		return ResponseDTO.ok();

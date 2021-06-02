@@ -536,7 +536,7 @@
     </foreach>
   </delete>
 
-    <update id="updateSelectiveEndingList">
+  <update id="updateSelectiveEndingList">
       update ecm_artwork_nodes
 
       <trim prefix="set" suffixOverrides=",">
@@ -699,4 +699,35 @@
 
   </update>
 
+  <select id="selectDeletedArtWorkNodesByArtworkIds" resultType="java.lang.String">
+    select video_code
+    from ecm_artwork_nodes
+    where fk_artwork_id in
+    <foreach collection="ecmArtworkIds" item="item" index="index" separator="," open="(" close=")">
+      #{item}
+    </foreach>
+  </select>
+
+  <select id="selectDeletedArtWorkNodesByNodesStatus" parameterType="com.mpic.evolution.chair.pojo.entity.EcmArtworkNodes"
+          resultType="java.lang.String">
+    select video_code
+    from ecm_artwork_nodes
+    <where>
+      <if test="isDeleted != null">
+        and is_deleted = #{isDeleted,jdbcType=VARCHAR}
+      </if>
+      <if test="parentId != null">
+        and parent_id = #{parentId,jdbcType=INTEGER}
+      </if>
+      <if test="fkArtworkId != null">
+        and fk_artwork_id = #{fkArtworkId,jdbcType=INTEGER}
+      </if>
+    </where>
+  </select>
+
+
+  <delete id="deleteByIsDelete">
+    delete from ecm_artwork_nodes
+    where is_deleted = #{isDeleted,jdbcType=VARCHAR}
+  </delete>
 </mapper>

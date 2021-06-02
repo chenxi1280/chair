@@ -5,10 +5,7 @@ import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHistory;
 import com.mpic.evolution.chair.pojo.entity.EcmGoods;
 import com.mpic.evolution.chair.pojo.vo.EcmOrderVO;
-import com.mpic.evolution.chair.service.EcmGoodsService;
-import com.mpic.evolution.chair.service.EcmOrderService;
-import com.mpic.evolution.chair.service.EcmVipService;
-import com.mpic.evolution.chair.service.NoticeService;
+import com.mpic.evolution.chair.service.*;
 import com.mpic.evolution.chair.service.vip.BeanConfig;
 import com.mpic.evolution.chair.service.vip.PaymentVipService;
 import com.mpic.evolution.chair.util.RedisLock;
@@ -53,6 +50,9 @@ public class TestController {
 
     @Resource
     EcmArtworkBroadcastHistoryDao historyDao;
+
+    @Resource
+    DeleteUselessMediaInformationService deleteService;
 
 //	private int count = 0;
 
@@ -178,6 +178,17 @@ public class TestController {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+
+    /**
+     * 	测试删除云点播
+     * @return
+     */
+    @RequestMapping("/testDelete")
+    @ResponseBody
+    public ResponseDTO testDelete() {
+       return deleteService.deleteUselessMediaInformation();
     }
 
 }
