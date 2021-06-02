@@ -2,7 +2,11 @@ package com.mpic.evolution.chair.controller;
 
 
 import com.mpic.evolution.chair.pojo.tencent.video.TencentVideoResult;
+import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
+import com.mpic.evolution.chair.pojo.vo.SendNoticeVO;
 import com.mpic.evolution.chair.service.VideoHandleConsumerService;
+import com.tencentcloudapi.common.exception.TencentCloudSDKException;
+import com.tencentcloudapi.sms.v20190711.models.SendStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,4 +46,18 @@ public class VideoHandleConsumerController {
         TencentVideoResult tencentVideoResult =  JSONObject.parseObject(jsonParam.toJSONString(), TencentVideoResult.class);
         return videoHandleConsumerService.videoHandleConsumer(tencentVideoResult);
     }
+
+
+    @RequestMapping("/copyVideoByArtworkId")
+    @ResponseBody
+    public void copyVideoByArtworkId(@RequestBody EcmArtworkVo ecmArtworkVo) {
+        System.out.println("copyVideoByArtworkId，需要移动数据！"+ ecmArtworkVo.getPkArtworkId());
+        try {
+            videoHandleConsumerService.copyVideo(ecmArtworkVo.getPkArtworkId());
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("copy到私有桶失败！");
+        }
+    }
+
 }
