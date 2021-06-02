@@ -764,7 +764,7 @@ public class EcmArtWorkController extends BaseController{
 	/**
 	 * 	通过请求获取accessToken
 	 *	用户登陆时的token 解密出来的用户id
-	 * 	此处要根据过期时间，存redis，有人请求，先从redis里面拿token，没有再请求
+	 * 	此处要设置过期时间，存redis，有人请求，先从redis里面拿token，没有再请求
 	 *
 	 */
 	private String getAccessToken() {

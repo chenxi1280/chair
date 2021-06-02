@@ -141,7 +141,7 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			}
 			String result = AIVerifyUtil.convertContent(artworkName);
 			if (!StringUtils.isEmpty(result)) {
-				return ResponseDTO.fail("作品名称违规含有违禁词",result,null,510);
+				return ResponseDTO.fail(ErrorEnum.ERR_510.getText(),result,null,ErrorEnum.ERR_510.getValue());
 			}
 
 			// 用户在设置免广告播放的时候 要查询用户是否有足够的下行流量 不进行短信通知 新用户查询不到下行流量信息的时候我们直接返回错误状态
@@ -208,7 +208,7 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			}
 			String result = AIVerifyUtil.convertContent(artworkName);
 			if (!StringUtils.isEmpty(result)) {
-				return ResponseDTO.fail("作品名称违规含有违禁词",result,null,510);
+				return ResponseDTO.fail(ErrorEnum.ERR_510.getText(),result,null,ErrorEnum.ERR_510.getValue());
 			}
 			// 用户在设置免广告播放的时候 要查询用户是否有足够的下行流量 不进行短信通知 新用户查询不到下行流量信息的时候我们直接返回错误状态
 			// 如果没有设置免广告则不需要查询下行流量
@@ -262,7 +262,7 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 		ecmDownlinkFlow = ecmDownlinkFlowDao.selectByRecord(ecmDownlinkFlow);
 		//ecmDownlinkFlow 用户没有下行流量记录的话标识未开通云点播子应用
 		if(ecmDownlinkFlow == null){
-			return ResponseDTO.fail("尚未购买下行流量，请联系我们。",null,null,10085);
+			return ResponseDTO.fail(ErrorEnum.ERR_10085.getText(),null,null,ErrorEnum.ERR_10085.getValue());
 		}else{
 			//用户流量为0 时停用云点播
 			String subAppId = ecmDownlinkFlow.getSubAppId().toString();
@@ -286,7 +286,7 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 				}
 
 			}
-			return ResponseDTO.fail("下行流量已用完，请联系我们。",null,null,10086);
+			return ResponseDTO.fail(ErrorEnum.ERR_10086.getText(),null,null,ErrorEnum.ERR_10086.getValue());
 		}
 	}
 
