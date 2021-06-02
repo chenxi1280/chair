@@ -17,6 +17,21 @@ import org.springframework.util.CollectionUtils;
  * LoginController getConfirmCode lSet 存储图形验证码的key
  * LoginController loginByToken lPop 去除图形验证码的key lPop移出并获取列表的第一个元素
  *
+ * LoginController sendShortMessage set 存储通过短信给用户发送的验证码 5分钟后失效
+ * LoginController registerByUserInfos get 用户手机号为key 获取存储在redis里面的短信验证码
+ * LoginController	forgetPassword get 用户手机号为key 获取存储在redis里面的短信验证码
+ *
+ *
+ * EcmArtWorkController getAccessToken set 设置过期时间，weixin请求用户的token换取openId,请求回调的token存redis，有人请求获取openId，先从redis里面拿token去换，redis没有向微信请求
+ * EcmArtWorkController getDyAccessToken set douyin请求用户的token换取openId,请求回调的token存redis，有人请求获取openId，先从redis里面拿token去换，redis没有向toutiao发送请求
+ * EcmArtWorkController	getWxcode hasKey 判断redis中是否存入了微信用户的token
+ * EcmArtWorkController	getWxcode get 获取redis中存入的微信用户的token
+ * EcmArtWorkController	getDyCode hasKey 判断redis中是否存入了抖音用户的token
+ * EcmArtWorkController	getDyCode get 获取redis中存入的抖音用户的token
+ * EcmArtWorkController	getWXBuoyPreviewCode hasKey 判断redis中是否存入的微信用户的token
+ * EcmArtWorkController	getWXBuoyPreviewCode get 获取redis中存入的微信用户的token
+ *
+ *
 */
 @Component
 public final class RedisUtil {

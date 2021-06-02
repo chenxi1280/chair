@@ -367,17 +367,17 @@ public class LoginController extends BaseController {
 			String phoneConfirmCode = String.valueOf(redisUtil.get(mobileKey));
 			String inputPwd = ecmUserVo.getPassword();
 			if (userInfos == null || StringUtils.isNullOrBlank(userInfos.getMobile())) {
-				data.add("505");
+				data.add(ErrorEnum.ERR_505.getValue());
 			}
 			if (!inputPwd.equals(ecmUserVo.getConfirmPwd())) {
-				data.add("503");
+				data.add(ErrorEnum.ERR_503.getValue());
 			}
 			if (StringUtils.isNullOrEmpty(phoneConfirmCode)) {
-				data.add("507");
+				data.add(ErrorEnum.ERR_507.getValue());
 			} else {
 				// 手机验证码校验
 				if (!phoneConfirmCode.equals(inputPhoneConfirmCode)) {
-					data.add("502");
+					data.add(ErrorEnum.ERR_502.getValue());
 				}
 			}
 			if (!data.isEmpty()) {
