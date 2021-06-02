@@ -6,6 +6,7 @@ import com.jfinal.kit.HttpKit;
 import com.mpic.evolution.chair.common.constant.PublishConstants;
 import com.mpic.evolution.chair.common.constant.TiktokConstant;
 import com.mpic.evolution.chair.common.exception.EcmTokenException;
+import com.mpic.evolution.chair.common.returnvo.ErrorEnum;
 import com.mpic.evolution.chair.config.annotation.EcmArtworkAuthentication;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.query.*;
@@ -254,10 +255,10 @@ public class EcmArtWorkController extends BaseController{
 		ecmArtworkEndingsQuery.setFkUserId(getUserIdByHandToken());
 		String key = "chair-EcmArtworkController-saveArtworkEndings-" + getUserIdByHandToken() ;
 		if ( redisUtil.hasKey(key)) {
-			return ResponseDTO.fail("保存频繁",null,480,480);
+			return ResponseDTO.fail(ErrorEnum.ERR_480.getText(),null,480, ErrorEnum.ERR_480.getValue());
 		}
 		if (CollectionUtils.isEmpty(ecmArtworkEndingsQuery.getEcmArtworkEndingsVOS()) && ecmArtworkEndingsQuery.getEcmArtworkEndingsVOS().size() > NODE_ENDING_MAX ){
-			return ResponseDTO.fail("结局数过多",null,490,490);
+			return ResponseDTO.fail(ErrorEnum.ERR_490.getText(),null,490,ErrorEnum.ERR_490.getValue());
 		}
 		// 3s 内 同一个 用户只能 调用一次 保存多结局接口
 		redisUtil.set(key ,key,3L );
@@ -365,7 +366,7 @@ public class EcmArtWorkController extends BaseController{
 		}
 
 		if (ecmArtworkEndingsQuery.getNodeNum().length > NODE_ENDING_MAX){
-			return ResponseDTO.fail("结局数过多",null,490,490);
+			return ResponseDTO.fail(ErrorEnum.ERR_490.getText(),null,490,ErrorEnum.ERR_490.getValue());
 		}
 
 		ecmArtworkEndingsQuery.setFkUserId(getUserIdByHandToken());
