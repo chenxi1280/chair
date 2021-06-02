@@ -30,7 +30,8 @@ import org.springframework.util.CollectionUtils;
  * EcmArtWorkController	getDyCode get 获取redis中存入的抖音用户的token
  * EcmArtWorkController	getWXBuoyPreviewCode hasKey 判断redis中是否存入的微信用户的token
  * EcmArtWorkController	getWXBuoyPreviewCode get 获取redis中存入的微信用户的token
- *
+ * EcmArtworkManagerServiceImpl checkdownLinkFlowIsEmpty hasKey 检查redis中是否存入了查询下行流量的key 如果存入了key 就不向腾讯云发送请求查询下行流量
+ * EcmArtworkManagerServiceImpl checkdownLinkFlowIsEmpty set 向redis中存入key 保证5分钟内一个用户只向腾讯云发送一次查询下行流量的请求
  *
 */
 @Component
