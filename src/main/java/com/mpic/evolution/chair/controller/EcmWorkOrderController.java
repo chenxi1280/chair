@@ -35,12 +35,6 @@ public class EcmWorkOrderController extends BaseController{
     @RequestMapping("saveWorkOrder")
     public ResponseDTO saveWorkOrder(@RequestBody EcmWorkOrderVO ecmWorkOrderVO){
         ecmWorkOrderVO.setFkUserId(getUserIdByHandToken());
-
-//        String key = "chair-WorkOrder-EcmWorkOrderController-saveWorkOrder-" + getUserIdByHandToken() ;
-//        if (redisUtil.hasKey(key) ){
-//            return ResponseDTO.fail(ERR_613.getText(),ERR_613.getValue());
-//        }
-//        redisUtil.set(key,key, 60 * 60);
         return ecmWorkOrderService.saveWorkOrder(ecmWorkOrderVO);
     }
 

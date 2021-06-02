@@ -8,8 +8,6 @@ import com.mpic.evolution.chair.common.constant.TiktokConstant;
 import com.mpic.evolution.chair.common.exception.EcmTokenException;
 import com.mpic.evolution.chair.config.annotation.EcmArtworkAuthentication;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
-import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeAction;
-import com.mpic.evolution.chair.pojo.entity.EcmArtworkNodeBuoyPanoramic;
 import com.mpic.evolution.chair.pojo.query.*;
 import com.mpic.evolution.chair.pojo.vo.*;
 import com.mpic.evolution.chair.service.EcmArtWorkService;
@@ -28,6 +26,7 @@ import javax.annotation.Resource;
 
 import static com.mpic.evolution.chair.common.constant.CommonField.NODE_ENDING_MAX;
 import static com.mpic.evolution.chair.common.constant.CommonField.STRING_ZORE;
+import static com.mpic.evolution.chair.common.returnvo.ErrorEnum.ERR_012;
 
 /**
  * @author cxd
@@ -252,21 +251,16 @@ public class EcmArtWorkController extends BaseController{
 	@RequestMapping("/saveArtworkEndings")
 	@ResponseBody
 	public ResponseDTO saveArtworkEndings(@RequestBody EcmArtworkEndingsQuery ecmArtworkEndingsQuery){
-		Integer userId = getUserIdByHandToken();
 		ecmArtworkEndingsQuery.setFkUserId(getUserIdByHandToken());
-		String saveArtworkEndings = "saveArtworkEndings";
-		Long o = (Long) redisUtil.get(userId + saveArtworkEndings);
-		if ( o != null) {
-			int three = 3;
-			if ( o <= (System.currentTimeMillis() - three)){
-				return ResponseDTO.fail("保存频繁",null,480,480);
-			}
+		String key = "chair-EcmArtworkController-saveArtworkEndings-" + getUserIdByHandToken() ;
+		if ( redisUtil.hasKey(key)) {
+			return ResponseDTO.fail("保存频繁",null,480,480);
 		}
-
 		if (CollectionUtils.isEmpty(ecmArtworkEndingsQuery.getEcmArtworkEndingsVOS()) && ecmArtworkEndingsQuery.getEcmArtworkEndingsVOS().size() > NODE_ENDING_MAX ){
 			return ResponseDTO.fail("结局数过多",null,490,490);
 		}
-		redisUtil.set(userId + saveArtworkEndings ,System.currentTimeMillis() );
+		// 3s 内 同一个 用户只能 调用一次 保存多结局接口
+		redisUtil.set(key ,key,3L );
 		return ecmArtWorkService.saveArtworkEndings(ecmArtworkEndingsQuery);
 	}
 
@@ -521,7 +515,15 @@ public class EcmArtWorkController extends BaseController{
 
 
 
-//	@EcmArtworkAuthentication(auth = {"更新节点"})
+	/**
+	 * @param: [ecmArtworkNodesVo]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2021/6/1
+	 * 描述 : 节点迁移
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
 	@RequestMapping("/migrateArtworkNode")
 	@ResponseBody
 	public ResponseDTO migrateArtworkNode(@RequestBody EcmArtworkNodesVo ecmArtworkNodesVo){
@@ -529,13 +531,37 @@ public class EcmArtWorkController extends BaseController{
 		return ecmArtWorkService.migrateArtworkNode(ecmArtworkNodesVo);
 	}
 
+	/**
+	 * @param: [ecmArtworkVo]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2021/6/1
+	 * 描述 : 作品复制
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
 	@RequestMapping("/migrateArtwork")
 	@ResponseBody
 	public ResponseDTO migrateArtwork(@RequestBody EcmArtworkVo ecmArtworkVo){
 		ecmArtworkVo.setFkUserid(getUserIdByHandToken());
+		String key = "chair-EcmArtworkController-migrateArtwork-" + getUserIdByHandToken() ;
+        if (redisUtil.hasKey(key) ){
+            return ResponseDTO.fail(ERR_012.getText(),ERR_012.getValue());
+        }
+        // 复制作品1小时，只能只能调用一次 每个用户
+        redisUtil.set(key,key, 60 * 60);
 		return ecmArtWorkService.migrateArtwork(ecmArtworkVo);
 	}
 
+	/**
+	 * @param: [ecmArtworkNodeActionQuery]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2021/6/1
+	 * 描述 : 保存动作
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
 	@RequestMapping("/saveArtworkNodeAction")
 	@ResponseBody
 	public ResponseDTO saveArtworkNodeAction(@RequestBody EcmArtworkNodeActionQuery ecmArtworkNodeActionQuery){
@@ -543,6 +569,15 @@ public class EcmArtWorkController extends BaseController{
 		return ecmArtWorkService.saveArtworkNodeAction(ecmArtworkNodeActionQuery);
 	}
 
+	/**
+	 * @param: [ecmArtworkNodeActionQuery]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2021/6/1
+	 * 描述 : 获取动作
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
 	@RequestMapping("/getArtworkNodeAction")
 	@ResponseBody
 	public ResponseDTO getArtworkNodeAction(@RequestBody EcmArtworkNodeActionQuery ecmArtworkNodeActionQuery){
@@ -550,7 +585,15 @@ public class EcmArtWorkController extends BaseController{
 		return ecmArtWorkService.getArtworkNodeAction(ecmArtworkNodeActionQuery);
 	}
 
-
+	/**
+	 * @param: [ecmArtworkNodeBuoyPanoramicQuery]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2021/6/1
+	 * 描述 : 保存vr 浮标
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
 //	@EcmArtworkAuthentication(auth = {"VR"})
 	@RequestMapping("/saveArtworkNodePanoramicBuoy")
 	@ResponseBody
@@ -559,7 +602,15 @@ public class EcmArtWorkController extends BaseController{
 		return ecmArtWorkService.saveArtworkNodePanoramicBuoy(ecmArtworkNodeBuoyPanoramicQuery);
 	}
 
-
+	/**
+	 * @param: [ecmArtworkNodeBuoyPanoramicQuery]
+	 * @return: com.mpic.evolution.chair.pojo.dto.ResponseDTO
+	 * @author: cxd
+	 * @Date: 2021/6/1
+	 * 描述 : 获取vr 浮标
+	 *       成功: status 200  msg "success”   date:
+	 *       失败: status 500  msg "error“
+	 */
 	@EcmArtworkAuthentication(auth = {"浮标"})
 	@RequestMapping("/getArtworkNodePanoramicBuoy")
 	@ResponseBody
