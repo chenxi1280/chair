@@ -371,5 +371,27 @@
 
     </update>
 
+  <select id="selectDeletedArtWorks" resultType="com.mpic.evolution.chair.pojo.entity.EcmArtwork"  resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from ecm_artwork
+    <where>
+      <!-- 查询作品是不包括删除作品5 和审核不通过3 -->
+      <if test="pkArtworkId != null">
+        and pk_artwork_id = #{pkArtworkId}
+      </if>
+      <if test="artworkStatus != null">
+        and artwork_status = #{artworkStatus,jdbcType=SMALLINT}
+      </if>
+      <if test="fkUserid != null">
+        and fk_userId = #{fkUserid}
+      </if>
+    </where>
+  </select>
+
+
+  <delete id="deleteByStatus">
+    delete from ecm_artwork
+    where artwork_status = #{artworkStatus,jdbcType=SMALLINT}
+  </delete>
 
 </mapper>

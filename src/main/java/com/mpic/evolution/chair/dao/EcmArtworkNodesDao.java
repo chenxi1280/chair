@@ -6,6 +6,7 @@ import com.mpic.evolution.chair.pojo.vo.EcmArtworkNodesVo;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface EcmArtworkNodesDao {
@@ -74,5 +75,24 @@ public interface EcmArtworkNodesDao {
 
     int updatePrivateVideoUrl(EcmArtworkNodes nodes);
 
+    /**
+     * 根据artworkid 查出所有已删除的子节点
+     * @author SJ
+     * @param ecmArtworkIds
+     * @return
+     */
+    List<String> selectDeletedArtWorkNodesByArtworkIds(@Param("ecmArtworkIds") ArrayList<Integer> ecmArtworkIds);
 
+    /**
+     * 根据节点状态 查出所有已删除的子节点
+     * @author SJ
+     * @param record
+     * @return
+     */
+    List<String> selectDeletedArtWorkNodesByNodesStatus(EcmArtworkNodes record);
+
+    /**
+     * @author SJ
+     */
+    int deleteByIsDelete(String isDeleted);
 }

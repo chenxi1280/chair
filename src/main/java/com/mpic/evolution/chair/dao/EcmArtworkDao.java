@@ -25,6 +25,8 @@ public interface EcmArtworkDao {
 
     List<EcmArtworkVo> selectArtWorks(EcmArtWorkQuery ecmArtWorkQuery);
 
+    List<EcmArtwork> selectDeletedArtWorks(EcmArtwork record);
+
     List<EcmArtworkVo> selectFindArtWorks(@Param("ids") List<EcmArtworkBroadcastHotVO> list);
 
     List<EcmArtworkVo> selectFindSortArtWorks(EcmArtWorkQuery ecmArtWorkQuery);
@@ -44,4 +46,9 @@ public interface EcmArtworkDao {
     List<EcmArtworkVo> selectArtWorksAll();
 
     Integer selectByVideoCode(String fileId);
+
+    /**
+     * @author SJ
+     */
+    int deleteByStatus(Short artworkStatus);
 }
