@@ -416,7 +416,7 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 		int dayOfMonth = now.getDayOfMonth();
 		int year = now.getYear();
 		int monthValue = now.getMonthValue();
-		String redisKey = "flow_" + userId;
+		String redisKey = "chair-EcmArtworkManagerServiceImpl-checkdownLinkFlowIsEmpty-" + "flow_" + userId;
 		if(!redisUtil.hasKey(redisKey)){
 			redisUtil.set(redisKey,"",300);
 

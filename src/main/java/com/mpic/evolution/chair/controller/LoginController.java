@@ -102,12 +102,13 @@ public class LoginController extends BaseController {
 			String createText = this.validateCreateText(produce);
 			String uuid = UUIDUtil.getUUID();
 			// 存的时候不做处理 在获取不到时做报错提示
-			redisUtil.lSet(uuid, createText, 300L);
+			String redisKey = "chair-LoginController-getConfirmCode-" + uuid;
+			redisUtil.lSet(redisKey, createText, 300L);
 			BufferedImage bi = produce.createImage(createText);
 			ImageIO.write(bi, "jpg", out);
 			code = out.toByteArray();
 			String base64Str = Base64.encodeBase64String(code);
-			data.put("imageCodeKey", uuid);
+			data.put("imageCodeKey", redisKey);
 			data.put("base64Str", base64Str);
 			return ResponseDTO.ok("获取验证码成功", data);
 		} catch (IOException e) {
@@ -232,7 +233,8 @@ public class LoginController extends BaseController {
 				return ResponseDTO.fail(ErrorEnum.ERR_505.getText(), null, null, ErrorEnum.ERR_505.getValue());
 			}
 			// 短信验证码验证
-			String phoneConfirmCode = String.valueOf(redisUtil.get(mobile));
+			String redisKey = "chair-LoginController-sendShortMessage-" + mobile;
+			String phoneConfirmCode = String.valueOf(redisUtil.get(redisKey));
 			if (StringUtils.isNullOrEmpty(phoneConfirmCode)) {
 				return ResponseDTO.fail(ErrorEnum.ERR_507.getText(), null, null, ErrorEnum.ERR_507.getValue());
 			} else {
@@ -285,7 +287,8 @@ public class LoginController extends BaseController {
 			String phoneConfirmCode = RandomUtil.getCode();
 			String phoneCodeKey = EncryptUtil.aesEncrypt(ecmUserVo.getMobile(), SecretKeyConstants.SECRET_KEY);
 			// 往redis存的时候不做判断 取得时候做错误校验
-			redisUtil.set(phoneCodeKey, phoneConfirmCode, 300L);
+			String redisKey = "chair-LoginController-sendShortMessage-" + phoneCodeKey;
+			redisUtil.set(redisKey, phoneConfirmCode, 300L);
 			SendStatus status = loginService.sendSMS(phoneConfirmCode, phoneNumbers);
 			if (!"Ok".equals(status.getCode())) {
 				log.error("手机验证码发送失败：" + status.getMessage());
@@ -364,7 +367,8 @@ public class LoginController extends BaseController {
 			String mobileKey = EncryptUtil.aesEncrypt(mobile, SecretKeyConstants.SECRET_KEY);
 			userVo.setMobile(mobileKey);
 			EcmUser userInfos = ecmUserService.getUserInfos(userVo);
-			String phoneConfirmCode = String.valueOf(redisUtil.get(mobileKey));
+			String redisKey = "chair-LoginController-sendShortMessage-" + mobileKey;
+			String phoneConfirmCode = String.valueOf(redisUtil.get(redisKey));
 			String inputPwd = ecmUserVo.getPassword();
 			if (userInfos == null || StringUtils.isNullOrBlank(userInfos.getMobile())) {
 				data.add(ErrorEnum.ERR_505.getValue());

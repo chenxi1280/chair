@@ -640,11 +640,12 @@ public class EcmArtWorkController extends BaseController{
 			throw new EcmTokenException(603,"非法访问");
 		}
     	//如果是null返回false
-    	boolean hasKey = redisUtil.hasKey("WxQRCode");
+		String redisKey = "chair-EcmArtworkController-getAccessToken-"+"WxQRCode";
+    	boolean hasKey = redisUtil.hasKey(redisKey);
     	String accessToken = "";
     	try {
 	    	if (hasKey) {
-	    		accessToken = String.valueOf(redisUtil.get("WxQRCode"));
+	    		accessToken = String.valueOf(redisUtil.get(redisKey));
 			}else {
 				accessToken = getAccessToken();
 			}
@@ -690,11 +691,12 @@ public class EcmArtWorkController extends BaseController{
 
 		//如果是null返回false
 		JSONObject data = new JSONObject();
-		boolean hasKey = redisUtil.hasKey("DyQRCode");
+		String redisKey = "chair-EcmArtworkController-getDyAccessToken-"+"DyQRCode";
+		boolean hasKey = redisUtil.hasKey(redisKey);
 		String accessToken = "";
 		try {
 			if (hasKey) {
-				accessToken = String.valueOf(redisUtil.get("DyQRCode"));
+				accessToken = String.valueOf(redisUtil.get(redisKey));
 			}else {
 				accessToken = getDyAccessToken();
 			}
@@ -735,11 +737,12 @@ public class EcmArtWorkController extends BaseController{
 		JSONObject data = new JSONObject();
 
 		//如果是null返回false
-		boolean hasKey = redisUtil.hasKey("WxQRCode");
+		String redisKey = "chair-EcmArtworkController-getAccessToken-"+"WxQRCode";
+		boolean hasKey = redisUtil.hasKey(redisKey);
 		String accessToken = "";
 		try {
 			if (hasKey) {
-				accessToken = String.valueOf(redisUtil.get("WxQRCode"));
+				accessToken = String.valueOf(redisUtil.get(redisKey));
 			}else {
 				accessToken = getAccessToken();
 			}
@@ -826,7 +829,8 @@ public class EcmArtWorkController extends BaseController{
 		JSONObject result = JSONObject.parseObject(jsonStr);
 		String accessToken = result.getString("access_token");
 		String expiresIn = result.getString("expires_in");
-		redisUtil.set("WxQRCode", accessToken, Long.parseLong(expiresIn));
+		String redisKey = "chair-EcmArtworkController-getAccessToken-"+"WxQRCode";
+		redisUtil.set(redisKey, accessToken, Long.parseLong(expiresIn));
 		return accessToken;
 	}
 
@@ -870,7 +874,8 @@ public class EcmArtWorkController extends BaseController{
 		JSONObject result = JSONObject.parseObject(jsonStr);
 		String accessToken = result.getString("access_token");
 		String expiresIn = result.getString("expires_in");
-		redisUtil.set("DyQRCode", accessToken, Long.valueOf(expiresIn));
+		String redisKey = "chair-EcmArtworkController-getDyAccessToken-"+"DyQRCode";
+		redisUtil.set(redisKey, accessToken, Long.valueOf(expiresIn));
 		return accessToken;
 	}
 
