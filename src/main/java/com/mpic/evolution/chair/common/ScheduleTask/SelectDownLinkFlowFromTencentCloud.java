@@ -43,7 +43,9 @@ public class SelectDownLinkFlowFromTencentCloud {
     @Resource
     private RedisUtil redisUtil;
 
-    @Scheduled(cron = "0 0 2 * * ?")
+//    @Scheduled(cron = "0 0 2 * * ?")
+//    for test
+    @Scheduled(cron = "0 0 15 * * ?")
     //每天凌晨两点执行
     public void SelectDownLinkFlowFromTencentCloud(){
         //查询所有的免广告作品
