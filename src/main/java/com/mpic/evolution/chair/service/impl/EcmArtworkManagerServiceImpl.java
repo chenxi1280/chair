@@ -266,7 +266,7 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 		}else{
 			//用户流量为0 时停用云点播
 			String subAppId = ecmDownlinkFlow.getSubAppId().toString();
-			boolean symbol = ecmDownLinkFlowService.modifySubAppStatus("off", Long.valueOf(subAppId));
+			boolean symbol = ecmDownLinkFlowService.modifySubAppStatus("Off", Long.valueOf(subAppId));
 			if(symbol){
 				EcmSubappUpdateHistory ecmSubappUpdateHistory = new EcmSubappUpdateHistory();
 				ecmSubappUpdateHistory.setSubAppId(ecmDownlinkFlow.getSubAppId());
