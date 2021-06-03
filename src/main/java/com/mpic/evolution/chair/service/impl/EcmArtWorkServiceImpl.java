@@ -1103,7 +1103,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ResponseDTO migrateArtwork(EcmArtworkVo ecmArtworkVo) {
+    public ResponseDTO migrateArtwork (EcmArtworkVo ecmArtworkVo) {
 
         try {
             EcmArtwork ecmArtwork =  ecmArtworkDao.selectByPrimaryKey(ecmArtworkVo.getPkArtworkId());

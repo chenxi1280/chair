@@ -17,6 +17,7 @@ import com.mpic.evolution.chair.util.JWTUtil;
 import com.mpic.evolution.chair.util.RedisUtil;
 import com.qcloud.vod.common.StringUtil;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,8 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 
-import static com.mpic.evolution.chair.common.constant.CommonField.NODE_ENDING_MAX;
-import static com.mpic.evolution.chair.common.constant.CommonField.STRING_ZORE;
+import static com.mpic.evolution.chair.common.constant.CommonField.*;
 import static com.mpic.evolution.chair.common.returnvo.ErrorEnum.ERR_012;
 
 /**
@@ -42,6 +42,8 @@ public class EcmArtWorkController extends BaseController{
     @Resource
 	RedisUtil redisUtil;
 
+	@Value("${spring.redis.host}")
+	private String redisHost;
 
 
 
@@ -547,10 +549,19 @@ public class EcmArtWorkController extends BaseController{
 		ecmArtworkVo.setFkUserid(getUserIdByHandToken());
 		String key = "chair-EcmArtworkController-migrateArtwork-" + getUserIdByHandToken() ;
         if (redisUtil.hasKey(key) ){
+
             return ResponseDTO.fail(ERR_012.getText(),ERR_012.getValue());
         }
         // 复制作品1小时，只能只能调用一次 每个用户
-        redisUtil.set(key,key, 60 * 60);
+
+		if (!STRING_REDIS_IP.equals(redisHost)){
+			redisUtil.set(key,key, 60*60);
+		}else {
+			redisUtil.set(key,key, 20);
+			System.out.println("这是测试环境的AI审核");
+		}
+
+
 		return ecmArtWorkService.migrateArtwork(ecmArtworkVo);
 	}
 
