@@ -62,18 +62,18 @@ public class PersonalCenterController extends BaseController {
 				user = ecmUserService.getUserInfos(user);
 				// 用户昵称是否存在
 				if (user != null && !StringUtils.isNullOrBlank(String.valueOf(user.getUsername()))) {
-					return ResponseDTO.fail("昵称已被使用", null, null, 504);
+					return ResponseDTO.fail(ErrorEnum.ERR_504.getText(), null, null, ErrorEnum.ERR_504.getValue());
 				}
 				String result = AIVerifyUtil.convertContent(username);
 				if (!StringUtils.isNullOrBlank(result)) {
-					return ResponseDTO.fail("昵称使用了违禁词汇", result, null, 510);
+					return ResponseDTO.fail(ErrorEnum.ERR_510.getText(), result, null, ErrorEnum.ERR_510.getValue());
 				}
 			}
 			return pcService.savaUserInfo(ecmUserVo);
 		} catch (MyBatisSystemException e) {
 			log.error("账号在数据库中有多条记录");
 			e.printStackTrace();
-			return ResponseDTO.fail("failed", null, null, "000039");
+			return ResponseDTO.fail(ErrorEnum.ERR_000039.getText(), null, null, ErrorEnum.ERR_000039.getValue());
 		}
 	}
 	
@@ -97,23 +97,23 @@ public class PersonalCenterController extends BaseController {
 			EcmUser userInfos = ecmUserService.getUserInfosByUserId(userIdByHandToken);
 			//校验原始密码
 			if (!userInfos.getPassword().equals(MD5Utils.encrypt(ecmUserVo.getPassword()))) {
-				return ResponseDTO.fail("请正确输入原密码", null, null, 506);
+				return ResponseDTO.fail(ErrorEnum.ERR_506.getText(), null, null, ErrorEnum.ERR_506.getValue());
 			}
 			String newPwd = ecmUserVo.getNewPwd();
 			if (!newPwd.equals(ecmUserVo.getConfirmPwd())) {
-				return ResponseDTO.fail("确认密码错误", null, null, 503);
+				return ResponseDTO.fail( ErrorEnum.ERR_503.getText(), null, null, ErrorEnum.ERR_503.getValue());
 			}
 			user.setPassword(MD5Utils.encrypt(ecmUserVo.getNewPwd()));// 修改后的密码以MD5加密入库
 			user.setUpdateTime(new Date());// 修改updateTime字段
 			boolean flag = ecmUserService.updatePwdByUserId(user);
 			if (!flag) {
-				return ResponseDTO.fail("failed", null, null, "000039");
+				return ResponseDTO.fail(ErrorEnum.ERR_000039.getText(), null, null, ErrorEnum.ERR_000039.getValue());
 			}
 			return ResponseDTO.ok("密码修改成功");
 		} catch (Exception e) {
 			log.error("用户信息加密失败");
 			e.printStackTrace();
-			return ResponseDTO.fail("failed", null, null, "000039");
+			return ResponseDTO.fail(ErrorEnum.ERR_000039.getText(), null, null, ErrorEnum.ERR_000039.getValue());
 		}
 
 	}
@@ -131,23 +131,23 @@ public class PersonalCenterController extends BaseController {
 		try {
 			String username = ecmUserVo.getUsername();
 			if (StringUtils.isNullOrBlank(username)) {
-				return ResponseDTO.fail("昵称已被使用", null, null, 504);
+				return ResponseDTO.fail( ErrorEnum.ERR_504.getText(), null, null, ErrorEnum.ERR_504.getValue());
 			}
 			String result = AIVerifyUtil.convertContent(username);
 			if (!StringUtils.isNullOrBlank(result)) {
-				return ResponseDTO.fail("昵称使用了违禁词汇", result, null, 510);
+				return ResponseDTO.fail(ErrorEnum.ERR_510.getText(), result, null,  ErrorEnum.ERR_510.getValue());
 			}
 			user.setUsername(username);
 			user = ecmUserService.getUserInfos(user);
 			// 用户昵称是否存在
 			if (user != null && !StringUtils.isNullOrBlank(String.valueOf(user.getUsername()))) {
-				return ResponseDTO.fail("昵称已被使用", null, null, 504);
+				return ResponseDTO.fail(ErrorEnum.ERR_504.getText(), null, null, ErrorEnum.ERR_504.getValue());
 			}
 			return ResponseDTO.ok();
 		} catch (MyBatisSystemException e) {
 			log.error("账号在数据库中有多条记录");
 			e.printStackTrace();
-			return ResponseDTO.fail("failed", null, null, "000039");
+			return ResponseDTO.fail(ErrorEnum.ERR_000039.getText(), null, null, ErrorEnum.ERR_000039.getValue());
 		}
 	}
 }

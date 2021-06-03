@@ -93,4 +93,9 @@
 
   </select>
 
+  <select id="selectAll" resultType="java.lang.Integer">
+    select fk_artwork_id from ecm_artwork_free_ad
+  </select>
+
+
 </mapper>

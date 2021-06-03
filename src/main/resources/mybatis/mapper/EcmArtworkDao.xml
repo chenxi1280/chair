@@ -394,4 +394,15 @@
     where artwork_status = #{artworkStatus,jdbcType=SMALLINT}
   </delete>
 
+  <select id="selectByArtworkIds"  resultType="java.lang.Integer">
+    select fk_userId
+    from ecm_artwork
+    where
+    pk_artwork_id in
+      <foreach item="fkArtworkId" index="index" collection="artworkIds"
+               open="(" separator="," close=")">
+        #{fkArtworkId}
+      </foreach>
+  </select>
+
 </mapper>

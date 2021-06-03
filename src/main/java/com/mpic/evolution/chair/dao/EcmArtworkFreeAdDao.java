@@ -24,4 +24,6 @@ public interface EcmArtworkFreeAdDao {
     int updateByPrimaryKey(EcmArtworkFreeAd record);
 
     EcmArtworkFreeAd selectByEcmArtworkId(Integer pkArtworkId);
+
+    List<Integer> selectAll();
 }
