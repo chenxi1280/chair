@@ -549,7 +549,6 @@ public class EcmArtWorkController extends BaseController{
 		ecmArtworkVo.setFkUserid(getUserIdByHandToken());
 		String key = "chair-EcmArtworkController-migrateArtwork-" + getUserIdByHandToken() ;
         if (redisUtil.hasKey(key) ){
-
             return ResponseDTO.fail(ERR_012.getText(),ERR_012.getValue());
         }
         // 复制作品1小时，只能只能调用一次 每个用户
