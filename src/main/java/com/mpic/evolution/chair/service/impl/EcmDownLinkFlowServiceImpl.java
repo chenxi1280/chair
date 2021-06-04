@@ -112,9 +112,13 @@ public class EcmDownLinkFlowServiceImpl implements EcmDownLinkFlowService {
      */
 
     @Override
+//    for test
+//    public boolean modifySubAppStatus(String status, Long subAppId){ return false;}
+//    public static boolean modifySubAppStatusTest(String status, long subAppId){
+//        String secretId = "AKIDNs9B1a3HUSFmMgJeIgneFpnYAWcRGfKm";
+//        String secretKey = "MXYlmOeLm9KErRk1TfKj7E4oImzvlKsA";
     public boolean modifySubAppStatus(String status, Long subAppId){
         try{
-
             Credential cred = new Credential(secretId, secretKey);
 
             HttpProfile httpProfile = new HttpProfile();
@@ -137,6 +141,11 @@ public class EcmDownLinkFlowServiceImpl implements EcmDownLinkFlowService {
             System.out.println(e.toString());
             return false;
         }
+    }
+
+    public static void main(String[] args) {
+        Integer subAppId = 1500005338;
+//        EcmDownLinkFlowServiceImpl.modifySubAppStatusTest("On",Long.valueOf(subAppId));
     }
 
 }

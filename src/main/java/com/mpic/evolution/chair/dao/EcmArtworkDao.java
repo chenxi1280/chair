@@ -8,6 +8,7 @@ import com.mpic.evolution.chair.pojo.vo.EcmArtworkEndingsVO;
 import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.HashSet;
 import java.util.List;
 
 public interface EcmArtworkDao {
@@ -51,4 +52,6 @@ public interface EcmArtworkDao {
      * @author SJ
      */
     int deleteByStatus(Short artworkStatus);
+
+    List<Integer> selectByArtworkIds(HashSet<Integer> artworkIds);
 }

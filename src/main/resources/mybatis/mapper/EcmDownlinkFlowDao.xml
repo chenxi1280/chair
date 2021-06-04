@@ -200,5 +200,20 @@
     </where>
   </update>
 
+  <select id="selectByUserIds" parameterType="com.mpic.evolution.chair.pojo.entity.EcmDownlinkFlow" resultMap="BaseResultMap">
+    select sub_app_id
+    from ecm_downlink_flow
+    where
+      fk_user_id in
+    <foreach item="userId" index="index" collection="userIds"
+             open="(" separator="," close=")">
+      #{userId}
+    </foreach>
+    ORDER BY FIELD
+    <foreach collection="userIds" item="userId" open="(fk_user_id," separator="," close=")">
+      #{userId}
+    </foreach>
+  </select>
+
 
 </mapper>
