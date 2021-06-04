@@ -1103,7 +1103,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ResponseDTO migrateArtwork(EcmArtworkVo ecmArtworkVo) {
+    public ResponseDTO migrateArtwork (EcmArtworkVo ecmArtworkVo) {
 
         try {
             EcmArtwork ecmArtwork =  ecmArtworkDao.selectByPrimaryKey(ecmArtworkVo.getPkArtworkId());
@@ -1112,6 +1112,7 @@ public class EcmArtWorkServiceImpl implements EcmArtWorkService {
             artwork.setPkArtworkId(null);
             artwork.setArtworkName(artwork.getArtworkName()+"_副本");
             artwork.setArtworkStatus((short) 0);
+            artwork.setLastCreateDate(new Date());
             ecmArtworkDao.insertSelective(artwork);
             HashMap<Integer, Integer> map = new HashMap<>();
             // 1 node 表，2 数值 3 多结局 ，4 弹窗 条件  浮标 动作

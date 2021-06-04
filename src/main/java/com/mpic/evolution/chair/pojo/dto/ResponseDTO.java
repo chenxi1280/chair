@@ -69,7 +69,7 @@ public class ResponseDTO implements Serializable {
         this.msg = msg;
         this.data = data;
         this.errorCode = errorCode;
-        this.status = status;
+        this.status = Integer.valueOf(status.toString());
         this.res = false;
     }
 
