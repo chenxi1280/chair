@@ -22,5 +22,5 @@ public interface EcmDownlinkFlowDao {
 
     int updateByPrimaryKey(EcmDownlinkFlow record);
 
-    List<Integer>  selectByUserIds(List<Integer> userIds);
+    List<Integer> selectByUserIds(@Param("userIds") List<Integer> userIds);
 }

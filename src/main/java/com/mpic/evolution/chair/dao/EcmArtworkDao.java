@@ -53,5 +53,5 @@ public interface EcmArtworkDao {
      */
     int deleteByStatus(Short artworkStatus);
 
-    List<Integer> selectByArtworkIds(HashSet<Integer> artworkIds);
+    List<Integer> selectByArtworkIds(@Param("artworkIds") HashSet<Integer> artworkIds);
 }

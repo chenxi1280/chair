@@ -200,7 +200,7 @@
     </where>
   </update>
 
-  <select id="selectByUserIds" parameterType="com.mpic.evolution.chair.pojo.entity.EcmDownlinkFlow" resultMap="BaseResultMap">
+  <select id="selectByUserIds" resultType="java.lang.Integer" >
     select sub_app_id
     from ecm_downlink_flow
     where

@@ -43,9 +43,9 @@ public class SelectDownLinkFlowFromTencentCloud {
     @Resource
     private RedisUtil redisUtil;
 
-//    @Scheduled(cron = "0 0 2 * * ?")
+    @Scheduled(cron = "0 0 2 * * ?")
 //    for test
-    @Scheduled(cron = "0 0 15 * * ?")
+//    @Scheduled(cron = "0 25 14 * * ?")
     //每天凌晨两点执行
     public void SelectDownLinkFlowFromTencentCloud(){
         //查询所有的免广告作品
@@ -86,48 +86,56 @@ public class SelectDownLinkFlowFromTencentCloud {
             for (int i = 0; i < subAppIds.size(); i++) {
                 long twoDaysAgoSum = downLinkFlowService.describeCDNStatDetails(startStr, endStr, subAppIds.get(i));
                 long yesterdaySum = downLinkFlowService.describeCDNStatDetails(endStr, end2Str, subAppIds.get(i));
-                Date twoDaysAgoDate = VipDateUtil.formatToDate(start);
                 EcmDownlinkFlowHistory twoDaysHistory = new EcmDownlinkFlowHistory();
-                twoDaysHistory.setCreateTime(twoDaysAgoDate);
-                EcmDownlinkFlowHistory twoDaysAgoObject = historyDao.selectByRecord(twoDaysHistory);
-                if(twoDaysAgoObject == null){
+                //当统计到的下行流量使用为0时就不做记录了 给数据库减负
+                if(twoDaysAgoSum != 0){
+                    Date twoDaysAgoDate = VipDateUtil.formatToDate(start);
+                    twoDaysHistory.setCreateTime(twoDaysAgoDate);
                     twoDaysHistory.setSubAppId(subAppIds.get(i));
-                    twoDaysHistory.setFkUserId(userIds.get(i));
-                    twoDaysHistory.setStartTime(twoDaysAgoDate);
-                    twoDaysHistory.setEndTime(twoDaysAgoDate);
-                    twoDaysHistory.setSubFlowStatus(0);
-                    twoDaysHistory.setSubUsedFlow(twoDaysAgoSum);
-                    historyDao.insertSelective(twoDaysHistory);
-                }else{
-                    twoDaysAgoObject.setSubUsedFlow(twoDaysAgoSum);
-                    historyDao.updateByPrimaryKey(twoDaysAgoObject);
+                    EcmDownlinkFlowHistory twoDaysAgoObject = historyDao.selectByRecord(twoDaysHistory);
+                    if(twoDaysAgoObject == null){
+                        twoDaysHistory.setSubAppId(subAppIds.get(i));
+                        twoDaysHistory.setFkUserId(userIds.get(i));
+                        twoDaysHistory.setStartTime(twoDaysAgoDate);
+                        twoDaysHistory.setEndTime(twoDaysAgoDate);
+                        twoDaysHistory.setSubFlowStatus(0);
+                        twoDaysHistory.setSubUsedFlow(twoDaysAgoSum);
+                        historyDao.insertSelective(twoDaysHistory);
+                    }else{
+                        twoDaysAgoObject.setSubUsedFlow(twoDaysAgoSum);
+                        historyDao.updateByPrimaryKey(twoDaysAgoObject);
+                    }
                 }
-                Date yesterdayDate = VipDateUtil.formatToDate(end);
+                //当统计到的下行流量使用为0时就不做记录了 给数据库减负
                 EcmDownlinkFlowHistory yesterdayHistory = new EcmDownlinkFlowHistory();
-                yesterdayHistory.setCreateTime(yesterdayDate);
-                EcmDownlinkFlowHistory yesterdayObject = historyDao.selectByRecord(yesterdayHistory);
-                if(yesterdayObject == null){
+                if(yesterdaySum != 0){
+                    Date yesterdayDate = VipDateUtil.formatToDate(end);
+                    yesterdayHistory.setCreateTime(yesterdayDate);
                     yesterdayHistory.setSubAppId(subAppIds.get(i));
-                    yesterdayHistory.setFkUserId(userIds.get(i));
-                    yesterdayHistory.setStartTime(yesterdayDate);
-                    yesterdayHistory.setEndTime(yesterdayDate);
-                    yesterdayHistory.setSubFlowStatus(0);
-                    yesterdayHistory.setSubUsedFlow(yesterdaySum);
-                    historyDao.insertSelective(yesterdayHistory);
-                }else{
-                    yesterdayObject.setSubUsedFlow(yesterdaySum);
-                    historyDao.updateByPrimaryKey(yesterdayObject);
+                    EcmDownlinkFlowHistory yesterdayObject = historyDao.selectByRecord(yesterdayHistory);
+                    if(yesterdayObject == null){
+                        yesterdayHistory.setSubAppId(subAppIds.get(i));
+                        yesterdayHistory.setFkUserId(userIds.get(i));
+                        yesterdayHistory.setStartTime(yesterdayDate);
+                        yesterdayHistory.setEndTime(yesterdayDate);
+                        yesterdayHistory.setSubFlowStatus(0);
+                        yesterdayHistory.setSubUsedFlow(yesterdaySum);
+                        historyDao.insertSelective(yesterdayHistory);
+                    }else{
+                        yesterdayObject.setSubUsedFlow(yesterdaySum);
+                        historyDao.updateByPrimaryKey(yesterdayObject);
+                    }
                 }
 
+                //prevent full gc
                 twoDaysHistory = null;
                 yesterdayHistory = null;
             }
 
+        }else{
+            //多服务节点测试使用 保证定时任务时间只有一个服务会执行此定时任务
+            log.info("**********************Scheduled task is not executing**************************");
         }
-
-        //多服务节点测试使用 保证定时任务时间只有一个服务会执行此定时任务
-        log.info("**********************Scheduled task is not executing**************************");
-
     }
 
 }
