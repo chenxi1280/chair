@@ -23,10 +23,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @ServerEndpoint("/imserver/{token}")
 @Log4j
-//@Component
+@Component
 public class WebSocketServer {
 
-//    static Log log= LogFactory.get(WebSocketServer.class);
     /**
      * 静态变量，用来记录当前在线连接数。应该把它设计成线程安全的。
      */
@@ -99,9 +98,9 @@ public class WebSocketServer {
             if (StringUtils.isNotBlank(message)) {
                 String ping = "ping";
                 if (message.equals(ping)) {
-                    log.info("用户:" + userId + ",心跳");
+//                    log.info("用户:" + userId + ",心跳");
                 }
-                log.info("用户消息:" + userId + ",报文:" + message);
+//                log.info("用户消息:" + userId + ",报文:" + message);
                 //解析发送的报文
                 JSONObject jsonObject = JSON.parseObject(message);
                 //追加发送人(防止串改)

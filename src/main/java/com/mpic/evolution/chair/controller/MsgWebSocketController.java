@@ -1,8 +1,11 @@
 package com.mpic.evolution.chair.controller;
 
 
+import com.alibaba.fastjson.JSON;
 import com.mpic.evolution.chair.config.websocket.WebSocketServer;
 import com.mpic.evolution.chair.pojo.vo.EcmInnerMessageVo;
+import com.mpic.evolution.chair.util.HttpUtils;
+import lombok.extern.log4j.Log4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,8 +23,8 @@ import java.util.List;
  * @Date 2020/9/16 10:07
  */
 @RestController
+@Log4j
 public class MsgWebSocketController {
-
 
     /**
      * @param: [ecmInnerMessageVOS]
@@ -41,7 +44,14 @@ public class MsgWebSocketController {
                 try {
                     WebSocketServer.sendInfo(v, String.valueOf(v.getFkUserId()));
                 } catch (IOException e) {
+                    log.info("WebSocket连接不在本服务器，重新发送");
                     e.printStackTrace();
+                    try {
+                        HttpUtils.post(HttpUtils.sendHttpsUrl, JSON.toJSONString(ecmInnerMessageVOS));
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                        log.info("重新发送失败！");
+                    }
                 }
             });
             return ResponseEntity.ok("MSG SEND SUCCESS");
