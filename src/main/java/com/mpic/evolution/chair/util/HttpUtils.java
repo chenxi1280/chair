@@ -48,7 +48,7 @@ public class HttpUtils {
      */
     private static final String JSON_TYPE = "application/json;charset=UTF-8";
 
-    public static final String sendHttpsUrl = "https://wanxiangchengzhen.com/bpi/pushMsg";
+    public static final String SEND_HTTPS_URL = "https://wanxiangchengzhen.com/bpi/pushMsg";
 
     public static final String SEND_NOTICE_URL  = "https://wanxiangchengzhen.com/bpi/EcmInnerMessage/sendNotice";
 
