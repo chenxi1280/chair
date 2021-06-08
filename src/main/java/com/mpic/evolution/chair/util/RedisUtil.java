@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.BoundValueOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -33,6 +34,8 @@ import org.springframework.util.CollectionUtils;
  * EcmArtWorkController	getWXBuoyPreviewCode get 获取redis中存入的微信用户的token
  * EcmArtworkManagerServiceImpl checkdownLinkFlowIsEmpty hasKey 检查redis中是否存入了查询下行流量的key 如果存入了key 就不向腾讯云发送请求查询下行流量
  * EcmArtworkManagerServiceImpl checkdownLinkFlowIsEmpty set 向redis中存入key 保证5分钟内一个用户只向腾讯云发送一次查询下行流量的请求
+ *
+ * com.mpic.evolution.chair.common.ScheduleTask SelectDownLinkFlowFromTencentCloud setIfAbsent 保证定时任务不被多个服务节点启用
  *
 */
 @Component
@@ -611,6 +614,28 @@ public final class RedisUtil {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return 0;
+		}
+	}
+
+	/**
+	 * setnx 实现分布式锁
+	 *
+	 * @param key   键
+	 * @param time 过期时间（秒）
+	 * @param value 值
+	 * @return 设置锁的结果
+	 */
+	public Boolean setIfAbsent(String key,Object value, long time) {
+		try {
+			BoundValueOperations<String, Object> boundValueOperations = redisTemplate.boundValueOps(key);
+			Boolean flag = boundValueOperations.setIfAbsent(value);
+			if(time > 0){
+				boundValueOperations.expire(time,TimeUnit.SECONDS);
+			}
+			return flag;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
 		}
 	}
 
