@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import com.mpic.evolution.chair.dao.EcmUserNoticeHistoryDao;
+import com.mpic.evolution.chair.pojo.entity.EcmUserNoticeHistory;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,8 @@ import com.tencentcloudapi.sms.v20190711.SmsClient;
 import com.tencentcloudapi.sms.v20190711.models.SendSmsRequest;
 import com.tencentcloudapi.sms.v20190711.models.SendSmsResponse;
 import com.tencentcloudapi.sms.v20190711.models.SendStatus;
+
+import javax.annotation.Resource;
 
 import static com.mpic.evolution.chair.common.constant.CommonField.STRING_LOWER_CASE_ERRCODE;
 
@@ -64,6 +68,9 @@ public class LoginServiceImpl implements LoginService{
 	@Value("${sms.secretKey}")
 	private String secretKey;// 密钥对
 
+	@Resource
+	private EcmUserNoticeHistoryDao ecmUserNoticeHistoryDao;
+
 	@Override
 	public SendStatus sendSMS(String code, String[] phoneNumbers) throws TencentCloudSDKException {
 		/*
@@ -89,6 +96,15 @@ public class LoginServiceImpl implements LoginService{
 		SendSmsResponse res = client.SendSms(req);
 //		System.out.println(SendSmsResponse.toJsonString(res));
 		SendStatus sendStatus = res.getSendStatusSet()[0];
+
+		//TODO 2124需求保存短信的发送记录
+
+		if ("Ok".equals(sendStatus.getCode())) {
+
+//			ecmUserNoticeHistoryDao
+		}else{
+
+		}
 		return sendStatus;
 	}
 
