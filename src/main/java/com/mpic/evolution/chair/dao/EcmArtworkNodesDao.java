@@ -92,7 +92,18 @@ public interface EcmArtworkNodesDao {
     List<String> selectDeletedArtWorkNodesByNodesStatus(EcmArtworkNodes record);
 
     /**
+     * 根据是否删除字段清除数据库中已删除的节点
      * @author SJ
+     * @param isDeleted
+     *
      */
     int deleteByIsDelete(String isDeleted);
+
+    /**
+     * 根据artworkid查询出作品的所有未删除节点的videoUrl
+     * @author SJ
+     * @param artworkId
+     *
+     */
+    List<String> selectVideoUrlByArtWorkId(Integer artworkId);
 }

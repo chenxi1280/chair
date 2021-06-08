@@ -2,7 +2,9 @@ package com.mpic.evolution.chair.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
+import com.mpic.evolution.chair.dao.EcmArtworkNodesDao;
+import com.mpic.evolution.chair.dao.EcmDownlinkFlowDao;
+import com.mpic.evolution.chair.pojo.entity.EcmDownlinkFlow;
 import com.mpic.evolution.chair.service.EcmDownLinkFlowService;
 import com.tencentcloudapi.common.Credential;
 import com.tencentcloudapi.common.exception.TencentCloudSDKException;
@@ -13,6 +15,9 @@ import com.tencentcloudapi.vod.v20180717.models.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.util.List;
+
 @Service
 public class EcmDownLinkFlowServiceImpl implements EcmDownLinkFlowService {
 
@@ -21,6 +26,11 @@ public class EcmDownLinkFlowServiceImpl implements EcmDownLinkFlowService {
 
     @Value("${sms.secretKey}")
     private String secretKey;// 密钥对
+
+    @Resource
+    private EcmArtworkNodesDao ecmArtworkNodesDao;
+    @Resource
+    private EcmDownlinkFlowDao ecmDownlinkFlowDao;
 
     /**
      * @author SJ
@@ -142,6 +152,87 @@ public class EcmDownLinkFlowServiceImpl implements EcmDownLinkFlowService {
             return false;
         }
     }
+
+    /**
+     * @author SJ
+     * 视频预热
+     * @param artworkId 作品id。
+     * @param userId 作者id
+     * @return
+     */
+    public boolean pushUrlCache(Integer artworkId, Integer userId){
+        //根据artworkId查出其子节点得所有视频的videoUrl
+        List<String> videoUrls = ecmArtworkNodesDao.selectVideoUrlByArtWorkId(artworkId);
+        // 根据userId 查询出子应用的subAppId
+        EcmDownlinkFlow ecmDownlinkFlow = new EcmDownlinkFlow();
+        ecmDownlinkFlow.setFkUserId(userId);
+        ecmDownlinkFlow = ecmDownlinkFlowDao.selectByRecord(ecmDownlinkFlow);
+
+        Credential cred = new Credential(secretId, secretKey);
+
+        HttpProfile httpProfile = new HttpProfile();
+        httpProfile.setEndpoint("vod.tencentcloudapi.com");
+
+        ClientProfile clientProfile = new ClientProfile();
+        clientProfile.setHttpProfile(httpProfile);
+
+        VodClient client = new VodClient(cred, "", clientProfile);
+
+        PushUrlCacheRequest req = new PushUrlCacheRequest();
+
+        PushUrlCacheRequest req2 = new PushUrlCacheRequest();
+
+        // 预热的 URL 列表，单次最多指定20个 URL
+        int i = videoUrls.size() / 20;
+        int j = videoUrls.size() % 20;
+        int videoUrlIndex = 0;
+        for(int k = 0; k < i; i++){
+            String[] urls1 = new String[20];
+            for(int n = 0; n < 20 ; n++){
+                urls1[n] = videoUrls.get(videoUrlIndex++);
+            }
+            try{
+                // 设置子应用和主应用的subAppid 主应用subAppid 1259692143 ecmDownlinkFlow==null 说明没有开通子应用
+                if(ecmDownlinkFlow != null){
+                    req.setUrls(urls1);
+                    req.setSubAppId(Long.valueOf(ecmDownlinkFlow.getSubAppId()));
+                    PushUrlCacheResponse resp = client.PushUrlCache(req);
+                    System.out.println(PushUrlCacheResponse.toJsonString(resp));
+                }
+                req2.setUrls(urls1);
+                req2.setSubAppId(1259692143L);
+                PushUrlCacheResponse resp2 = client.PushUrlCache(req2);
+                System.out.println(PushUrlCacheResponse.toJsonString(resp2));
+            } catch (TencentCloudSDKException e) {
+                System.out.println(e.toString());
+            }
+        }
+        if(j != 0){
+            String[] urls1 = new String[j];
+            for (int m = 0; m < j ; m++) {
+                urls1[m] = videoUrls.get(videoUrlIndex);
+                videoUrlIndex++;
+            }
+            try{
+                //设置子应用和主应用的subAppid 主应用subAppid 1259692143 ecmDownlinkFlow==null 说明没有开通子应用
+                if(ecmDownlinkFlow != null){
+                    req.setUrls(urls1);
+                    Long l = Long.valueOf(ecmDownlinkFlow.getSubAppId());
+                    req.setSubAppId(l);
+                    PushUrlCacheResponse resp = client.PushUrlCache(req);
+                    System.out.println(PushUrlCacheResponse.toJsonString(resp));
+                }
+                req2.setUrls(urls1);
+                req2.setSubAppId(1259692143L);
+                PushUrlCacheResponse resp2 = client.PushUrlCache(req2);
+                System.out.println(PushUrlCacheResponse.toJsonString(resp2));
+            } catch (TencentCloudSDKException e) {
+                System.out.println(e.toString());
+            }
+        }
+        return true;
+    }
+
 
     public static void main(String[] args) {
         Integer subAppId = 1500005338;

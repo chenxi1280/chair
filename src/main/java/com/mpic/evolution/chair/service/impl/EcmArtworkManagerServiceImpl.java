@@ -98,6 +98,8 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 						ecmArtworkBroadcastHotDao.insertSelective(ecmArtworkBroadcastHotVO);
 					}
 					ecmArtworkVo.setArtworkStatus((short)4);
+					// 作者发布作品时 预热视频
+					ecmDownLinkFlowService.pushUrlCache(ecmArtworkVo.getPkArtworkId(),ecmArtworkVo.getFkUserid());
 				}else {
 					return ResponseDTO.fail(JudgeConstant.FAIL);
 				}
@@ -117,6 +119,7 @@ public class EcmArtworkManagerServiceImpl implements EcmArtworkManagerService{
 			if ( CommonField.DELETE.equals(ecmArtworkVo.getCode() )){
 				ecmArtworkVo.setArtworkStatus((short)5);
 			}
+
 			ecmArtworkDao.updateByPrimaryKeySelective(ecmArtworkVo);
 			return ResponseDTO.ok(message.getString(ecmArtworkVo.getCode())+"成功");
 		} catch (Exception e) {

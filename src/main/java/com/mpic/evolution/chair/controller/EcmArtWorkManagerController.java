@@ -29,6 +29,7 @@ public class EcmArtWorkManagerController extends BaseController {
 	@RequestMapping("/modifyArtWorksStatus")
     @ResponseBody
     public ResponseDTO modifyArtWorksStatus(@RequestBody EcmArtworkVo ecmArtworkVo){
+		ecmArtworkVo.setFkUserid(getUserIdByHandToken());
         return artworkManagerService.modifyArtWorkStatus(ecmArtworkVo);
     }
 	

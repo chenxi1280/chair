@@ -4,6 +4,7 @@ import com.mpic.evolution.chair.dao.EcmArtworkBroadcastHistoryDao;
 import com.mpic.evolution.chair.pojo.dto.ResponseDTO;
 import com.mpic.evolution.chair.pojo.entity.EcmArtworkBroadcastHistory;
 import com.mpic.evolution.chair.pojo.entity.EcmGoods;
+import com.mpic.evolution.chair.pojo.vo.EcmArtworkVo;
 import com.mpic.evolution.chair.pojo.vo.EcmOrderVO;
 import com.mpic.evolution.chair.service.*;
 import com.mpic.evolution.chair.service.vip.BeanConfig;
@@ -12,6 +13,7 @@ import com.mpic.evolution.chair.util.RedisLock;
 import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 import com.tencentcloudapi.sms.v20190711.models.SendStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -28,7 +30,7 @@ import java.io.UnsupportedEncodingException;
 
 @Controller
 @RequestMapping("/test")
-public class TestController {
+public class TestController extends BaseController{
 
 	@Resource
 	private RedisLock redisLock;
@@ -53,6 +55,9 @@ public class TestController {
 
     @Resource
     DeleteUselessMediaInformationService deleteService;
+
+    @Resource
+    EcmDownLinkFlowService ecmDownLinkFlowService;
 
 //	private int count = 0;
 
@@ -189,6 +194,17 @@ public class TestController {
     @ResponseBody
     public ResponseDTO testDelete() {
        return deleteService.deleteUselessMediaInformation();
+    }
+
+    /**
+     * 	测试预加热
+     * @return
+     */
+    @RequestMapping("/pushUrlCache")
+    @ResponseBody
+    public void pushUrlCache(@RequestBody EcmArtworkVo ecmArtworkVo) {
+        ecmArtworkVo.setFkUserid(getUserIdByHandToken());
+        ecmDownLinkFlowService.pushUrlCache(ecmArtworkVo.getPkArtworkId(),ecmArtworkVo.getFkUserid());
     }
 
 }

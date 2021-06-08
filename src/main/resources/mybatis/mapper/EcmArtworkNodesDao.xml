@@ -726,6 +726,16 @@
   </select>
 
 
+  <select id="selectVideoUrlByArtWorkId" resultType="java.lang.String">
+    select video_url
+    from ecm_artwork_nodes
+     where is_deleted = "N"
+    <if test="artworkId != null">
+      and fk_artwork_id = #{artworkId,jdbcType=INTEGER}
+    </if>
+  </select>
+
+
   <delete id="deleteByIsDelete">
     delete from ecm_artwork_nodes
     where is_deleted = #{isDeleted,jdbcType=VARCHAR}

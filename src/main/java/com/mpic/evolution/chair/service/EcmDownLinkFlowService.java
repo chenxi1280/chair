@@ -19,4 +19,12 @@ public interface EcmDownLinkFlowService {
      * @return
      */
     boolean modifySubAppStatus(String status, Long subAppId);
+    /**
+     * @author SJ
+     *  预热作品视频
+     * @param artworkId 作品id。
+     * @param userId 作者id
+     * @return
+     */
+    boolean pushUrlCache(Integer artworkId, Integer userId);
 }
