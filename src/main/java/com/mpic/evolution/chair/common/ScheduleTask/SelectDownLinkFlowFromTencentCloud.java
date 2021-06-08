@@ -60,11 +60,8 @@ public class SelectDownLinkFlowFromTencentCloud {
         int year = now.getYear();
         int monthValue = now.getMonthValue();
         String redisKey = "chair-ScheduleTask-SelectDownLinkFlowFromTencentCloud-" + "ScheduleTask";
-        if(!redisUtil.hasKey(redisKey)) {
-            //多服务节点测试使用 保证定时任务时间只有一个服务会执行此定时任务
-            log.info("**********************Scheduled task is executing**************************");
-            redisUtil.set(redisKey, "", 300);
-
+        //多服务节点测试使用 保证定时任务时间只有一个服务会执行此定时任务
+        if(redisUtil.setIfAbsent(redisKey,"",300)) {
             //今天 分两次查询云点播下行流量
             LocalDateTime start = LocalDateTime.of(year, monthValue, dayOfMonth - 2, 0, 0, 0);
             ZonedDateTime startZoned = start.atZone(ZoneId.from(ZoneOffset.UTC));
